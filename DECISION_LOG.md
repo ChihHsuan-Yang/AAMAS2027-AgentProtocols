@@ -306,3 +306,40 @@ the Arm C/gpt-oss sign by 25 points); length-robust P1a via `eval_eq_density`;
 replicate noise floor; evaluator independence (gpt-oss grades itself);
 two-actor language fixed throughout the manuscript; drop the second-domain claim;
 per-actor Arm B collapse stratified by informative-vs-ceiling.
+
+## 2026-09-28 20:00 — D10. Arm C-prime implemented; it is a PARTIAL context control, and I will say so
+
+C' = Arm C with `${shared_history}` restored in all three role templates.
+Validators, schema, parsed-plan routing, submit-by-reference, budgets: unchanged.
+`VISIBILITY` now logs the truth for both arms (D9-R3 done).
+
+**Measured on a live 2-problem probe (mean prompt chars):**
+
+| role | A | C | **C'** |
+|---|---|---|---|
+| planner | 1,386 | 448 | **634** |
+| executor | 9,366 | 1,680 | **3,008** |
+| reviewer | 17,476 | 2,936 | **5,520** |
+
+**C' roughly doubles C's context but does NOT reach A.** That is structural, not
+a bug: Arm A's history accumulates full raw agent transcripts, while C/C' carry
+compact structured objects. Matching A exactly would mean feeding raw prose back
+into C', which would destroy the architectural constraint that defines the arm.
+
+**Honest statement for the paper.** C' is a *partial* context control. It
+supports the contrast **C' - C = the effect of adding shared history at fixed
+enforcement**, which is the clean, identified comparison. It does **not** license
+"C vs A is now context-matched". If C' - C is large, context is doing the work
+and any C - A difference is not attributable to enforcement. If C' - C is ~0,
+the context confound is empirically ruled out at this margin even though the
+raw character counts still differ — which is the more useful result and the more
+likely one to report.
+
+I will not claim a full context match. Overstating the control would be the same
+error the review caught: asserting a property the instrument does not have.
+
+## 2026-09-28 20:02 — D11. Bug found and fixed while wiring C'
+CLI upper-cased arm names, turning `Cp` into `CP` and raising
+`KeyError: 'CP'` in `VISIBILITY`. Normalizer added. Also noted: `--dry-run`
+stubs cover A/B/C only, so Cp cannot be dry-run and must be verified live
+(done above). Logged rather than silently worked around.

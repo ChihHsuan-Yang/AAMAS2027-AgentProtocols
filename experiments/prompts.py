@@ -279,3 +279,76 @@ ALL_PROMPTS = {
     "EVALUATOR_PREPEND": EVALUATOR_PREPEND,
     "EVALUATOR_APPEND": EVALUATOR_APPEND,
 }
+
+
+# ==========================================================================
+# ARM C-PRIME -- context control for Arm C.
+#
+# Added by the master agent 2026-09-28 after a mock review (and my own
+# measurement) showed Arm C runs on ~6x LESS context than Arm A:
+#   planner 1,530 vs 14,186 chars; executor 2,750 vs 17,413; reviewer 4,520 vs 27,155.
+# So any Arm C effect was confounded with a large context reduction.
+#
+# C-prime is byte-identical to C EXCEPT that ${shared_history} is restored.
+#   C' - C  isolates the CONTEXT effect
+#   C' - A  is the IDENTIFIED enforcement effect (context now matched)
+# Everything else -- schema, parsed-plan routing, submit-by-reference,
+# validators, budgets -- is unchanged.
+# ==========================================================================
+
+CP_PLANNER_PREPEND = """Problem:
+${task_description}
+
+Shared history (may be empty):
+${shared_history}
+
+Previous plan (may be empty):
+${previous_plan}
+
+Feedback (may be empty):
+${advice}
+
+Return a single JSON object and nothing else, with exactly these keys:
+{"subproblems": [string], "strategy": [string], "dependencies": [string], "required_quantities": [string]}
+No other keys are permitted."""
+
+CP_PLANNER_APPEND = C_PLANNER_APPEND
+
+CP_EXECUTOR_PREPEND = """Problem:
+${task_description}
+
+Shared history (may be empty):
+${shared_history}
+
+Plan (structured):
+${plan_json}
+
+Feedback (may be empty):
+${advice}
+
+Return a single JSON object and nothing else, with exactly these keys:
+{"derivation": string, "answer": string}
+"answer" must contain the final answer only."""
+
+CP_EXECUTOR_APPEND = C_EXECUTOR_APPEND
+
+CP_REVIEWER_PREPEND = """Problem:
+${task_description}
+
+Shared history (may be empty):
+${shared_history}
+
+Plan (structured):
+${plan_json}
+
+Execution (structured):
+${execution_json}
+
+Feedback (may be empty):
+${advice}
+
+Return a single JSON object and nothing else, with exactly these keys:
+{"verdict": one of "accept" | "revise_plan" | "revise_execution", "target": string, "critique": string}
+No other keys are permitted. If you choose "accept", the execution's current answer is submitted unchanged."""
+
+CP_REVIEWER_APPEND = C_REVIEWER_APPEND

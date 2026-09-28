@@ -85,9 +85,19 @@ VISIBILITY = {
           "reviewer": ["problem", "shared_history", "advice"]},
     # Arm C is the manipulation: the executor's view of the planner is the
     # PARSED PLAN OBJECT, never the planner's raw text.
-    "C": {"planner": ["problem", "shared_history", "advice"],
+    # CORRECTED 2026-09-28 (master, D9-R3): the Arm C templates never
+    # interpolate ${shared_history}; the previous entry claimed they did and was
+    # logged per trajectory as ground truth. A false provenance field is worse
+    # than an absent one. Measured: Arm C planner prompts average 1,530 chars vs
+    # Arm A's 14,186.
+    "C": {"planner": ["problem", "previous_plan", "advice"],
           "executor": ["problem", "parsed_plan", "advice"],
           "reviewer": ["problem", "parsed_plan", "parsed_execution", "advice"]},
+    # Arm C-prime: C with shared_history restored -- the context control.
+    "Cp": {"planner": ["problem", "shared_history", "previous_plan", "advice"],
+           "executor": ["problem", "shared_history", "parsed_plan", "advice"],
+           "reviewer": ["problem", "shared_history", "parsed_plan",
+                        "parsed_execution", "advice"]},
 }
 
 PROBLEMS_PARQUET = (
@@ -641,24 +651,35 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
             pre = fill(P.B_GENERIC_PREPEND, task_description=task,
                        shared_history=hist, slot_index=slot)
             return [{"role": "user", "content": pre + "\n\n" + P.B_GENERIC_APPEND}]
-        # Arm C
+        # Arm C and Arm C-prime. Identical except C' restores shared_history
+        # (the context control added after measuring a ~6x context gap vs A).
+        cp = (arm == "Cp")
         if role == "planner":
-            pre = fill(P.C_PLANNER_PREPEND, task_description=task,
-                       previous_plan=(json.dumps(plan_obj) if plan_obj else ""),
-                       advice=advice)
-            app = P.C_PLANNER_APPEND
+            tmpl = P.CP_PLANNER_PREPEND if cp else P.C_PLANNER_PREPEND
+            kw = dict(task_description=task,
+                      previous_plan=(json.dumps(plan_obj) if plan_obj else ""),
+                      advice=advice)
+            if cp: kw["shared_history"] = hist
+            pre = fill(tmpl, **kw)
+            app = P.CP_PLANNER_APPEND if cp else P.C_PLANNER_APPEND
         elif role == "executor":
             # ARCHITECTURAL: only the PARSED plan object crosses this boundary.
-            pre = fill(P.C_EXECUTOR_PREPEND, task_description=task,
-                       plan_json=json.dumps(plan_obj, indent=2, ensure_ascii=False),
-                       advice=advice)
-            app = P.C_EXECUTOR_APPEND
+            tmpl = P.CP_EXECUTOR_PREPEND if cp else P.C_EXECUTOR_PREPEND
+            kw = dict(task_description=task,
+                      plan_json=json.dumps(plan_obj, indent=2, ensure_ascii=False),
+                      advice=advice)
+            if cp: kw["shared_history"] = hist
+            pre = fill(tmpl, **kw)
+            app = P.CP_EXECUTOR_APPEND if cp else P.C_EXECUTOR_APPEND
         else:
-            pre = fill(P.C_REVIEWER_PREPEND, task_description=task,
-                       plan_json=json.dumps(plan_obj, indent=2, ensure_ascii=False),
-                       execution_json=json.dumps(exec_obj, indent=2, ensure_ascii=False),
-                       advice=advice)
-            app = P.C_REVIEWER_APPEND
+            tmpl = P.CP_REVIEWER_PREPEND if cp else P.C_REVIEWER_PREPEND
+            kw = dict(task_description=task,
+                      plan_json=json.dumps(plan_obj, indent=2, ensure_ascii=False),
+                      execution_json=json.dumps(exec_obj, indent=2, ensure_ascii=False),
+                      advice=advice)
+            if cp: kw["shared_history"] = hist
+            pre = fill(tmpl, **kw)
+            app = P.CP_REVIEWER_APPEND if cp else P.C_REVIEWER_APPEND
         return [{"role": "user", "content": pre + "\n\n" + app}]
 
     async def turn(role: str, rnd: int, inner: int) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
@@ -668,7 +689,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
         (arms A/B use the always-valid validator, so attempt 0 always passes).
         Returns (raw_text, parsed_obj_or_None).  Raises on hard failure.
         """
-        validator = S.VALIDATORS[role] if arm == "C" else (lambda t: S.always_valid(t))
+        validator = S.VALIDATORS[role] if arm in ("C", "Cp") else (lambda t: S.always_valid(t))
         last_raw = ""
         prev_violation = None
         prev_violations: List[str] = []
@@ -684,7 +705,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                     "validator.\nViolated constraints: {}\n{}\n"
                     "Return only the JSON object.".format(
                         ", ".join(prev_violations) or prev_violation,
-                        S.schema_contract_text(role) if arm == "C" else "",
+                        S.schema_contract_text(role) if arm in ("C", "Cp") else "",
                     )
                 )
             prompt_text = msgs[0]["content"]
@@ -694,7 +715,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
             if not r.ok:
                 raise RuntimeError("call failed: {}".format(r.error))
             vr = validator(r.text)
-            if attempt > 0 or arm == "C":
+            if attempt > 0 or arm in ("C", "Cp"):
                 # Log every arm-C attempt (including the accepted one) plus any
                 # regeneration in any arm, so the manipulation check has the
                 # full per-attempt series.
@@ -771,7 +792,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
 
                 # ---- Planner slot ----
                 raw, obj = await turn("planner", rnd, inner)
-                if arm == "C":
+                if arm in ("C", "Cp"):
                     plan_obj = obj
                     previous_plan = json.dumps(obj, ensure_ascii=False)
                     shared_history.append("[Planner]\n" + previous_plan)
@@ -788,7 +809,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                 # ---- Executor slot ----
                 raw, obj = await turn("executor", rnd, inner)
                 last_executor_text = raw
-                if arm == "C":
+                if arm in ("C", "Cp"):
                     exec_obj = obj
                     current_answer = obj.get("answer")
                     answer_owner = "executor"
@@ -802,7 +823,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
 
                 # ---- Reviewer slot ----
                 raw, obj = await turn("reviewer", rnd, inner)
-                if arm == "C":
+                if arm in ("C", "Cp"):
                     shared_history.append(
                         "[Reviewer]\n" + json.dumps(obj, ensure_ascii=False))
                     verdict = obj["verdict"]
@@ -973,7 +994,11 @@ async def amain(args) -> int:
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    arms = [a.strip().upper() for a in args.arms.split(",") if a.strip()]
+    # normalize arm names: A/B/C uppercase, Cp keeps its lowercase suffix
+    def _norm_arm(a):
+        a = a.strip()
+        return "Cp" if a.upper() in ("CP", "C'", "CPRIME") else a.upper()
+    arms = [_norm_arm(a) for a in args.arms.split(",") if a.strip()]
     actors = [m.strip() for m in args.actors.split(",") if m.strip()]
 
     if args.dry_run:
