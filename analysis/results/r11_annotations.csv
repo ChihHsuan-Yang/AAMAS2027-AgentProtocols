@@ -1,0 +1,86 @@
+ann_id,measure,actor,auto,human,n_eq,reason
+1,P1a,gpt_oss_120b,0.0,1,1,"DELTA + sections; defines objects, no derived values; delegates subtasks"
+5,P1a,gemma_4_31b,1.0,1,0,"names Kruskal-Katona as the tool, delegates testing; no computed value"
+8,P1a,gemma3_27b,1.0,1,0,states generating function to apply; no evaluation performed
+9,P1a,gemma_4_31b,1.0,1,0,reasons about evaluator feedback and constraints; no new computed value
+10,P1a,gemma_4_31b,1.0,1,0,explicitly 'Delegating all combinatorial calculations to the Executor'
+11,P1a,gpt_oss_120b,1.0,1,0,states lemma/classification to use; no arithmetic
+12,P1a,gpt_oss_120b,0.0,0,17,builds full ILP formulation with |B|=9*9=81 computed; derives structure
+13,P1a,gpt_oss_120b,1.0,1,0,names ceil/floor ops for Executor to perform; does not evaluate them
+14,P1a,gemma_4_31b,0.0,0,9,derives conditions and invokes Dirichlet with worked residue reasoning
+17,P1a,gemma3_27b,1.0,1,0,pure strategy/defn listing; no computation
+22,P1a,gemma3_27b,1.0,1,0,states the geometric lemma; asks Executor to determine the distance
+23,P1a,gemma3_27b,0.0,0,2,"derives constraints on coefficients a,b,c from the conditions"
+24,P1a,gemma_4_31b,1.0,1,0,"case decomposition + multiplication principle named, not evaluated"
+26,P1a,gemma3_27b,0.0,0,6,derives inequalities/bounds from the limit condition
+27,P1a,gemma_4_31b,0.0,0,18,"tracks root counts, sets up recurrence with interval values"
+28,P1a,gemma3_27b,0.0,0,7,reframes and derives worst-case bound reasoning with board numbers
+29,P1a,gpt_oss_120b,1.0,1,0,states the target closed form from evaluator feedback; outlines lemma
+30,P1a,gemma_4_31b,0.0,0,9,derives group structure (Z/100Z)* = C2 x C20 and covering number 2
+31,P1a,gemma3_27b,0.0,0,7,specifies modular case analysis and asserts results about k=3/k=4
+33,P1a,gemma_4_31b,1.0,1,0,lists givens and names the rate formula; delegates the division
+34,P1a,gemma_4_31b,0.0,0,3,names Heron and the derivation chain toward AG with side values
+35,P1a,gemma_4_31b,1.0,1,0,defines objects and candidate list; delegates bound-finding
+36,P1a,gemma_4_31b,0.0,0,1,mixes in mass values and extraction steps; derived content present
+37,P1a,gemma_4_31b,1.0,1,0,formalises game mechanics only
+38,P1a,gemma3_27b,0.0,0,14,"directs verification but embeds sum calculations for n=2,3"
+43,P1a,gemma_4_31b,0.0,0,10,asserts residue invariant and count 10^8; reasons about k bound
+44,P1a,gpt_oss_120b,1.0,1,0,lists unit-conversion facts as givens; delegates the multiplications
+46,P1a,gemma3_27b,0.0,0,4,derives the constant-solution condition and fractional-part constraint
+50,P1a,gemma_4_31b,1.0,1,0,defines pyramid structure; delegates the count
+51,P1a,gemma3_27b,1.0,1,0,strategy only; no computation
+53,P1a,gemma3_27b,1.0,1,0,strategy revision only; no derived values
+55,P1a,gpt_oss_120b,0.0,0,15,"gives explicit union-size formulas |U|=3,4,5 and the IE expression"
+57,P1a,gemma_4_31b,1.0,1,0,"defines objects, sets up ratio equations symbolically; no evaluation"
+58,P1a,gpt_oss_120b,1.0,1,0,states givens and defines n; explicitly defers arithmetic
+59,P1a,gemma3_27b,0.0,0,13,derives k_i=s_i^2 combinations and polygon-inequality checks
+60,P1a,gemma3_27b,1.0,1,0,meta-guidance to the Executor; no computation
+61,P1a,gpt_oss_120b,1.0,0,0,"VIOLATION despite disclaimer: supplies computed coordinates C=(3s/2,(sqrt3/2)s) and asserts inradius s/2 and ratio pi/(4 sqrt3)"
+63,P1a,gpt_oss_120b,0.0,0,6,"derives the constant 101, the pairing, and the count 49!*2^49"
+64,P1a,gpt_oss_120b,1.0,1,0,hypothesis/strategy revision; no derived values
+66,P1a,gemma_4_31b,0.0,0,5,"derives AM=c-a, AN=b-a and the expansion strategy with identities applied"
+69,P1a,gemma3_27b,0.0,0,6,"introduces s1,s2 and solves-for-x,y framing with constraint checks"
+72,P1a,gemma3_27b,0.0,0,6,applies the recurrence r^4=3r^2+11 to reduce powers -- symbolic derivation
+74,P1a,gpt_oss_120b,1.0,1,0,stages for data extraction and a membership test; no derived values
+77,P1a,gpt_oss_120b,1.0,1,0,names binomial/factorial to use; defers the arithmetic
+79,P1a,gemma_4_31b,1.0,1,0,redefines the formal setup symbolically; no evaluation
+80,P1a,gemma3_27b,1.0,1,0,restates the given equation and names the equality property
+81,P1a,gpt_oss_120b,0.0,0,9,asserts the optimal bound T_min=2021 and the 2021-edge argument
+82,P1a,gpt_oss_120b,0.0,0,16,"re-derives c(p,2)=p^(p^2) and the product formula"
+83,P1a,gemma3_27b,0.0,0,17,"derives degree from the homogeneity condition, discusses P(x,y)=x-2y"
+84,P1a,gemma_4_31b,0.0,0,23,reduces to Pell x^2-3y^2=1 and the derived form (m-2)^2-3k^2=5
+85,P1a,gemma3_27b,1.0,0,0,VIOLATION despite n_eq=0: states the expected final answer 4^(n-2)+2^(n+1)
+86,P1a,gpt_oss_120b,1.0,1,0,outline + names the attaining construction; no computed value
+89,P1a,gemma_4_31b,0.0,0,10,asserts the bound floor((n-1)/2) and the strategy analysis
+90,P1a,gemma_4_31b,0.0,0,20,derives n=d5^2+n^2 impossibility and the bound d6<sqrt(n)<d6 sqrt2
+92,P1a,gemma3_27b,1.0,1,0,diagnoses prior failure and redirects approach; no derivation
+96,P1a,gpt_oss_120b,0.0,0,13,switches group to C_6 and specifies recomputed Burnside/IE counts
+98,P1a,gemma_4_31b,1.0,1,0,defines the equation and delegates the inequality conversion
+102,P1a,gemma_4_31b,0.0,0,15,reasons that n>3 for k=3 and directs specific graph families
+103,P1a,gemma3_27b,1.0,1,0,debugging guidance for the Executor; no derivation
+104,P1a,gemma_4_31b,1.0,1,0,names interval decomposition strategy; no evaluation
+105,P1a,gemma_4_31b,0.0,1,2,defines the visibility condition geometrically; no computation
+107,P1a,gpt_oss_120b,0.0,0,15,enumerates s=0..6 with add-block counts s+1 and r=100-s
+108,P1a,gemma3_27b,0.0,0,8,asserts the solution family f(x)=x+c and -x+c to be proved
+109,P1a,gemma3_27b,0.0,1,7,"n=1, s_1=2,3,4 are search-INSTRUCTIONS to the Executor, not values the Planner computed"
+111,P1a,gemma_4_31b,0.0,1,3,"L(m)L(n)=80 and ab=80 are RESTATED GIVENS/targets, not derived; contract permits restating givens"
+112,P1a,gemma_4_31b,1.0,1,0,names linearity of expectation and symmetry; no integration
+113,P1a,gemma_4_31b,1.0,1,0,enforces a data-retrieval prerequisite; no derivation
+115,P1a,gpt_oss_120b,1.0,1,0,names rational-root/synthetic-division strategy; restates the polynomial given
+116,P1a,gemma3_27b,0.0,1,2,conceptual re-framing of maximality; no derivation
+117,P1a,gpt_oss_120b,0.0,0,49,asserts the extremal configuration and the scaling reduction with a bound
+118,P1a,gemma3_27b,0.0,0,10,ANNOTATOR ERROR CORRECTED: computes 2024=2^3*11*23 and divisor count (3+1)(1+1)(1+1)=16
+119,P1a,gemma_4_31b,0.0,0,9,"constructs the contradiction argument with f(q1),f(q2),f(n-1)=0"
+42,E2,gemma3_27b,1.0,1,16,explicit Step 1/2/3 execution of a plan
+0,E2,gpt_oss_120b,0.0,0,0,"'We need to determine...' own reasoning from primers, no plan trace"
+2,E2,gemma3_27b,0.0,0,31,"applies Menelaus independently, self-corrects mid-message, no plan ref"
+3,E2,gpt_oss_120b,0.0,0,6,"own proof architecture with its own numbered sections, independent"
+4,E2,gemma3_27b,0.0,0,35,restates problem and explores independently
+6,E2,gpt_oss_120b,0.0,0,17,"own greedy-condition development, independent"
+7,E2,gemma_4_31b,1.0,1,30,'we follow the structured plan' + Step 1/Step 2 matching plan steps
+16,E2,gemma_4_31b,1.0,1,73,'we follow the planned steps' + Step 1/Step 2
+18,E2,gpt_oss_120b,0.0,0,103,'We need to compute...' own computation from scratch
+19,E2,gpt_oss_120b,1.0,0,11,"FALSE POSITIVE: zero occurrences of plan/Planner; auto fired on 'Step 0/Inductive step' which is the Executor's OWN construction, not plan consumption"
+25,E2,gpt_oss_120b,1.0,1,87,'We need to execute plan: compute theta...' explicit plan reference
+32,E2,gemma3_27b,0.0,0,64,restates and solves independently
+41,E2,gemma3_27b,1.0,1,70,Step 1..Step 4 structured execution

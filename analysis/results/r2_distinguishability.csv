@@ -1,0 +1,7 @@
+scope,score,metric
+3-way full,0.9415574992038501,bal_acc
+3-way function-only,0.8964246339740933,bal_acc
+P-vs-E full,0.9984503699523289,auc
+P-vs-E function-only,0.9954045250107675,auc
+P-vs-E computation-only,0.7134636683759957,auc
+P-vs-E length-only,0.7680473512146944,auc
