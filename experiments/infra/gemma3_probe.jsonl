@@ -1,0 +1,1 @@
+{"probe": 0, "utc": "2026-09-28T22:33:00.533209+00:00", "model": "google/gemma-3-27b-it", "elapsed_s": 0.484, "status": 503, "body_head": "{\"error\": {\"code\": \"internal_endpoint_error\", \"message\": \"Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.\", \"info\": {}}}"}
