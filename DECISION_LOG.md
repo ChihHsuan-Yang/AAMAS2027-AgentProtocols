@@ -343,3 +343,36 @@ CLI upper-cased arm names, turning `Cp` into `CP` and raising
 `KeyError: 'CP'` in `VISIBILITY`. Normalizer added. Also noted: `--dry-run`
 stubs cover A/B/C only, so Cp cannot be dry-run and must be verified live
 (done above). Logged rather than silently worked around.
+
+## 2026-09-28 20:30 — D12. Campaign sizing: harvest-at-n, run C' in parallel
+
+Rate settled at **327 traj/h** (the 696/h reading was a 4-min transient).
+n=1600 = 29.4 h. Verified the reviewer's per-actor informative rates from the
+release: gemma_4_31b **0.273**, gpt_oss_120b **0.374** (pooled 0.233 was the
+wrong unit, as the review said).
+
+Power at the realistic informative rate (~0.32):
+
+| n | informative | main (large) | main (moderate) |
+|---|---|---|---|
+| 400 | 128 | 0.58 | 0.25 |
+| 800 | 256 | 0.88 | 0.43 |
+| 1200 | 384 | 0.97 | 0.59 |
+| 1600 | 512 | 0.99 | 0.72 |
+
+**Decision.** The runner writes incrementally and the manifest is a deterministic
+sorted sample, so **every prefix is itself a valid random sample**. I do not have
+to choose n now. Let it run; harvest at whatever n is complete when the writing
+window closes, and report the achieved n. Target **n>=800** (0.88 large-effect
+power, 14.7 h, finishes ~11:00 local Sep 29). n=1600 is the stretch if
+everything else lands early.
+
+**C' runs in PARALLEL, not after.** The reviewer is right that C'-C is the
+identified comparison; serializing it behind a 29 h job would risk the whole
+control. Endpoint has headroom (ladder was 0% errors to conc 25; campaign uses
+24 across two models). Launching C' at modest concurrency on the same manifest
+prefix so C' and C share problems exactly.
+
+**Deadline arithmetic.** Abstract Oct 1 (result-agnostic, already drafted).
+Paper Oct 8. Even 29 h of generation ends Sep 30, leaving 8 days. Generation is
+not the binding constraint — the P0 analysis/writing items are.

@@ -1,0 +1,9 @@
+arm,actor,n,hard_fail,ungraded,attrition,acc_dropNone,acc_NoneZero_PREREG,delta
+A,gemma-4-31B-it,32,0,0,0.0,0.781,0.781,0.0
+A,gpt-oss-120b,27,0,0,0.0,0.778,0.778,0.0
+B,gemma-4-31B-it,32,0,0,0.0,0.719,0.719,0.0
+B,gpt-oss-120b,24,0,0,0.0,0.75,0.75,0.0
+C,gemma-4-31B-it,32,2,2,0.062,0.833,0.781,0.052
+C,gpt-oss-120b,24,2,5,0.083,0.789,0.625,0.164
+Cp,gemma-4-31B-it,4,1,1,0.25,1.0,0.75,0.25
+Cp,gpt-oss-120b,1,0,0,0.0,1.0,1.0,0.0

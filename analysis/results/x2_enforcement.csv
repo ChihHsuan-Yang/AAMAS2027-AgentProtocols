@@ -1,0 +1,5 @@
+arm,actor,n,attempts,boundary,parse_format,boundary_per_traj,soft
+C,gemma-4-31B-it,32,210,16,1,0.5,"{'soft': 14, 'coerced_string_to_array': 2}"
+C,gpt-oss-120b,24,204,31,3,1.292,"{'coerced_string_to_array': 162, 'soft': 19}"
+Cp,gemma-4-31B-it,4,13,4,0,1.0,{}
+Cp,gpt-oss-120b,1,4,1,0,1.0,{'coerced_string_to_array': 3}
