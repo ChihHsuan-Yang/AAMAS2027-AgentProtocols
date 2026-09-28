@@ -185,3 +185,55 @@ realistic shapes — fenced JSON with an answer field, `\boxed` smuggled in pros
 *outside* the JSON, a reviewer authoring an answer field, a reviewer stating
 "Final Answer" — and the validator caught **4/4**. The checker can fail, so
 zero-rejection cells mean compliance, not a broken check.
+
+## 2026-09-28 19:20 — D8. Campaign STOPPED at 121 rows: max_tokens truncation was confounding Arm C
+
+**Caught by monitoring the live campaign, 121 rows in.** Hard failures were
+**8/120 = 6.7%**, above my own 5% gate — and **all 8 were in Arm C**
+(7 gpt-oss, 1 gemma-4).
+
+### Root cause
+Decomposing Arm C rejections by `(constraint, finish_reason)`:
+
+| count | constraint | finish_reason |
+|---|---|---|
+| **37** | `json_parse_error` | **length** |
+| 12 | `answer_leak:final_answer_phrase` | stop |
+| 1 | `json_parse_error` | stop |
+
+**74% of Arm C rejections were the model being cut off at max_tokens
+mid-JSON** — not a role-boundary violation.
+
+### The subtle part: truncation is NOT arm-specific, but its COST is
+Truncation rate over all role messages: **A 8.4%, B 11.3%, C 8.9%** — no
+asymmetry in how often models get cut off. The asymmetry is in consequence:
+A and B tolerate a truncated prose message; **Arm C rejects unparseable JSON
+and eventually hard-fails.** So Arm C pays a structural penalty for requiring
+structured output, and that penalty is confounded with the intervention.
+
+Left alone this would have produced a real-looking "hard enforcement lowers
+completion/accuracy" result that was actually a token-budget artifact. Third
+instance of the same error class (D4 formatting, D6 LaTeX, D8 truncation): a
+delivery-level failure masquerading as an enforcement event.
+
+### Two fixes
+1. **Root cause:** `MAX_TOKENS` 4096 -> **8192**.
+2. **Belt and braces:** salvage a truncated JSON object by closing open
+   strings/arrays/objects; salvage recorded as a soft signal so the rate is
+   auditable.
+
+**Re-verified after the change:** a truncated object parses; `answer` field,
+`\boxed` leak, and missing field still reject; and a *truncated* planner output
+that leaks `\boxed` is **still caught** (`answer_leak:boxed`). Delivery
+permissive, boundaries strict.
+
+### Data handling
+The 121 pre-fix rows are quarantined as
+`results/main/campaign_v1_TRUNCATION_BUG.jsonl` — retained, never pooled.
+`config_version` changes with MAX_TOKENS, so pooling is detectable.
+
+### Cost
+~28 h ETA at the observed 333 traj/h (the infra worker's 1.2 h projection
+assumed 512-token single calls; real PER trajectories run multi-round with
+retries). Restarting costs ~20 min of compute and removes a confound that
+would have invalidated the central comparison.

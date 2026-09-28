@@ -62,7 +62,7 @@ AUTH_SCRIPT_DIR = "/Users/bellayang/work/agent-e/mas-eval"
 MAX_OUTER_ROUNDS = 3
 INNER_ROUNDS = 2
 TEMPERATURE = 0.0
-MAX_TOKENS = 4096
+MAX_TOKENS = 8192  # raised from 4096: 74% of Arm C rejections were finish_reason=length (master, 19:20)
 
 # Model-call budget. 3 outer rounds x 2 inner rounds x 3 actors = 18, plus a
 # regeneration allowance.  Enforced identically in every arm.

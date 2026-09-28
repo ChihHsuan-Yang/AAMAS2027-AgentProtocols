@@ -204,6 +204,48 @@ def _repair_latex_escapes(text):
     return ''.join(out)
 
 
+
+def repair_truncated_json(text):
+    """Close a JSON object that was cut off by max_tokens.
+
+    RATIONALE (master agent, main campaign 19:20): 74% of Arm C rejections had
+    finish_reason='length' -- the model was cut off mid-JSON. Truncation rates
+    are SIMILAR across arms (A 8.4%, B 11.3%, C 8.9%), but truncation is only
+    FATAL in Arm C, because A and B tolerate a truncated prose message while C
+    rejects unparseable JSON. That asymmetry is a structural penalty confounded
+    with the intervention, not evidence about division of labor.
+
+    We close open strings/arrays/objects so the partial content parses. Salvage
+    is recorded as a soft signal so the rate is auditable and reportable.
+    """
+    if not text:
+        return None
+    t = text.strip()
+    start = t.find('{')
+    if start < 0:
+        return None
+    t = t[start:]
+    out, in_str, esc, stack = [], False, False, []
+    for ch in t:
+        if esc:
+            out.append(ch); esc = False; continue
+        if ch == '\\' and in_str:
+            out.append(ch); esc = True; continue
+        if ch == '"':
+            in_str = not in_str; out.append(ch); continue
+        if not in_str:
+            if ch in '{[':
+                stack.append(ch)
+            elif ch in '}]':
+                if stack: stack.pop()
+        out.append(ch)
+    if in_str:
+        out.append('"')
+    while stack:
+        out.append('}' if stack.pop() == '{' else ']')
+    return ''.join(out)
+
+
 def extract_json_object(text: str) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
     """Parse a JSON object out of raw model text.
 
@@ -239,8 +281,18 @@ def extract_json_object(text: str) -> Tuple[Optional[Dict[str, Any]], Optional[s
             try:
                 obj = json.loads(_repair_latex_escapes(cand))
             except Exception:
-                last_err = "{}: {}".format(type(exc).__name__, exc)
-                continue
+                # last resort: the response was cut off by max_tokens
+                fixed = repair_truncated_json(cand)
+                if fixed:
+                    for attempt_src in (fixed, _repair_latex_escapes(fixed)):
+                        try:
+                            obj = json.loads(attempt_src)
+                            break
+                        except Exception:
+                            obj = None
+                if obj is None:
+                    last_err = "{}: {}".format(type(exc).__name__, exc)
+                    continue
         if isinstance(obj, dict):
             return obj, None
         last_err = "top-level JSON is {}, not an object".format(type(obj).__name__)
