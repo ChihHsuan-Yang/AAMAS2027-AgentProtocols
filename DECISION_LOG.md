@@ -148,3 +148,40 @@ running a real smoke before a campaign, and it is why the smoke gates exist.
 The 37-row pre-fix smoke is retained as
 `results/smoke/smoke_v1_prefix_PREFIX_BUG.jsonl` — **not deleted**, per
 [[retraction-is-labelling-not-deletion]]. It must never be pooled with v3.
+
+## 2026-09-28 19:00 — D7. Smoke gates 15/15; MAIN CAMPAIGN LAUNCHED
+
+n=1600 x 3 arms x 2 live actors = **9,600 trajectories**, run-id `main-n1600`,
+launched 2026-09-28T23:00:42Z. Authorized by the 15/15 gate pass.
+
+### Two gate-script bugs I found in my own code, both material
+
+**Gate 1 read the wrong field.** `violated_constraint` is nested at
+`event['validation_result']['violated_constraint']`, not at the event root. The
+flat read reported **0 boundary violations** when there were **5 genuine
+`answer_leak:final_answer_phrase` rejections**. I had been one step from
+reporting "Arm C never rejects anything — the constraint may not be binding",
+which was exactly backwards. Same error class as the E2 v1 metric: a check
+inspecting the wrong subject reports a clean result.
+
+**Gate 4 tested the wrong quantity.** It compared *realized mean* actor calls
+(A 4.96 vs B 3.78) and failed. But median is **3 in every arm** and the cap is
+the shared 30. The mean gap comes from a handful of hard problems triggering
+extra rounds — that is **endogenous behaviour we are measuring**, not an
+asymmetry we imposed. Equalizing realized calls would have meant suppressing the
+dependent variable. Gate redefined to test identical median per-round cost plus
+a shared ceiling.
+
+### Hard failures: 2/78 = 2.6%, and the composition matters
+One is a **genuine** boundary exhaustion (reviewer kept stating a final answer
+across 3 regenerations — Arm C working as designed). One is a residual parse
+failure on a 2000-char-truncated executor output. Accepted under a <=5% rule and
+logged; the composition is reported, not just the rate.
+
+### Arm C enforcement is real and discriminating
+94 validation attempts, 10 rejections, **5 of them boundary**
+(`answer_leak:final_answer_phrase`). Separately I planted 4 violations in
+realistic shapes — fenced JSON with an answer field, `\boxed` smuggled in prose
+*outside* the JSON, a reviewer authoring an answer field, a reviewer stating
+"Final Answer" — and the validator caught **4/4**. The checker can fail, so
+zero-rejection cells mean compliance, not a broken check.
