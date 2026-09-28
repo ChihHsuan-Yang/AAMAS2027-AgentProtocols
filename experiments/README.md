@@ -43,7 +43,13 @@ Two deliberate validator subtleties, both discovered by running it:
 1. `target` may be empty **only** when `verdict == "accept"` (an accepted
    submission is not routed anywhere). A revise verdict without a target or
    critique is rejected -- it would carry no actionable information.
-2. `\boxed{}` / "Final Answer" are **hard** constraints. The looser phrase
+2. A bare string where the schema wants array-of-string is **coerced** to a
+   one-element list and recorded as a `coerced_string_to_array:<field>` soft
+   signal. Rejecting it would measure JSON-formatting compliance rather than
+   division of labour, and would bias arm C's completion rate against the
+   thing being tested. The load-bearing constraints (no answer field, no
+   answer leak, no missing field) stay strict.
+3. `\boxed{}` / "Final Answer" are **hard** constraints. The looser phrase
    "the answer is X" inside a critique is recorded as a *soft signal*
    (`soft_signals`) but does **not** reject: it is ordinary review prose and
    cannot hijack the submission, because `accept` promotes by reference.
@@ -143,6 +149,15 @@ trajectories from different setups can never be silently pooled.
 * **The bearer token is never logged or written to any output file.** It is
   held in memory only, and every error string is scrubbed for it plus any
   `Bearer ...` header shape.
+
+## Concurrency note
+
+This directory is shared with other workers. `schemas.py` gained the
+string-to-array coercion above from another agent while this runner was being
+built; it is compatible and the validator regression suite passes with it.
+`config_version` changes whenever any prompt or schema changes, so results
+produced before and after such an edit are distinguishable in the JSONL --
+check it before pooling trajectories.
 
 ## Known limitations
 

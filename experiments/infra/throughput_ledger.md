@@ -2,7 +2,7 @@
 
 Endpoint: `https://inference-api.alcf.anl.gov/resource_server/sophia/vllm/v1`
 
-Measured 2026-09-28 17:49 (local, America/Chicago) by the AAMAS-2027 infrastructure worker.
+Measured 2026-09-28 17:56 (local, America/Chicago) by the AAMAS-2027 infrastructure worker.
 Every row below comes from requests actually issued against the live endpoint. Protocol per row: 30 requests, distinct olympiad-style math prompts, `max_tokens=512`, `temperature=0`, at most 1 retry per request on a transient error (429/503/timeout/connection).
 
 ## Ladder results
@@ -39,8 +39,8 @@ Every row below comes from requests actually issued against the live endpoint. P
 
 | model | observed | evidence |
 |---|---|---|
-| `google/gemma-3-27b-it` | never became ready | 5 probes over 22:33:00 → 22:47:02 UTC, statuses: 503×4, EXC×1 |
-| `meta-llama/Llama-3.3-70B-Instruct` | never became ready | 5 probes over 22:35:26 → 22:49:27 UTC, statuses: 503×4, EXC×1 |
+| `google/gemma-3-27b-it` | never became ready | 6 probes over 22:33:00 → 22:50:02 UTC, statuses: 503×5, EXC×1 |
+| `meta-llama/Llama-3.3-70B-Instruct` | never became ready | 6 probes over 22:35:26 → 22:52:27 UTC, statuses: 503×4, EXC×2 |
 
 ## Resumability / determinism at `temperature=0`
 
