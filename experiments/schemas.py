@@ -173,6 +173,37 @@ def _balanced_object(text: str) -> Optional[str]:
     return None
 
 
+
+_JSON_VALID_ESC = set('"\\/bfnrtu')
+
+
+def _repair_latex_escapes(text):
+    """Escape lone backslashes that are not valid JSON escapes.
+
+    RATIONALE (master agent, live smoke): math agents emit LaTeX inside JSON
+    strings -- \pm, \sqrt, \frac, \times. In JSON, \p is an INVALID escape,
+    so json.loads rejects otherwise-perfect output. 16 of the smoke's Arm C
+    rejections were this, not a role-boundary violation. Counting them as
+    enforcement events would inflate the enforcement rate with a parser bug and
+    depress Arm C's completion for a reason unrelated to division of labor.
+
+    We double any backslash not starting a valid JSON escape, which preserves
+    the LaTeX verbatim in the decoded string.
+    """
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch == '\\' and i + 1 < n:
+            nxt = text[i + 1]
+            if nxt in _JSON_VALID_ESC:
+                out.append(ch); out.append(nxt); i += 2; continue
+            out.append('\\\\'); i += 1; continue
+        out.append(ch); i += 1
+    return ''.join(out)
+
+
 def extract_json_object(text: str) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
     """Parse a JSON object out of raw model text.
 
@@ -202,8 +233,14 @@ def extract_json_object(text: str) -> Tuple[Optional[Dict[str, Any]], Optional[s
         try:
             obj = json.loads(cand)
         except Exception as exc:  # noqa: BLE001
-            last_err = "{}: {}".format(type(exc).__name__, exc)
-            continue
+            # Retry once with LaTeX backslashes repaired (see
+            # _repair_latex_escapes). Delivery-level fix only; the schema
+            # check below still enforces the architecture.
+            try:
+                obj = json.loads(_repair_latex_escapes(cand))
+            except Exception:
+                last_err = "{}: {}".format(type(exc).__name__, exc)
+                continue
         if isinstance(obj, dict):
             return obj, None
         last_err = "top-level JSON is {}, not an object".format(type(obj).__name__)

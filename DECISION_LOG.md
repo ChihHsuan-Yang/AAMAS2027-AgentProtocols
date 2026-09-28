@@ -110,3 +110,41 @@ benchmark and bounds any effect), just not selected on.
 **Full omnimath2 (n=4181) is also affordable (~12.3 h).** Held as the stretch
 option per the deadline-aware policy; will extend if n=1600 completes cleanly
 with time in hand.
+
+## 2026-09-28 18:25 — D6. Second Arm C parser bug: LaTeX escapes are invalid JSON
+
+**Found by auditing the smoke's violation breakdown**, not by any agent report.
+Arm C showed 41 "formatting/other" violations vs 6 genuine boundary violations,
+and **3 hard failures in 9 trajectories**. Decomposition:
+
+| role | constraint | count |
+|---|---|---|
+| executor | `json_parse_error` | 13 |
+| reviewer | `answer_leak:final_answer_phrase` | 6 (genuine) |
+| planner | `json_parse_error` | 2 |
+| reviewer | `json_parse_error` | 1 |
+
+**Root cause.** The model emits perfectly well-formed JSON containing LaTeX:
+`{"derivation": "vertices at $(\pm a, 0, 0)$ ..."}`. In JSON, `\p` is an
+**invalid escape**, so `json.loads` rejects it. Same for `\sqrt`, `\frac`,
+`\times`. On a *mathematics* benchmark this fires constantly.
+
+**Why it mattered.** These are parser failures, not role-boundary violations.
+Counting them would (a) inflate the reported enforcement rate with a bug and
+(b) depress Arm C's completion rate for a reason unrelated to division of
+labor — biasing the arm against the hypothesis under test. Exactly the D4 error
+class, found a second time in a different guise.
+
+**Fix.** On a parse failure, retry once with lone backslashes doubled, which
+preserves the LaTeX verbatim in the decoded string. Verified: `\pm`, `\sqrt`,
+`\frac`, fenced+LaTeX all parse; and re-verified that
+`additional_property:answer`, `answer_leak:boxed`, and `missing_field` **still
+reject**. Delivery is permissive; content stays strict.
+
+**Process note.** Both D4 and D6 were invisible to `--dry-run` (stub responses
+are well-formed) and only appeared against live models. That is the argument for
+running a real smoke before a campaign, and it is why the smoke gates exist.
+
+The 37-row pre-fix smoke is retained as
+`results/smoke/smoke_v1_prefix_PREFIX_BUG.jsonl` — **not deleted**, per
+[[retraction-is-labelling-not-deletion]]. It must never be pooled with v3.

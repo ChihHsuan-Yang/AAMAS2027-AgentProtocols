@@ -191,7 +191,16 @@ def scrub(text: str, token: Optional[str]) -> str:
 
 
 class ModelUnavailable(Exception):
-    """The model is reachable but not serving (e.g. 503 'not ready')."""
+    """The model is reachable but not serving (e.g. 503 'not ready').
+
+    Carries the retry/latency spent before the determination so those calls
+    are not lost from the trajectory's instrumentation.
+    """
+
+    def __init__(self, message: str, retries: int = 0, latency_s: float = 0.0):
+        super().__init__(message)
+        self.retries = retries
+        self.latency_s = latency_s
 
 
 class CallBudgetExceeded(Exception):
@@ -292,7 +301,10 @@ class Backend:
                     # Per-model unavailability: record and skip, do not crash
                     # and do not burn the retry budget spinning.
                     self.unavailable_models[model] = "503 " + body[:200]
-                    raise ModelUnavailable("{}: 503 {}".format(model, body[:200]))
+                    raise ModelUnavailable(
+                        "{}: 503 {}".format(model, body[:200]),
+                        retries=retries, latency_s=time.time() - t0,
+                    )
                 if resp.status_code in (408, 409, 425, 429, 500, 502, 503, 504):
                     last_err = "HTTP {}: {}".format(resp.status_code, body[:200])
                     retries += 1
@@ -495,6 +507,7 @@ class Trajectory:
     rounds_used: int = 0
     inner_used: int = 0
     error: Optional[str] = None
+    unavailable_wait_s: Optional[float] = None
 
     def key(self) -> Tuple[str, str, str]:
         return (self.problem_uid, self.arm, self.actor_model)
@@ -524,6 +537,8 @@ class Trajectory:
             "rounds_used": self.rounds_used,
             "inner_used": self.inner_used,
             "error": self.error,
+            "unavailable_wait_s": self.unavailable_wait_s,
+            "request_timeout_s": REQUEST_TIMEOUT_S,
             "budget": {
                 "max_actor_calls": MAX_ACTOR_CALLS,
                 "max_evaluator_calls": MAX_EVALUATOR_CALLS,
@@ -860,6 +875,9 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
     except ModelUnavailable as exc:
         traj.stopping_condition = "model_unavailable"
         traj.error = str(exc)[:500]
+        # Preserve the transport work spent before the determination.
+        traj.retries += getattr(exc, "retries", 0)
+        traj.unavailable_wait_s = round(getattr(exc, "latency_s", 0.0), 3)
     except CallBudgetExceeded as exc:
         traj.stopping_condition = "budget_exceeded"
         traj.error = str(exc)[:500]
