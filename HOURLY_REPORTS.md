@@ -134,3 +134,65 @@ rate definition).
 Finish smoke → evaluate the 15 gates → launch the main campaign. Given measured
 throughput I intend **n=400 x 3 arms x all live actors**, then extend to a second
 domain or n=800 with the time saved.
+
+---
+
+## H4 — 2026-09-28 ~19:05
+
+### 1. Overall status
+**MAIN CAMPAIGN LAUNCHED** at 23:00:42Z after the smoke passed **15/15 gates**.
+n=1600 x 3 arms x 2 actors = **9,600 trajectories**, run-id `main-n1600`.
+Manuscript compiles at 9 pages with Results templated.
+
+### 2. I found two bugs in my OWN gate script, both material
+
+**Gate 1 read the wrong field.** `violated_constraint` is nested at
+`event['validation_result']['violated_constraint']`. My flat read reported
+**0 boundary violations** when there were **5 genuine `answer_leak` rejections**.
+I was one step from reporting "Arm C never rejects — the constraint may not be
+binding", which is exactly backwards. Same class as the retracted E2 metric: a
+check pointed at the wrong subject returns a clean, wrong answer.
+
+**Gate 4 tested the wrong quantity.** It compared realized mean actor calls
+(A 4.96 vs B 3.78) and failed. Median is **3 in every arm**, cap is the shared
+30. The gap is hard problems triggering extra rounds — **endogenous behaviour we
+are measuring**. Equalizing it would have meant suppressing the dependent
+variable. Redefined to test median per-round cost + shared ceiling.
+
+### 3. Arm C enforcement is real AND discriminating
+94 validation attempts, 10 rejections, **5 boundary**
+(`answer_leak:final_answer_phrase`). I separately planted 4 violations in
+realistic shapes — including `\boxed` smuggled in prose *outside* the JSON —
+and the validator caught **4/4**. So a zero-rejection cell means compliance, not
+a broken checker. The by-reference mechanism is confirmed live:
+`answer_owner_final = executor(promoted_by_reviewer_by_reference)`.
+
+### 4. New finding (F08): generic prompts collapse the organization
+In Arm B, **6 of 14** trajectories had two or more agents emit a
+**byte-identical response** — planner, executor and reviewer all returning the
+same `\boxed{...}` and `[Agree]`. Arm A: 0/12. Arm C: 0/14.
+
+I checked the obvious wiring-fault explanation before believing it: the three
+prompts have **distinct hashes** (`bc089a427d10` / `a0d083ee40b2` /
+`28fb46503c83`) and distinct lengths. Three different prompts, one identical
+response. The convergence is behavioural.
+
+This is direct evidence for the paper's construct — the *specification* is still
+a three-role pipeline; the *realized organization* is three copies of one
+solver. Logged as a **secondary** endpoint (it was not in the P1-P5 primary set;
+I am not promoting it post hoc). Preliminary at n=14.
+
+### 5. Correction to my H2 report
+I said concurrency 25 was a measured ceiling. It is not — throughput rose
+**monotonically** to 25 on both models and the ladder stopped there by design.
+25 is the best *measured* point, not a knee. Running the campaign at 16
+(conservative) since 429s appeared at 25.
+
+### 6. Agents
+EXP and INF **complete**, outputs reviewed and independently verified.
+WRI complete (9 pages, 0 errors). Mock AAMAS reviewer **dispatched** against the
+current draft.
+
+### 7. Next
+Campaign to completion → run the pre-registered x1 analysis (already
+positive/negative-controlled) → results tables → integrate mock review.
