@@ -1,0 +1,118 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Role conditioning is prompt conditioning.}
+Orogat et al.~\cite{orogat2026architectural} study nine multi-agent frameworks
+as data-intensive systems, holding the LLM fixed and varying architecture along
+orchestration, memory, planning interface, specialization, and topology. Their
+specialization experiment (Table~14 of v2; Table~12 in v1) crosses four
+conditioning strategies with five role labels and finds that role conditioning
+does not induce the intended specialization. Two properties of that result bound
+what it settles. First, conditioning is applied \emph{in the prompt}, including
+the strongest ``expert-guided'' arm, which is a numbered prose recipe; no
+condition removes a field, constrains decoding, or restricts context. Second,
+the specialization study runs one model (GPT-4o-mini), and the authors note the
+effect may differ for models with stronger instruction following. That paper
+does test structure~$\times$~actor elsewhere: its \S4.1.3 evaluates
+schema-constrained \emph{planning output} across eight models and reports a
+clean interaction, with one 7B model violating the schema in 84.7\% of cases
+while frontier models never violate. We take care to distinguish the two
+constraints. A schema on an agent's \emph{output format} regulates how one
+agent's message is shaped; the constraint studied here regulates \emph{which
+agent may do which part of the work}, and is asymmetric across agents by
+construction. Conflating them is the most likely misreading of this paper, and
+\S\ref{sec:method} states the difference in a form a reader can check.
+
+\paragraph{Structure as a substitute for capability.}
+Canedo~\cite{canedo2026architecture} is the closest published result to the
+interaction we test. Five informationally equivalent specification formats --
+prose, Mermaid with ADRs, OpenAPI, C4/Structurizr DSL, and TypeScript interface
+contracts -- are given to one coding agent across six models from three vendor
+families over 90 trials. The reported format~$\times$~model interaction is
+strong: quality spreads of 0.17--0.92 on the strongest models against 0.83--2.42
+on weaker ones, supporting the thesis that structured architecture
+specifications act as a capability equalizer whose value falls as model strength
+rises. We position against this explicitly rather than by vocabulary. Three
+differences are substantive. (i)~The constrained object differs: there the
+\emph{input specification} handed to an agent, here the \emph{output space} of
+each agent, with a field made unrepresentable. (ii)~The constraint there is
+symmetric and applies to a single agent; ours is asymmetric \emph{by role} and
+is a property of a relation between agents, which is why it has no single-agent
+analogue. (iii)~That study measures outcome and infers that structure
+compensated for capability; it never measures whether agent behavior changed.
+We measure the putative mediator directly. Most importantly, the two accounts
+make opposing predictions in a panel where capability and realized fidelity are
+anti-correlated (\S\ref{sec:intro}), which is what makes the distinction
+empirical rather than terminological. If the benefit tracks capability instead,
+we report that we have replicated~\cite{canedo2026architecture} in a multi-agent
+setting.
+
+\paragraph{Role differentiation that fails to materialize.}
+Dylan et al.~\cite{dylan2026equal} hold total LLM calls fixed and evolve a
+Planner--Executor--Critic team as three role prompts over a shared frozen 7B
+backbone. The team's best mean score is not significantly better than the single
+agent ($0.769$ vs.\ $0.754$, $p = 0.80$) despite $1.8\times$ the evaluation
+calls, and a leave-one-in analysis attributes the entire benefit to the
+executor, with planner and critic evolving toward empty or low-impact prompts.
+The result is a collapse of role differentiation, and it is the paper whose
+question is nearest ours. Its scope is also narrow in exactly the directions we
+extend: one frozen backbone, roles defined as prompts (a role is a backbone
+paired with a natural-language role prompt), and an explicit refusal to claim
+that the conclusion transfers to larger or heterogeneous backbones. That
+declined generalization -- scale and per-role heterogeneity, named there as
+future work -- is the axis this paper varies. We also adopt its behavioral
+instruments, influence rate and restate rate, for comparability.
+
+\paragraph{Role violation as a named failure mode.}
+Cemri et al.~\cite{cemri2025why} annotate 1{,}600+ traces across seven
+multi-agent frameworks and derive MAST, a 14-mode failure taxonomy grouped into
+system design, inter-agent misalignment, and task verification, with strong
+inter-annotator agreement ($\kappa = 0.88$). Mode FM-1.2, ``Disobey role
+specification,'' is the qualitative category our fidelity measures quantify.
+That role violation occurs is therefore established; what is not established is
+its rate per contract clause, its dependence on the actor under an identical
+prompt, or whether removing it changes anything. Cao et al.~\cite{cao2026modules}
+give the complementary training-time account, naming \emph{role drift} as a
+failure in which modules preserve or improve end-task scores while taking
+role-violating shortcuts invisible to system-level evaluation -- a decomposer
+planting answers in its sub-questions, a reader falling back on parametric
+memory -- and find that 86\% of one pipeline's apparent RL improvement vanishes
+once the decomposer is held to its role. Their remedy, Role Anchor, is a
+regularizer applied during end-to-end training. Ours is an interface constraint
+at inference on a frozen model; the two address the same phenomenon at different
+points in the stack, and their finding that terminal accuracy overstates genuine
+role learning is direct support for measuring behavior alongside outcome.
+
+\paragraph{Architectural enforcement of role scope.}
+The nearest architectural enforcement is in governance rather than reasoning
+performance. Stettler et al.~\cite{stettler2026progressive} package capabilities
+into roles and deliver role-scoped tools through a single MCP server that
+enforces scope deterministically, on the premise that prompt-defined policies
+are probabilistic advice rather than hard constraints -- the same premise as
+Arm~C here. Their claim is least-privilege access control; they make no claim
+about division of labor or task effectiveness, and no field is removed from a
+role's output space to create a functional division. Ge and
+Guo~\cite{ge2026roles} enforce five structural contracts in SERO, but those
+contracts gate which \emph{edits to a role pool} may be committed during
+evolution; the behavioral payload of an evolved role remains a system prompt,
+and no agent is structurally prevented from emitting an answer. Barrak et
+al.~\cite{barrak2025traceability} evaluate Planner--Executor--Critic pipelines
+across three LLMs with structured, blame-attributable handoffs and report
+configuration-dependent deltas (from $+36.22$ to $-0.78$) -- an
+organization~$\times$~actor interaction present in the data but never named or
+tested as such; the handoff there is a validated message format, not a
+restriction of output space.
+
+\paragraph{Studies of the same trace corpus.}
+Two prior studies analyze the trajectory corpus this work instruments. Jiang et
+al.~\cite{jiang2026confidence} audit a confidence-routed broadcast protocol,
+separating routing, calibration, and commitment, and conclude those three must
+be measured separately before confidence is used for deployment decisions. Yang
+et al.~\cite{yang2026protocol} study cost-aware routing \emph{across} protocols,
+finding that a pre-collaboration probe predicts baseline failure well
+($\mathrm{AUROC} = 0.885$) but predicts protocol-specific value poorly. Both are
+observational, both take the trajectory or the poll as the unit, and neither
+measures role behavior or intervenes on the organization. The object here --
+whether a specified division of labor is realized, and what happens when it is
+enforced -- is not addressed by either, and the controlled arms of
+\S\ref{sec:method} do not exist in that corpus.

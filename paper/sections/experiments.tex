@@ -1,0 +1,55 @@
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Tasks and domains}
+
+\TODO{state the two domains (competition mathematics; biology multiple choice),
+the problem-selection rule, and the number of problems per cell actually run}
+
+All arms run on the same matched problem set, so every arm comparison is
+paired at the problem level.
+
+\subsection{Actor models}
+
+\TODO{name the three actor models and their sizes, the serving stack, and the
+pinned backend per actor; report the fraction of trajectories on each backend}
+
+\subsection{Scale and concurrency}
+
+\TODO{report n/cell, total trajectories, total actor calls, total tokens, and
+measured wall-clock}
+
+Concurrency was set per actor at validated levels rather than assumed ones
+(\TODO{state the per-actor concurrency used and the throughput measured on the
+live endpoint}). The panel's largest model is substantially faster per call
+than the mid-sized ones, so arms do not complete in equal wall-clock at equal
+concurrency.
+
+\subsection{Power}
+
+Power was computed by simulation (4{,}000 replicates, two-sided
+$\alpha = 0.05$) from discordance rates and net asymmetries observed in the
+existing corpus. At $n=400$ per cell the paired per-actor main effect has power
+$0.96$ for large effects but only $0.49$ for moderate ones; detecting a
+moderate effect at $0.8$ power requires $n \approx 800$. The
+actor~$\times$~intervention interaction (P4), which is the primary test,
+requires roughly twice the $n$ of a main effect for equal power, so
+\textbf{at the scale run it is powered only for large interactions}. A null on
+P4 must be read as ``no large interaction detected,'' not as ``no
+interaction.'' \TODO{substitute the achieved n and recompute}
+
+Note the asymmetry: fidelity is measured per \emph{message}, so the measurement
+half of the study is well powered at trajectory counts at which the outcome
+half is not.
+
+\subsection{Smoke test and launch gates}
+
+A smoke test preceded the main run, and the main run was gated on it. The
+gates were: Arm~C produces a non-zero count of rejection/regeneration events
+with reasons logged; Arm~C's \Pone{} manipulation check reaches $\approx 1.0$;
+answer-bearing calls are equal across arms; \texttt{evaluator\_calls} is
+logged; the concurrency ladder is re-measured on the live endpoint; and the
+backend is pinned and logged per trajectory.
+
+\TODO{report the smoke-test outcome for each of the six gates, including the
+observed rejection count -- this is the evidence that the constraint bound}

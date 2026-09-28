@@ -1,3 +1,7 @@
 /Users/bellayang/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
   warnings.warn(
 PROBE 0 t=2026-09-28T22:33:00.533209+00:00 status=503 elapsed=0.48s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.", "info": {}}}
+PROBE 1 t=2026-09-28T22:36:01.022956+00:00 status=503 elapsed=0.10s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.", "info": {}}}
+PROBE 2 t=2026-09-28T22:39:01.130412+00:00 status=EXC elapsed=120.04s :: ReadTimeout: HTTPSConnectionPool(host='inference-api.alcf.anl.gov', port=443): Read timed out. (read timeout=120)
+PROBE 3 t=2026-09-28T22:44:01.176888+00:00 status=503 elapsed=0.83s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.", "info": {}}}
+PROBE 4 t=2026-09-28T22:47:02.011328+00:00 status=503 elapsed=0.20s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.", "info": {}}}

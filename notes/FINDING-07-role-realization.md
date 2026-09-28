@@ -1,3 +1,19 @@
+> # ⚠ RETRACTION BANNER — READ BEFORE QUOTING ANY NUMBER FROM THIS FILE
+>
+> The **Executor plan-consumption (E2) figures in §3 and §4 of this file are
+> v1 and RETRACTED.** v1's `f_ref_step` matched "Step 0" / "Inductive step"
+> inside the Executor's *own* construction — the solving-vs-following confusion.
+> Human validation caught it and the metric was rebuilt as **E2v2**.
+>
+> **Authoritative frozen values live in `VALIDATION-FINAL.md`:**
+> E2v2 — gemma_4_31b **0.2425**, gemma3_27b **0.1123**, gpt_oss_120b **0.0623**.
+> The retracted v1 values (0.833 / 0.441 / 0.164) **order the actors differently**.
+> P1a figures in this file are unchanged and remain valid.
+>
+> This banner exists because a drafting agent quoted 0.164 from here and had to
+> self-correct. Per [[retraction-is-labelling-not-deletion]] the wrong numbers
+> are kept visible and struck through, not deleted.
+
 # Finding 07 — Role realization: measured, stratified, and partly deflated
 
 **Date:** 2026-09-28. Supersedes the F05 regex clue entirely.
@@ -52,19 +68,22 @@ Two "MUST NOT" clauses in the same prompt block; one is honoured and one is not.
 Only 4.2% of gpt_oss Planner messages contain no computed value; the median
 Planner message carries **8** evaluated equations.
 
-Executor plan-consumption is the weakest component anywhere: **0.164**
-(gpt_oss) — the plan is injected into its prompt and it references it in one
-message in six.
+Executor plan-consumption is the weakest component anywhere: ~~**0.164**~~
+**RETRACTED — see banner at the top of this file. The frozen E2v2 value for
+gpt_oss is 0.062.**
 
 ## 4. The actor effect is large, ordered, and on identical prompts
 
 Within omnimath2 both actors get a byte-identical Planner prompt.
 
-| actor | Planner: no computation | Executor: uses plan |
-|---|---|---|
-| gemma3_27b | 0.266 [.252,.281] | 0.833 [.821,.845] |
-| gemma_4_31b | 0.111 [.104,.118] | 0.441 [.431,.450] |
-| gpt_oss_120b | 0.042 [.038,.045] | 0.164 [.157,.170] |
+| actor | Planner: no computation (P1a, FROZEN) | Executor: uses plan (v1 — **RETRACTED**) | **E2v2 FROZEN** |
+|---|---|---|---|
+| gemma3_27b | 0.266 [.252,.281] | ~~0.833~~ | **0.1123** [.1023,.1223] |
+| gemma_4_31b | 0.111 [.104,.118] | ~~0.441~~ | **0.2425** [.2340,.2509] |
+| gpt_oss_120b | 0.042 [.038,.045] | ~~0.164~~ | **0.0623** [.0581,.0667] |
+
+Note the v1 column **reorders the actors** relative to E2v2 — that is the whole
+reason it was retracted.
 
 All pairwise differences exclude zero (e.g. gemma3−gpt_oss = +0.225
 [+0.210,+0.239]; exec plan-use gemma_4−gpt_oss = +0.277 [+0.265,+0.288]).

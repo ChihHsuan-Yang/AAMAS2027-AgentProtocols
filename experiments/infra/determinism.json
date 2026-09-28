@@ -1,0 +1,254 @@
+[
+  {
+    "model": "openai/gpt-oss-120b",
+    "prompt": "Find the remainder when 7^2025 is divided by 13.",
+    "n_ok": 3,
+    "identical": false,
+    "distinct_hashes": 3,
+    "reps": [
+      {
+        "rep": 0,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "3e5f344e4eb958bb",
+        "len": 573,
+        "completion_tokens": 512,
+        "latency_s": 3.767,
+        "head": "To find \\(7^{2025}\\pmod{13}\\) we can use modular exponentiation together with Euler\u2019s theorem.\n\n---\n"
+      },
+      {
+        "rep": 1,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "2968040d14e0b393",
+        "len": 539,
+        "completion_tokens": 512,
+        "latency_s": 3.454,
+        "head": "To find \\(7^{2025}\\pmod{13}\\) we can use modular exponentiation.\n\n---\n\n### 1. Reduce the exponent us"
+      },
+      {
+        "rep": 2,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "f7bb44b462dbfe9b",
+        "len": 561,
+        "completion_tokens": 512,
+        "latency_s": 3.172,
+        "head": "To find \\(7^{2025}\\pmod{13}\\) we can use modular exponentiation.\n\n---\n\n### 1. Reduce the exponent us"
+      }
+    ]
+  },
+  {
+    "model": "google/gemma-4-31B-it",
+    "prompt": "Find the remainder when 7^2025 is divided by 13.",
+    "n_ok": 3,
+    "identical": true,
+    "distinct_hashes": 1,
+    "reps": [
+      {
+        "rep": 0,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "616219bc07805392",
+        "len": 1204,
+        "completion_tokens": 512,
+        "latency_s": 7.368,
+        "head": "To find the remainder when $7^{2025}$ is divided by $13$, we can use **Fermat's Little Theorem**.\n\n#"
+      },
+      {
+        "rep": 1,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "616219bc07805392",
+        "len": 1204,
+        "completion_tokens": 512,
+        "latency_s": 6.525,
+        "head": "To find the remainder when $7^{2025}$ is divided by $13$, we can use **Fermat's Little Theorem**.\n\n#"
+      },
+      {
+        "rep": 2,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "616219bc07805392",
+        "len": 1204,
+        "completion_tokens": 512,
+        "latency_s": 6.505,
+        "head": "To find the remainder when $7^{2025}$ is divided by $13$, we can use **Fermat's Little Theorem**.\n\n#"
+      }
+    ]
+  },
+  {
+    "model": "meta-llama/Llama-3.3-70B-Instruct",
+    "prompt": "Find the remainder when 7^2025 is divided by 13.",
+    "n_ok": 0,
+    "identical": false,
+    "distinct_hashes": 0,
+    "reps": [
+      {
+        "rep": 0,
+        "ok": false,
+        "status": 503,
+        "error_type": "503",
+        "sha256_16": "e3b0c44298fc1c14",
+        "len": 0,
+        "completion_tokens": null,
+        "latency_s": 1.731,
+        "head": ""
+      },
+      {
+        "rep": 1,
+        "ok": false,
+        "status": 503,
+        "error_type": "503",
+        "sha256_16": "e3b0c44298fc1c14",
+        "len": 0,
+        "completion_tokens": null,
+        "latency_s": 1.715,
+        "head": ""
+      },
+      {
+        "rep": 2,
+        "ok": false,
+        "status": 503,
+        "error_type": "503",
+        "sha256_16": "e3b0c44298fc1c14",
+        "len": 0,
+        "completion_tokens": null,
+        "latency_s": 1.834,
+        "head": ""
+      }
+    ]
+  },
+  {
+    "model": "openai/gpt-oss-120b",
+    "prompt": "In triangle ABC, AB=13, BC=14, CA=15. Find the area.",
+    "n_ok": 3,
+    "identical": false,
+    "distinct_hashes": 3,
+    "reps": [
+      {
+        "rep": 0,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "d2bd8650be175395",
+        "len": 656,
+        "completion_tokens": 488,
+        "latency_s": 6.225,
+        "head": "**Step 1: Compute the semiperimeter**\n\n\\[\ns=\\frac{AB+BC+CA}{2}= \\frac{13+14+15}{2}= \\frac{42}{2}=21 "
+      },
+      {
+        "rep": 1,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "fd88cd38026ac8fd",
+        "len": 726,
+        "completion_tokens": 442,
+        "latency_s": 2.797,
+        "head": "To find the area of a triangle when its three side lengths are known, we use **Heron\u2019s formula**.\n\n-"
+      },
+      {
+        "rep": 2,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "9360e62f0a91ccfc",
+        "len": 643,
+        "completion_tokens": 435,
+        "latency_s": 3.173,
+        "head": "The area can be found with Heron\u2019s formula.\n\n1. **Semiperimeter**  \n\\[\ns=\\frac{AB+BC+CA}{2}= \\frac{1"
+      }
+    ]
+  },
+  {
+    "model": "google/gemma-4-31B-it",
+    "prompt": "In triangle ABC, AB=13, BC=14, CA=15. Find the area.",
+    "n_ok": 3,
+    "identical": false,
+    "distinct_hashes": 2,
+    "reps": [
+      {
+        "rep": 0,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "efd90433774be4fe",
+        "len": 1023,
+        "completion_tokens": 435,
+        "latency_s": 5.333,
+        "head": "To find the area of triangle $ABC$ with side lengths $a=14$ (BC), $b=15$ (CA), and $c=13$ (AB), we c"
+      },
+      {
+        "rep": 1,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "aa8371339ff3e8d5",
+        "len": 1044,
+        "completion_tokens": 441,
+        "latency_s": 6.157,
+        "head": "To find the area of triangle $ABC$ with side lengths $a=14$ (BC), $b=15$ (CA), and $c=13$ (AB), we c"
+      },
+      {
+        "rep": 2,
+        "ok": true,
+        "status": 200,
+        "error_type": null,
+        "sha256_16": "efd90433774be4fe",
+        "len": 1023,
+        "completion_tokens": 435,
+        "latency_s": 6.523,
+        "head": "To find the area of triangle $ABC$ with side lengths $a=14$ (BC), $b=15$ (CA), and $c=13$ (AB), we c"
+      }
+    ]
+  },
+  {
+    "model": "meta-llama/Llama-3.3-70B-Instruct",
+    "prompt": "In triangle ABC, AB=13, BC=14, CA=15. Find the area.",
+    "n_ok": 0,
+    "identical": false,
+    "distinct_hashes": 0,
+    "reps": [
+      {
+        "rep": 0,
+        "ok": false,
+        "status": 503,
+        "error_type": "503",
+        "sha256_16": "e3b0c44298fc1c14",
+        "len": 0,
+        "completion_tokens": null,
+        "latency_s": 1.71,
+        "head": ""
+      },
+      {
+        "rep": 1,
+        "ok": false,
+        "status": 503,
+        "error_type": "503",
+        "sha256_16": "e3b0c44298fc1c14",
+        "len": 0,
+        "completion_tokens": null,
+        "latency_s": 1.722,
+        "head": ""
+      },
+      {
+        "rep": 2,
+        "ok": false,
+        "status": 503,
+        "error_type": "503",
+        "sha256_16": "e3b0c44298fc1c14",
+        "len": 0,
+        "completion_tokens": null,
+        "latency_s": 1.668,
+        "head": ""
+      }
+    ]
+  }
+]

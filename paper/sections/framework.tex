@@ -1,0 +1,61 @@
+\section{From Assigned Roles to Realized Organization}
+\label{sec:framework}
+
+\subsection{Specification and realization}
+
+An organization is specified by a tuple: a set of agents, an interaction order,
+a message-passing graph, a context-visibility policy, and -- the part of
+interest here -- a \emph{role contract} per agent. A role contract is a set of
+clauses, each of which asserts either that the agent performs some function
+(\textsc{must} decompose the problem; \textsc{must} state the required answer
+form) or that it does not (\textsc{must not} carry out arithmetic;
+\textsc{must not} state a final answer). Clauses of the second kind are what
+make the specification a \emph{division} of labor rather than a list of
+suggestions: they assign work away from one agent and, implicitly, to another.
+
+The realized organization is the behavior that occurs when the specification is
+executed by a particular actor substrate. Because a contract clause is prose
+handed to a language model, realization is not guaranteed at any clause, and
+nothing in the specification records which clauses were honored. An evaluation
+that observes only the task outcome cannot distinguish an organization that
+divided the work as specified from one in which a single agent did everything
+while the others produced well-formed commentary. Both appear as a score.
+
+\subsection{Two constructs that must not be merged}
+
+\paragraph{Role distinguishability.} Can an observer recover which role emitted
+a message from the message's behavior alone? This is a property of the induced
+behavioral distributions: it asks whether the roles differ, not whether they
+differ \emph{in the way specified}. It is cheap to measure, it is what a reader
+usually has in mind when asking whether role prompts ``work,'' and -- as
+\S\ref{sec:measurement} shows -- it can be very high while the specified
+division is almost entirely absent.
+
+\paragraph{Role fidelity.} Does an agent perform the function its own contract
+assigns? This is defined only relative to a contract, it is evaluated
+clause-by-clause, and it is not comparable across agents that received
+different contracts. Fidelity is the construct that carries the organizational
+content, because it is the one that references the specification.
+
+The two are logically independent. An agent that ignores every clause of its
+contract but writes in a recognizable house style is perfectly distinguishable
+and has zero fidelity. An agent that honors every clause while formatting its
+output exactly like its neighbor has full fidelity and is indistinguishable.
+Conflating them makes it possible to report that roles ``are working'' on the
+basis of a measurement that is insensitive to whether the division of labor
+occurred, and \S\ref{sec:measurement} shows that this is not a hypothetical
+concern in the systems we study.
+
+\subsection{Actor-dependence and the resulting design}
+
+Because realization occurs at the actor, the same specification executed by
+different models is potentially a different organization. This has a
+methodological consequence that is easy to state and easy to violate: a claim
+about an organization that is measured under one actor is a claim about that
+actor--organization pair. It also has a design consequence, which is the
+remainder of this paper. If a specification is advice, then the intervention
+that tests its role is not a more emphatic specification but a structural one
+-- an interface under which the violation cannot be expressed. Whether such an
+intervention changes the realized organization, whether it changes
+effectiveness, and whether either change is actor-dependent are the questions
+\S\ref{sec:method} operationalizes.

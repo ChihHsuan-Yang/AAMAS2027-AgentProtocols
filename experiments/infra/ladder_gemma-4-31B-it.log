@@ -1,0 +1,9 @@
+/Users/bellayang/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+=== gemma-4-31B-it conc=1 starting 17:42:11
+{"concurrency": 1, "wall_s": 165.89, "completed": 30, "failed": 0, "throughput_req_per_min": 10.85, "mean_latency_s": 5.53, "p90_latency_s": 6.46, "error_rate": 0.0, "retry_rate": 0.0, "errors_by_type": {}, "mean_completion_tokens": 439.7, "out_tok_per_s": 79.5}
+=== gemma-4-31B-it conc=4 starting 17:45:16
+{"concurrency": 4, "wall_s": 42.04, "completed": 30, "failed": 0, "throughput_req_per_min": 42.82, "mean_latency_s": 5.45, "p90_latency_s": 6.483, "error_rate": 0.0, "retry_rate": 0.0, "errors_by_type": {}, "mean_completion_tokens": 441.6, "out_tok_per_s": 315.1}
+=== gemma-4-31B-it conc=8 starting 17:46:19
+{"concurrency": 8, "wall_s": 25.87, "completed": 30, "failed": 0, "throughput_req_per_min": 69.58, "mean_latency_s": 5.981, "p90_latency_s": 7.687, "error_rate": 0.0, "retry_rate": 0.0, "errors_by_type": {}, "mean_completion_tokens": 439.1, "out_tok_per_s": 509.2}
+=== gemma-4-31B-it conc=16 starting 17:47:04

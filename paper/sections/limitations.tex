@@ -1,0 +1,55 @@
+\section{Limitations}
+\label{sec:limitations}
+
+\paragraph{Power on the primary endpoint.} The actor~$\times$~intervention
+interaction requires roughly twice the sample of a main effect for equal power,
+and at the scale run it is powered for large interactions only
+(\S\ref{sec:experiments}). A null on P4 is ``no large interaction detected.''
+
+\paragraph{Scope.} Three actor substrates, two domains, and one organization
+(Planner--Executor--Reviewer). Two of the three actors belong to the same model
+family, so the panel varies capability and realized fidelity more than it
+varies vendor or architecture. Nothing here establishes that the findings hold
+for other organizations, other domains, or other model families.
+
+\paragraph{The capability--fidelity dissociation rests on a narrow base.} In
+the observational corpus only one actor \emph{pair} has both a capability proxy
+and both fidelity components measured. A correlation over two or three points
+is not reported and would not be meaningful. The dissociation is a
+hypothesis-generating observation that motivates the design, and the
+intervention is what tests it.
+
+\paragraph{Measurement blind spots, stated rather than repaired.} \Pone{} is
+blind to symbolic results carrying no digits and therefore slightly
+over-credits compliance, so true violation rates are marginally higher than
+reported. The variant that would have closed this made agreement substantially
+worse and was rejected (\S\ref{sec:measurement}); the limitation is documented
+instead. \Etwo{} keys on explicit plan reference and cannot detect an Executor
+that follows a plan silently, nor -- as the frozen definitions anticipate --
+one that names the plan while ignoring it.
+
+\paragraph{Contracts are domain-specific.} The full role contract exists only
+in one domain; other domain presets impose a subset of clauses. Fidelity
+components are therefore reported separately and never averaged across domains
+or clauses. This is a property of the systems studied, not a choice, and it
+limits cross-domain comparison of fidelity levels.
+
+\paragraph{Fidelity is not summarizable.} The two components order the actors
+differently (\S\ref{subsec:components-disagree}), so ``most faithful actor'' is
+not well defined in this panel, and any mediation claim must name its component
+in advance. We do not construct a composite.
+
+\paragraph{The observational association is confounded.} The relationship
+between Planner compliance and first-pass success survives removing the
+stopping-rule leakage but is confined to problems the baseline already solved,
+is null on hard problems, and remains confounded because compliance is itself
+difficulty-linked. It is reported as association throughout.
+
+\paragraph{Reviewer behavior is only partially characterized.} The Reviewer
+clause measure is defined but not yet validated at the scale of the other two.
+\TODO{state whether R4 was annotated and reported, or declare the omission}
+
+\paragraph{Infrastructure confounds.} Serving backends have shown large
+throughput and accuracy differences for an identical cell, which is why the
+backend is pinned and logged per trajectory. \TODO{confirm that no cell
+straddled backends in the run as executed}

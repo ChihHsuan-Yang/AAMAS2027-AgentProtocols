@@ -1,0 +1,200 @@
+\section{Structural Role Intervention}
+\label{sec:method}
+
+\subsection{The causal question}
+
+Does \emph{architecturally} enforcing the intended division of labor change the
+effectiveness of the same multi-agent organization, and is that effect
+actor-dependent? The word doing the work is \emph{architecturally}. Every prior
+strong-specialization condition we are aware of, including the strongest arm of
+Orogat et al.~\cite{orogat2026architectural}, is natural-language prose --
+capitalized instructions asking politely. If our intervention reads as a
+stronger prompt, it tests nothing new, so the contrast must be one a reader can
+check in a sentence.
+
+\subsection{Three arms}
+
+All arms share three agents, the same interaction order
+(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), the same
+message-passing graph, the same context-visibility \emph{policy}, the same
+total call budget, the same verifier and verifier prompt, the same retry
+budget, the same decoding parameters (temperature $0$, identical
+\texttt{max\_tokens}), the same stopping rule, and the same grading.
+
+\paragraph{Arm A -- soft-role \PER{} (control).} Current role prompts,
+unchanged. This is the organization as ordinarily specified.
+
+\paragraph{Arm B -- generic-role \PER{}.} Identical topology and budget; all
+three agents receive the same generic prompt (``You are one of three agents
+solving this problem collaboratively; continue the work''). Role \emph{names}
+are retained for routing only, so the pipeline still runs. This isolates
+whether functional role \emph{instruction} contributes anything over the bare
+pipeline. We keep Arm~B as the control that makes A-versus-C interpretable and
+as a replication, in a reasoning setting with multi-agent roles, of a published
+null obtained in tabular ML with one agent~\cite{orogat2026architectural}. We
+do not present it as a contribution.
+
+\paragraph{Arm C -- hard architectural specialization.} Specialization is
+enforced by the interface rather than by wording:
+
+\begin{itemize}
+\item \textbf{Planner.} Emits JSON parsed against a schema with \emph{no answer
+  field}: \texttt{\{givens[], target\_form, lemmas[], steps[]\}}. A final answer
+  is \emph{unrepresentable}. Free-text prose is rejected by the parser and
+  regenerated.
+\item \textbf{Executor.} Receives only the parsed plan object and the problem
+  -- never the Planner's raw text -- and emits
+  \texttt{\{derivation, answer\}}.
+\item \textbf{Reviewer.} Emits
+  \texttt{\{verdict $\in$ \{accept, revise\_plan, revise\_execution\},
+  target\_span, critique\}}. It retains submission ownership: \texttt{accept}
+  promotes the Executor's current answer verbatim, \emph{by reference}, but it
+  has no field in which to \emph{author} a new answer.
+\end{itemize}
+
+The one-sentence form of the contrast, stated so a reviewer can verify it: \emph{in
+Arm~C the Planner's output is parsed against a schema with no answer field, and
+a message containing a final answer is rejected by the parser and regenerated,
+so contract violation is unrepresentable rather than discouraged.}
+
+\paragraph{Why the Reviewer submits by reference.} An offline smoke test caught
+a design flaw. The soft-role configuration grants the Reviewer final-answer
+ownership, and Reviewers are observed to emit the submitted answer in 41--42\%
+of messages. An Arm~C that simply deleted the Reviewer's answer field would
+change \emph{who submits}, not only who may \emph{author}, confounding
+enforcement with an altered submission path. Submit-by-reference preserves the
+submission path and isolates authorship, which is the variable of interest.
+
+\paragraph{Why this is not a handicap.} Arm~C removes no capability from the
+system as a whole: planning, computing, answering, and critiquing are all still
+performed, each by exactly one agent, under the same total call budget. Only
+\emph{which agent may emit which kind of output} changes. The pre-registered
+check is that Arm~C's total answer-bearing calls equal Arm~A's; if Arm~C simply
+produces fewer answers, the difference is a budget artifact and the arm is void.
+
+A fourth arm permuting the role-to-position mapping was designed and dropped:
+it addresses whether the mapping matters, which is a different question from
+whether enforcement matters, and it would have halved the power available to
+the A/B/C contrast.
+
+\subsection{Mandatory enforcement instrumentation}
+
+An intervention that never engaged cannot explain an outcome, so engagement is
+instrumented rather than assumed.
+
+\begin{enumerate}
+\item \textbf{Every rejected-and-regenerated emission is logged, with its
+  rejection reason.} The rejection count is the evidence that the constraint
+  bound at all. \textbf{An Arm~C run with zero rejections is one in which the
+  constraint never engaged, and its results are uninterpretable.} We report the
+  per-trajectory rejection count as a result, not as a diagnostic.
+\item \textbf{The manipulation check is \Pone{} $\rightarrow \approx 1.0$ in
+  Arm~C}, which the construction should force. If it does not hold, Arm~C did
+  not engage and every downstream comparison from it is void. We report that
+  outcome as the result if it occurs.
+\item \textbf{Answer-bearing calls are counted per arm} (the non-handicap
+  check above).
+\item \textbf{\texttt{evaluator\_calls} is logged per trajectory.} The existing
+  corpus records it at $0.000$ coverage, so oracle exposure -- a known confound
+  between organizations -- cannot be \emph{verified} without this fix. It is a
+  blocking prerequisite to launch, not a nicety.
+\item \textbf{The serving backend is pinned and logged per trajectory.} The
+  same cell has shown a $9.6\times$ difference in seconds-per-thousand-tokens
+  and an accuracy difference of $.72$ versus $.93$ across backends; unpinned,
+  this would confound the actor contrast outright.
+\end{enumerate}
+
+\subsection{Actors, and why the third one is load-bearing}
+
+The panel is three actor models spanning 27B, 31B, and 120B. The third is not
+a robustness addition. With two actors an interaction is a single
+difference-of-differences -- one number, indistinguishable from an idiosyncrasy
+of one model, and unable to separate a capability ordering from a fidelity
+ordering, since with two points every ordering is monotone in everything. Three
+actors permit the ordering claim: that the intervention's effect is ordered by
+realized fidelity and that this ordering is \emph{not} the capability ordering.
+That is the claim a capability-equalizer design cannot
+make~\cite{canedo2026architecture}, because capability is the only axis it
+varies.
+
+\subsection{Pre-registered analyses}
+\label{subsec:prereg}
+
+All endpoints were fixed in writing before any intervention data existed.
+Units are (problem, actor, domain) triples; all arms run on the same problems,
+so every test is paired, with bootstrap clustering by problem and McNemar on
+discordant items for binary outcomes.
+
+\begin{description}
+\item[P1. Intervention $\rightarrow$ fidelity.] $H_0$:
+  $\mathrm{fid}(C) = \mathrm{fid}(A)$ per actor, on \Pone{} and \Etwo{}. Also
+  the manipulation check.
+\item[P2. Actor $\times$ intervention on fidelity.] $H_0$:
+  $\mathrm{fid}(C) - \mathrm{fid}(A)$ is equal across actors.
+\item[P3. Intervention $\rightarrow$ outcome.] $H_0$:
+  $\mathrm{acc}(C) = \mathrm{acc}(A)$ per actor.
+\item[P4. Actor $\times$ intervention on outcome.] $H_0$:
+  $\mathrm{acc}(C) - \mathrm{acc}(A)$ is equal across actors.
+  \textbf{This, not P3, is the test of the paper's thesis.} A main effect
+  without an interaction is the published capability-equalizer
+  result~\cite{canedo2026architecture} transplanted into a multi-agent setting,
+  and we would report it as such.
+\item[P5. $\Delta$fidelity versus $\Delta$outcome.] Per-actor association
+  across problems. Reported as association only and \emph{explicitly not
+  causal}: both are consequences of the same intervention.
+\end{description}
+
+Holm correction is applied across P1--P5 for the headline claim. Secondary
+analyses -- the A$-$B contrast, per-domain breakdowns, Arm~C rejection-event
+analysis, distinguishability recomputed per arm, and influence and restate
+rates adopted from Dylan et al.~\cite{dylan2026equal} for comparability -- are
+labeled exploratory and are not corrected.
+
+\paragraph{Exclusions and stopping, fixed in advance.} Trajectories that fail
+to parse are counted as incorrect rather than dropped, matching the corpus
+convention. In Arm~C the regenerated message is the one analyzed, and the
+rejection count is reported. No arm is dropped after results are seen; an arm
+that fails its manipulation check is reported as having failed it.
+
+\subsection{Pre-declared interpretations}
+
+All five outcomes were given an interpretation before launch, and none is
+privileged (Table~\ref{tab:interpretations}). Two of them are
+direction-abandoning.
+
+\begin{table}[t]
+\centering
+\caption{Pre-declared interpretation of every outcome pattern, fixed before
+launch.}
+\label{tab:interpretations}
+\small
+\begin{tabular}{p{0.30\linewidth}p{0.62\linewidth}}
+\toprule
+pattern & conclusion \\
+\midrule
+$C > A$ for the low-fidelity actor, $C \approx A$ for the high-fidelity one &
+Thesis supported: enforcement substitutes for realized specialization; the
+value of role organization is actor-conditional. \\
+$C > A$ equally for all actors &
+Enforcement helps, but specialization is not actor-conditional. The
+AAMAS-relevant interaction is absent and the result collides with published
+findings. \\
+$C \approx A \approx B$ for all &
+Functional specialization is not the source of the organization's benefit.
+\textbf{Direction abandoned.} \\
+$C < A$ &
+Role overlap is load-bearing: the organization relies on agents exceeding their
+contracts. An inversion that reframes the paper. \\
+Effects reverse across actors &
+Strongest form of actor-conditionality; claimable only with all three actors. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The discriminating contrast of \S\ref{sec:intro} is evaluated inside this
+table. Because capability and realized fidelity are anti-correlated in this
+panel, ``enforcement helps the low-fidelity actor'' and ``enforcement helps the
+weakest actor'' identify \emph{different} actors and can be told apart. If the
+benefit tracks capability, the honest report is that we replicated the
+capability-equalizer result in a multi-agent setting, and that is what we will
+write.

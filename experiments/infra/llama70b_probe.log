@@ -1,0 +1,6 @@
+/Users/bellayang/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+PROBE 0 t=2026-09-28T22:35:26.287356+00:00 status=503 elapsed=0.10s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-meta-llamallama-33-70b-instruct online but not ready to receive tasks. Please try again later.", "info": {}}}
+PROBE 1 t=2026-09-28T22:38:26.389283+00:00 status=503 elapsed=0.65s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-meta-llamallama-33-70b-instruct online but not ready to receive tasks. Please try again later.", "info": {}}}
+PROBE 2 t=2026-09-28T22:41:27.037047+00:00 status=EXC elapsed=120.03s :: ReadTimeout: HTTPSConnectionPool(host='inference-api.alcf.anl.gov', port=443): Read timed out. (read timeout=120)
+PROBE 3 t=2026-09-28T22:46:27.076156+00:00 status=503 elapsed=0.16s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-meta-llamallama-33-70b-instruct online but not ready to receive tasks. Please try again later.", "info": {}}}

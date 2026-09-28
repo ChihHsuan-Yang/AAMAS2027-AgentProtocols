@@ -1,0 +1,117 @@
+%==============================================================================
+% AAMAS 2027 submission -- main document
+%
+% TEMPLATE SUBSTITUTION NOTE FOR THE MASTER AGENT:
+%   The official AAMAS class file (aamas.cls / the IFAAMAS formatting bundle)
+%   could NOT be fetched from this build host on 2026-09-28. Every candidate
+%   URL returned 403 or 404 (aamas2025.org, aamas2026.org, ifaamas.org) and
+%   web search was unavailable. As instructed, this document therefore uses
+%   ACM `acmart' in sigconf mode with the anonymous+review options, which is
+%   the class AAMAS derives its own template from.
+%
+%   TO SWAP IN THE OFFICIAL CLASS: replace the \documentclass line below with
+%   the AAMAS one and drop the \acmConference/\copyrightyear block. AAMAS
+%   templates normally use:
+%       \documentclass[sigconf,review,anonymous]{aamas}
+%       \acmSubmissionID{...}
+%   Nothing else in this file or in sections/ depends on the class.
+%==============================================================================
+\documentclass[sigconf,anonymous,review,nonacm]{acmart}
+
+% -- Anonymity: no author block, no acknowledgements, no repo URLs. ----------
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{booktabs}
+\usepackage{amsmath}
+% amssymb intentionally NOT loaded: it clashes with acmart+newtxmath on \Bbbk.
+% acmart already provides the AMS symbols this paper uses.
+\usepackage{xcolor}
+\usepackage{balance}
+
+% -- Placeholder macro. Every unrun result MUST be wrapped in this. ----------
+% Before submission, run:  grep -n 'TODO{' main.tex sections/*.tex
+% and confirm the list is empty.
+\newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+% -- Shorthands for the two constructs the paper keeps apart. ----------------
+\newcommand{\Pone}{\textsf{P1a}}
+\newcommand{\Etwo}{\textsf{E2v2}}
+\newcommand{\PER}{\textsc{Per}}
+
+\begin{document}
+
+\title{Specified Roles, Realized Organizations: Functional Division of Labor
+in {LLM} Multi-Agent Systems}
+
+% Anonymous mode suppresses this block; it is required for the class to build.
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+  \country{}
+}
+
+\begin{abstract}
+Multi-agent LLM systems are commonly organized by assigning agents roles --
+Planner, Executor, Reviewer -- and describing each role's function in natural
+language. Whether those descriptions produce a functional division of labor,
+and whether that depends on which model fills the roles, is rarely measured.
+We separate two constructs that are usually conflated. \emph{Role
+distinguishability} asks whether an observer can recover an agent's role from
+its behavior alone; \emph{role fidelity} asks whether an agent performs the
+function its contract assigns, scored clause-by-clause against the contract
+that agent actually received. Across 145{,}411 role messages from matched
+Planner--Executor--Reviewer trajectories, the two dissociate. Roles are highly
+distinguishable (0.90 balanced accuracy from behavioral features), but that
+separability rests on output formatting and answer commitment rather than on
+the cognitive division the contract specifies: restricted to computation
+behavior, role separability falls to 0.71, barely above a message-length
+control. Fidelity to individual clauses of one contract ranges from 0.96 to
+0.04, and differs sharply across actor models given byte-identical prompts.
+We validate these measures against human annotation and report where automated
+proxies fail. We then ask whether enforcing the division of labor
+\emph{architecturally} -- through interfaces that make contract violation
+unrepresentable, rather than through stronger prompting -- changes the
+effectiveness of the same organization, and whether that effect depends on the
+actor model. \TODO{final sentence: replace with the outcome once Arms A/B/C
+report; keep as a question if they do not}
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10010147.10010178.10010219.10010220</concept_id>
+<concept_desc>Computing methodologies~Multi-agent systems</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010178.10010179</concept_id>
+<concept_desc>Computing methodologies~Natural language processing</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+\ccsdesc[500]{Computing methodologies~Multi-agent systems}
+\ccsdesc[300]{Computing methodologies~Natural language processing}
+
+\keywords{Multi-agent systems; large language models; role specialization;
+division of labor; organizational structure}
+
+\maketitle
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/framework}
+\input{sections/measurement}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/results}
+\input{sections/limitations}
+\input{sections/conclusion}
+
+\balance
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

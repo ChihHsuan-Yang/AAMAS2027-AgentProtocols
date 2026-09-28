@@ -29,10 +29,11 @@ from typing import Any, Dict, List, Optional, Tuple
 PLANNER_SCHEMA: Dict[str, Any] = {
     "type": "object",
     "properties": {
-        "subproblems": {"type": "array", "items": {"type": "string"}},
-        "strategy": {"type": "array", "items": {"type": "string"}},
-        "dependencies": {"type": "array", "items": {"type": "string"}},
-        "required_quantities": {"type": "array", "items": {"type": "string"}},
+        "subproblems": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "strategy": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "dependencies": {"type": "array", "items": {"type": "string"}, "minItems": 0},
+        "required_quantities": {"type": "array", "items": {"type": "string"},
+                                "minItems": 1},
     },
     "required": ["subproblems", "strategy", "dependencies", "required_quantities"],
     "additionalProperties": False,
@@ -42,8 +43,8 @@ PLANNER_SCHEMA: Dict[str, Any] = {
 EXECUTOR_SCHEMA: Dict[str, Any] = {
     "type": "object",
     "properties": {
-        "derivation": {"type": "string"},
-        "answer": {"type": "string"},
+        "derivation": {"type": "string", "minLength": 1},
+        "answer": {"type": "string", "minLength": 1},
     },
     "required": ["derivation", "answer"],
     "additionalProperties": False,
@@ -54,9 +55,13 @@ REVIEWER_VERDICTS = ["accept", "revise_plan", "revise_execution"]
 REVIEWER_SCHEMA: Dict[str, Any] = {
     "type": "object",
     "properties": {
-        "verdict": {"type": "string", "enum": list(REVIEWER_VERDICTS)},
-        "target": {"type": "string"},
-        "critique": {"type": "string"},
+        "verdict": {"type": "string", "enum": list(REVIEWER_VERDICTS),
+                    "minLength": 1},
+        # "target" MAY be empty when verdict == "accept": an accepted
+        # submission has no routing target.  Non-emptiness is enforced
+        # conditionally in validate_reviewer(), not as a blanket rule.
+        "target": {"type": "string", "minLength": 0},
+        "critique": {"type": "string", "minLength": 0},
     },
     "required": ["verdict", "target", "critique"],
     "additionalProperties": False,
@@ -217,8 +222,11 @@ def _check_schema(obj: Dict[str, Any], schema: Dict[str, Any]) -> List[Tuple[str
                     ("wrong_type:{}".format(key), "expected string, got {}".format(type(val).__name__))
                 )
                 continue
-            if not val.strip():
-                out.append(("empty_string:{}".format(key), "field is blank"))
+            if len(val.strip()) < spec.get("minLength", 0):
+                out.append(
+                    ("too_short:{}".format(key),
+                     "needs >= {} chars".format(spec.get("minLength", 0)))
+                )
             enum = spec.get("enum")
             if enum is not None and val not in enum:
                 out.append(
@@ -239,8 +247,11 @@ def _check_schema(obj: Dict[str, Any], schema: Dict[str, Any]) -> List[Tuple[str
                             "expected string, got {}".format(type(item).__name__),
                         )
                     )
-            if len(val) == 0:
-                out.append(("empty_list:{}".format(key), "array must be non-empty"))
+            if len(val) < spec.get("minItems", 0):
+                out.append(
+                    ("too_few_items:{}".format(key),
+                     "needs >= {} items".format(spec.get("minItems", 0)))
+                )
     return out
 
 
@@ -314,7 +325,30 @@ def validate_executor(raw_text: str) -> ValidationResult:
 
 
 def validate_reviewer(raw_text: str) -> ValidationResult:
-    return validate_role_output("reviewer", raw_text, forbid_answer=True)
+    """Reviewer contract, with one CONDITIONAL constraint.
+
+    ``target`` may be empty exactly when ``verdict == "accept"`` (an accepted
+    submission is not routed anywhere).  For the two revise verdicts a routing
+    target and a critique are both required -- otherwise the revision request
+    carries no information and the loop cannot act on it.
+    """
+    res = validate_role_output("reviewer", raw_text, forbid_answer=True)
+    if not res.ok or res.obj is None:
+        return res
+    verdict = res.obj.get("verdict")
+    if verdict in ("revise_plan", "revise_execution"):
+        extra: List[str] = []
+        if not str(res.obj.get("target", "")).strip():
+            extra.append("conditional_required:target@{}".format(verdict))
+        if not str(res.obj.get("critique", "")).strip():
+            extra.append("conditional_required:critique@{}".format(verdict))
+        if extra:
+            return ValidationResult(
+                ok=False, violated_constraint=extra[0],
+                detail="a revise verdict must name a target and a critique",
+                obj=res.obj, all_violations=extra,
+            )
+    return res
 
 
 VALIDATORS = {
