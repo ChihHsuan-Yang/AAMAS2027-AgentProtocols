@@ -237,3 +237,72 @@ The 121 pre-fix rows are quarantined as
 assumed 512-token single calls; real PER trajectories run multi-round with
 retries). Restarting costs ~20 min of compute and removes a confound that
 would have invalidated the central comparison.
+
+## 2026-09-28 19:45 — D9. Mock review found two paper-killing defects. BOTH CONFIRMED by my own measurement.
+
+I did not take the reviewer's word. I re-derived both from code and data.
+
+### DEFECT 1 (confirmed): the manipulation check names a clause Arm C does not enforce
+
+Measured on **accepted** Planner messages (smoke v3 + campaign v1):
+
+| arm / actor | P1a (no computation) | P2 (no answer) | n |
+|---|---|---|---|
+| A / gemma-4-31B | 0.061 | 0.976 | 82 |
+| A / gpt-oss-120b | 0.075 | 0.650 | 80 |
+| **C / gemma-4-31B** | **0.275** | **1.000** | 51 |
+| **C / gpt-oss-120b** | **0.073** | **1.000** | 41 |
+
+Arm C drives **P2 to exactly 1.000 in both cells** and leaves **P1a at 0.073-0.275**.
+`PLANNER_SCHEMA` + `find_answer_leak` forbid `\boxed` and "Final Answer" — that is
+**answer authorship**, not computation. Nothing stops a Planner writing `= 1/27`.
+
+My pre-registered check said "Arm C should drive P1a to ~1.0; if not, the arm is
+void." **As written, it fails.** Fourth instance of the project's recurring error
+class — a check pointed at the wrong subject.
+
+### DEFECT 2 (confirmed): Arm C runs on ~6x less context, while we log that it does not
+
+Mean prompt characters, from real trajectories:
+
+| role | Arm A | Arm B | **Arm C** |
+|---|---|---|---|
+| planner | 14,186 | 9,026 | **1,530** |
+| executor | 17,413 | 10,920 | **2,750** |
+| reviewer | 27,155 | 12,228 | **4,520** |
+
+`shared_history` appears **once** in all of prompts.py — in `B_GENERIC_PREPEND`.
+The Arm C templates never interpolate it, yet `VISIBILITY["C"]["planner"]` claims
+`shared_history` and that dict is logged per trajectory as ground truth.
+**The logged provenance is false**, and any Arm C effect is confounded with a 6x
+context reduction.
+
+### Rulings (mine, as lead)
+
+**R1 — Re-designate the manipulation check to P2, and report the P1a result as a
+FINDING, not a failure.** "Structurally removing the answer field stops the
+Planner *answering* but not the Planner *computing*" is a genuine, on-thesis
+second dissociation: it separates output-authorship from cognitive division of
+labor, which is precisely the distinction this paper exists to draw. Re-scope
+every Arm C claim from "enforces the division of cognitive labor" to "enforces
+answer-authorship boundaries". Option B (add a computation constraint and re-run
+9,600 trajectories) does not fit in 9 days.
+
+**R2 — Add Arm C-prime: Arm C's schema and parsed-plan routing WITH
+`shared_history` restored.** C' - C isolates context; C' - A is the identified
+enforcement effect. ~300 problems x 2 actors, affordable at measured throughput.
+Without it the central comparison is confounded and I would not submit it.
+
+**R3 — Fix the VISIBILITY dict so logged provenance is true.** A false
+provenance field is worse than an absent one.
+
+**R4 — The campaign continues.** Arms A and B are unaffected, and Arm C data
+remains valid for the P2 manipulation check and for attrition analysis. C' is
+additive, not a replacement.
+
+### Also accepted from the review (queued to TODO)
+attrition per arm x actor with the prereg rule applied (the Nones→0 rule flips
+the Arm C/gpt-oss sign by 25 points); length-robust P1a via `eval_eq_density`;
+replicate noise floor; evaluator independence (gpt-oss grades itself);
+two-actor language fixed throughout the manuscript; drop the second-domain claim;
+per-actor Arm B collapse stratified by informative-vs-ceiling.
