@@ -59,3 +59,78 @@ None launched. Smoke is gated on the runner landing.
 - OpenReview profiles for all intended authors (API gives 403 to me).
 - Reciprocal-reviewer requirement, if AAMAS 2027 has one.
 - Final author list — still recorded as "interim / on hold".
+
+---
+
+## H2 — 2026-09-28 ~18:05
+
+### 1. Overall status
+**Live pipeline works end to end.** Smoke running against two actors. Two
+material changes since H1: a **50x throughput correction** and an **Arm C bug
+caught in the live run that dry-run could not have found**.
+
+### 2. Biggest change: the campaign is ~50x cheaper than I told you
+Measured ladder, 30 real requests per level, **0% errors at every level**:
+
+| model | best stable conc | throughput | p90 latency |
+|---|---|---|---|
+| gpt-oss-120b | 25 | **189 req/min** | 6.4 s |
+| gemma-4-31B-it | 25 | **142 req/min** | 9.0 s |
+
+**N=400, 3 arms, 2 actors ≈ 1.2 h parallel / 2.3 h sequential** — not the 63.5 h
+I projected in the go/no-go. My earlier figure came from *historical* PER
+wall-times that bundled queueing and a slower era of the service. The measured
+number supersedes it. **Consequence: n=400 is trivially affordable, and n=800 or
+a second domain are now live options.**
+
+### 3. Arm C bug — found live, fixed, and it mattered
+A trajectory **hard-failed** after 4 consecutive `wrong_type:strategy`
+rejections. Cause: the model emits `"strategy": "<prose>"` instead of
+`["<prose>"]`. The plan content was fine.
+
+This would have **depressed Arm C's completion rate for a formatting reason**
+and biased the arm against the hypothesis under test. Fixed: array fields coerce
+a bare string and log `coerced_string_to_array:<field>` as an auditable soft
+signal. Re-verified adversarially that `additional_property:answer`,
+`answer_leak:boxed`, and `missing_field` **still reject**. Replaying the 4 real
+failures: 3 now accepted.
+
+**Standing rule added:** formatting rejections are coerced-and-logged, never
+counted as enforcement events. The paper's enforcement rate uses **role-boundary
+violations only**.
+
+### 4. Second finding: temperature=0 is NOT deterministic
+Identical request x3: gpt-oss-120b returned **3 distinct outputs**;
+gemma-4-31B returned 3 identical on one prompt, 2 distinct on another.
+**Consequence:** no result may be attributed to a single trajectory, and
+re-running a cell will not reproduce it byte-for-byte. Paired designs and CIs
+over problems remain valid; per-trajectory anecdotes do not. Will be stated as
+a limitation.
+
+### 5. Endpoint reality — the actor panel shrank
+Only **2 of 4** models serve. Llama-3.3-70B **worked at 17:32 and was 503 by
+17:47** — it flaps. gemma-3-27b never became ready across 5 probes.
+Campaign is now **actor-incremental**: it runs with what is live and resumes to
+add an actor if an endpoint recovers. It does not block.
+
+**Pre-registered consequence, written before results:** with two actors, P4 is a
+single difference-of-differences and **cannot separate a capability ordering
+from a fidelity ordering**. If we finish with two actors, the
+capability-vs-fidelity dissociation is reported **UNRESOLVED**, not spun.
+
+### 6. Verified, not trusted
+- Manuscript compiles: **9 pages, 0 errors, 0 undefined refs/cites, 0 overfull**.
+  I audited **every decimal literal** against the frozen sources — all correct.
+- Caught the writing agent quoting **0.164**, a retracted v1 value, from
+  FINDING-07. It self-corrected; I then added a **retraction banner** to
+  FINDING-07 so the trap cannot catch the next drafter.
+- Arm C validators: 6/6 adversarial cases before the fix, re-verified after.
+
+### 7. PREREGISTRATION committed 22:52:34Z — before any confirmatory result
+With three dated amendments (actor panel, discriminating contrast, enforcement-
+rate definition).
+
+### 8. Next
+Finish smoke → evaluate the 15 gates → launch the main campaign. Given measured
+throughput I intend **n=400 x 3 arms x all live actors**, then extend to a second
+domain or n=800 with the time saved.
