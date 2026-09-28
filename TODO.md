@@ -42,3 +42,35 @@ DONE = artifact exists **and** Master reviewed **and** validation passed.
 ## Carried decisions
 - Arm D (role shuffle) **DROPPED_WITH_REASON**: tests a different question; would halve power on the A/B/C contrast.
 - Frozen metrics P1a / E2v2 must not change post-hoc (see VALIDATION-FINAL.md). Failed v3 is the cautionary case.
+
+
+---
+
+## Added 2026-09-28 20:05 — from the mock AAMAS review (all defects independently CONFIRMED by Master)
+
+| id | task | owner | pri | status | validation |
+|---|---|---|---|---|---|
+| R-1 | Re-designate manipulation check P1a → **P2**; report P1a non-effect as a FINDING | M | **P0** | DONE (D9-R1) | measured: Arm C P2=1.000 both cells, P1a 0.073-0.275 |
+| R-2 | Arm C′ context control (shared_history restored) | M | **P0** | DONE (D10) | live probe: C' doubles C context; scoped as PARTIAL control |
+| R-3 | Fix false `VISIBILITY["C"]` provenance | M | **P0** | DONE | logged policy now matches templates |
+| R-4 | Run C′ cell (~300 problems x 2 actors) | M | **P0** | TODO | C'-C isolates context |
+| R-5 | Attrition per arm x actor, prereg Nones→0 rule applied | M | **P0** | TODO | Nones→0 flips ArmC/gpt-oss by 25 pts — must show both |
+| R-6 | Two-actor language fixed throughout manuscript (6 places say three) | WRI | **P0** | TODO | grep "three actor" == 0 |
+| R-7 | Drop the second-domain claim (runner pins omnimath2) | WRI | **P0** | TODO | no "two domains" in tex |
+| R-8 | Length-robust P1a via `eval_eq_density` (Arm C msgs ~6x shorter) | MEAS | P1 | TODO | report alongside frozen P1a, do NOT re-freeze |
+| R-9 | Replicate noise floor (Arm A, ~150 problems, second seed) | M | P1 | TODO | temp=0 is nondeterministic; need the floor |
+| R-10 | Evaluator independence: gpt-oss grades itself | M | P1 | TODO | re-grade ~200 with 2nd judge, report agreement |
+| R-11 | Recompute power on informative stratum PER ACTOR | M | P1 | TODO | gemma-4 .273 / gpt-oss .374, not pooled .233 |
+| R-12 | Annotate 20-30 more E2v2 (n=13 too thin) incl. JSON executors | MEAS | P1 | TODO | report bootstrap CI on kappa |
+| R-13 | Arm B collapse per actor, stratified informative vs ceiling | M | P1 | TODO | F08 needs stratification |
+| R-14 | Fix prompts.py comment: role tags DO leak via shared_history | EXP | P2 | TODO | grep confirms `[Planner]` in Arm B bodies |
+| R-15 | Reconcile 0.110 vs 0.890 AUC spelling | WRI | P2 | TODO | one convention |
+| R-16 | Report coercion + parse-repair rates per arm x actor | M | P2 | TODO | show coercions did not do the work |
+| R-17 | Swap to real AAMAS class; get to 8 pages | WRI | **P0** | TODO | currently 9 pp with stub Results |
+| R-18 | Double-blind scrub (repo path, HF org, author GitHub) | M | **P0** | TODO | no identifying URL in PDF |
+| R-19 | R4 Reviewer annotation OR remove Reviewer from Arm C claims | MEAS | P1 | TODO | all 5 boundary rejections are reviewer |
+| R-20 | Backend straddle check (groupby, 30 min) | M | P2 | TODO | execute the \TODO |
+
+**Rejected from the review:** third actor (endpoints 503/flapping — write the
+limitation instead); second organization; full n=4181 stretch. Chasing these
+would risk R-2/R-9, which matter more.
