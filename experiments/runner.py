@@ -656,16 +656,24 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
         validator = S.VALIDATORS[role] if arm == "C" else (lambda t: S.always_valid(t))
         last_raw = ""
         prev_violation = None
+        prev_violations: List[str] = []
         for attempt in range(MAX_REGENERATIONS + 1):
             msgs = build_messages(role, rnd, inner)
             if attempt > 0:
-                # Regeneration feedback is mechanical (the violated constraint),
-                # not a rhetorical appeal.
+                # Regeneration feedback is MECHANICAL: the full list of
+                # violated constraints plus the schema-derived contract.  No
+                # rhetorical role-pressure (that would contaminate the
+                # architecture-vs-prompting contrast the arms are testing).
                 msgs[0]["content"] += (
                     "\n\nYour previous output was rejected by the output "
-                    "validator (constraint: {}). Return only the required JSON "
-                    "object.".format(prev_violation)
+                    "validator.\nViolated constraints: {}\n{}\n"
+                    "Return only the JSON object.".format(
+                        ", ".join(prev_violations) or prev_violation,
+                        S.schema_contract_text(role) if arm == "C" else "",
+                    )
                 )
+            prompt_text = msgs[0]["content"]
+            prompt_sha = hashlib.sha256(prompt_text.encode()).hexdigest()[:12]
             r = await actor_call(role, msgs)
             last_raw = r.text
             if not r.ok:
@@ -684,6 +692,8 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                     "validation_result": vr.as_log(),
                     "violated_constraint": vr.violated_constraint,
                     "latency_s": round(r.latency_s, 3),
+                    "prompt_sha256_12": prompt_sha,
+                    "prompt_chars": len(prompt_text),
                     "finish_reason": r.finish_reason,
                     "used_reasoning_fallback": r.used_reasoning_fallback,
                     "regenerated": (not vr.ok) and attempt < MAX_REGENERATIONS,
@@ -693,12 +703,21 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                 log_msg(role, rnd, inner, r.text, attempt,
                         {"validation": vr.as_log(),
                          "latency_s": round(r.latency_s, 3),
+                         "prompt_sha256_12": prompt_sha,
+                         "prompt_chars": len(prompt_text),
+                         "response_sha256_12": hashlib.sha256(
+                             r.text.encode()).hexdigest()[:12],
                          "finish_reason": r.finish_reason,
                          "used_reasoning_fallback": r.used_reasoning_fallback})
                 return r.text, vr.obj
             prev_violation = vr.violated_constraint
+            prev_violations = list(vr.all_violations)
             log_msg(role, rnd, inner, r.text, attempt,
                     {"validation": vr.as_log(), "latency_s": round(r.latency_s, 3),
+                     "prompt_sha256_12": prompt_sha,
+                     "prompt_chars": len(prompt_text),
+                     "response_sha256_12": hashlib.sha256(
+                         r.text.encode()).hexdigest()[:12],
                      "rejected": True})
         # Exhausted regenerations.
         traj.hard_failure = "regeneration_exhausted:{}:{}".format(role, prev_violation)

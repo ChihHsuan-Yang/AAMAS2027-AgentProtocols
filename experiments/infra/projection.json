@@ -1,0 +1,166 @@
+{
+  "best_stable_measured": {
+    "gpt-oss-120b": {
+      "concurrency": 25,
+      "tp_req_min": 189.13,
+      "mean_latency_s": 5.283,
+      "p90_latency_s": 6.357,
+      "error_rate": 0.0
+    },
+    "gemma-4-31B-it": {
+      "concurrency": 25,
+      "tp_req_min": 142.51,
+      "mean_latency_s": 7.262,
+      "p90_latency_s": 8.971,
+      "error_rate": 0.0
+    }
+  },
+  "evaluator_endpoint": "gpt-oss-120b",
+  "assumptions": {
+    "arms": 3,
+    "actor_calls_per_traj": 8.4,
+    "eval_calls_per_traj": 1.2,
+    "measured_actor_count": 2,
+    "actors_required_by_design": 3
+  },
+  "scenarios": [
+    {
+      "title": "A. 2 measured actors only (what the endpoint supports RIGHT NOW)",
+      "actors": [
+        {
+          "name": "gpt-oss-120b",
+          "tp_req_min": 189.13,
+          "basis": "measured"
+        },
+        {
+          "name": "gemma-4-31B-it",
+          "tp_req_min": 142.51,
+          "basis": "measured"
+        }
+      ],
+      "rows": [
+        {
+          "N": 100,
+          "trajectories_total": 600,
+          "total_actor_calls": 5040,
+          "total_eval_calls": 720,
+          "per_actor_hours": {
+            "gpt-oss-120b": 0.22,
+            "gemma-4-31B-it": 0.29
+          },
+          "seq_actor_hours": 0.52,
+          "eval_hours": 0.06,
+          "seq_total_hours": 0.58,
+          "par_makespan_actor_hours": 0.29,
+          "par_overlapped_total_hours": 0.29,
+          "par_then_eval_hours": 0.36
+        },
+        {
+          "N": 200,
+          "trajectories_total": 1200,
+          "total_actor_calls": 10080,
+          "total_eval_calls": 1440,
+          "per_actor_hours": {
+            "gpt-oss-120b": 0.44,
+            "gemma-4-31B-it": 0.59
+          },
+          "seq_actor_hours": 1.03,
+          "eval_hours": 0.13,
+          "seq_total_hours": 1.16,
+          "par_makespan_actor_hours": 0.59,
+          "par_overlapped_total_hours": 0.59,
+          "par_then_eval_hours": 0.72
+        },
+        {
+          "N": 400,
+          "trajectories_total": 2400,
+          "total_actor_calls": 20160,
+          "total_eval_calls": 2880,
+          "per_actor_hours": {
+            "gpt-oss-120b": 0.89,
+            "gemma-4-31B-it": 1.18
+          },
+          "seq_actor_hours": 2.07,
+          "eval_hours": 0.25,
+          "seq_total_hours": 2.32,
+          "par_makespan_actor_hours": 1.18,
+          "par_overlapped_total_hours": 1.18,
+          "par_then_eval_hours": 1.43
+        }
+      ]
+    },
+    {
+      "title": "B. 3 actors, 3rd ASSUMED at slowest measured rate (142.51 req/min)",
+      "actors": [
+        {
+          "name": "gpt-oss-120b",
+          "tp_req_min": 189.13,
+          "basis": "measured"
+        },
+        {
+          "name": "gemma-4-31B-it",
+          "tp_req_min": 142.51,
+          "basis": "measured"
+        },
+        {
+          "name": "actor3_ASSUMED",
+          "tp_req_min": 142.51,
+          "basis": "ASSUMED"
+        }
+      ],
+      "rows": [
+        {
+          "N": 100,
+          "trajectories_total": 900,
+          "total_actor_calls": 7560,
+          "total_eval_calls": 1080,
+          "per_actor_hours": {
+            "gpt-oss-120b": 0.22,
+            "gemma-4-31B-it": 0.29,
+            "actor3_ASSUMED": 0.29
+          },
+          "seq_actor_hours": 0.81,
+          "eval_hours": 0.1,
+          "seq_total_hours": 0.91,
+          "par_makespan_actor_hours": 0.29,
+          "par_overlapped_total_hours": 0.29,
+          "par_then_eval_hours": 0.39
+        },
+        {
+          "N": 200,
+          "trajectories_total": 1800,
+          "total_actor_calls": 15120,
+          "total_eval_calls": 2160,
+          "per_actor_hours": {
+            "gpt-oss-120b": 0.44,
+            "gemma-4-31B-it": 0.59,
+            "actor3_ASSUMED": 0.59
+          },
+          "seq_actor_hours": 1.62,
+          "eval_hours": 0.19,
+          "seq_total_hours": 1.81,
+          "par_makespan_actor_hours": 0.59,
+          "par_overlapped_total_hours": 0.59,
+          "par_then_eval_hours": 0.78
+        },
+        {
+          "N": 400,
+          "trajectories_total": 3600,
+          "total_actor_calls": 30240,
+          "total_eval_calls": 4320,
+          "per_actor_hours": {
+            "gpt-oss-120b": 0.89,
+            "gemma-4-31B-it": 1.18,
+            "actor3_ASSUMED": 1.18
+          },
+          "seq_actor_hours": 3.25,
+          "eval_hours": 0.38,
+          "seq_total_hours": 3.63,
+          "par_makespan_actor_hours": 1.18,
+          "par_overlapped_total_hours": 1.18,
+          "par_then_eval_hours": 1.56
+        }
+      ]
+    }
+  ]
+}

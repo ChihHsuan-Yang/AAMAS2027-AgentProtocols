@@ -5,3 +5,5 @@ PROBE 1 t=2026-09-28T22:36:01.022956+00:00 status=503 elapsed=0.10s :: {"error":
 PROBE 2 t=2026-09-28T22:39:01.130412+00:00 status=EXC elapsed=120.04s :: ReadTimeout: HTTPSConnectionPool(host='inference-api.alcf.anl.gov', port=443): Read timed out. (read timeout=120)
 PROBE 3 t=2026-09-28T22:44:01.176888+00:00 status=503 elapsed=0.83s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.", "info": {}}}
 PROBE 4 t=2026-09-28T22:47:02.011328+00:00 status=503 elapsed=0.20s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.", "info": {}}}
+PROBE 5 t=2026-09-28T22:50:02.220790+00:00 status=503 elapsed=0.11s :: {"error": {"code": "internal_endpoint_error", "message": "Error: Endpoint sophia-vllm-googlegemma-3-27b-it online but not ready to receive tasks. Please try again later.", "info": {}}}
+PROBE_DONE

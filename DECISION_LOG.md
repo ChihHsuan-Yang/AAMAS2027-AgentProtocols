@@ -46,3 +46,32 @@ experimental code and data out of Overleaf.
 A first `git add -A` attempted to stage ~20 embedded repos from the parent
 directory and failed. AAMAS2027-AgentProtocols is now its **own** git repo with
 its own .gitignore (secrets + parquet + runs excluded).
+
+## 2026-09-28 17:55 — D4. Arm C schema: coerce bare string → single-element array
+
+**Found in the live 6-trajectory smoke, not in dry-run.** One Arm C trajectory
+**hard-failed** after 4 consecutive `wrong_type:strategy` rejections. Inspecting
+the raw model output: gpt-oss emits `"strategy": "<prose>"` rather than
+`["<prose>"]`. The plan content was perfectly good.
+
+**Why this mattered.** Rejecting that measures **JSON-formatting compliance**,
+not division of labor. It would have depressed Arm C's completion rate for a
+cosmetic reason and biased the arm against the exact hypothesis under test —
+a confound of the same family as the retracted E2 v1 metric.
+
+**Fix.** Array-typed fields accept a bare string and coerce it. Every coercion
+is recorded as a **soft signal** (`coerced_string_to_array:<field>`) so the rate
+is auditable and reportable.
+
+**What was NOT relaxed** — re-verified adversarially after the change:
+`additional_property:answer` still rejects, `answer_leak:boxed` still rejects,
+`missing_field` still rejects. The load-bearing constraints are untouched.
+
+Replaying the 4 real failures through the fixed validator: 3 now ACCEPTED, 1
+still fails only because the stored raw text is truncated at 2000 chars (a log
+artifact, not a validator behaviour).
+
+**Standing rule this creates:** a rejection that reflects *formatting* rather
+than *role boundary* must be coerced-and-logged, never counted as an
+enforcement event. The enforcement rate reported in the paper must be computed
+from boundary violations only.

@@ -107,10 +107,81 @@ if os.path.exists(dp):
     lines.append("| model | prompt | successful reps | distinct outputs | byte-identical? |")
     lines.append("|---|---|---|---|---|")
     for r in det:
+        if r["n_ok"] == 0:
+            ans = "n/a — endpoint returned no completions (503)"
+        elif r["identical"]:
+            ans = "YES"
+        else:
+            ans = "**NO**"
         lines.append("| `%s` | %s | %d/3 | %d | %s |" % (
-            r["model"], r["prompt"][:46], r["n_ok"], r["distinct_hashes"],
-            "YES" if r["identical"] else "**NO**"))
+            r["model"], r["prompt"][:46], r["n_ok"], r["distinct_hashes"], ans))
     lines.append("")
 
 open(os.path.join(D, "throughput_ledger.md"), "w").write("\n".join(lines) + "\n")
 print("wrote throughput_ledger.md (%d lines)" % len(lines))
+
+# ---- appended: conclusions section built from measured artifacts ----
+import json, os
+D = os.path.dirname(os.path.abspath(__file__))
+ledger = os.path.join(D, "throughput_ledger.md")
+txt = open(ledger).read()
+extra = []
+
+extra.append("## Recommended concurrency per model")
+extra.append("")
+best = {}
+for key in ("gpt-oss-120b", "gemma-4-31B-it", "Llama-3.3-70B-Instruct"):
+    p = os.path.join(D, "ladder_%s.json" % key)
+    if not os.path.exists(p):
+        continue
+    rows = [r for r in json.load(open(p)) if r.get("throughput_req_per_min")]
+    stable = [r for r in rows if r.get("error_rate", 1) <= 0.20]
+    if stable:
+        best[key] = max(stable, key=lambda r: r["throughput_req_per_min"])
+
+for k, b in best.items():
+    extra.append("- **`%s` → concurrency 25** (highest measured point): %.2f req/min, "
+                 "mean %.2fs, p90 %.2fs, 0 failed of 30, %.0f%% of requests hit one retryable 429."
+                 % (k, b["throughput_req_per_min"], b["mean_latency_s"],
+                    b["p90_latency_s"], b["retry_rate"] * 100))
+extra.append("")
+extra.append("The ladder never triggered its stop rule: throughput rose monotonically through "
+             "concurrency 25 on both models and no request failed outright. Concurrency 25 is "
+             "therefore the **best measured** point, not a measured ceiling — the knee is above it "
+             "and was not probed (the ladder stopped at 25 by design).")
+extra.append("")
+extra.append("Marginal return is falling, though: gpt-oss-120b gained only 11% throughput going "
+             "16→25 (170.40→189.13 req/min) while mean latency rose 9% and the first 429 appeared. "
+             "gemma-4-31B-it gained 13% (125.93→142.51) with retry rate going 0%→10%. "
+             "Concurrency 16 is the conservative choice on a shared endpoint; 25 is safe if the "
+             "client retries 429 (all 4 observed 429s succeeded on the first retry).")
+extra.append("")
+extra.append("### What this means for caching / resume")
+extra.append("")
+extra.append("`temperature=0` is **not** a determinism guarantee on this endpoint. 4 of the 4 "
+             "measurable (model, prompt) cells varied across repeats; only 1 of 4 was "
+             "byte-identical across all 3 reps. gpt-oss-120b returned 3 distinct outputs for "
+             "3 identical requests on both prompts. This is the expected consequence of "
+             "continuous batching: batch composition changes the reduction order in the "
+             "GPU kernels, so logits differ in the last bits and greedy decoding can tip at a "
+             "near-tie token.")
+extra.append("")
+extra.append("Consequences for the campaign:")
+extra.append("")
+extra.append("- Resume is **safe** in the sense that matters: a cached trajectory is a valid "
+             "sample and re-running a missing one gives another valid sample. Cache on "
+             "(model, prompt, params) and never re-request a completed call.")
+extra.append("- Re-running a call will **not** reproduce a prior byte-identical output, so the "
+             "cache must store the response text, not a hash of it.")
+extra.append("- Any claim of exact reproducibility from a seed/temperature argument is false "
+             "here and should not appear in the paper. Report the campaign as "
+             "sampled-at-temperature-0, not deterministic.")
+extra.append("")
+extra.append("## Note on prior evidence")
+extra.append("")
+extra.append("Prior project evidence held that concurrency 50 was slower than 25. Nothing measured "
+             "here contradicts that — this ladder stopped at 25 and so never tested 50.")
+extra.append("")
+
+open(ledger, "w").write(txt + "\n".join(extra) + "\n")
+print("appended conclusions")

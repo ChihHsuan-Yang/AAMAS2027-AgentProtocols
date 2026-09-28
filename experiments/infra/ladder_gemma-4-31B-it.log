@@ -7,3 +7,7 @@
 === gemma-4-31B-it conc=8 starting 17:46:19
 {"concurrency": 8, "wall_s": 25.87, "completed": 30, "failed": 0, "throughput_req_per_min": 69.58, "mean_latency_s": 5.981, "p90_latency_s": 7.687, "error_rate": 0.0, "retry_rate": 0.0, "errors_by_type": {}, "mean_completion_tokens": 439.1, "out_tok_per_s": 509.2}
 === gemma-4-31B-it conc=16 starting 17:47:04
+{"concurrency": 16, "wall_s": 14.29, "completed": 30, "failed": 0, "throughput_req_per_min": 125.93, "mean_latency_s": 6.443, "p90_latency_s": 8.217, "error_rate": 0.0, "retry_rate": 0.0, "errors_by_type": {}, "mean_completion_tokens": 439.9, "out_tok_per_s": 923.3}
+=== gemma-4-31B-it conc=25 starting 17:47:39
+{"concurrency": 25, "wall_s": 12.63, "completed": 30, "failed": 0, "throughput_req_per_min": 142.51, "mean_latency_s": 7.262, "p90_latency_s": 8.971, "error_rate": 0.0, "retry_rate": 0.1, "errors_by_type": {}, "mean_completion_tokens": 440.1, "out_tok_per_s": 1045.2}
+LADDER_DONE gemma-4-31B-it

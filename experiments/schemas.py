@@ -86,15 +86,32 @@ _ANSWER_IS_RE = re.compile(r"\b(the\s+)?answer\s+is\b", re.IGNORECASE)
 
 
 def find_answer_leak(text: str) -> Optional[str]:
-    """Return the name of the violated no-answer constraint, or None."""
+    """HARD no-answer constraint: the two forms the protocol spec names.
+
+    A role under this constraint may not emit ``\\boxed{...}`` or a
+    "Final Answer" block.  These are the forms the submission path reads, so
+    emitting one is an attempt to author the submission.
+    """
     if not text:
         return None
     if _BOXED_RE.search(text):
         return "answer_leak:boxed"
     if _FINAL_ANSWER_RE.search(text):
         return "answer_leak:final_answer_phrase"
-    if _ANSWER_IS_RE.search(text):
-        return "answer_leak:answer_is_phrase"
+    return None
+
+
+def find_answer_soft_signal(text: str) -> Optional[str]:
+    """SOFT signal: recorded, never rejecting.
+
+    "the answer is X" inside a reviewer critique is ordinary review prose, and
+    it cannot hijack the submission because "accept" promotes the executor's
+    answer BY REFERENCE regardless of what the critique says.  We log it so
+    the paper can still measure answer-talk by role, but rejecting on it would
+    punish legitimate reviewing.
+    """
+    if text and _ANSWER_IS_RE.search(text):
+        return "soft:answer_is_phrase"
     return None
 
 
@@ -107,6 +124,8 @@ class ValidationResult:
     # Every constraint that failed (the first is reported as
     # ``violated_constraint``; the full list is logged for the paper).
     all_violations: List[str] = field(default_factory=list)
+    # Non-rejecting observations (measured, not enforced).
+    soft_signals: List[str] = field(default_factory=list)
 
     def as_log(self) -> Dict[str, Any]:
         return {
@@ -114,6 +133,7 @@ class ValidationResult:
             "violated_constraint": self.violated_constraint,
             "detail": self.detail[:500],
             "all_violations": self.all_violations,
+            "soft_signals": self.soft_signals,
         }
 
 
@@ -266,6 +286,10 @@ def validate_role_output(
     """
     schema = SCHEMAS[role]
     violations: List[Tuple[str, str]] = []
+    soft: List[str] = []
+    sig = find_answer_soft_signal(raw_text)
+    if sig:
+        soft.append(sig)
 
     # Constraint 1: the no-answer constraint is checked against the RAW text,
     # not only the parsed object, so prose smuggled outside the JSON is caught.
@@ -275,6 +299,13 @@ def validate_role_output(
             violations.append((leak, "role {} may not author a final answer".format(role)))
 
     obj, err = extract_json_object(raw_text)
+    if obj is not None:
+        # Format accommodation (see _coerce_string_arrays): a bare string where
+        # the schema wants array-of-string is coerced, and RECORDED as a soft
+        # signal so the rate is auditable. Load-bearing constraints unaffected.
+        obj, _coerced = _coerce_string_arrays(obj, schema)
+        for _c in _coerced:
+            soft.append("coerced_string_to_array:{}".format(_c))
     if obj is None:
         violations.append(("json_parse_error", err or "unparseable"))
         first = violations[0]
@@ -284,6 +315,7 @@ def validate_role_output(
             detail=first[1],
             obj=None,
             all_violations=[v[0] for v in violations],
+            soft_signals=soft,
         )
 
     violations.extend(_check_schema(obj, schema))
@@ -312,8 +344,32 @@ def validate_role_output(
             detail=first[1],
             obj=obj,
             all_violations=[v[0] for v in violations],
+            soft_signals=soft,
         )
-    return ValidationResult(ok=True, obj=obj, detail="valid", all_violations=[])
+    return ValidationResult(ok=True, obj=obj, detail="valid", all_violations=[],
+                            soft_signals=soft)
+
+
+
+def _coerce_string_arrays(obj, schema):
+    """Accept a bare string where the schema wants array-of-string.
+
+    RATIONALE (master agent, live smoke): models frequently emit
+    "strategy": "<prose>" instead of ["<prose>"]. Rejecting that measures
+    JSON-formatting compliance, not division of labor, and would silently
+    bias Arm C's completion rate against the very thing we are testing.
+    The load-bearing constraints -- no answer field, no answer leak,
+    no missing field -- remain strict and are unaffected.
+    """
+    if not isinstance(obj, dict):
+        return obj, []
+    coerced = []
+    props = schema.get("properties", {})
+    for k, spec in props.items():
+        if spec.get("type") == "array" and isinstance(obj.get(k), str):
+            obj[k] = [obj[k]]
+            coerced.append(k)
+    return obj, coerced
 
 
 def validate_planner(raw_text: str) -> ValidationResult:
@@ -347,6 +403,7 @@ def validate_reviewer(raw_text: str) -> ValidationResult:
                 ok=False, violated_constraint=extra[0],
                 detail="a revise verdict must name a target and a critique",
                 obj=res.obj, all_violations=extra,
+                soft_signals=res.soft_signals,
             )
     return res
 
@@ -365,3 +422,33 @@ def always_valid(raw_text: str) -> ValidationResult:
     the constraint set differs.  This is the manipulated variable.
     """
     return ValidationResult(ok=True, obj=None, detail="no constraint (unconstrained arm)")
+
+
+def schema_contract_text(role: str) -> str:
+    """A compact, MECHANICAL restatement of the role's output contract.
+
+    Derived from the schema document itself, so it cannot drift from what the
+    validator enforces.  This is deliberately descriptive (types and key
+    names), never an appeal to role discipline -- arm C's manipulation is the
+    architecture, and the regeneration feedback must not smuggle in the kind
+    of rhetorical role-pressure that arm A uses.
+    """
+    schema = SCHEMAS[role]
+    parts = []
+    for key, spec in schema["properties"].items():
+        if spec.get("type") == "array":
+            t = "array of strings"
+            if spec.get("minItems"):
+                t += " (at least {} item(s))".format(spec["minItems"])
+        elif spec.get("enum"):
+            t = "string, exactly one of " + json.dumps(spec["enum"])
+        else:
+            t = "string"
+            if spec.get("minLength"):
+                t += " (non-empty)"
+        parts.append('  "{}": {}'.format(key, t))
+    return (
+        "Required JSON object with EXACTLY these keys and types:\n"
+        + "\n".join(parts)
+        + "\nNo other keys are permitted."
+    )
