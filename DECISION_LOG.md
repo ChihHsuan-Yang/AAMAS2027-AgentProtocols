@@ -75,3 +75,38 @@ artifact, not a validator behaviour).
 than *role boundary* must be coerced-and-logged, never counted as an
 enforcement event. The enforcement rate reported in the paper must be computed
 from boundary violations only.
+
+## 2026-09-28 18:15 — D5. Campaign N raised to 1600; ceiling solved by scale, not stratification
+
+**Problem found.** Smoke showed 19/19 correct across all arms. Investigation:
+the manifest is representative (baseline acc 0.6126 vs population 0.6121), so
+this is small-sample luck — **but** historically on omnimath2:
+
+| stratum | share | can an arm differ? |
+|---|---|---|
+| solved by all 4 protocols | **73.8%** | no |
+| solved by none | 2.9% | no |
+| **informative** | **23.3%** | yes |
+
+So at n=400 only **~93 problems** can possibly exhibit an effect. Power for a
+moderate main effect: **0.30**. That is a study designed to find nothing.
+
+**Two ways out.**
+1. *Stratify* — sample only informative problems. Raises effective n ~4.6x, but
+   it conditions on historical outcomes, i.e. **selection on the dependent
+   variable**. Would require heavy caveats and invites a fair reviewer attack.
+2. *Scale* — sample more problems. Measured throughput (D-H2: 189/142 req/min,
+   0% errors) makes this nearly free.
+
+**Decision: scale.** n=1600 gives ~372 informative problems: power **0.82**
+moderate / **1.00** large for the main effect, and roughly the n=800 row for the
+interaction. Estimated **~4.7 h parallel** at measured rates.
+
+Rejected option 1 because a clean unbiased sample at larger n is strictly better
+science than a biased sample with caveats, and the compute is available. The
+ceiling stratum will still be **reported** (it is a real property of the
+benchmark and bounds any effect), just not selected on.
+
+**Full omnimath2 (n=4181) is also affordable (~12.3 h).** Held as the stretch
+option per the deadline-aware policy; will extend if n=1600 completes cleanly
+with time in hand.
