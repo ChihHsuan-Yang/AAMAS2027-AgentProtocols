@@ -88,3 +88,26 @@ emit different strings.
 
 The paper must therefore report precision **per actor**, name the n, and not
 present a pooled precision as if it generalized.
+
+---
+
+## Defect found and fixed mid-run (2026-09-29)
+
+**31 of the first 125 verdicts (25%) returned EMPTY content** with no error —
+`stop_reason: end_turn`, zero text. Diagnosis: at `max_tokens: 400` the judge
+spent its budget reasoning on harder transcripts and emitted nothing.
+Transcript length was **not** the driver (median 4,486 vs 4,192 chars overall),
+so it is reasoning depth, not input size.
+
+**This is the same error class as F13** — a budget exhausted on hidden
+reasoning, producing an empty visible field. Discarding those items would have
+biased coverage toward transcripts the judge found *easy*, i.e. exactly the
+clear-cut cases, inflating apparent agreement.
+
+**Fix:** `max_tokens` 400 → 1200, plus a salvage parser that recovers labels
+from a verdict truncated mid-JSON. The 34 affected calls were **deleted and
+re-queued**, not patched, so every verdict in the final file was produced under
+one configuration. Post-fix: **131/131 parsed, 0 empty.**
+
+**Judge stability so far:** among items with ≥2 completed reps, Q5 agreement is
+**20/20 (1.000)**. Final stability is reported over all 3 reps at completion.

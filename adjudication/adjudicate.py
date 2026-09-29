@@ -54,7 +54,7 @@ def call_judge(transcript, model, temperature, seed_note):
     # empirically from repeated independent calls (--reps), which is the more
     # meaningful check anyway. Recorded in the audit trail as temperature=null.
     body = json.dumps({
-        "model": model, "max_tokens": 400,
+        "model": model, "max_tokens": 1200,
         "system": SYSTEM.format(rubric=RUBRIC),
         "messages": [{"role": "user",
                       "content": f"Transcript to adjudicate:\n\n{transcript}\n\nReturn the JSON verdict."}],
@@ -71,14 +71,26 @@ def call_judge(transcript, model, temperature, seed_note):
         return None, f"{type(e).__name__}: {str(e)[:200]}"
 
 def parse(txt):
+    """Parse a verdict. Salvages responses truncated mid-JSON by max_tokens:
+    29/125 of the first batch were cut off after Q4 with all five labels
+    recoverable by regex. Discarding them would have silently biased coverage
+    toward short verdicts."""
     if not txt: return None
     s = txt.strip()
     i, j = s.find("{"), s.rfind("}")
-    if i < 0 or j < 0: return None
-    try:
-        o = json.loads(s[i:j+1])
-    except Exception:
-        return None
+    o = None
+    if i >= 0 and j > i:
+        try: o = json.loads(s[i:j+1])
+        except Exception: o = None
+    if o is None:
+        import re as _re
+        o = {}
+        for q in ("Q1","Q2","Q3","Q4","Q5"):
+            m = _re.search(rf'"{q}"\s*:\s*"(YES|NO)"', s)
+            if not m: return None
+            o[q] = m.group(1)
+        m = _re.search(r'"reason"\s*:\s*"([^"]*)', s)
+        o["reason"] = m.group(1) if m else ""
     out = {}
     for q in ("Q1","Q2","Q3","Q4","Q5"):
         v = str(o.get(q, "")).strip().upper()
