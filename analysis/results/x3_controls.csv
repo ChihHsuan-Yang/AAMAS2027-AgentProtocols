@@ -1,0 +1,4 @@
+control,ratio,containment,jaccard,overlap,capped
+synthetic_identical,1.0,1.0,1.0,1.0,0
+synthetic_unrelated,0.21875,0.2916666666666667,0.0,0.0,0
+corpus_byte_identical_cycles,1.0,1.0,1.0,1.0,2

@@ -376,3 +376,67 @@ prefix so C' and C share problems exactly.
 **Deadline arithmetic.** Abstract Oct 1 (result-agnostic, already drafted).
 Paper Oct 8. Even 29 h of generation ends Sep 30, leaving 8 days. Generation is
 not the binding constraint — the P0 analysis/writing items are.
+
+## 2026-09-29 15:58 — D12. Third actor FOUND and RUNNING: Llama-3.3-70B-Instruct
+
+**Why.** Two actors cannot establish the inverse collapse/accuracy relationship.
+A third actor tests whether it is a pattern or a two-model anecdote.
+
+**Probe (real POSTs; no /models route exists; 3 rounds over ~10 min).**
+
+| model id | 15:38Z | 15:40Z | 15:47Z | verdict |
+|---|---|---|---|---|
+| `meta-llama/Llama-3.3-70B-Instruct` | 200 | 200 | 200 | **LIVE 3/3** |
+| `meta-llama/Meta-Llama-3.1-70B-Instruct` | 200 | 200 | 200 | **LIVE 3/3** (spare) |
+| `openai/gpt-oss-20b` | 200 | 200 | — | live 2/2 (spare) |
+| `google/gemma-4-E4B-it` | 200 | — | — | live 1/1 (spare) |
+| `google/gemma-3-27b-it` | timeout | 503 | 503 | **DEAD 0/3** |
+
+404 `endpoint_not_found` (do not exist): all Qwen ids tried, all Mistral ids,
+`meta-llama/Llama-3.1-70B-Instruct` (the `Meta-` prefix is required),
+`deepseek-ai/DeepSeek-R1`, `microsoft/phi-4`, `google/gemma-2-27b-it`,
+`nvidia/Llama-3.1-Nemotron-70B-Instruct-HF`, `argonne-private/AuroraGPT-Tulu3-SFT-0125`.
+
+Chose **Llama-3.3-70B-Instruct**: live in all 3 rounds, a different vendor and
+family from both incumbents, and 70B sits between 31B and 120B.
+
+**Validated before launch, not assumed.**
+- Real 8192-token generation: complete `\boxed{6}` answer, `finish_reason=stop`.
+- 9/9 pipeline smoke across A,B,C, zero errors.
+- Capacity ladder 4/8/16 parallel: 0 errors, no latency penalty even with
+  campaign_v2 running. Relaunched at concurrency 24 (ETA 19.5 h -> 8.1 h).
+
+**`config_version` differs from campaign_v2 — and it is metadata-only.**
+actor3 runs `231b8c4fe205d04b`; campaign_v2 holds `e3afa39849c1b980` in memory
+(pre-8420b8d). Chased rather than assumed:
+- `ALL_PROMPTS`: **zero** keys added, removed, or changed. All 8 A/B keys byte-identical.
+- `SCHEMAS`: untouched (schemas.py not in the commit).
+- The hash moved **only** because the `VISIBILITY` *documentation* dict gained a
+  corrected Arm C provenance label and a new `Cp` entry.
+- **Behavioural proof:** 19 round-1 planner prompts spanning A, B and C are
+  byte-identical (`prompt_sha256_12`) across the two config versions. 0 mismatches.
+- Evaluator is `openai/gpt-oss-120b` in both. No verifier drift.
+
+Conclusion: actor3 is poolable with campaign_v2. The differing hash is a relabel.
+
+**Collapse metric: a message-count confound, and the headline survives it.**
+The project rule (`x2_campaign_tables.py:149-156`) flags any duplicate hash among
+*all* role messages, so trajectories with more messages get more chances to
+collapse. Llama-3.3 emits ~2x more role messages (mean 13.5 vs 6.6), so its
+project-rule number is not directly comparable. Stratifying campaign_v2 by
+message count separates two phenomena that share one metric:
+
+| actor | arm | nmsg=3 | 4-9 | 10+ |
+|---|---|---|---|---|
+| gpt-oss-120b | B | **0.813** | 0.823 | 0.966 |
+| gemma-4-31B | B | **0.000** | 0.100 | 0.978 |
+
+gpt-oss collapses at 0.813 in *minimal* 3-message trajectories; gemma-4's 0.179
+comes almost entirely from long trajectories (0.978 at 10+, 0.000 at 3). Under a
+count-matched rule (first 3 role messages) the contrast is **starker**, not
+weaker: gpt-oss B 0.698 vs gemma-4 B 0.000. The headline is robust; report the
+count-matched rule alongside the project rule.
+
+**Status.** `results/main/actor3.jsonl`, run-id `actor3-n400`, n=400 x A,B,C =
+1200 trajectories, resumable. The n=400 manifest is a strict subset of n=1600
+(same seed), so all three actors are comparable on the identical 400 problems.

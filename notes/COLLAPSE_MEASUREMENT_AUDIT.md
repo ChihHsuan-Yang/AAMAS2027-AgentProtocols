@@ -87,3 +87,56 @@ The exact-collapse measure is **sound, conservative, and not explainable** by
 determinism, normalization, retry convergence, or problem easiness. The headline
 survives this audit. It is **not yet** licensed to claim *functional* redundancy
 — that needs Level 3 plus human validation.
+
+---
+
+# AUDIT ROUND 2 (2026-09-29): a message-count confound, found and resolved
+
+The third-actor worker flagged that the collapse rule ("any duplicate among all
+role messages") gives longer trajectories more chances to collapse. **Verified
+by the Master Agent — it is real, and resolving it makes the finding stronger.**
+
+## The confound
+
+Collapse by message-count stratum, Arm B:
+
+| actor | nmsg=3 (one pass) | 4-9 | 10+ |
+|---|---|---|---|
+| **gpt-oss-120b** | **0.813** | 0.823 | 0.966 |
+| **gemma-4-31B** | **0.000** | — | 0.978 |
+
+gpt-oss collapses at 0.813 in *minimal three-message* trajectories. gemma-4's
+headline 0.177 comes **entirely** from long trajectories — in a single pipeline
+pass it collapses **never**.
+
+## Count-matched rule: first three role messages only (one pipeline pass)
+
+| actor | A | **B** | C | C' |
+|---|---|---|---|---|
+| gpt-oss-120b | 0.000 | **0.698** | 0.000 | 0.000 |
+| gemma-4-31B | 0.000 | **0.000** | 0.002 | 0.002 |
+
+**The contrast widens from 0.842 vs 0.177 to 0.698 vs 0.000.** Under a
+count-matched definition gemma-4 shows *no* first-pass collapse at all, while
+gpt-oss shows it in 70% of trajectories. This is cleaner than the raw number and
+it is the version that belongs in the headline.
+
+## Is gemma-4's long-trajectory collapse a different phenomenon?
+
+I suspected retry stagnation (one agent repeating itself across rounds) rather
+than role collapse. **Checked: it is not.** Among gemma-4's 231 long
+trajectories, duplicate-hash groups are **436 across-role** vs **22
+within-role**. So gemma-4 *does* genuinely collapse — but only after the outer
+loop has failed repeatedly, i.e. collapse is a *symptom of being stuck*, not the
+initial condition.
+
+That is a substantively different story from gpt-oss, which collapses
+immediately on the first pass, and it sharpens the paper: for gpt-oss collapse
+is the *starting state* and costs nothing; for gemma-4 collapse *arrives with
+failure* and coincides with the 0.406 → 0.018 accuracy destruction.
+
+## Reporting rule adopted
+Both definitions will be reported. The **count-matched (first-pass) rule is
+primary** because it is not confounded with trajectory length; the all-message
+rule is reported alongside it. No third actor may be compared on the raw rule
+alone — Llama-3.3 emits ~2x more role messages, which would inflate it.
