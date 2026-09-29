@@ -95,3 +95,39 @@ only 0.638. gpt-oss stays split 0.251 and escapes 0.772.
   must be labelled post-hoc however important it is.
 - **The P1a manipulation objective FAILED.** Reported as a failed objective
   first, an insight second.
+
+
+---
+
+# 2026-09-29 LATE — two corrections that reshape the headline
+
+## WITHDRAWN
+
+| claim | why |
+|---|---|
+| "gemma-4 shows no first-pass collapse (0.000)" | **Byte-metric artifact.** 180 blinded human annotations: gemma-4 Arm B is judged 0.944 no-division-of-labor. Its agents paraphrase instead of duplicating bytes. |
+| "the actor that collapses most loses least" | Both actors lose their division of labor at the same rate (0.944 / 0.958). The *scope* contrast does not exist. |
+| "~70% / 84% collapse" as the headline figure | **Logging defect (F13).** 81.8% of gpt-oss Arm B messages had hidden reasoning discarded. Defensible figure on fully-logged cycles is **0.367** (n=442); 0.692 is an upper bound. |
+
+## SUPPORTED — and this is now the paper
+
+| claim | evidence |
+|---|---|
+| **Arm A has genuine functional division of labor** | humans judge no-division at 0.000 (gemma-4) / 0.056 (gpt-oss) |
+| **Removing role instructions destroys it for BOTH actors** | 0.944 / 0.958 judged no-division in Arm B |
+| **Only one actor loses accuracy** | gemma-4 −0.029 [−0.045,−0.013]; gpt-oss +0.008 [−0.010,+0.026] |
+| **Mechanism** | gemma-4 first-pass unchanged 0.809→0.809; **recovery 0.490→0.045**; escapes wrong consensus 0.638 vs gpt-oss 0.772 |
+| **Enforcement restores structure, not capability** | P2→1.000, C−A null both actors, C′ rules out context |
+| **Collapsed team ≠ single agent** | +0.0248 [+0.0072,+0.0424] over a control with MORE oracle exposure |
+| byte-identity as a measure | precision **1.000**, recall 0.343 — a conservative lower bound, never a scope comparison |
+
+## The corrected one-line contribution
+
+> Removing role instructions destroys the functional division of labor in both
+> actors, yet costs accuracy in only one. **Visible organizational
+> differentiation does not tell you whether an organization is load-bearing** —
+> and architecturally restoring the role boundary restores the structure
+> without restoring the capability.
+
+This is stronger than the withdrawn version: identical organizational loss,
+opposite consequences.

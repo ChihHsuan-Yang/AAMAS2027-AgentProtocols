@@ -227,6 +227,7 @@ class CallResult:
     status: Optional[int] = None
     finish_reason: Optional[str] = None
     used_reasoning_fallback: bool = False
+    reasoning_chars: int = 0   # F13: always record hidden-reasoning size
 
 
 class Backend:
@@ -287,6 +288,14 @@ class Backend:
                     choice = data["choices"][0]
                     msg = choice.get("message", {})
                     txt = (msg.get("content") or "")
+                    # DEFECT FIXED 2026-09-29 (F13): previously `reasoning` was
+                    # captured ONLY when content was empty, so a short content
+                    # with a long hidden reasoning trace silently discarded the
+                    # reasoning. 81.8% of gpt-oss Arm B messages were affected
+                    # and the old `used_reasoning_fallback` flag caught 5.7%.
+                    # Always preserve the reasoning trace alongside content.
+                    reasoning_txt = (msg.get("reasoning")
+                                     or msg.get("reasoning_content") or "")
                     if not txt.strip():
                         # gpt-oss puts chain-of-thought in "reasoning" and can
                         # spend the whole budget there, leaving content empty.
@@ -298,6 +307,7 @@ class Backend:
                         ok=True, status=200,
                         finish_reason=choice.get("finish_reason"),
                         used_reasoning_fallback=not (msg.get("content") or "").strip(),
+                        reasoning_chars=len(reasoning_txt),
                     )
                 body = scrub(resp.text[:600], token)
                 if resp.status_code == 401:

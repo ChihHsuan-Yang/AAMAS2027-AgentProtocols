@@ -1,5 +1,6 @@
 arm,actor,n,attempts,boundary,parse_format,boundary_per_traj,soft
-C,gemma-4-31B-it,1224,6850,557,76,0.455,"{'soft': 410, 'coerced_string_to_array': 57}"
-C,gpt-oss-120b,1222,7638,811,311,0.664,"{'coerced_string_to_array': 6073, 'soft': 405}"
+C,Llama-3.3-70B-Instruct,73,885,78,2,1.068,"{'coerced_string_to_array': 47, 'soft': 71}"
+C,gemma-4-31B-it,1293,7469,651,86,0.503,"{'soft': 480, 'coerced_string_to_array': 58}"
+C,gpt-oss-120b,1289,8390,921,334,0.715,"{'coerced_string_to_array': 6678, 'soft': 441}"
 Cp,gemma-4-31B-it,400,2166,139,42,0.347,"{'coerced_string_to_array': 40, 'soft': 133}"
 Cp,gpt-oss-120b,400,2620,217,117,0.542,"{'coerced_string_to_array': 2149, 'soft': 166}"
