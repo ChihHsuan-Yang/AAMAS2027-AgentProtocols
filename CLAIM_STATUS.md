@@ -1,4 +1,4 @@
-# CLAIM_STATUS — live board (2026-09-28 21:00)
+# CLAIM_STATUS — live board (2026-09-29, post-pivot)
 
 Labels: OBSERVED · SUPPORTED · TENTATIVE · FALSIFIED · UNTESTED · DROPPED.
 **Paper prose must never outrun this file.**
@@ -55,3 +55,43 @@ Labels: OBSERVED · SUPPORTED · TENTATIVE · FALSIFIED · UNTESTED · DROPPED.
 > actually *does the work*.
 
 That is narrower than the launch hypothesis and it is what the evidence supports.
+
+
+---
+
+# 2026-09-29 — post-pivot board
+
+## The claim ladder Bella specified (§21)
+
+| level | claim | status |
+|---|---|---|
+| **A** descriptive | removing role instructions can cause extreme organizational collapse | **SUPPORTED** — first-pass collapse 0.698 (gpt-oss) vs 0.000 (Arm A); audited against determinism, normalization, retry convergence, difficulty |
+| **B** actor-specific surprise | the actor with the largest collapse loses the least | **SUPPORTED** — and it runs both ways: gpt-oss collapses 0.698 and loses nothing; gemma-4 collapses 0.000 and loses 0.029 |
+| **C** structural dissociation | enforcement restores structure without restoring capability | **SUPPORTED** — P2 → 1.000, collapse → ~0, C−A null both actors, C′ rules out context |
+| **D** functional dissociation | structural compliance ≠ cognitive division of labor | **SUPPORTED** — Planner computation persists at or above soft-role density; the pre-registered P1a objective **failed** (see PREREGISTRATION-PROVENANCE.md) |
+| **E** broad | visible specialization is neither necessary nor sufficient | **NOT CLAIMED** — needs human validation (in flight) and the third actor |
+
+## Mechanism (F11) — SUPPORTED, and it is what lifts this above an anecdote
+
+> Role differentiation is load-bearing for **error recovery**, not for
+> **first-pass solving**, and only for the actor that cannot otherwise escape a
+> wrong consensus.
+
+gemma-4 first-pass **0.809 → 0.809** (unchanged); recovery **0.490 → 0.045**.
+Without roles it reaches unanimity 0.954, is wrong in 0.436 of those, escapes
+only 0.638. gpt-oss stays split 0.251 and escapes 0.772.
+
+## Corrections logged this session
+- gpt-oss **whole-arm** B−A is **+0.0078 [−0.0102,+0.0259]** — null. The +0.0171
+  is the differentiated→collapsed **subset**. Never conflate.
+- Mechanism A ("first agent already solved it") is **REFUTED**: gpt-oss first
+  agent correct 0.481, 38% of finals rescued from a wrong start.
+- gemma-4's raw 0.177 collapse was a trajectory-length artifact; count-matched
+  it is **0.000**.
+
+## Provenance rulings (binding on the manuscript)
+- **P4 (pre-registered primary) is NULL.** Reported as Pattern E.
+- **B−A is POST-HOC.** It was secondary/exploratory in the committed file. It
+  must be labelled post-hoc however important it is.
+- **The P1a manipulation objective FAILED.** Reported as a failed objective
+  first, an insight second.
