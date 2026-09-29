@@ -74,3 +74,44 @@ both arms. For that actor the PER organization is actively costly.
   its single agent by +0.025
 - Any causal reading of collapse→accuracy: collapse is **post-treatment**. The
   transition table is an *association*, however sharp.
+
+---
+
+## Functional contribution: what actually changes hands (added 2026-09-29)
+
+Answer extraction corrected per arm (Arm C/C' answers live in the JSON `answer`
+field, not in `\boxed`; the first pass of this analysis reported spurious zeros
+for those arms and is superseded).
+
+| actor / arm | planner emits an answer | executor emits one | executor ≠ planner |
+|---|---|---|---|
+| gpt-oss / A | 0.17 | 0.91 | 174/184 (0.95) |
+| **gpt-oss / B** | **0.90** | 0.95 | **200/1088 (0.18)** |
+| gpt-oss / C | **0.00** | 0.92 | n/a — planner emits none |
+| gemma-4 / A | 0.00 | 0.97 | n/a |
+| **gemma-4 / B** | **0.98** | 0.99 | **50/1224 (0.04)** |
+| gemma-4 / C, C' | **0.00** | 0.43 / 0.36 | n/a |
+
+Three things follow.
+
+**1. Arm B is not "roles blurred" — it is every agent answering.** Under generic
+prompts 90-98% of *planners* emit a final answer (vs 0.00-0.17 in Arm A), and
+the executor then reproduces it unchanged in 82% (gpt-oss) to 96% (gemma-4) of
+cases. The pipeline becomes three independent solvers that agree, not a
+division of labor.
+
+**2. Arm A does have a real functional boundary, and it is asymmetric.**
+gemma-4's planner *never* answers (0.00) and gpt-oss's rarely does (0.17) — the
+soft role prompt genuinely suppresses answer authorship. Where gpt-oss's planner
+does answer, the executor overrides it 95% of the time, i.e. the executor is
+doing independent work rather than copying.
+
+**3. Arm C enforces the boundary absolutely** (planner answers 0.00 in every
+cell), confirming the manipulation from a second, independent measurement.
+
+**A caveat I will not bury:** gemma-4's Arm C executor emits a parseable answer
+in only 0.43 of trajectories (0.36 in C'), versus 0.97 in Arm A. Some of that is
+the JSON-extraction path, not necessarily missing answers — the grader reads the
+trajectory's `final_answer`, not this field, so accuracy is unaffected. But it
+means this particular table under-counts gemma-4 Arm C and must not be read as
+"the executor stopped answering". Flagged for the functional-metrics worker.
