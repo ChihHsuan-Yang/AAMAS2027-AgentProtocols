@@ -789,3 +789,36 @@ grader nondeterminism from actor identity. Not run.
 difference smaller than that is inside scorer noise — which includes **every
 B-A contrast in this study** (largest |B-A| = 0.040). State this beside the
 B-A table, not in a footnote.
+
+### D18 addendum (19:35) — the noise floor is NOT uniform across arms, and that matters for B-A
+
+D18 quoted a single pooled ~4% grader noise floor. Wrong to quote it as one
+number. Measured per arm on the corrected 400-problem set (identical
+`final_answer`, same problem, same arm, both rows actually graded):
+
+| arm | disagree / pairs | rate |
+|---|---|---|
+| A | 13/336 | **0.0387** |
+| B | 1/334 | **0.0030** |
+| C | 16/359 | 0.0446 |
+
+Arm A is **~13x noisier than Arm B** (Fisher two-sided **p = 0.0017**).
+
+**Checked two confounds, both rejected.**
+- *Nulls inflating Arm C*: yes, partly. Arm C falls 0.0649 -> 0.0446 when
+  restricted to pairs where both rows carry a real 0/1 grade. Quote the
+  restricted figure.
+- *Arm B's collapse producing shorter, easier-to-grade answers*: no. Matching on
+  answer length, the dominant 1-3 character bucket still shows A 8/238 (3.4%)
+  vs B 1/242 (0.4%). The gap is not an answer-complexity artifact.
+
+**Consequence for the headline.** B-A is a difference across two arms whose
+scorer noise differs by an order of magnitude. The floor that matters for B-A
+is set by the noisier arm, **~3.9% (Arm A)**, not by the pooled 3.8% and
+certainly not by Arm B's 0.3%. Every B-A in this study (largest |B-A| = 0.040)
+sits at or inside that floor.
+
+This does not change the D14 functional-collapse conclusion, which is not an
+accuracy contrast. It does mean **no accuracy claim in this study is resolvable
+above scorer noise** — which should be stated as a limitation in its own right,
+not buried beside the B-A table.

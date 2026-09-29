@@ -89,3 +89,60 @@ with a worked example (`omni2_2877`, three actors submitting "218", one
 graded FAIL) that made it feel verified. The example is real; the
 *denominator* was built on the wrong key. A correct illustration does not
 validate the statistic it illustrates.
+
+---
+
+## 7. ADDENDUM — the per-arm noise asymmetry is the same artifact (2026-09-29)
+
+The worker followed up with a per-arm breakdown: Arm A 3.87%, Arm B 0.30%,
+Arm C 4.46%, calling Arm A "13x noisier than Arm B" (Fisher p=0.0017) and
+concluding that **"no accuracy claim in this study is resolvable above scorer
+noise."** That conclusion would gut every accuracy result in the paper.
+
+**It does not survive the key correction, and it reverses.**
+
+| arm | matched on `final_answer` | matched on the evaluator's input |
+|---|---|---|
+| A | 20/823 = **0.0243** | 2/1,148 = **0.0017** |
+| B | 3/823 = **0.0036** | 35/10,222 = **0.0034** |
+| C | 20/953 = 0.0210 | 7/1,717 = 0.0041 |
+| Cp | 2/208 = 0.0096 | 1/630 = 0.0016 |
+
+Fisher exact A vs B on the correct key: **p = 0.580**. The order-of-magnitude
+asymmetry disappears, and Arm A becomes the *quieter* arm.
+
+**Direct proof that Key 1 was measuring the F18 defect, not the grader.**
+Of the 45 same-arm discordant pairs under Key 1, **43 (95.6%) involve at least
+one row whose `final_answer` differs from the string actually graded**, against
+a base rate of 3.8% — an enrichment of **25x**. Per arm, the contamination is
+total exactly where the worker saw "noise":
+
+| arm | discordant pairs | of which involve the F18 mismatch |
+|---|---|---|
+| A | 20 | **20 (1.00)** |
+| C | 20 | **20 (1.00)** |
+| Cp | 2 | 2 (1.00) |
+| B | 3 | 1 (0.33) |
+
+Arm A and Arm C's "noise" is **100% F18**. Arm B's near-zero rate is not
+quietness — Arm B is the arm that *cannot* exhibit F18, because it never
+revises after submitting. The worker measured the revision behaviour and
+called it scorer noise.
+
+**Why the arm ranking matched so convincingly.** F18 mismatch rates are
+A 0.182 / C 0.380 / B 0.000; the claimed noise rates were A 3.87% / C 4.46% /
+B 0.30%. Identical rank order, which is what made the finding feel solid. It
+was the same variable twice.
+
+**Note the length control did not save it.** The worker checked the obvious
+confound — that Arm B's collapse produces shorter answers — and found the
+asymmetry survived matching on answer length. That control was sound and the
+result held; it simply was not the confound at work. **A confound ruled out is
+not the confound ruled out.**
+
+**Standing conclusion.** The floor is 0.0023 pooled, with no arm difference
+(p=0.580). The largest |B$-$A| is 0.042, 18x the floor. The claim that no
+accuracy result is resolvable above scorer noise is **withdrawn**; it was an
+artifact of grading-key mismatch, in the same family as the original D18
+error and as my own F16 unit error.
+
