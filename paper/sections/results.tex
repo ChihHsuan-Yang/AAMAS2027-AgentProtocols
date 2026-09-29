@@ -1,71 +1,272 @@
 \section{Results}
 \label{sec:results}
 
-All results below are paired at the problem level with bootstrap clustering by
-problem, and P1--P5 carry a Holm correction. Secondary analyses are labeled
-exploratory.
+All contrasts are paired at the problem level with bootstrap intervals
+clustered by problem, under the pre-registered rule that ungraded
+trajectories count as incorrect. P1--P5 are the pre-registered endpoints and
+carry a Holm correction. The A-versus-B contrast supplying this paper's
+headline was pre-registered as \emph{secondary and exploratory}; it is
+labeled \textbf{post-hoc} everywhere it appears, and its importance does not
+change that label.
 
-\subsection{Did the constraint bind? (manipulation check)}
-\label{subsec:manip}
+\subsection{Removing role instructions: collapse differs enormously by actor}
+\label{subsec:collapse}
 
-\TODO{report the Arm C rejection/regeneration count per trajectory, the
-distribution of rejection reasons, and \Pone{} in Arm C per actor. If \Pone{}
-does not reach ${\approx}1.0$, the arm did not engage and every result in
-\S\ref{subsec:outcome} onward is void -- report that as the finding.}
+Arm~B deletes every role instruction and changes nothing else. We measure the
+\emph{realized} organization by whether two or more agents in a trajectory
+emit byte-identical text. Two rules are reported
+(Table~\ref{tab:collapse}). The \textbf{count-matched} rule inspects only the
+first pipeline pass (the first three role messages) and is
+\textbf{primary}, because the all-message rule gives longer trajectories more
+opportunities to collapse and is therefore confounded with trajectory length.
 
-\TODO{report answer-bearing calls per arm (the non-handicap check) and
-evaluator\_calls coverage}
+\begin{table}[t]
+\centering
+\caption{Role collapse by arm and actor. Count-matched (first pipeline pass)
+is the primary rule; the all-message rule is reported alongside it. The
+count-matched contrast is \emph{wider}, not narrower.}
+\label{tab:collapse}
+\small
+\begin{tabular}{llcc}
+\toprule
+ & & \multicolumn{2}{c}{collapse rate} \\
+\cmidrule(lr){3-4}
+arm & actor & count-matched & all-message \\
+\midrule
+A  & gemma-4-31B  & $0.000$ & $0.084$ \\
+A  & gpt-oss-120b & $0.000$ & $0.026$ \\
+\textbf{B} & \textbf{gemma-4-31B}  & $\mathbf{0.000}$ & $0.183$ \\
+\textbf{B} & \textbf{gpt-oss-120b} & $\mathbf{0.698}$ & $0.842$ \\
+C  & gemma-4-31B  & $0.002$ & $0.052$ \\
+C  & gpt-oss-120b & $0.000$ & $0.025$ \\
+C$'$ & gemma-4-31B  & $0.003$ & $0.072$ \\
+C$'$ & gpt-oss-120b & $0.000$ & $0.074$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{P1: does enforcement move realized fidelity?}
+Removing role instructions destroys the visible organization of one actor and
+leaves the other's untouched. Arm~B is not ``roles blurred'': $0.90$ of
+gpt-oss's \emph{planners} emit a final answer (against $0.17$ in Arm~A) and
+the executor reproduces it unchanged in $82\%$ of cases. The pipeline becomes
+three independent solvers that agree.
 
-\TODO{table: \Pone{} and \Etwo{} by arm (A, B, C) and actor, with paired
-bootstrap CIs on C$-$A}
+\paragraph{The measure survives the obvious attacks.} Deterministic decoding
+cannot produce the equality: \textbf{0 of 1{,}364} collapsed groups arose
+from identical prompts, and the endpoint is measurably nondeterministic at
+temperature $0$. Normalization \emph{raises} the rate from $0.842$ to
+$0.927$, so the exact measure undercounts. It is not retry convergence
+(1{,}079 events in the first outer round against 591 later), and not an
+easy-problem artifact --- gpt-oss collapses at $0.827$ on the \emph{hardest}
+stratum ($0.709$ medium, $0.900$ easy). gemma-4's smaller all-message rate
+has a different source, concentrated in long trajectories ($0.978$ at ten or
+more role messages, $0.000$ at three): for that actor collapse is a symptom
+of being stuck, not a starting condition. Its duplicate groups are genuinely
+across-role (436 versus 22 within-role).
 
-\subsection{P2: is the fidelity change actor-dependent?}
+\subsection{The actor that collapses most does not lose performance}
+\label{subsec:nodegradation}
 
-\TODO{difference-in-differences across actor pairs on fidelity, with bootstrap
-CIs}
+\emph{Post-hoc / exploratory throughout this subsection.}
+Table~\ref{tab:transition} pairs each problem with itself across arms and
+conditions on the organizational transition the problem actually underwent.
 
-\subsection{P3: does enforcement move task outcome?}
-\label{subsec:outcome}
+\begin{table}[t]
+\centering
+\caption{\textbf{Top:} paired same-problem accuracy by organizational
+transition (count-matched rule), Arm~A~$\rightarrow$~Arm~B --- the
+dissociation runs both ways. \textbf{Bottom:} each arm against a
+budget-matched single agent on the same problems --- the collapsed team still
+beats one agent. Top panel is post-hoc/exploratory.}
+\label{tab:transition}
+\small
+\begin{tabular}{llcccc}
+\toprule
+actor & transition & $n$ & acc A & acc B & B$-$A \\
+\midrule
+gpt-oss & diff.\ $\rightarrow$ \textbf{coll.} & $879$ & $0.895$ & $0.912$
+  & $\mathbf{+0.0171}$ \\
+ & & & & & \tiny$[+0.0023,+0.0319]$ \\
+gpt-oss & diff.\ $\rightarrow$ diff. & $381$ & $0.651$ & $0.648$ & $-0.0026$ \\
+ & & & & & \tiny$[-0.0499,+0.0446]$ \\
+\textbf{gemma-4} & diff.\ $\rightarrow$ diff. & $1266$ & $0.849$ & $0.820$
+  & $\mathbf{-0.0292}$ \\
+ & & & & & \tiny$[-0.0450,-0.0134]$ \\
+\midrule
+\multicolumn{3}{l}{\emph{versus budget-matched single agent}}
+  & \multicolumn{3}{c}{} \\
+gpt-oss & A & \multicolumn{4}{c}{$+0.0128$ $[-0.0048,+0.0304]$} \\
+\textbf{gpt-oss} & \textbf{B (coll.)}
+  & \multicolumn{4}{c}{$\mathbf{+0.0248}$ $\mathbf{[+0.0072,+0.0424]}$} \\
+gemma-4 & A & \multicolumn{4}{c}{$-0.0239$ $[-0.0423,-0.0048]$} \\
+gemma-4 & B & \multicolumn{4}{c}{$-0.0535$ $[-0.0718,-0.0343]$} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\TODO{table: accuracy by arm and actor; McNemar on discordant problems for
-C vs.\ A, per actor}
+Two facts, pointing opposite ways. gpt-oss loses its organization on 879
+matched problems and does not get worse --- the interval on $+0.0171$
+excludes zero, so in this subset losing the division of labor is marginally
+beneficial. gemma-4 never collapses on the first pass and \emph{still} loses
+accuracy when the same instructions are removed. \textbf{Visible collapse and
+performance loss are dissociated in both directions: collapse without loss,
+and loss without collapse.} This retires the tempting mediation story:
+gemma-4's loss cannot be explained by its organization degrading, because
+under the primary rule it does not degrade. The whole-arm interaction is
+$-0.0450$ $[-0.0687,-0.0221]$.
 
-\subsection{P4: actor $\times$ intervention on outcome (primary test)}
+\paragraph{One conflation we explicitly avoid.} gpt-oss's \emph{whole-arm}
+B$-$A is $+0.0078$ $[-0.0102,+0.0259]$ --- indistinguishable from zero. The
+$+0.0171$ above is the differentiated~$\rightarrow$~collapsed \emph{subset}.
+We write ``no detectable loss'' for the arm and never ``a gain''; the two
+numbers are not interchangeable. Both signs were also stable as the campaign
+grew, checked cumulatively in problem-completion order at 25/50/75/100\% of
+the run.
 
-\TODO{the interaction estimate with CI. This is the paper's primary endpoint.
-State the pre-declared interpretation row of Table~\ref{tab:interpretations}
-that the observed pattern falls into, before interpreting further.}
+\paragraph{It is not a difficulty artifact.} Stratifying the
+$\mathrm{A}_{\text{diff}} \rightarrow \mathrm{B}_{\text{coll}}$ subset
+($n=884$) by pre-treatment difficulty --- historical one-shot baseline
+accuracy on the same problem --- B$-$A is non-negative in every band:
+HARD ($n=147$) $+0.0408$ $[-0.0272,+0.1156]$, MED ($n=152$) $+0.0461$
+$[+0.0000,+0.0987]$, EASY ($n=585$) $+0.0017$ $[-0.0034,+0.0085]$. There is no
+difficulty band in which gpt-oss pays for collapse, and collapse is most
+frequent precisely where it would be most expected to cost something.
 
-\subsection{Capability versus realized fidelity (the discriminating contrast)}
+\subsection{Collapse is not ``the system was always a single agent''}
+\label{subsec:notsingle}
 
-\TODO{report whether the benefit of enforcement is ordered by realized fidelity
-or by baseline capability across the three actors. These orderings differ in
-this panel, so the comparison is decidable. If it tracks capability, state
-plainly that this replicates the capability-equalizer result
-\cite{canedo2026architecture} in a multi-agent setting.}
+The strongest objection to \S\ref{subsec:nodegradation} is that a setup where
+collapse is free never required multi-agent structure, so the apparent gain
+was an evaluation artifact~\cite{zhang2026rethinking}. We test it rather than
+argue it, against the budget-matched single-agent protocol on the same
+problems (Table~\ref{tab:transition}, lower panel).
 
-\subsection{P5: does the fidelity change track the outcome change?}
+A collapsed gpt-oss team beats its own single agent by 2.5 points, interval
+excluding zero. Three agents emitting the same string under a shared
+evaluator loop is therefore \emph{not} functionally one agent: redundant
+parallel computation buys something real. What it does not buy is anything
+attributable to \emph{differentiated} roles. This is the guard against our
+own overclaim, and what distinguishes our reading from the
+structural-collapse critique. The same panel carries a fact we report rather
+than bury: gemma-4's team is \emph{worse} than its own single agent in both
+arms, so for that actor the organization is actively costly at this budget.
 
-\TODO{per-actor association between $\Delta$fidelity and $\Delta$accuracy
-across problems. Association only; not causal -- both are consequences of the
-same intervention.}
+\subsection{Architectural enforcement restores the organization}
+\label{subsec:enforce}
 
-\subsection{Exploratory analyses}
+The manipulation is checked three ways and passes all three.
+Answer-authorship compliance reaches exactly $1.000$ in every Arm~C and
+Arm~C$'$ cell, against $0.981$ (gemma-4) and $0.617$ (gpt-oss) under soft
+roles. Independently measured, the Planner emits an answer in $0.00$ of Arm~C
+trajectories for both actors. And the constraint visibly bound: 557 and 811
+role-boundary rejections per Arm~C cell ($0.46$/$0.66$ per trajectory),
+counted from boundary violations only, with formatting coercions logged
+separately and excluded. Collapse falls to ${\approx}0$ under both rules
+(Table~\ref{tab:collapse}). Enforcement holds the organization apart.
 
-\paragraph{Role-instruction contribution (A$-$B).}
-\TODO{A vs.\ B per actor; a replication of a published null, not a
-contribution}
+\subsection{But it does not restore performance: the pre-registered primary
+test is null}
+\label{subsec:p4null}
 
-\paragraph{Distinguishability per arm.}
-\TODO{recompute function-only balanced accuracy within each arm; does
-enforcement change what roles are distinguishable \emph{by}?}
+\textbf{P4 --- the actor~$\times$~intervention interaction on accuracy, and
+the pre-registered primary test of this paper's original thesis --- is
+null: $-0.0073$ $[-0.0335,+0.0180]$.} P3 is null in both actors as well:
+C$-$A is $-0.0098$ $[-0.0278,+0.0082]$ for gemma-4 and $-0.0025$
+$[-0.0205,+0.0155]$ for gpt-oss. This is pre-declared Pattern~E, whose
+committed interpretation reads: \emph{the central causal theory fails; do not
+force it}. We report it as a failure of that theory, not as a supporting
+detail of a different one.
 
-\paragraph{Comparability instruments.}
-\TODO{influence rate and restate rate per arm and actor, following
-\cite{dylan2026equal}}
+Two candidate explanations are ruled out rather than assumed away. Arm~C$'$
+restores shared history at fixed enforcement, and C$'-$C is null in both
+actors ($+0.0179$ gemma-4; $-0.0115$ gpt-oss, both intervals spanning zero),
+so the null is not an artifact of Arm~C's reduced context.
+Attrition is Arm-C-specific ($6.5\%$/$5.4\%$ hard failures against $0.000$ in
+A and B) and we apply the pre-registered ungraded-as-incorrect rule; dropping
+failures instead would make Arm~C look \emph{better} ($0.904$/$0.902$), which
+is why the rule was fixed in advance and why we report both.
 
-\paragraph{Per-domain breakdown.}
-\TODO{per-domain results; contracts differ by domain, so components are not
-pooled}
+\paragraph{What the two nulls together mean.} Enforcement restores the
+organizational measure completely and the performance not at all. Combined
+with \S\ref{subsec:nodegradation}, organization can be destroyed without cost
+in one actor and restored without benefit in both. Whatever the diagram is
+explaining, it is not the accuracy.
+
+\subsection{Structural boundaries are not cognitive specialization}
+\label{subsec:structnotcog}
+
+The pre-registered manipulation check was that Arm~C would drive \Pone{} ---
+the Planner abstaining from \emph{computation} --- to ${\approx}1.0$.
+\textbf{That objective failed}, because the check named a clause the
+intervention does not enforce: the schema forbids emitting an \emph{answer},
+and nothing in it stops a Planner writing $=1/27$. We re-designated the
+manipulation check to answer authorship and report the \Pone{} outcome as a
+finding, in that order.
+
+The finding is that computation does not move. Under enforcement the
+Planner's evaluated-equation density is $2.70$ and $3.47$ per 1{,}000
+characters against $2.55$ and $2.08$ in Arm~A --- unchanged or \emph{higher}.
+Density is the right instrument because the binary rate is anti-correlated
+with message length and Arm~C messages are shorter; the same confound makes
+Arm~B/gpt-oss score a spurious $0.739$ while emitting bare answers with no
+work shown. \textbf{You can structurally stop an agent from answering without
+making it stop doing the work.}
+
+\subsection{Mechanism: roles are load-bearing for recovery, not for solving}
+\label{subsec:mechanism}
+
+Why does one actor pay and the other not? The obvious explanation --- that
+gpt-oss's first agent had already solved the problem, so the rest was
+decoration --- is \textbf{refuted}. In Arm~B its first planner message is
+correct only $0.481$ of the time, and $0.380$ of its final answers are rescued
+from a wrong first answer.
+
+Decomposing each actor's B$-$A into first-submission success and recovery
+after a failed submission, paired on the same problems, locates the effect
+exactly (Table~\ref{tab:mechanism}).
+
+\begin{table}[t]
+\centering
+\caption{Decomposition of the role-removal effect. gemma-4's first-pass rate
+is unchanged to three decimals; its entire loss is recovery.}
+\label{tab:mechanism}
+\small
+\begin{tabular}{lccc}
+\toprule
+actor & $n$ & first pass A$\rightarrow$B & recovery A$\rightarrow$B \\
+\midrule
+\textbf{gemma-4} & $1{,}280$ & $0.809 \rightarrow 0.809$
+  & $\mathbf{0.490 \rightarrow 0.045}$ \\
+ & & ($\Delta -0.001$) & ($\Delta -0.445$) \\
+gpt-oss & $1{,}274$ & $0.729 \rightarrow 0.775$ & $0.431 \rightarrow 0.249$ \\
+ & & ($\Delta +0.046$) & ($\Delta -0.182$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Removing roles costs gemma-4 \emph{nothing} on problems it solves outright.
+Its entire loss is recovery collapsing from $0.490$ to $0.045$: without roles,
+when it gets a problem wrong the first time, it essentially never recovers.
+gpt-oss also loses recovery ($0.431 \rightarrow 0.249$) but gains first-pass
+($+0.046$), and the two roughly cancel.
+
+What differs is whether the team can disagree with itself. In Arm~B gemma-4
+reaches unanimity in $0.954$ of trajectories, is wrong in $0.436$ of those,
+and escapes that state only $0.638$ of the time. gpt-oss retains disagreement
+five times more often ($0.251$ versus $0.046$) and escapes wrong consensus
+$0.772$ of the time.
+
+\begin{quote}
+\textbf{Role differentiation is load-bearing for error recovery, not for
+first-pass solving --- and only for the actor that cannot otherwise escape a
+wrong consensus.}
+\end{quote}
+
+This also explains \S\ref{subsec:p4null}. Enforcing answer authorship restores
+who may speak; it does not restore whether the agents \emph{differ}. Arm~C
+gives back the boundary and not the disagreement, and disagreement is what the
+recovering actor needed. Two caveats bound the claim. Recovery is conditioned
+on needing a retry, which is post-treatment, so this is a decomposition and
+not a causal mediation. And the retry loop is oracle-gated, so ``recovery''
+means recovery \emph{with} an oracle signal --- a property of this protocol
+family that bounds the mechanism's external validity.

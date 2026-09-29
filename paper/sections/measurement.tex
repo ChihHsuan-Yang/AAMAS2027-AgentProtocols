@@ -1,98 +1,15 @@
-\section{Measurement}
+\subsection{Validation of the measures}
 \label{sec:measurement}
 
-This section instantiates the two constructs of \S\ref{sec:framework} as
-measurements, validates them against hand adjudication, and reports what they
-show on matched Planner--Executor--Reviewer (\PER{}) trajectories before any
-intervention. The corpus comprises 145{,}411 role messages. It is an
-instrument here, not a contribution; a companion resource describes it as a
-dataset.
-
-\subsection{Role distinguishability}
-
-We train a classifier to recover the emitting role from message behavior under
-5-fold cross-validation grouped by trajectory, so that no trajectory is split
-across folds. Two feature sets are used. The first includes prompt-template
-markers -- artifacts of the scaffold rather than of behavior. The second, which
-is the one we report, removes them, leaving only \emph{function-only} features.
-
-Roles are highly distinguishable. Three-way balanced accuracy is $0.9416$ with
-all features and $\mathbf{0.8964}$ function-only, against a chance rate of
-$0.333$; Planner versus Executor reaches $\mathrm{AUC}=0.9985$ and $0.9954$
-respectively, against $0.500$. \textbf{The strong hypothesis that role prompts
-fail to induce distinct behavior is false and we abandon it.}
-
-\begin{table}[t]
-\centering
-\caption{Single-feature discrimination, Planner vs.\ Executor
-(function-only features). Separability is carried by formatting and answer
-commitment, not by the computation division the contract governs. AUC values
-below $0.5$ indicate the feature is predictive in the inverted direction.}
-\label{tab:singlefeature}
-\small
-\begin{tabular}{lcl}
-\toprule
-feature & AUC & kind \\
-\midrule
-numbered steps           & $0.110$ & format \\
-\verb|\boxed| commitment & $0.707$ & answer commitment \\
-computation density      & $0.604$ & \textbf{governed function} \\
-arithmetic operator      & $0.543$ & \textbf{governed function} \\
-message length           & $0.517$ & nuisance \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-What the roles are distinguishable \emph{by} is the finding
-(Table~\ref{tab:singlefeature}). Permutation importance ranks numbered steps
-($0.068$), boxed commitment ($0.050$), and character count ($0.047$) far above
-evaluated-equation density ($0.013$). Restricting the classifier to computation
-features alone drops Planner-versus-Executor AUC from $0.995$ to $\mathbf{0.714}$
--- \emph{below} a length-only nuisance control at $0.768$. The roles are
-separable by how they format output and whether they commit an answer, not by
-the division of cognitive labor the contract specifies. This is the dissociation
-that motivates measuring fidelity separately.
-
-\subsection{Contract-derived fidelity measures}
-
-Fidelity is scored clause-by-clause against the contract the agent actually
-received. Contracts differ by domain in this corpus: the full contract is
-present only in the competition-mathematics domain, while other domain presets
-impose only answer-abstention, plan-reference, and routing clauses. We
-therefore score each clause only where its own contract imposes it, report
-components separately, and \textbf{never average fidelity across domains or
-across clauses}. A single fidelity scalar would be the main way to get this
-wrong, and \S\ref{subsec:components-disagree} shows it would hide a real
-disagreement.
-
-Two clause measures are frozen and used throughout:
-
-\begin{description}
-\item[\Pone{} -- Planner abstains from computing.] A Planner message scores $1$
-  if it contains no evaluated numeric equality. The contract explicitly permits
-  restating givens and naming formulas symbolically, so those do not count as
-  violations; producing a value not in the problem statement does. Scored on
-  competition mathematics only -- the sole domain whose prompt carries the
-  clause.
-\item[\Etwo{} -- Executor consumes the plan.] An Executor message scores $1$ if
-  it explicitly references the plan or the Planner. Bare step numbering is
-  excluded, because the Executor numbers its own working.
-\end{description}
-
-Annotation definitions, including edge rules, were written and frozen
-\emph{before} the adjudication sheet was opened, so that they could not be
-tuned to flatter the automated measures.
-
-\subsection{Human validation}
-
-We hand-adjudicated 85 messages against the frozen definitions, recording a
-reason for every label (Table~\ref{tab:validation}). Both measures clear a
+The two clause measures were hand-adjudicated against definitions frozen
+\emph{before} the adjudication sheet was opened, so they could not be tuned
+to flatter the automated scores (Table~\ref{tab:validation}). Both clear a
 pre-set agreement threshold of $0.80$.
 
 \begin{table}[t]
 \centering
 \caption{Validation against hand adjudication. Positive class = honors the
-clause. $\kappa$ is Cohen's kappa.}
+clause.}
 \label{tab:validation}
 \small
 \begin{tabular}{lcccccl}
@@ -105,119 +22,34 @@ measure & $n$ & agr. & $\kappa$ & prec. & rec. & confusion \\
 \end{tabular}
 \end{table}
 
-Two properties of the error structure matter more than the headline figures.
-First, \Pone{} agreement \emph{fell} from $0.967$ at $n=30$ to $0.903$ at
-$n=72$ as adjudication continued. The early figure was optimistic; we report
-the final one, and we note the direction because it is the normal one and the
-reason to finish a validation sheet rather than stop at a good number. Second,
-the residual errors fall into two classes pointing in \emph{opposite}
-directions. The two false positives are symbolic results carrying no digits --
-a Planner asserting a ratio of $\pi/(4\sqrt{3})$ while stating that it performs
-no arithmetic -- which the digit-based pattern cannot see; this means \Pone{}
-slightly \emph{over-credits} compliance, so true violation rates are marginally
-higher than we report. The three false negatives are permitted content:
-restated givens, and search instructions addressed to the Executor. Because the
-two classes push in opposite directions, they do not bias the actor comparison
-in a consistent way.
+Three properties of the error structure matter more than the headline
+figures. First, \Pone{} agreement \emph{fell} from $0.967$ at $n=30$ to
+$0.903$ at $n=72$ as adjudication continued; we report the final figure and
+note the direction, because it is the normal one and the reason to finish a
+validation sheet rather than stop at a good number. Second, the residual
+errors point in \emph{opposite} directions --- two false positives are
+symbolic results carrying no digits, so \Pone{} slightly over-credits
+compliance, while three false negatives are contract-permitted content ---
+so they do not bias the actor comparison consistently. Third, one systematic
+error was found and repaired rather than tolerated: the first Executor
+measure matched ``Step 0'' and ``Inductive step'' inside the Executor's own
+construction, exactly the solving-versus-following confusion the construct
+exists to avoid; it was rebuilt to require an explicit plan reference, and
+only that version is used.
 
-One systematic error was found and repaired rather than tolerated. The first
-version of the Executor measure matched phrases such as ``Step 0'' and
-``Inductive step'' inside the Executor's \emph{own} construction -- precisely
-the solving-versus-following confusion the construct is meant to avoid. The
-measure was rebuilt to require an explicit plan or Planner reference, and only
-that version (\Etwo{}) is used.
+We also built a \Pone{} variant adding a symbolic-result detector to close
+the false-positive class. \textbf{It was rejected: agreement fell to $0.694$
+and recall to $0.421$}, because the detector fired on 9 of 9 messages judged
+compliant, including on the phrase ``The answer should be a single
+integer'' --- the contract's \emph{required} answer-form section. The
+``improvement'' penalized compliance with the contract it was scoring. We
+report this because it is the obvious next thing a reader would propose, and
+because a documented blind spot is preferable to a fix that is worse.
 
-\subsection{A rejected ``improvement''}
-
-We also built a \Pone{} variant (v3) adding an instruction/given exclusion and a
-symbolic-result detector, intended to close the false-positive class above.
-\textbf{It was rejected: agreement fell from $0.903$ to $0.694$ and recall from
-$0.868$ to $0.421$.} The symbolic detector fired on $9$ of $9$ messages judged
-compliant, including on the phrase ``The answer should be a single integer'' --
-which is the contract's \emph{required} answer-form section. The ``improved''
-metric penalized compliance with the contract it was scoring. We report this
-because the variant is the obvious next thing a reader would propose, and
-because the documented limitation is preferable to a fix that is worse: \Pone{}
-is frozen at v1 with its blind spot stated, not silently upgraded.
-
-\subsection{Fidelity is uneven across clauses of one contract}
-
-Within a single Planner contract, compliance ranges from $0.961$ (decomposes
-the problem) and $0.936$ (declares the answer form) down to $0.042$ (abstains
-from computing). Two \textsc{must not} clauses in the same prompt block diverge
-sharply: abstains-from-answering is honored at $0.540$ while
-abstains-from-computing is honored at $0.042$. The median Planner message under
-that actor carries eight evaluated equations. Executor plan consumption is
-weaker still under the same actor at $0.062$ (\Etwo{}, Table~\ref{tab:actors}):
-the plan is injected directly into the Executor's prompt, and it is explicitly
-referenced in roughly one message in sixteen. Contract compliance is therefore
-not a property of a contract but of each clause within it, which is the second
-reason we refuse to average.
-
-\subsection{Realized fidelity is actor-dependent, and its components disagree}
-\label{subsec:components-disagree}
-
-Within the competition-mathematics domain every actor receives a
-\emph{byte-identical} Planner prompt. Realized fidelity nonetheless differs
-sharply across actors (Table~\ref{tab:actors}), and all six pairwise
-differences exclude zero.
-
-\begin{table}[t]
-\centering
-\caption{Realized fidelity by actor under byte-identical prompts, with
-bootstrap 95\% intervals. All six pairwise differences exclude zero. The two
-components order the top two actors \emph{differently}.}
-\label{tab:actors}
-\small
-\begin{tabular}{lcc}
-\toprule
-actor & \Pone{} (Planner abstains) & \Etwo{} (Executor uses plan) \\
-\midrule
-A (27B) & $\mathbf{0.2662}$ $[.2519,.2811]$ & $0.1123$ $[.1023,.1223]$ \\
-B (31B) & $0.1113$ $[.1046,.1179]$ & $\mathbf{0.2425}$ $[.2340,.2509]$ \\
-C (120B)& $0.0417$ $[.0379,.0454]$ & $0.0623$ $[.0581,.0667]$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The same written organization, executed by different substrates, is realized
-differently -- and the difference is not small: the largest \Pone{} gap is
-$+0.225$ $[+0.210,+0.239]$.
-
-\textbf{The two components order the actors differently.} On \Pone{}, actor A
-leads; on \Etwo{}, actor B leads. Only the 120B actor is last on both. There is
-no single most-faithful actor, and we do not construct one. Reporting a scalar
-average would have manufactured a ranking that neither component supports, and
-any mediation claim must therefore name its component in advance. We report the
-disagreement rather than reconcile it.
-
-\subsection{Does fidelity predict success? A leakage correction}
-
-An apparent association between trajectory-mean fidelity and correctness
-($+0.61$) is an artifact and we discard it. Message count correlates $-0.910$
-with first-pass correctness, because the protocol halts on agreement and
-failing trajectories accumulate additional low-fidelity retry rounds --
-outcome-dependent stopping contaminating any trajectory-level average.
-
-Restricting to the \emph{first} Planner message, emitted before the Executor
-runs and before any verdict exists, and to the single \Pone{} clause, compliant
-Planner messages are followed by first-pass success $+0.127$ more often than
-violating ones, with the same point estimate in two independent actors
-($[+0.077,+0.179]$ and $[+0.071,+0.180]$). Stratifying by difficulty deflates
-this further: the effect is $+0.171$ $[+0.096,+0.244]$ and $+0.0845$
-$[+0.0565,+0.1084]$ on problems the one-shot baseline solved, but $+0.0245$
-$[-0.0175,+0.0664]$ and $+0.0676$ $[-0.0026,+0.1426]$ on problems it did not --
-null in both actors. Compliance is itself difficulty-linked, so residual
-confounding remains even within strata. The honest statement is that Planner
-compliance is associated with success on tractable problems, is not detectably
-associated on hard ones, and is observationally confounded. Nothing here
-licenses a causal claim, which is why \S\ref{sec:method} intervenes.
-
-\subsection{Deferred measure}
-
-A Reviewer clause (critique without re-deriving the solution) is defined and
-30 Reviewer messages are held in the adjudication sheet, unannotated. It is off
-the plan-to-execute path that the mediation hypothesis concerns. It is required
-before Arm~C's constrained critique interface can be reported, because it is
-that arm's manipulation check. \TODO{annotate R4 if Arm C's Reviewer interface
-is reported; otherwise state the omission in \S\ref{sec:limitations}}
+\paragraph{Collapse is audited separately.} Because collapse carries the
+headline, it is stress-tested against four alternative explanations in
+\S\ref{subsec:collapse}: deterministic decoding (ruled out --- no collapsed
+group arose from identical prompts), normalization sensitivity (the exact
+measure undercounts), retry convergence (collapse is concentrated in the
+first outer round), and problem easiness (collapse is most frequent on the
+hardest stratum).

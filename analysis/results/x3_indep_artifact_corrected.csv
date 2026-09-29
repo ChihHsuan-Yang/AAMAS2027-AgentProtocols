@@ -1,0 +1,9 @@
+arm,actor,n_all,n_fully_logged,pct_kept,zeroEqE_all,zeroEqE_logged,interpretable
+A,gemma-4-31B-it,1263,1222,96.8,0.057,0.057,yes
+A,gpt-oss-120b,1258,811,64.5,0.387,0.271,yes
+B,gemma-4-31B-it,1261,1237,98.1,0.586,0.587,yes
+B,gpt-oss-120b,1258,32,2.5,0.919,0.719,NO -- artifact-bound
+C,gemma-4-31B-it,1235,1187,96.1,0.062,0.064,yes
+C,gpt-oss-120b,1211,861,71.1,0.278,0.294,yes
+Cp,gemma-4-31B-it,390,380,97.4,0.062,0.063,yes
+Cp,gpt-oss-120b,383,288,75.2,0.308,0.344,yes

@@ -1,0 +1,10 @@
+arm,actor,cycle_collapse,size,mean
+A,gemma-4-31B-it,0,1263,0.0
+A,gpt-oss-120b,0,1258,0.0
+B,gemma-4-31B-it,0,1261,0.0
+B,gpt-oss-120b,0,379,0.3007915567282322
+B,gpt-oss-120b,1,879,0.8191126279863481
+C,gemma-4-31B-it,0,1235,0.0
+C,gpt-oss-120b,0,1211,0.0016515276630883566
+Cp,gemma-4-31B-it,0,390,0.0
+Cp,gpt-oss-120b,0,383,0.0

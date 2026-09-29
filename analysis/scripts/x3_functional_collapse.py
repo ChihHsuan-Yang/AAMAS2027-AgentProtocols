@@ -91,6 +91,12 @@ N_BOOT = 2000
 EVAL_EQ = re.compile(r"=\s*[-+]?\d+(?:\.\d+)?")          # frozen, from x2
 CRITIQUE = re.compile(r"incorrect|wrong|error|mistake|flaw|missing|should be|instead",
                       re.I)
+# The reviewer's ROUTE/VERDICT is the thing it actually controls, so it is a much
+# better measure of reviewer contribution than critique VOCABULARY.  Validated:
+# P(critique regex | reviewer disagreed) is 5-10x P(regex | agreed) in every cell,
+# so the regex is real signal -- but its sensitivity is only 0.31-0.78, i.e. it
+# misses most genuine disagreements.  Both are reported; this one is primary.
+VERDICT_C = re.compile(r'"verdict"\s*:\s*"([a-z_]+)"')
 WS = re.compile(r"\s+")
 TOKEN = re.compile(r"[a-z]+|[0-9]+(?:\.[0-9]+)?")
 
@@ -319,6 +325,12 @@ def analyse_cycle(job: dict) -> dict:
     o["ans_introduced_R"] = int(aE is None and aR is not None)
 
     # ---- LEVEL 3.4 critique content ----------------------------------------
+    # reviewer's functional act: did it withhold approval?
+    if arm in ("A", "B"):
+        o["rev_disagrees"] = int("[Agree]" not in (R or ""))
+    else:
+        mv = VERDICT_C.search(R or "")
+        o["rev_disagrees"] = int(bool(mv) and mv.group(1) != "accept")
     cR = set(w.lower() for w in CRITIQUE.findall(R or ""))
     cPE = set(w.lower() for w in CRITIQUE.findall((P or "") + " " + (E or "")))
     o["critique_terms_R"] = len(cR)
@@ -697,7 +709,7 @@ def main(paths, workers=None, quick=0):
     h("4. LEVEL 3 -- FUNCTIONAL CONTRIBUTION (first complete accepted cycle)")
     l3cols = ["new_eq_E_distinct", "new_eq_E_frac", "new_tok_E", "ans_differs_E",
               "new_eq_R_distinct", "new_eq_R_frac", "new_tok_R", "ans_differs_R",
-              "has_critique_R", "has_novel_critique_R"]
+              "has_critique_R", "has_novel_critique_R", "rev_disagrees"]
     L3 = summarise(first, l3cols)
     L3.to_csv(os.path.join(OUT, "x3_level3_metrics.csv"), index=False)
     print("  EXECUTOR contribution beyond the planner:")
@@ -715,6 +727,12 @@ def main(paths, workers=None, quick=0):
     r.columns = ["arm", "actor", "n", "newEq_mean", "lo", "hi", "newEq_med",
                  "newTok_mean", "tlo", "thi", "ansChg", "critique", "novelCritique"]
     print(r.round(3).to_string(index=False))
+    print("\n  REVIEWER FUNCTIONAL ACT -- withheld approval (route/verdict != accept).")
+    print("  This is what the reviewer actually CONTROLS, and it needs no text metric:")
+    rv = L3[["arm", "actor", "n", "rev_disagrees_mean", "rev_disagrees_lo",
+             "rev_disagrees_hi"]]
+    rv.columns = ["arm", "actor", "n", "withheld_approval", "lo", "hi"]
+    print(rv.round(3).to_string(index=False))
 
     h("5. ANSWER CHANNEL -- coverage first, then change rate (the denominators matter)")
     ac = first.groupby(["arm", "actor"]).agg(
@@ -761,7 +779,7 @@ def main(paths, workers=None, quick=0):
 
     h("7. ARM A vs ARM B -- the comparison the paper's claim rests on (paired by problem)")
     pc = []
-    for c in ["exec_inert", "rev_inert", "exec_inert_eqonly", "rev_inert_eqonly",
+    for c in ["rev_disagrees", "exec_inert", "rev_inert", "exec_inert_eqonly", "rev_inert_eqonly",
               "exec_inert_neutral", "rev_inert_neutral",
               "new_eq_E_distinct", "new_tok_E",
               "ans_differs_E", "new_eq_R_distinct", "new_tok_R", "ans_differs_R",
@@ -931,6 +949,32 @@ def main(paths, workers=None, quick=0):
         print("\n  If collapse and unlogged reasoning coincide, the byte-identical outputs are")
         print("  the visible TIP of three separate hidden computations -- NOT three agents")
         print("  doing the same (or no) work.  Level-2/3 metrics see only the tip.")
+
+    h("8d. ARTIFACT-CORRECTED LEVEL 3 -- cycles whose text is ALL the model produced")
+    print("  Restrict to cycles where all three messages clear 20 visible chars/s, i.e.")
+    print("  nothing material was produced into an unlogged reasoning channel.  Where a")
+    print("  cell keeps too few cycles, its Level-2/3 numbers cannot be separated from")
+    print("  the logging artifact and MUST NOT be reported as behaviour.")
+    if "n_unlogged" in df:
+        fl = first[first.n_unlogged == 0]
+        cr = []
+        for k, g in first.groupby(["arm", "actor"]):
+            L = fl[(fl.arm == k[0]) & (fl.actor == k[1])]
+            cr.append(dict(arm=k[0], actor=k[1], n_all=len(g), n_fully_logged=len(L),
+                           pct_kept=100.0 * len(L) / max(len(g), 1),
+                           exec_inert_eqonly_all=g.exec_inert_eqonly.mean(),
+                           exec_inert_eqonly_logged=(L.exec_inert_eqonly.mean()
+                                                     if len(L) >= 30 else np.nan),
+                           # BOTH conditions matter: a cell can have enough rows
+                           # yet still be a heavily selected 2.5% remnant, which
+                           # is not representative of the cell it came from.
+                           interpretable=("yes" if (len(L) >= 30 and
+                                                    len(L) / max(len(g), 1) >= 0.25)
+                                          else "NO -- artifact-bound")))
+        CR = pd.DataFrame(cr)
+        CR.to_csv(os.path.join(OUT, "x3_artifact_corrected.csv"), index=False)
+        print()
+        print(CR.round(3).to_string(index=False))
 
     h("9. SENSITIVITY -- all complete accepted cycles, full-history novelty")
     allc = summarise(df, ["exec_inert", "rev_inert", "new_tok_E_hist", "new_tok_R_hist",

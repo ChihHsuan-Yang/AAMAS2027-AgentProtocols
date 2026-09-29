@@ -1,55 +1,50 @@
-\section{Experiments}
+\subsection{Campaign}
 \label{sec:experiments}
 
-\subsection{Tasks and domains}
+\paragraph{Task and problems.} Competition mathematics (Omni-MATH), sampled
+by a deterministic seeded manifest so that every prefix of the run is itself
+a valid random sample. All arms run on the same problems, so every arm
+comparison is paired at the problem level. A second domain was designed and
+dropped: the runner pins one domain, and the other domain's Planner contract
+carries no computation clause, so its components would not be comparable.
 
-\TODO{state the two domains (competition mathematics; biology multiple choice),
-the problem-selection rule, and the number of problems per cell actually run}
+\paragraph{Actors.} Two actor models served from one vLLM endpoint:
+\textbf{gpt-oss-120b} and \textbf{gemma-4-31B}. A third (Llama-3.3-70B) was
+added late; it had not accumulated enough matched trajectories to enter any
+contrast reported here, and no claim depends on it. Two further candidates
+were probed and rejected as unavailable rather than assumed available. The
+evaluator is gpt-oss-120b in every cell, which is one of the actors under
+study --- see \S\ref{sec:limitations}.
 
-All arms run on the same matched problem set, so every arm comparison is
-paired at the problem level.
+\paragraph{Scale.} 8{,}490 trajectories over 61{,}624 agent messages:
+1{,}285 problems per arm for Arms~A, B, and C in each of two actors, plus
+400 problems per actor in Arm~C$'$. Paired accuracy contrasts rest on
+1{,}222--1{,}224 matched problems per actor. Concurrency was set per actor at
+levels measured on the live endpoint (25 for gpt-oss, 10 for the gemma
+family) rather than assumed; gemma-4 is four to five times slower per call,
+so arms do not complete in equal wall-clock at equal concurrency.
 
-\subsection{Actor models}
+\paragraph{Power.} Computed by simulation (4{,}000 replicates, two-sided
+$\alpha=0.05$) from discordance rates and net asymmetries observed in the
+pre-existing corpus. At the achieved scale the paired per-actor main effect
+is well powered for large effects and moderately powered for smaller ones;
+the actor~$\times$~intervention interaction requires roughly twice the
+sample of a main effect for equal power. \textbf{A null on P4 therefore means
+``no large interaction detected,'' not ``no interaction.''} Note the
+asymmetry that shaped the design: organizational measures are computed per
+message, so the measurement half of the study is well powered at trajectory
+counts at which the outcome half is not.
 
-\TODO{name the three actor models and their sizes, the serving stack, and the
-pinned backend per actor; report the fraction of trajectories on each backend}
-
-\subsection{Scale and concurrency}
-
-\TODO{report n/cell, total trajectories, total actor calls, total tokens, and
-measured wall-clock}
-
-Concurrency was set per actor at validated levels rather than assumed ones
-(\TODO{state the per-actor concurrency used and the throughput measured on the
-live endpoint}). The panel's largest model is substantially faster per call
-than the mid-sized ones, so arms do not complete in equal wall-clock at equal
-concurrency.
-
-\subsection{Power}
-
-Power was computed by simulation (4{,}000 replicates, two-sided
-$\alpha = 0.05$) from discordance rates and net asymmetries observed in the
-existing corpus. At $n=400$ per cell the paired per-actor main effect has power
-$0.96$ for large effects but only $0.49$ for moderate ones; detecting a
-moderate effect at $0.8$ power requires $n \approx 800$. The
-actor~$\times$~intervention interaction (P4), which is the primary test,
-requires roughly twice the $n$ of a main effect for equal power, so
-\textbf{at the scale run it is powered only for large interactions}. A null on
-P4 must be read as ``no large interaction detected,'' not as ``no
-interaction.'' \TODO{substitute the achieved n and recompute}
-
-Note the asymmetry: fidelity is measured per \emph{message}, so the measurement
-half of the study is well powered at trajectory counts at which the outcome
-half is not.
-
-\subsection{Smoke test and launch gates}
-
-A smoke test preceded the main run, and the main run was gated on it. The
-gates were: Arm~C produces a non-zero count of rejection/regeneration events
-with reasons logged; Arm~C's \Pone{} manipulation check reaches $\approx 1.0$;
-answer-bearing calls are equal across arms; \texttt{evaluator\_calls} is
-logged; the concurrency ladder is re-measured on the live endpoint; and the
-backend is pinned and logged per trajectory.
-
-\TODO{report the smoke-test outcome for each of the six gates, including the
-observed rejection count -- this is the evidence that the constraint bound}
+\paragraph{Gates and a confound caught before it became a result.} The main
+run was gated on a smoke test requiring, among other checks, that Arm~C
+produce non-zero boundary rejections with reasons logged, that answer-bearing
+calls be equal across arms, and that the backend be pinned. An early campaign
+was stopped and quarantined after 121 trajectories when $74\%$ of Arm~C
+rejections turned out to be the model being cut off at the token limit
+mid-JSON rather than violating a role boundary. Truncation itself was not
+arm-specific ($8.4\%$/$11.3\%$/$8.9\%$ over A/B/C) but its \emph{cost} was:
+Arms~A and B tolerate a truncated prose message where Arm~C rejects
+unparseable JSON. Left alone this would have produced a convincing
+``enforcement lowers accuracy'' result that was a token-budget artifact. The
+token limit was doubled, a salvage path added for truncated objects with the
+salvage rate logged, and the pre-fix rows were quarantined and never pooled.

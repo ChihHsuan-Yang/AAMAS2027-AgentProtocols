@@ -16,16 +16,15 @@ returns the same score either way.
 
 \paragraph{The question.}
 We therefore ask a question that a diagram cannot answer: \textbf{when is
-multi-agent organization load-bearing?} We give the term an operational
-definition and use it throughout. A component of an organization is
+multi-agent organization load-bearing?} A component of an organization is
 \textbf{load-bearing} if removing or altering it causes a reproducible
 degradation in task performance \emph{under matched compute and information
-budgets}. The budget clause carries the weight. Removing role instructions
-while also removing agents, calls, or context tests nothing about
-organization; it tests scale. Our interventions hold the agent count, the
-interaction order, the message-passing graph, the total call budget, the retry
-budget, the decoding parameters, the verifier, and the grading fixed, and vary
-only what each agent is told it is, or what its interface will let it emit.
+budgets}. The budget clause carries the weight: removing role instructions
+while also removing agents, calls, or context tests scale, not organization.
+Our interventions hold the agent count, interaction order, message-passing
+graph, call budget, retry budget, decoding parameters, verifier, and grading
+fixed, and vary only what each agent is told it is, or what its interface
+will let it emit.
 
 \paragraph{Removing the organization is free for the actor that loses it
 most.} Under generic prompts that delete every role instruction while changing
@@ -90,10 +89,10 @@ completely, and it is the one that pays nothing; the \emph{less} capable actor
 keeps its organization intact and pays anyway. Specifically, we contribute:
 
 \begin{enumerate}
-\item An operational definition of \textbf{load-bearing} for organizational
-  components, and a budget-matched design that tests it --- including a
-  budget-matched single-agent control, without which ``collapse is harmless''
-  cannot be distinguished from ``the system was always one agent''.
+\item An operational definition of \textbf{load-bearing} and a budget-matched
+  design that tests it, including a single-agent control without which
+  ``collapse is harmless'' cannot be told apart from ``the system was always
+  one agent''.
 \item The \textbf{actor-dependent sign inversion}: on matched problems, the
   actor with near-total organizational collapse loses nothing, and the actor
   with none loses accuracy. We report both directions and neither is an

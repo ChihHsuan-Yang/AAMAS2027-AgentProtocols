@@ -37,13 +37,13 @@
 
 % -- Shorthands for the two constructs the paper keeps apart. ----------------
 \newcommand{\Pone}{\textsf{P1a}}
+\newcommand{\Ptwo}{\textsf{P2}}
 \newcommand{\Etwo}{\textsf{E2v2}}
 \newcommand{\PER}{\textsc{Per}}
 
 \begin{document}
 
-\title{Specified Roles, Realized Organizations: Functional Division of Labor
-in {LLM} Multi-Agent Systems}
+\title{When Is Multi-Agent Organization Load-Bearing?}
 
 % Anonymous mode suppresses this block; it is required for the class to build.
 \author{Anonymous Author(s)}
@@ -53,29 +53,34 @@ in {LLM} Multi-Agent Systems}
 }
 
 \begin{abstract}
-Multi-agent LLM systems are commonly organized by assigning agents roles --
-Planner, Executor, Reviewer -- and describing each role's function in natural
-language. Whether those descriptions produce a functional division of labor,
-and whether that depends on which model fills the roles, is rarely measured.
-We separate two constructs that are usually conflated. \emph{Role
-distinguishability} asks whether an observer can recover an agent's role from
-its behavior alone; \emph{role fidelity} asks whether an agent performs the
-function its contract assigns, scored clause-by-clause against the contract
-that agent actually received. Across 145{,}411 role messages from matched
-Planner--Executor--Reviewer trajectories, the two dissociate. Roles are highly
-distinguishable (0.90 balanced accuracy from behavioral features), but that
-separability rests on output formatting and answer commitment rather than on
-the cognitive division the contract specifies: restricted to computation
-behavior, role separability falls to 0.71, barely above a message-length
-control. Fidelity to individual clauses of one contract ranges from 0.96 to
-0.04, and differs sharply across actor models given byte-identical prompts.
-We validate these measures against human annotation and report where automated
-proxies fail. We then ask whether enforcing the division of labor
-\emph{architecturally} -- through interfaces that make contract violation
-unrepresentable, rather than through stronger prompting -- changes the
-effectiveness of the same organization, and whether that effect depends on the
-actor model. \TODO{final sentence: replace with the outcome once Arms A/B/C
-report; keep as a question if they do not}
+Multi-agent LLM systems are specified as role diagrams -- Planner, Executor,
+Reviewer -- and those diagrams are read as mechanism: an account of where the
+system's competence comes from. We ask when that organization is actually
+\emph{load-bearing}, defining the term operationally: a component is
+load-bearing if removing or altering it causes a reproducible performance
+degradation under matched compute and information budgets. Holding agents,
+call budget, context policy, verifier, and grading fixed, we delete all role
+instructions (Arm~B) and, separately, make the division of labor structurally
+unrepresentable (Arm~C), across two actor models on 8{,}490 matched
+trajectories. Deleting role instructions collapses the organization of the
+\emph{more} capable actor almost completely -- $69.8\%$ of first pipeline
+passes become byte-identical agent outputs -- at no accuracy cost, including
+on the hardest problems, where collapse is most frequent. The less capable
+actor shows \emph{no} first-pass collapse and loses accuracy anyway. Visible
+organization and performance are thus dissociated in both directions. This
+is not degeneration to a single agent: the collapsed team still beats its
+budget-matched single agent by $+0.0248$ $[+0.0072,+0.0424]$. Architectural
+enforcement completes the picture from the other side, driving
+answer-authorship compliance to $1.000$ and collapse to ${\approx}0$ while
+moving accuracy for neither actor -- our pre-registered primary test is null,
+and we report it as such. A mechanism analysis locates the difference: role
+removal leaves the vulnerable actor's first-pass solve rate unchanged
+($0.809 \rightarrow 0.809$) and destroys its recovery ($0.490 \rightarrow
+0.045$), because without roles the team reaches near-total unanimity and
+cannot escape a wrong consensus. Multi-agent computation and differentiated
+organization are separable, and which one is load-bearing is
+actor-dependent -- a sign inversion that monotone capability accounts, under
+which structure helps weaker models, do not predict.
 \end{abstract}
 
 \begin{CCSXML}
@@ -96,7 +101,7 @@ report; keep as a question if they do not}
 \ccsdesc[300]{Computing methodologies~Natural language processing}
 
 \keywords{Multi-agent systems; large language models; role specialization;
-division of labor; organizational structure}
+division of labor; organizational structure; ablation}
 
 \maketitle
 
@@ -107,6 +112,7 @@ division of labor; organizational structure}
 \input{sections/method}
 \input{sections/experiments}
 \input{sections/results}
+\input{sections/discussion}
 \input{sections/limitations}
 \input{sections/conclusion}
 

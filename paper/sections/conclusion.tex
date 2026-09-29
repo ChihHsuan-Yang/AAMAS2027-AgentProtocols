@@ -1,29 +1,28 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-A specified organization and a realized one are different objects, and in
-multi-agent LLM systems the distance between them is measurable. On a large
-corpus of role messages, prompted roles turn out to be highly distinguishable
--- the strong claim that role labels are cosmetic is false and we abandoned it
--- yet that distinguishability is carried by output formatting and answer
-commitment rather than by the division of cognitive labor the contract
-specifies, and it collapses to near a length control once restricted to the
-governed behavior. Compliance varies by an order of magnitude across clauses of
-a single contract, and it varies sharply across the model filling the role
-under byte-identical prompts. Realization is a property of the
-actor--specification pair, not of the specification.
+We asked when multi-agent organization is load-bearing --- when removing or
+altering it degrades performance under matched compute and information
+budgets. Holding agents, calls, context policy, verifier, and grading fixed
+and varying only what each agent is told it is, organization and multi-agent
+computation turn out to be separable, and which of them carries the load
+depends on the actor. For the more capable actor, deleting every role
+instruction destroys the visible organization --- $69.8\%$ of first pipeline
+passes collapse to byte-identical outputs --- at no accuracy cost, on hard
+problems as much as easy ones. For the less capable actor the same deletion
+produces no first-pass collapse and costs accuracy anyway. Restoring the
+organization architecturally completes the picture from the other side:
+answer-authorship compliance reaches $1.000$, collapse ${\approx}0$, and
+accuracy nowhere, with our pre-registered primary test null.
 
-This reframes what a role specification is: not a description of the system
-that will run, but a hypothesis about it -- one that a system evaluated only on
-task outcome never tests. The measurement apparatus we validate here is
-deliberately modest in what it claims and explicit about where it fails,
-including one proposed refinement that we rejected for making agreement worse.
-
-The consequence we pursue is that if a specification is advice, the way to test
-its role is not to phrase it more forcefully but to make violating it
-unrepresentable. \TODO{one-sentence statement of the intervention outcome, and
-of whether its benefit was ordered by realized fidelity or by capability} What
-the design guarantees regardless of outcome is that the question was decidable:
-the two accounts identify different actors in this panel, every outcome pattern
-was given its interpretation before launch, and two of those interpretations
-abandon the direction.
+Two guards keep this from overreaching. A collapsed team still beats its
+budget-matched single agent ($+0.0248$), so ``multi-agent systems are just
+single agents'' is refuted by our own data; and the actor that loses accuracy
+loses 3 points, so ``roles do not matter'' is refuted too. The defensible
+claim is narrower: role \emph{differentiation} is load-bearing for one actor
+and parallel \emph{computation} for the other. The mechanism says where the
+load sits --- role removal leaves the vulnerable actor's first-pass solve
+rate unchanged and destroys its recovery ($0.490 \rightarrow 0.045$), because
+without roles the team reaches a unanimity it cannot escape. Whether an
+organization is load-bearing is therefore not a property of the organization,
+but of the organization--actor pair, and must be measured on both sides.

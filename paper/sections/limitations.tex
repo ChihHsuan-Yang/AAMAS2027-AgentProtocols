@@ -1,55 +1,69 @@
 \section{Limitations}
 \label{sec:limitations}
 
-\paragraph{Power on the primary endpoint.} The actor~$\times$~intervention
-interaction requires roughly twice the sample of a main effect for equal power,
-and at the scale run it is powered for large interactions only
-(\S\ref{sec:experiments}). A null on P4 is ``no large interaction detected.''
+\paragraph{Collapse is post-treatment.} Whether a trajectory collapses is an
+outcome of the intervention, not a randomized factor, so conditioning on the
+transition (Table~\ref{tab:transition}) yields an association however sharp
+its intervals, and licenses no causal reading of
+collapse~$\rightarrow$~accuracy. The unconditional arm contrasts, properly
+randomized by problem, are reported alongside it as the weaker but cleaner
+statement.
 
-\paragraph{Scope.} Three actor substrates, two domains, and one organization
-(Planner--Executor--Reviewer). Two of the three actors belong to the same model
-family, so the panel varies capability and realized fidelity more than it
-varies vendor or architecture. Nothing here establishes that the findings hold
-for other organizations, other domains, or other model families.
+\paragraph{Provenance of the headline.} The pre-registered primary endpoint
+(P4) is null. The A-versus-B contrast this paper is organized around was
+pre-registered as secondary and exploratory, and is labeled post-hoc
+throughout. It should be read as a strong, well-audited observation that
+merits pre-registered replication, not as a confirmed primary result. The
+pre-registered \Pone{} manipulation objective also failed; we report that as
+a failed objective before reporting what we learned from it.
 
-\paragraph{The capability--fidelity dissociation rests on a narrow base.} In
-the observational corpus only one actor \emph{pair} has both a capability proxy
-and both fidelity components measured. A correlation over two or three points
-is not reported and would not be meaningful. The dissociation is a
-hypothesis-generating observation that motivates the design, and the
-intervention is what tests it.
+\paragraph{Two actors, one organization, one domain.} The sign inversion
+rests on a single actor pair, on competition mathematics, in one
+Planner--Executor--Reviewer organization. Two points cannot separate a
+capability ordering from any other ordering aligned with it, so ``the more
+capable actor collapses more'' describes this pair and is not an established
+monotone relation with capability. A third actor (Llama-3.3-70B) was launched
+late and had too few matched trajectories to enter any contrast here; nothing
+depends on it. Replication on a third substrate is the most valuable
+extension, and we do not claim the general form until it exists.
 
-\paragraph{Measurement blind spots, stated rather than repaired.} \Pone{} is
-blind to symbolic results carrying no digits and therefore slightly
-over-credits compliance, so true violation rates are marginally higher than
-reported. The variant that would have closed this made agreement substantially
-worse and was rejected (\S\ref{sec:measurement}); the limitation is documented
-instead. \Etwo{} keys on explicit plan reference and cannot detect an Executor
-that follows a plan silently, nor -- as the frozen definitions anticipate --
-one that names the plan while ignoring it.
+\paragraph{The recovery loop is oracle-gated.} The evaluator that triggers
+retries sees ground truth, so ``recovery'' means recovery \emph{with} an
+oracle signal --- a property of this protocol family. The mechanism claim is
+bounded accordingly: it does not establish that role differentiation aids
+recovery under a self-assessed stopping rule. Relatedly, stop-on-correct
+censors destructive revision, so this design cannot measure how often
+collaboration destroys a correct answer.
 
-\paragraph{Contracts are domain-specific.} The full role contract exists only
-in one domain; other domain presets impose a subset of clauses. Fidelity
-components are therefore reported separately and never averaged across domains
-or clauses. This is a property of the systems studied, not a choice, and it
-limits cross-domain comparison of fidelity levels.
+\paragraph{Arm~C$'$ is a partial context control.} Arm~C carries less context
+than Arm~A by construction, because compact structured objects replace raw
+transcripts. C$'$ restores shared history at fixed enforcement and licenses
+the contrast ``the effect of adding context at fixed enforcement,'' which is
+null. It does \emph{not} make C and A context-matched, and we do not claim
+it does; matching them exactly would require feeding raw prose back in, which
+would dissolve the constraint that defines the arm.
 
-\paragraph{Fidelity is not summarizable.} The two components order the actors
-differently (\S\ref{subsec:components-disagree}), so ``most faithful actor'' is
-not well defined in this panel, and any mediation claim must name its component
-in advance. We do not construct a composite.
+\paragraph{Attrition is arm-specific.} Arm~C hard-fails on $6.5\%$ and
+$5.4\%$ of trajectories against $0.000$ in Arms~A and B, because it rejects
+unparseable structured output where the other arms tolerate truncated prose.
+We apply the pre-registered ungraded-as-incorrect rule; dropping failures
+instead would make Arm~C look better by 5.8 and 7.8 points. Both are
+reported. The structural penalty for requiring structured output is
+confounded with the intervention and cannot be separated in this design.
 
-\paragraph{The observational association is confounded.} The relationship
-between Planner compliance and first-pass success survives removing the
-stopping-rule leakage but is confined to problems the baseline already solved,
-is null on hard problems, and remains confounded because compliance is itself
-difficulty-linked. It is reported as association throughout.
+\paragraph{Measurement blind spots.} Collapse is exact byte identity, which
+normalization shows to be conservative ($0.842 \rightarrow 0.927$): it
+undercounts near-identical outputs and says nothing about semantic
+redundancy, which we do not claim to have measured. \Pone{} is blind to
+symbolic results carrying no digits and slightly over-credits compliance; a
+variant closing this made human agreement substantially worse and was
+rejected rather than silently adopted. It is also mechanically
+anti-correlated with message length, which is why every computation claim
+cites the length-robust density instead.
 
-\paragraph{Reviewer behavior is only partially characterized.} The Reviewer
-clause measure is defined but not yet validated at the scale of the other two.
-\TODO{state whether R4 was annotated and reported, or declare the omission}
-
-\paragraph{Infrastructure confounds.} Serving backends have shown large
-throughput and accuracy differences for an identical cell, which is why the
-backend is pinned and logged per trajectory. \TODO{confirm that no cell
-straddled backends in the run as executed}
+\paragraph{Power and the evaluator.} Interaction endpoints need roughly twice
+the sample of a main effect for equal power, so a null on P4 is ``no large
+interaction detected.'' The evaluator is one of the actor models under study,
+so its independence from that actor's outputs is not established. Backends
+have shown large accuracy differences for an identical cell; ours is pinned
+and uniform across the run.

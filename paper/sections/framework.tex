@@ -1,61 +1,77 @@
-\section{From Assigned Roles to Realized Organization}
+\section{Definitions and Measurement}
 \label{sec:framework}
 
-\subsection{Specification and realization}
+\subsection{What ``load-bearing'' means here}
 
-An organization is specified by a tuple: a set of agents, an interaction order,
-a message-passing graph, a context-visibility policy, and -- the part of
-interest here -- a \emph{role contract} per agent. A role contract is a set of
-clauses, each of which asserts either that the agent performs some function
-(\textsc{must} decompose the problem; \textsc{must} state the required answer
-form) or that it does not (\textsc{must not} carry out arithmetic;
-\textsc{must not} state a final answer). Clauses of the second kind are what
-make the specification a \emph{division} of labor rather than a list of
-suggestions: they assign work away from one agent and, implicitly, to another.
+An organization is specified by a tuple: a set of agents, an interaction
+order, a message-passing graph, a context-visibility policy, and a
+\emph{role contract} per agent. A contract is a set of clauses asserting
+either that the agent performs some function (\textsc{must} decompose the
+problem) or that it does not (\textsc{must not} state a final answer).
+Clauses of the second kind make the specification a \emph{division} of labor:
+they assign work away from one agent and implicitly to another.
 
-The realized organization is the behavior that occurs when the specification is
-executed by a particular actor substrate. Because a contract clause is prose
-handed to a language model, realization is not guaranteed at any clause, and
-nothing in the specification records which clauses were honored. An evaluation
-that observes only the task outcome cannot distinguish an organization that
-divided the work as specified from one in which a single agent did everything
-while the others produced well-formed commentary. Both appear as a score.
+The \emph{realized} organization is the behavior that occurs when that
+specification is executed by a particular actor substrate. Because a clause
+is prose handed to a language model, realization is not guaranteed, and
+nothing in the specification records which clauses were honored. An
+evaluation that observes only task outcome cannot distinguish an organization
+that divided the work as specified from one in which every agent did
+everything. Both appear as a score.
 
-\subsection{Two constructs that must not be merged}
+\begin{quote}
+\textbf{Definition.} A component of an organization is \textbf{load-bearing}
+if removing or altering it causes a reproducible degradation in task
+performance \emph{under matched compute and information budgets}.
+\end{quote}
 
-\paragraph{Role distinguishability.} Can an observer recover which role emitted
-a message from the message's behavior alone? This is a property of the induced
-behavioral distributions: it asks whether the roles differ, not whether they
-differ \emph{in the way specified}. It is cheap to measure, it is what a reader
-usually has in mind when asking whether role prompts ``work,'' and -- as
-\S\ref{sec:measurement} shows -- it can be very high while the specified
-division is almost entirely absent.
+The budget clause is what makes the definition usable. Removing role
+instructions \emph{and} agents, calls, or context tests scale, not
+organization. Every intervention below holds the agent count, interaction
+order, message-passing graph, total call budget, retry budget, decoding
+parameters, verifier and verifier prompt, stopping rule, and grading fixed,
+and varies only what each agent is told it is or what its interface will
+accept. The definition is deliberately behavioral: it makes ``the roles
+matter'' a claim that can fail, and in \S\ref{sec:results} it fails for one
+actor and holds for the other.
 
-\paragraph{Role fidelity.} Does an agent perform the function its own contract
-assigns? This is defined only relative to a contract, it is evaluated
-clause-by-clause, and it is not comparable across agents that received
-different contracts. Fidelity is the construct that carries the organizational
-content, because it is the one that references the specification.
+\subsection{Measuring the realized organization}
 
-The two are logically independent. An agent that ignores every clause of its
-contract but writes in a recognizable house style is perfectly distinguishable
-and has zero fidelity. An agent that honors every clause while formatting its
-output exactly like its neighbor has full fidelity and is indistinguishable.
-Conflating them makes it possible to report that roles ``are working'' on the
-basis of a measurement that is insensitive to whether the division of labor
-occurred, and \S\ref{sec:measurement} shows that this is not a hypothetical
-concern in the systems we study.
+Three measures are used, each answering a different question. Full
+definitions, the frozen annotation rules, and the validation sheet are
+carried over unchanged from the measurement apparatus this study inherits.
 
-\subsection{Actor-dependence and the resulting design}
+\paragraph{Organizational collapse (primary).} A trajectory \emph{collapses}
+if two or more of its role messages are byte-identical. The compared object
+is \texttt{sha256} of the raw model completion, taken before parsing and
+before any scaffold field is added, so it is what the model actually emitted
+and carries no role wrapper. Two rules are reported: the \textbf{count-matched}
+rule inspects only the first pipeline pass (first three role messages) and is
+primary, because the all-message rule gives longer trajectories more chances
+to collapse; the all-message rule is reported alongside it. Collapse is a
+measure of whether the agents are behaviorally distinct at all --- the
+weakest possible reading of ``the organization exists.''
 
-Because realization occurs at the actor, the same specification executed by
-different models is potentially a different organization. This has a
-methodological consequence that is easy to state and easy to violate: a claim
-about an organization that is measured under one actor is a claim about that
-actor--organization pair. It also has a design consequence, which is the
-remainder of this paper. If a specification is advice, then the intervention
-that tests its role is not a more emphatic specification but a structural one
--- an interface under which the violation cannot be expressed. Whether such an
-intervention changes the realized organization, whether it changes
-effectiveness, and whether either change is actor-dependent are the questions
-\S\ref{sec:method} operationalizes.
+\paragraph{Answer authorship (\Ptwo{}).} Whether a Planner message contains a
+final answer. This is the clause Arm~C structurally enforces, and it is the
+manipulation check.
+
+\paragraph{Computation (\Pone{} and density).} Whether a Planner abstains
+from computing, scored as containing no evaluated numeric equality, with
+symbolic restatement of givens explicitly permitted. \Pone{} is frozen at the
+validated version (agreement $0.903$, $\kappa = 0.806$ against hand
+adjudication on 72 messages) and is \emph{not} redefined post-hoc. Because it
+is defined as the absence of a pattern, it is mechanically anti-correlated
+with message length, so every computation claim in this paper cites the
+length-robust \textbf{evaluated equations per 1{,}000 characters} instead,
+with the binary rate reported alongside. This matters: Arm~B's gpt-oss
+Planner scores $0.739$ on binary \Pone{} --- apparently the most compliant
+Planner in the study --- while emitting a bare boxed answer and no work at
+all. A metric that rewards silence cannot measure a division of labor.
+
+\paragraph{Why three measures and not one.} They come apart, which is the
+point. An agent can be perfectly distinct from its neighbors while honoring
+no clause of its contract, and perfectly compliant while indistinguishable.
+Collapse asks whether the agents differ; answer authorship asks who may
+speak; density asks who does the work. \S\ref{subsec:structnotcog} shows the
+second can be driven to $1.000$ while the third does not move.
