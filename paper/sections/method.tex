@@ -43,13 +43,11 @@ The contrast in one checkable sentence: \emph{in Arm~C the Planner's output
 is parsed against a schema with no answer field, and a message containing a
 final answer is rejected by the parser and regenerated, so contract violation
 is unrepresentable rather than discouraged.} Submit-by-reference exists
-because an Arm~C that simply deleted the Reviewer's answer field would change
-\emph{who submits} as well as who may \emph{author}, confounding enforcement
-with an altered submission path.
-
-Arm~C removes no capability from the system: planning, computing, answering,
-and critiquing are all still performed, each by exactly one agent, under the
-same call budget. Only which agent may emit which kind of output changes.
+because deleting the Reviewer's answer field outright would change \emph{who
+submits} as well as who may \emph{author}, confounding enforcement with an
+altered submission path. Arm~C removes no capability: planning, computing,
+answering and critiquing are all still performed, each by exactly one agent,
+under the same call budget.
 
 \paragraph{Arm~C$'$ --- context control.} Arm~C with shared history restored
 in all three role templates; schema, routing, budgets unchanged. Arm~C
@@ -70,14 +68,14 @@ apply~\cite{zhang2026rethinking}. It is a required control, not an extra.
 
 An intervention that never engaged cannot explain an outcome, so engagement
 is measured rather than assumed. Every rejected-and-regenerated emission is
-logged with its rejection reason, and the enforcement rate reported is
-computed from \textbf{role-boundary violations only} --- output-formatting
-coercions are logged separately and excluded, a definition fixed in advance.
-Answer-bearing calls are counted per arm, so an arm cannot win or lose by
-producing fewer answers. Evaluator calls are logged per trajectory, and the
-serving backend is pinned and logged per trajectory, because the same cell
-has shown a $9.6\times$ throughput difference and a large accuracy
-difference across backends.
+logged with its reason, and the enforcement rate is computed from
+\textbf{role-boundary violations only} --- formatting coercions are logged
+separately and excluded, a definition fixed in advance. Answer-bearing calls
+are counted per arm, so an arm cannot win or lose by producing fewer answers.
+Evaluator calls and the pinned serving backend are logged per trajectory,
+because the same cell has shown a $9.6\times$ throughput difference and a
+large accuracy difference across backends. One instrumentation gap escaped
+this discipline and is reported in \S\ref{subsec:logging}.
 
 \subsection{Pre-registered analyses, and what became of them}
 \label{subsec:prereg}

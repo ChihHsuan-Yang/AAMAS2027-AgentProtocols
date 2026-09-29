@@ -25,7 +25,7 @@ if removing or altering it causes a reproducible degradation in task
 performance \emph{under matched compute and information budgets}.
 \end{quote}
 
-The budget clause is what makes the definition usable. Removing role
+The budget clause is what makes the definition usable: removing role
 instructions \emph{and} agents, calls, or context tests scale, not
 organization. Every intervention below holds the agent count, interaction
 order, message-passing graph, total call budget, retry budget, decoding
@@ -33,7 +33,7 @@ parameters, verifier and verifier prompt, stopping rule, and grading fixed,
 and varies only what each agent is told it is or what its interface will
 accept. The definition is deliberately behavioral: it makes ``the roles
 matter'' a claim that can fail, and in \S\ref{sec:results} it fails for one
-actor and holds for the other.
+actor and holds for another.
 
 \subsection{Measuring the realized organization}
 
@@ -75,13 +75,15 @@ is defined as the absence of a pattern, it is mechanically anti-correlated
 with message length, so every computation claim in this paper cites the
 length-robust \textbf{evaluated equations per 1{,}000 characters} instead,
 with the binary rate reported alongside. This matters: Arm~B's gpt-oss
-Planner scores $0.739$ on binary \Pone{} --- apparently the most compliant
+Planner scores $0.726$ on binary \Pone{} --- apparently the most compliant
 Planner in the study --- while emitting a bare boxed answer and no work at
 all. A metric that rewards silence cannot measure a division of labor.
 
-\paragraph{Why three measures and not one.} They come apart, which is the
+\paragraph{Why several measures and not one.} They come apart, which is the
 point. An agent can be perfectly distinct from its neighbors while honoring
 no clause of its contract, and perfectly compliant while indistinguishable.
 Collapse asks whether the agents differ; answer authorship asks who may
 speak; density asks who does the work. \S\ref{subsec:structnotcog} shows the
-second can be driven to $1.000$ while the third does not move.
+second can be driven to $1.000$ while the third does not move, and
+\S\ref{subsec:collapse} shows two collapse measures disagreeing on an entire
+actor.

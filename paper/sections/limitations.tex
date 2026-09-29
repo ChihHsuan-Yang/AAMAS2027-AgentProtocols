@@ -2,37 +2,35 @@
 \label{sec:limitations}
 
 \paragraph{A logging defect limits what the duplication rate can mean.} Our
-runner recorded each response's content field and fell back to the reasoning
-field only when content was empty, so a short answer accompanied by a long
-hidden reasoning trace was logged as the short answer
-(\S\ref{subsec:logging}). \textbf{This affects $84.6\%$ of gpt-oss Arm~B
-messages, and $97.4\%$ of its first passes contain at least one such
-message}; the flag intended to document the substitution reports $5.7\%$.
-The campaign was \textbf{not} re-run: the defect was found late, and the two
+runner fell back to a response's reasoning field only when its content field
+was empty, so a short answer carrying a long hidden reasoning trace was
+logged as the short answer (\S\ref{subsec:logging}). \textbf{This affects
+$84.6\%$ of gpt-oss Arm~B messages and $97.4\%$ of its first passes}; the
+flag meant to document it reports $5.7\%$.
+The campaign was \textbf{not} re-run: the defect was found late, and the
 measures the paper's claims rest on --- accuracy, graded from a final answer
 that was always present, and functional collapse, read from answer
-assertions --- do not depend on the discarded text. The consequences we
-accept are that no point estimate of gpt-oss's true duplication rate is
-recoverable, that we cannot claim the hidden computation was redundant, and
-that our Level-2 similarity metrics for that cell describe only the visible
-tip of what the model produced. The logger now captures reasoning
-unconditionally, which does not repair the data already collected.
+assertions --- do not depend on the discarded text. We accept in exchange
+that no point estimate of gpt-oss's duplication rate is recoverable, that we
+cannot claim the hidden computation was redundant, and that our similarity
+metrics for that cell describe only the visible tip of what the model
+produced. The logger now captures reasoning unconditionally, which does not
+repair the data already collected.
 
 \paragraph{The collapse validation is model adjudication, not human
 annotation.} The 180-item validation in \S\ref{subsec:collapse} was performed
 by a frontier language model against a rubric frozen before the first
 judgement, with actor, arm, correctness and the automated label withheld. It
-is \textbf{not ground truth}, and three limits qualify it. There was a
-\textbf{single annotator and therefore no inter-annotator agreement}; the
-judge's stability is estimated from repeated independent calls instead.
-\textbf{Blinding is partial}: role labels are retained inside the
-transcripts, because the question ``did this agent perform a distinct role
-function'' is unanswerable without them, so a determined judge could
-sometimes infer the arm from content even after we neutralized the explicit
-role words. And it covers one snapshot of one domain. Precision is also
-estimable only for gpt-oss, which has 14 flagged positives in the sample
-against gemma-4's 3 and Llama-3.3's none; we therefore report precision as a
-per-actor quantity and do not present the pooled figure as general.
+is \textbf{not ground truth}. There was a \textbf{single annotator and
+therefore no inter-annotator agreement}; the judge's stability is estimated
+from repeated independent calls instead. \textbf{Blinding is partial}: role
+labels are retained inside the transcripts, because the question ``did this
+agent perform a distinct role function'' is unanswerable without them, so a
+determined judge could sometimes infer the arm from content even after we
+neutralized the explicit role words. It covers one snapshot of one domain.
+And precision is estimable only for gpt-oss, which has 14 flagged positives
+in the sample against gemma-4's 3 and Llama-3.3's none, so we report it per
+actor and never pool it.
 
 \paragraph{Collapse is post-treatment.} Whether a trajectory collapses is an
 outcome of the intervention, not a randomized factor, so conditioning on the
@@ -92,20 +90,17 @@ gemma-4 (\S\ref{subsec:p4null}).
 
 \paragraph{Measurement blind spots.} Exact duplication has precision $1.000$
 and recall $0.343$ against blinded adjudication, and normalization raises
-the all-message rate from $0.842$ to $0.927$: it
-undercounts near-identical outputs and says nothing about semantic
-redundancy, which we do not claim to have measured. The functional measure
-that replaces it is also a proxy: it detects that every agent asserted its
-own answer, not that their reasoning was the same, and it is
-\textbf{inapplicable to Arms~C and C$'$}, where the schema forbids the
-Planner an answer field, so a zero there would record the constraint rather
-than the behavior. We therefore report no functional collapse figure for
-those arms. \Pone{} is blind to
-symbolic results carrying no digits and slightly over-credits compliance; a
-variant closing this made human agreement substantially worse and was
-rejected rather than silently adopted. It is also mechanically
-anti-correlated with message length, which is why every computation claim
-cites the length-robust density instead.
+the all-message rate from $0.842$ to $0.927$: it undercounts near-identical
+outputs and says nothing about semantic redundancy, which we do not claim to
+have measured. The functional measure replacing it is also a proxy: it
+detects that every agent asserted its own answer, not that their reasoning
+was the same, and it is \textbf{inapplicable to Arms~C and C$'$}, where the
+schema forbids an answer field, so a zero there would record the constraint
+rather than the behavior. \Pone{} is blind to symbolic results carrying no
+digits and slightly over-credits compliance; a variant closing this made
+agreement substantially worse and was rejected rather than silently adopted.
+It is also mechanically anti-correlated with message length, which is why
+every computation claim cites the length-robust density instead.
 
 \paragraph{Power and the evaluator.} Interaction endpoints need roughly twice
 the sample of a main effect for equal power, so a null on P4 is ``no large

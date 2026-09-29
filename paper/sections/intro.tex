@@ -32,25 +32,24 @@ nothing else (Arm~B), the division of labor disappears for \emph{every} actor
 we tested. We measure it functionally, on the first pipeline pass so that the
 measure is not confounded with trajectory length: the rate at which all three
 agents independently assert their own final answer --- three solvers rather
-than a pipeline. That rate is $0.000$, $0.118$, and $0.000$ under soft roles
-for gemma-4-31B, gpt-oss-120b, and Llama-3.3-70B, and $0.975$, $0.845$, and
-$0.917$ once the role instructions are removed. A blinded, rubric-frozen
-adjudication of sampled trajectories agrees with this measure, including on
-the cell where exact output duplication reports zero
+than a pipeline. That rate runs $0.000$--$0.118$ under soft roles across
+gemma-4-31B, gpt-oss-120b and Llama-3.3-70B, and $0.845$--$0.975$ once the
+role instructions are removed. A blinded, rubric-frozen adjudication agrees,
+including on the cell where exact output duplication reports zero
 (\S\ref{subsec:collapse}).
 
 Their accuracy does not follow. On matched problems gemma-4 loses $-0.0301$
 $[-0.0456,-0.0147]$ when roles are removed, while gpt-oss does not move
-($+0.0070$ $[-0.0108,+0.0255]$). \textbf{The two actors lose the same amount
-of organization and only one of them pays for it}, so how much visible
-differentiation an intervention destroys does not tell you whether destroying
-it is costly. This is a sharper statement than a contrast between actors that
-lost different amounts of organization would be, because the amount lost is
-held roughly fixed and only the consequence varies.
+($+0.0070$ $[-0.0108,+0.0255]$). \textbf{The actors lose the same amount of
+organization and only one pays for it}, so how much visible differentiation
+an intervention destroys does not tell you whether destroying it is costly.
+That is sharper than a contrast between actors that lost \emph{different}
+amounts would be, because the amount lost is held roughly fixed and only the
+consequence varies.
 
 Neither half licenses the conclusion that the agents were redundant. A
 collapsed gpt-oss team still beats its own budget-matched single agent by
-$+0.0247$ $[+0.0062,+0.0425]$. Three agents emitting the same answer under a
+$+0.0247$ $[+0.0062,+0.0425]$: three agents emitting the same answer under a
 shared evaluator loop is not the same system as one agent, even when nothing
 distinguishes what they say.
 
