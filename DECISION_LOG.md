@@ -1048,3 +1048,87 @@ corrected); duplication lift ~+0.17 over an Arm A baseline of ~0.5 (D20 add.).
 RETRACTED: per-arm grader-noise asymmetry, gpt-oss self-favouring, "no accuracy
 claim resolvable above scorer noise" (all D18 -> D20); "gpt-oss rubber-stamps"
 (D19 -> D20, it is uninstrumented).
+
+## 2026-09-29 21:25 — D22. Two final corrections, both verified; my D18 instinct was partly right after all
+
+### (1) The noise floor denominator was clustered — 40% of my pairs were the SAME trajectory
+
+Coordinator's catch, reproduced exactly. My pairwise floor counted every pair of
+gradings sharing (problem_uid, candidate). Split by trajectory:
+
+| | pairs | discordant | rate |
+|---|---|---|---|
+| all pairs (what I quoted) | 13,114 | 19 | 0.0014 |
+| **same-trajectory** | **5,240 (40.0%)** | 8 | 0.0015 |
+| distinct-trajectory | 7,874 | 11 | 0.0014 |
+
+A trajectory that resubmits one string is graded repeatedly and every repeat
+entered my denominator. Legitimate temp-0 draws, but clustered and concentrated
+in the arm that resubmits most — the same clustering that manufactured the
+self-favouring signal we already retracted. It does not belong in a floor.
+
+**Clustering-free estimators, (problem, candidate) GROUP as the unit:**
+
+| estimator | 400-subset | all problems + all files |
+|---|---|---|
+| group-level (group holds both verdicts) | 5/989 = 0.0051 | **20/2,692 = 0.0074** |
+| per-call in a non-unanimous group | — | 84/13,076 = 0.0064 |
+| minority-verdict | — | 23/13,076 = 0.0018 |
+| pairwise, distinct trajectories only | 11/7,886 = 0.0014 | 50/26,793 = 0.0019 |
+
+The two scopes have **overlapping Wilson CIs** (400-subset [0.0022,0.0118];
+all-problems [0.0048,0.0114]), so the floor is not subset-dependent — it is a
+property of the grader. The coordinator's conservative **0.0092** sits inside
+the all-problems CI, so it is a defensible headline. **Quote 0.0092, disclose
+the range 0.0018-0.0092.**
+
+### (2) A scope difference the coordinator and I should both state
+
+Coordinator: gemma-4 |B-A| = 0.0312, the only contrast clearing the floor.
+That is the **full campaign** (n≈1,524). On the **matched 400-problem subset**
+— the only scope where all three actors are comparable — the ordering differs:
+
+| actor | 400-subset (matched) | full scope |
+|---|---|---|
+| gemma-4 | -0.0132 [-0.0447,+0.0184] | **-0.0308 [-0.0466,-0.0157]** |
+| gpt-oss | +0.0239 [-0.0106,+0.0584] | +0.0112 [-0.0059,+0.0277] |
+| Llama-3.3 | +0.0025 [-0.0325,+0.0375] | +0.0025 (same, 400 is all it ran) |
+
+Both are correct for different questions. **gemma-4's contrast is the one that
+clears the floor and excludes zero, and only at full n** — where it is 3.3x the
+0.0092 floor. On the matched subset every CI spans zero. Report the matched
+subset for the three-actor comparison and full-n for gemma-4's own contrast,
+each labelled.
+
+**My D18 instinct was directionally right for part of this and I over-retracted
+on instruction.** The accurate statement is not "no accuracy claim is
+resolvable above scorer noise" (D18, too strong) nor "the floor is negligible"
+(D20, too weak): **gemma-4's full-n contrast resolves above grader noise;
+gpt-oss's and Llama's do not, and their nulls must be reported as nulls the
+instrument could not have resolved either way.**
+
+### (3) Jaccard: Arm A is not a zero-duplication baseline — verified, effect is ~2x larger
+
+I reported duplication as B-minus-A Jaccard (+0.17). Coordinator: Arm A is not
+a null. Confirmed with a mismatched-problem null pairing (planner from X vs
+executor from Y, same actor+arm):
+
+| actor | arm | true | own null | excess |
+|---|---|---|---|---|
+| gemma-4 | A | 0.538 | 0.353 | +0.186 |
+| gemma-4 | B | 0.714 | 0.235 | **+0.479** |
+| Llama-3.3 | A | 0.500 | 0.364 | +0.136 |
+| Llama-3.3 | B | 0.667 | 0.188 | **+0.479** |
+| gpt-oss | A | 0.444 | 0.250 | +0.194 |
+| gpt-oss | B | 0.139 | 0.042 | +0.098 |
+
+The null is **not flat**: Arm A 0.35-0.36 vs Arm B 0.19-0.24, tracking executor
+numeric-token-set size (gpt-oss Arm B median **2** tokens vs 9-14 elsewhere).
+So my B-minus-A subtracted two different baselines.
+
+Excess-over-own-null, B minus A: **gemma-4 +0.293, Llama-3.3 +0.343** —
+replicating to within 0.05 across the two instrumented actors and ~2x my +0.17.
+gpt-oss goes the other way (-0.096), again consistent with its Arm B planner
+being the uninstrumented tail rather than a solution.
+
+**Use excess-over-own-null, never raw Jaccard and never B-minus-A Jaccard.**
