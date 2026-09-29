@@ -994,3 +994,57 @@ it by roughly 4x.
 
 gpt-oss moves the *opposite* way (0.444 -> 0.145), consistent with D20: its
 Arm B planner output is not a solution at all, it is the uninstrumented tail.
+
+## 2026-09-29 21:10 — D21. THIRD ACTOR COMPLETE: Llama-3.3-70B, 1200/1200, and it breaks the inverse relationship
+
+`results/main/actor3.jsonl`, run-id `actor3-n400`. 1200/1200 rows, exactly 400
+per arm, 400 distinct problems, **0 duplicate (uid,arm) keys**. 13 transport
+failures (1.08%): A 0.75% / B 1.50% / C 1.00%, all under D15's 2% threshold, so
+prereg null->0 stays primary and transport-excluded is the sensitivity row.
+
+### The answer to the question the actor was run for
+
+| actor | arm-B collapse (func) | B-A | 95% CI |
+|---|---|---|---|
+| gemma-4-31B | 0.971 | -0.0132 | [-0.0449,+0.0185] |
+| **Llama-3.3-70B** | **0.874** | **+0.0025** | **[-0.0325,+0.0375]** |
+| gpt-oss-120b | 0.814 | +0.0239 | [-0.0106,+0.0584] |
+
+**There is no inverse relationship.** All three actors lose the division of
+labour in Arm B at 0.81-0.97 — a 16-point spread — while B-A ranges from
+-0.013 to +0.024, and **every CI contains zero**. Collapse does not predict
+accuracy change. The two-point "pattern" the third actor was run to test does
+not survive a third point.
+
+The original coordinates came from the withdrawn byte metric (gpt-oss 0.846 vs
+gemma-4 0.173). That 67-point gap was never a behavioural difference: it is
+**0.832 vs 0.190 because byte-identity only fires on the one actor whose
+reasoning our logger drops** (D20). Under the functional measure the same two
+actors are 0.814 and 0.971 — the ordering reverses.
+
+### Llama-3.3 is much weaker on this benchmark, and that is the main caveat
+
+Arm A accuracy 0.315 vs ~0.79-0.82 for both incumbents. Not a pipeline fault:
+0.0% missing final answers, and on **Llama's exact problems** the incumbents
+score 0.834/0.848 (D16). Its B-A therefore sits on a ~0.32 base, not ~0.80, and
+D17 showed the actors cannot be headroom-matched by subsetting. Report its
+contrast as same-direction evidence, never as a matched third point.
+
+### Accuracy effects vs the corrected noise floor
+
+Grader noise floor **19/13,111 = 0.0014** on identical evaluator prompts at
+temp 0. Largest |B-A| is 0.0239, ~17x above it — so these effects are NOT
+inside scorer noise (the opposite of what I wrongly concluded in D18, retracted
+in D20). They are small and CI-spanning-zero on their own merits.
+
+### Status of every claim I made during this task
+
+STANDS: third actor exists and ran (D12); config difference is metadata-only
+(D12); byte rule is length-confounded (D12); functional proxy tracks the
+adjudicated label and is not length-confounded (D14 + addenda); Llama is weaker
+and unmatchable on headroom (D16, D17); Arm B pools two unlike things (D19, as
+corrected); duplication lift ~+0.17 over an Arm A baseline of ~0.5 (D20 add.).
+
+RETRACTED: per-arm grader-noise asymmetry, gpt-oss self-favouring, "no accuracy
+claim resolvable above scorer noise" (all D18 -> D20); "gpt-oss rubber-stamps"
+(D19 -> D20, it is uninstrumented).

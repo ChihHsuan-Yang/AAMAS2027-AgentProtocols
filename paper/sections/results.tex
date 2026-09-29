@@ -30,7 +30,33 @@ occurred and never to compare how much organization two actors lost.}
 \paragraph{Functional collapse.} We therefore measure failure of the property
 the diagram asserts --- that the agents do different jobs --- by asking
 whether \emph{every} agent independently asserts its own final answer
-(Table~\ref{tab:collapse}).
+(Table~\ref{tab:collapse}). Decomposed by role, the executor is at ceiling in
+both arms and \textbf{the planner carries the entire signal}: it asserts an
+answer in $0.000$/$0.000$/$0.186$ of Arm~A first passes (gemma-4 / Llama-3.3 /
+gpt-oss) against $0.978$/$0.897$/$0.902$ in Arm~B. The measure is thus
+planner abstention --- \Pone{} inverted, and unlike \Pone{} it is
+presence-based rather than length-based.
+
+\paragraph{Two of the three actors duplicate; the third is uninstrumented.}
+What the collapsed planner \emph{does} differs by actor, and only two of the
+three can be read. gemma-4's and Llama-3.3's Arm~B planners write full
+independent solutions (median $2{,}288$ and $2{,}914$ characters) before
+boxing an answer. Overlap of numeric tokens with the executor confirms
+genuine duplication, but only against the right null: raw Jaccard is
+$0.71$/$0.67$ in Arm~B against $0.50$ in Arm~A, and shuffling planners
+against executors from \emph{different} problems shows the baseline is itself
+arm-dependent ($0.35$ Arm~A vs $0.19$--$0.23$ Arm~B, tracking token-set size).
+Against each arm's own null the excess is $+0.485$ and $+0.479$ in Arm~B
+against $+0.152$ and $+0.136$ in Arm~A, a replicated shift of $+0.333$ and
+$+0.343$. gpt-oss's Arm~B planner instead emits a median of $37$ visible
+characters --- but takes $28$ seconds to do it, $3.3$ characters per second
+against $178$ for its own Arm~A planner and $151$ for gemma-4's Arm~B
+planner, with \texttt{used\_reasoning\_fallback} false in all $959$ such
+messages. That is the logging defect of \S\ref{subsec:logging}, not an
+abstaining planner: \textbf{the work was done and discarded by our logger, so
+for this actor we cannot say what the planner did.} The same defect explains
+why byte duplication fires only here --- when only a boxed answer survives,
+identical answers are identical bytes.
 
 \begin{table}[t]
 \centering

@@ -4,9 +4,12 @@
 Organization and multi-agent computation are separable, and measuring the
 organization does not tell you which carries the load. Deleting every role
 instruction destroys the functional division of labor in all three actors
-($0.846$--$0.975$ of first pipeline passes become three independent solvers)
-while first-pass accuracy is unchanged or improves --- a parity consistent
-with prior role ablations~\cite{dylan2026equal,orogat2026architectural}. The
+($0.846$--$0.975$ of first pipeline passes have every agent assert its own
+answer, the planner carrying the whole signal) while first-pass accuracy is
+unchanged or improves --- a parity consistent with prior role
+ablations~\cite{dylan2026equal,orogat2026architectural}. In the two actors we
+can read, the collapsed planner re-solves the problem rather than falling
+silent; in the third our logger discarded the evidence. The
 cost appears only after a wrong answer, and not because the role-free team is
 stopped early: it holds the same six-cycle budget, submits on almost every
 cycle rather than revising, and at full spend never revises its answer at all
