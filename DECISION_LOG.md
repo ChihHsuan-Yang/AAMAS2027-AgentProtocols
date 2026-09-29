@@ -628,3 +628,50 @@ Do not silently drop them (prereg is prereg) and do not silently keep them
 (they are not model errors). If terminal transport failures exceed ~2% of any
 arm at final n, the transport-excluded figure becomes the honest headline and
 the prereg figure the sensitivity.
+
+## 2026-09-29 18:25 — D16. Three analysis defects I introduced, all found before reporting
+
+### (1) A manifest FILE that is not the sample the runner runs — my join was 96% wrong
+
+I validated third-actor comparability by loading
+`experiments/manifest_omnimath2_n400.json` and checking it was a subset of the
+n1600 manifest. It was. **But the runner never reads those files.**
+`load_problems(n, seed)` recomputes the sample from the parquet each run. The
+manifest file and the runner's own `--n 400` sample overlap by **35 of 400**.
+
+Consequence: my first full report restricted every actor to the manifest uids
+and silently produced **n=14-16 per Llama cell** and an Arm A accuracy of
+**0.0714**. The cell counts were the tell — an in-progress run with 600 rows
+cannot have 14 rows in a 400-problem arm.
+
+Corrected set = `R.load_problems(400, 20270101)`, which IS a strict subset of
+`load_problems(1600,·)` (400/400), and campaign_v2 covers 337 of those 400.
+Llama cells go 14 -> 203-206 and the incumbents reproduce their published
+accuracies. This is the "half a join still looks like success" shape: the join
+succeeded, on the wrong key, and returned a plausible-looking table.
+
+### (2) Grouping by a label that is DERIVED FROM the outcome
+
+To explain Llama's low accuracy I split trajectories by `stopping_condition`
+and got a perfect `normal-stop acc=1.000 / exhausted acc=0.000`. A clean
+1.000/0.000 split is not a finding, it is a definition. `runner.py:898-899`
+assigns `max_rounds_then_evaluator_pass` when `c==1` and `max_rounds_exhausted`
+otherwise; `reviewer_agree_then_evaluator_pass` (line 871) is only reachable
+after an evaluator PASS. **Every** stopping-condition group is outcome-derived,
+so the axis cannot be used for accuracy analysis at all. Deleted that split.
+
+### (3) The accuracy gap is real, and it is the ACTOR — verified non-circularly
+
+Llama-3.3 Arm A accuracy is 0.340 vs ~0.81 for both incumbents. Checked it is
+not a pipeline artifact:
+- `final_answer is None` in **0.0%** of Llama Arm A rows (gpt-oss 0.1%). It
+  produces well-formed answers; they are graded wrong.
+- Not a harder problem subset — the decisive control. Scored the incumbents on
+  **Llama's exact 211 problems**: gpt-oss 0.834, gemma-4 0.848 (vs 0.812/0.844
+  on all 1600). The subset is if anything slightly easier.
+
+So Llama-3.3-70B is simply much weaker on omnimath2 than either incumbent.
+That is a real property of the third actor and must be stated plainly in the
+report: **its B-A contrast sits on a ~0.35 accuracy base, not a ~0.82 base**,
+and the arms are therefore not on comparable footing with the incumbents' arms
+for anything that depends on headroom.
