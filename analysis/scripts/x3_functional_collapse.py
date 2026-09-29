@@ -223,7 +223,8 @@ def analyse_cycle(job: dict) -> dict:
     hist_before_r = job["hist_r"]
     o = {k: job[k] for k in ("arm", "actor", "problem_uid", "correct", "correct0",
                              "traj_collapse", "cycle_collapse", "cycle_collapse_all3",
-                             "cycle_key", "n_msgs", "rounds_used", "is_first_cycle")}
+                             "cycle_key", "n_msgs", "rounds_used", "is_first_cycle",
+                             "n_unlogged")}
     nP, nE, nR = wsnorm(P), wsnorm(E), wsnorm(R)
     o["len_P"], o["len_E"], o["len_R"] = len(nP), len(nE), len(nR)
 
@@ -376,6 +377,13 @@ def build_jobs(paths, reservoir_n=500):
                 continue
             P, E, R = (g[r].get("text") or "" for r in ROLES)
             hh = [m.get("response_sha256_12") for m in (g[r] for r in ROLES)]
+            # visible chars per second of latency; far below the corpus norm means
+            # the model spent that time on tokens the runner never logged.
+            n_unlogged = 0
+            for r in ROLES:
+                lat = g[r].get("latency_s") or 0.0
+                if lat > 0.2 and len(g[r].get("text") or "") / lat < 20.0:
+                    n_unlogged += 1
             jobs.append(dict(
                 arm=arm, actor=actor, problem_uid=uid,
                 correct=d.get("correct"),
@@ -383,7 +391,7 @@ def build_jobs(paths, reservoir_n=500):
                 traj_collapse=traj_collapse,
                 cycle_collapse=int(len(set(hh)) < 3),
                 cycle_collapse_all3=int(len(set(hh)) == 1),
-                cycle_key=f"{ck[0]}.{ck[1]}",
+                cycle_key=f"{ck[0]}.{ck[1]}", n_unlogged=n_unlogged,
                 n_msgs=len(msgs), rounds_used=d.get("rounds_used"),
                 is_first_cycle=int(not first_done),
                 p_text=P, e_text=E, r_text=R,
@@ -701,9 +709,25 @@ def main(paths, workers=None, quick=0):
                  "revInert_strong", "revInert_3c", "eLo", "eHi", "rLo", "rHi"]
     print(p.round(3).to_string(index=False))
 
+    print("\n  ---- DESIGN-NEUTRAL inertness (answer clause DROPPED) ----")
+    print("  The answer clause is not comparable across arms (see section 5): Arm A's")
+    print("  planner is told not to answer, Arm B's is told to, Arm C's cannot.  These")
+    print("  variants use only the equation and token channels, which every arm has.")
+    ncols = ["exec_inert_eqonly", "rev_inert_eqonly", "exec_inert_tok10",
+             "rev_inert_tok10", "exec_inert_neutral", "rev_inert_neutral"]
+    NI = summarise(first, ncols)
+    NI.to_csv(os.path.join(OUT, "x3_inertness_neutral.csv"), index=False)
+    q = NI[["arm", "actor", "n"] + [f"{c}_mean" for c in ncols]
+           + ["exec_inert_eqonly_lo", "exec_inert_eqonly_hi"]]
+    q.columns = ["arm", "actor", "n", "E_0newEq", "R_0newEq", "E_tok<10%", "R_tok<10%",
+                 "E_neutralInert", "R_neutralInert", "E_0newEq_lo", "E_0newEq_hi"]
+    print(q.round(3).to_string(index=False))
+
     h("7. ARM A vs ARM B -- the comparison the paper's claim rests on (paired by problem)")
     pc = []
-    for c in ["exec_inert", "rev_inert", "new_eq_E_distinct", "new_tok_E",
+    for c in ["exec_inert", "rev_inert", "exec_inert_eqonly", "rev_inert_eqonly",
+              "exec_inert_neutral", "rev_inert_neutral",
+              "new_eq_E_distinct", "new_tok_E",
               "ans_differs_E", "new_eq_R_distinct", "new_tok_R", "ans_differs_R",
               "has_novel_critique_R", "ratio_max", "jaccard_max",
               "containment_PE", "containment_ER"]:
@@ -778,7 +802,8 @@ def main(paths, workers=None, quick=0):
         if arm not in diffic:
             continue
         g = g.join(diffic[arm].rename("difficulty"), on="problem_uid").dropna(subset=["difficulty"])
-        for flagname in ("cycle_collapse", "exec_inert", "rev_inert"):
+        for flagname in ("cycle_collapse", "exec_inert", "rev_inert",
+                         "exec_inert_eqonly", "exec_inert_neutral"):
             a, b = g[g[flagname] == 1], g[g[flagname] == 0]
             if len(a) < 25 or len(b) < 25:
                 continue
@@ -818,6 +843,58 @@ def main(paths, workers=None, quick=0):
         print(SR.round(3).to_string(index=False))
         print("\n  A large gap between raw_diff and strat_diff means the raw association was")
         print("  mostly the difficulty of the problems, not an effect of collapse/inertness.")
+
+    h("8a2. COLLAPSE DECOMPOSITION -- within-cycle role collapse vs same-role repetition")
+    print("  x2's collapse flag counts ANY duplicate sha among a trajectory's role messages,")
+    print("  which pools two different mechanisms:")
+    print("    within-cycle  : two DIFFERENT roles, SAME turn, identical bytes = role collapse")
+    print("    same-role rpt : ONE role repeating itself across rounds = a stuck loop")
+    dec = []
+    for k, g in df.groupby(["arm", "actor"]):
+        byt = g.groupby("problem_uid")
+        n = g.problem_uid.nunique()
+        wfirst = g[g.is_first_cycle == 1].cycle_collapse.mean()
+        wany = byt.cycle_collapse.max().mean()
+        dec.append(dict(arm=k[0], actor=k[1], n_traj=n,
+                        within_cycle_first=wfirst, within_cycle_any=wany,
+                        x2_traj_flag=byt.traj_collapse.max().mean()))
+    DEC = pd.DataFrame(dec)
+    DEC["same_role_repeat_implied"] = (DEC.x2_traj_flag - DEC.within_cycle_any).clip(lower=0)
+    DEC.to_csv(os.path.join(OUT, "x3_collapse_decomposition.csv"), index=False)
+    print()
+    print(DEC.round(3).to_string(index=False))
+    print("\n  Where within_cycle_any is ~0 but x2_traj_flag is not, the headline collapse")
+    print("  number for that cell is same-role repetition, NOT role collapse.")
+
+    h("8c. MEASUREMENT ARTIFACT CHECK -- unlogged reasoning tokens")
+    print("  runner.py logs message.content and falls back to message.reasoning ONLY when")
+    print("  content is empty.  gpt-oss-120b is a reasoning model, so a SHORT content with")
+    print("  a long hidden reasoning trace is logged as the short content and the reasoning")
+    print("  is discarded.  A message whose VISIBLE characters-per-second of latency is far")
+    print("  below the corpus norm spent that time on tokens we never recorded.")
+    ur = []
+    for j in jobs:
+        if not j["is_first_cycle"]:
+            continue
+        ur.append(dict(arm=j["arm"], actor=j["actor"],
+                       cycle_collapse=j["cycle_collapse"],
+                       n_unlogged=j.get("n_unlogged", 0),
+                       all3_unlogged=int(j.get("n_unlogged", 0) == 3)))
+    UR = pd.DataFrame(ur)
+    if len(UR) and "n_unlogged" in UR:
+        t = UR.groupby(["arm", "actor"]).agg(
+            n=("n_unlogged", "size"),
+            msgs_unlogged_frac=("n_unlogged", lambda s: s.sum() / (3 * len(s))),
+            all3_unlogged=("all3_unlogged", "mean"))
+        print()
+        print(t.round(3).to_string())
+        ct = UR.groupby(["arm", "actor", "cycle_collapse"]).all3_unlogged.agg(["size", "mean"])
+        ct.to_csv(os.path.join(OUT, "x3_unlogged_reasoning.csv"))
+        print("\n  all-3-messages-unlogged rate, split by whether the cycle byte-collapsed:")
+        print(ct.round(3).to_string())
+        print("\n  If collapse and unlogged reasoning coincide, the byte-identical outputs are")
+        print("  the visible TIP of three separate hidden computations -- NOT three agents")
+        print("  doing the same (or no) work.  Level-2/3 metrics see only the tip.")
 
     h("9. SENSITIVITY -- all complete accepted cycles, full-history novelty")
     allc = summarise(df, ["exec_inert", "rev_inert", "new_tok_E_hist", "new_tok_R_hist",
