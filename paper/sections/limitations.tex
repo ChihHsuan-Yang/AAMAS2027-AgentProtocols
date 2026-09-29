@@ -4,16 +4,15 @@
 \paragraph{A logging defect limits what the duplication rate can mean.} Our
 runner fell back to a response's reasoning field only when its content field
 was empty, so a short answer carrying a long hidden reasoning trace was
-logged as the short answer (\S\ref{subsec:logging}). \textbf{This affects
-$84.7\%$ of gpt-oss Arm~B messages and $97.3\%$ of its first passes}; the
-flag meant to document it reports $5.7\%$. The campaign was \textbf{not}
-re-run: the defect was found late, and the measures the paper's claims rest
-on --- accuracy, graded from a final answer that was always present, and
-functional collapse, read from answer assertions --- do not depend on the
-discarded text. We accept in exchange that no point estimate of gpt-oss's
-duplication rate is recoverable, that we cannot claim the hidden computation
-was redundant, and that our similarity metrics for that cell describe only
-the visible tip of what the model produced.
+logged as the short answer, affecting \textbf{$97.3\%$ of gpt-oss Arm~B first
+passes} (\S\ref{subsec:logging}). The campaign was \textbf{not} re-run: the
+defect was found late, and the measures the paper's claims rest on ---
+accuracy, graded from a final answer that was always present, and functional
+collapse, read from answer assertions --- do not depend on the discarded
+text. We accept in exchange that no point estimate of gpt-oss's duplication
+rate is recoverable, that we cannot claim the hidden computation was
+redundant, and that our similarity metrics for that cell describe only the
+visible tip of what the model produced.
 
 \paragraph{The collapse validation is model adjudication, not human
 annotation.} The 180-item validation in \S\ref{subsec:collapse} used a
@@ -72,16 +71,15 @@ Arm~C look better by 7.1 and 8.0 points; both are reported. That penalty is
 confounded with the intervention, and the same attrition is why the grading
 conventions disagree on C$'-$C for gemma-4 (\S\ref{subsec:p4null}).
 
-\paragraph{Measurement blind spots.} Exact duplication (precision $1.000$,
-recall $0.343$) undercounts near-identical outputs and says nothing about
-semantic redundancy, which we do not claim to have measured. The functional
-measure replacing it is also a proxy: it detects that every agent asserted
-its own answer, not that their reasoning was the same, and it is
-\textbf{inapplicable to Arms~C and C$'$}, where the schema forbids an answer
-field. \Pone{} is blind to symbolic results carrying no digits, slightly
-over-credits compliance, and is mechanically anti-correlated with message
-length --- which is why every computation claim cites the length-robust
-density instead.
+\paragraph{Measurement blind spots.} Exact duplication undercounts
+near-identical outputs and says nothing about semantic redundancy, which we
+do not claim to have measured. The functional measure replacing it is also a
+proxy: it detects that every agent asserted its own answer, not that their
+reasoning was the same, and it is \textbf{inapplicable to Arms~C and C$'$},
+where the schema forbids an answer field. \Pone{} is blind to symbolic
+results carrying no digits, slightly over-credits compliance, and is
+mechanically anti-correlated with message length --- which is why every
+computation claim cites the length-robust density instead.
 
 \paragraph{Power and the evaluator.} Interaction endpoints need roughly twice
 the sample of a main effect for equal power, so a null on P4 is ``no large

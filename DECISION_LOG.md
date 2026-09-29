@@ -579,3 +579,52 @@ Arm B functional collapse is high (0.846-0.982) for **every actor under every
 marker**, B-A is large and positive in all 9 cells, and Llama-3.3 always falls
 between the two incumbents. The magnitudes are marker-dependent; the finding
 that all three actors lose the division of labour in Arm B is not.
+
+## 2026-09-29 18:10 — D15. The Llama-3.3 endpoint is less stable than the incumbents, and null->0 turns that into a fake accuracy penalty
+
+**Observed.** actor3 has 3 terminal transport failures in 534 trajectories.
+campaign_v2 has **0 in 8,130**. Retry load differs by ~9.5x:
+
+| run | n | sum retries | mean/traj | max | terminal failures |
+|---|---|---|---|---|---|
+| campaign_v2 (gpt-oss + gemma-4) | 8,131 | 414 | 0.051 | 4 | **0** |
+| actor3 (Llama-3.3) | 536 | 261 | **0.487** | 10 | 3 |
+
+**It is the endpoint, not my client and not shared load.** campaign_v2 was
+running at 6.4 rows/min with zero transport failures at the same moment, same
+host, same concurrency (24). Three distinct server-side modes on the Llama
+endpoint: HTTP 500 (vLLM traceback), ReadTimeout, HTTP 502 (nginx). Per-call
+latency is flat (20-28 s, no trend), so the endpoint is slow-failing, not
+degrading.
+
+**Clustering is NOT significant.** Failures at records 100, 440, 496 look
+bunched; permutation test over 20k draws gives P(min gap <= 56) = 0.509. Chance.
+Recording this because I nearly reported a degradation trend from three points.
+
+**THE HAZARD — an infrastructure failure is scored as a wrong answer.**
+Transport failures write a row with `correct=None`, and the pre-registered rule
+maps null -> 0. So an endpoint 502 is counted as the model getting the problem
+wrong. This is not symmetric: it biases whichever arm the failure lands in.
+
+Current impact, Llama-3.3, matched problems:
+
+| set | n | B-A |
+|---|---|---|
+| all matched | 176 | **+0.0341** |
+| excluding any problem with a transport failure | 173 | **+0.0289** |
+
+Delta -0.0052, about 15% of the effect, from 3 rows. Small now, but
+one-directional and the failures are ongoing.
+
+**Null causes are NOT interchangeable — separate them before scoring.**
+41 nulls so far decompose as: Arm C `answer_leak` enforcement 34 (a real
+manipulation outcome, correctly scored 0), Arm B `no_answer_produced` 3 (real
+model failure after all 18 calls, correctly 0), transport 3 (infrastructure,
+**should not** be 0), other 1.
+
+**Decision.** Report B-A both ways at final n — prereg null->0 as primary, and
+transport-excluded as a sensitivity row — and state the count of excluded rows.
+Do not silently drop them (prereg is prereg) and do not silently keep them
+(they are not model errors). If terminal transport failures exceed ~2% of any
+arm at final n, the transport-excluded figure becomes the honest headline and
+the prereg figure the sensitivity.

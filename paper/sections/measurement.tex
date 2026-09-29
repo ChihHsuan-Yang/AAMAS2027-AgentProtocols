@@ -26,12 +26,7 @@ compliance with the contract it was scoring.
 
 \paragraph{Collapse is audited separately.} Because collapse carries the
 headline, it is validated against blinded adjudication and stress-tested
-against four alternative explanations in
-\S\ref{subsec:collapse}: deterministic decoding (ruled out --- no duplicated
-group arose from identical prompts), normalization sensitivity (the exact
-measure undercounts), retry convergence (ruled out by construction, since the
-primary rule reads the first pass), and problem easiness (functional collapse
-is high in every difficulty band). That audit is also where we report the
-measure's own failure: exact duplication reports $0.000$ for an actor the
-adjudication judges collapsed in $0.944$ of sampled trajectories, which is
-why the primary measure is functional rather than byte-level.
+against deterministic decoding, normalization sensitivity, retry convergence
+and problem easiness in \S\ref{subsec:collapse} --- which is also where the
+byte measure's own failure, and the reason the primary measure is functional
+rather than byte-level, are reported.

@@ -13,10 +13,9 @@ agent and implicitly to another.
 
 The \emph{realized} organization is the behavior that occurs when that
 specification is executed by a particular actor. Because a clause is prose
-handed to a language model, realization is not guaranteed, and nothing
-records which clauses were honored. An evaluation observing only task outcome
-cannot distinguish an organization that divided the work as specified from
-one in which every agent did everything. Both appear as a score.
+handed to a language model, realization is not guaranteed and nothing records
+which clauses were honored: an organization that divided the work as
+specified and one in which every agent did everything both appear as a score.
 
 \begin{quote}
 \textbf{Definition.} A component of an organization is \textbf{load-bearing}
@@ -52,10 +51,9 @@ therefore record the constraint rather than the behavior.
 \emph{duplicates} if two or more role messages are byte-identical, compared
 as \texttt{sha256} of the raw completion before parsing and before any
 scaffold field is added. Against blinded adjudication it has precision
-$1.000$ and recall $0.343$ (\S\ref{subsec:collapse}), so we use it to
-establish that at least a given amount of collapse occurred and
-\textbf{never to compare how much organization two actors lost}. We report
-it on the first pipeline pass, with the all-message rule alongside.
+$1.000$ and recall $0.343$ (\S\ref{subsec:collapse}), so it establishes that
+at least a given amount of collapse occurred and is \textbf{never used to
+compare how much organization two actors lost}.
 
 \paragraph{Answer authorship (\Ptwo{}).} Whether a Planner message contains a
 final answer. This is the clause Arm~C structurally enforces, and it is the

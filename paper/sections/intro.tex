@@ -18,10 +18,9 @@ organization load-bearing?} A component is \textbf{load-bearing} if removing
 or altering it causes a reproducible degradation in task performance
 \emph{under matched compute and information budgets}. The budget clause
 carries the weight: removing role instructions while also removing agents,
-calls, or context tests scale, not organization. Our interventions hold agent
-count, interaction order, message-passing graph, call budget, retry budget,
-decoding parameters, verifier and grading fixed, and vary only what each
-agent is told it is, or what its interface will let it emit.
+calls, or context tests scale, not organization. Our interventions hold the
+whole compute and information budget fixed and vary only what each agent is
+told it is, or what its interface will let it emit.
 
 \paragraph{Every actor loses the organization; only some pay for it.}
 Under generic prompts that delete every role instruction while changing
