@@ -102,3 +102,61 @@ solutions; the third is uninstrumented.
   which is a second consequence and is not currently stated.
 - P1a-vs-proxy relationship must be stated: the proxy is inverted P1a, made
   length-robust. Not a new construct.
+
+---
+
+## 6. ADDENDUM — the duplication claim, with the control the Jaccard test lacked (2026-09-29)
+
+The worker content-tested the "long planners duplicate the executor" claim
+with Jaccard overlap of numeric tokens, and correctly caught itself: Arm B's
+$0.67$–$0.71$ looks like near-total duplication, but Arm A already sits at
+$0.44$–$0.54$ because both messages discuss the same problem. It reported the
+**lift** ($\approx +0.17$) instead of the raw figure, avoiding a ~4x
+overstatement. That was the right instinct.
+
+**The Arm A control is not sufficient, and correcting it makes the effect
+LARGER, not smaller.** Arm A is not a zero-duplication baseline — the Arm A
+planner still discusses the problem, and a planner that never solved anything
+would still share the problem's numbers with the executor. The question the
+control must answer is: *how much overlap arises from two messages being about
+mathematics at all?* That needs a **null pairing** — planner from problem $X$
+against executor from problem $Y$, same actor, same arm.
+
+| actor / arm | real | **null (shuffled)** | excess |
+|---|---|---|---|
+| gemma-4 / A | 0.500 | 0.348 | $+0.152$ |
+| **gemma-4 / B** | 0.714 | **0.229** | $\mathbf{+0.485}$ |
+| Llama-3.3 / A | 0.500 | 0.364 | $+0.136$ |
+| **Llama-3.3 / B** | 0.667 | **0.188** | $\mathbf{+0.479}$ |
+| gpt-oss / A | 0.458 | 0.267 | $+0.192$ |
+| gpt-oss / B | 0.147 | 0.051 | $+0.095$ |
+
+**The null is not flat across arms** (Arm A $0.35$–$0.36$, Arm B $0.19$–$0.23$),
+so "Arm B minus Arm A" subtracts two different baselines and is not a valid
+contrast. Against each arm's own null:
+
+| actor | A excess | B excess | **B$-$A** |
+|---|---|---|---|
+| gemma-4 | $+0.152$ | $+0.485$ | $\mathbf{+0.333}$ |
+| Llama-3.3 | $+0.136$ | $+0.479$ | $\mathbf{+0.343}$ |
+| gpt-oss | $+0.192$ | $+0.095$ | $-0.096$ |
+
+**The duplication effect is $+0.33$ to $+0.34$, roughly double the worker's
+$+0.17$, and replicates almost exactly across the two instrumented actors.**
+The worker's correction was in the right direction but overshot, because it
+treated Arm A as a clean floor when Arm A carries its own $+0.14$ to $+0.15$
+of genuine planner--executor overlap.
+
+Why the null differs by arm: it tracks token-set size (gpt-oss Arm B
+executors have a median of **2** numeric tokens, against 9–14 elsewhere).
+Smaller sets make chance overlap rarer, which lowers the null. This is also
+why the raw Jaccard cannot be compared across arms without the null.
+
+gpt-oss again moves the opposite way and stays near its own null
+($+0.095$), independently corroborating that its Arm B planner output is not
+a solution — consistent with the instrument failure in §2 rather than with
+any model behaviour.
+
+**For the paper:** report the excess-over-null ($+0.333$, $+0.343$) with the
+null stated, never the raw Jaccard and never the A$-$B difference of raw
+Jaccards.

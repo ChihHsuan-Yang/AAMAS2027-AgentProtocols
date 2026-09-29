@@ -967,3 +967,30 @@ part of what made it look distinctive is our own logging, not the model.
 statistic on `evaluator_history.candidate` (keep runtime recomputation); report
 the floor with its construction stated; drop the asymmetry and self-favouring
 claims; present gpt-oss's short planner as uninstrumented, never as a behaviour.
+
+### D20 addendum (20:45) — independent evidence for the duplication reading, with its baseline
+
+D19/D20 claim gemma-4's and Llama-3.3's Arm B planners *duplicate the
+executor's work*. That rested on message length plus a boxed answer, which is
+indirect. A content test: Jaccard overlap of numeric tokens between the
+planner and executor messages, long planners (>=500 chars) only.
+
+| actor | arm A median | arm B median | lift |
+|---|---|---|---|
+| Llama-3.3 | 0.500 (n=388) | **0.667** (n=382) | +0.167 |
+| gemma-4 | 0.538 (n=371) | **0.714** (n=367) | +0.176 |
+| gpt-oss | 0.444 (n=364) | 0.145 (n=91) | -0.299 |
+
+**The Arm A control matters and I nearly skipped it.** Taken alone, Arm B's
+0.67-0.71 looks like near-total duplication. But Arm A — where the planner is
+instructed *not* to solve — already sits at 0.44-0.54, because both messages
+discuss the same problem and share its numbers. So most of that overlap is
+baseline, and the duplication signal is the **lift of ~+0.17**, not 0.7.
+
+Direction is consistent for both actors and the effect is real, but it is a
+moderate shift, not the wholesale re-solving the raw figure suggests. Report
+the lift with the Arm A baseline beside it; quoting 0.71 alone would overstate
+it by roughly 4x.
+
+gpt-oss moves the *opposite* way (0.444 -> 0.145), consistent with D20: its
+Arm B planner output is not a solution at all, it is the uninstrumented tail.
