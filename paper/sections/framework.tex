@@ -26,13 +26,11 @@ performance \emph{under matched compute and information budgets}.
 
 The budget clause is what makes the definition usable: removing role
 instructions \emph{and} agents, calls, or context tests scale, not
-organization. Every intervention below holds the agent count, interaction
-order, message-passing graph, total call budget, retry budget, decoding
-parameters, verifier and verifier prompt, stopping rule, and grading fixed,
-and varies only what each agent is told it is or what its interface will
-accept. The definition is deliberately behavioral: it makes ``the roles
-matter'' a claim that can fail, and in \S\ref{sec:results} it fails for one
-actor and holds for another.
+organization. Every intervention below holds the full compute and information
+budget fixed (\S\ref{sec:method} lists it) and varies only what each agent is
+told it is or what its interface will accept. The definition is deliberately
+behavioral: it makes ``the roles matter'' a claim that can fail, and in
+\S\ref{sec:results} it fails for one actor and holds for another.
 
 \subsection{Measuring the realized organization}
 
@@ -65,10 +63,10 @@ manipulation check.
 
 \paragraph{Computation (\Pone{} and density).} Whether a Planner abstains
 from computing, scored as containing no evaluated numeric equality, with
-symbolic restatement of givens explicitly permitted. \Pone{} is frozen at the
-validated version (agreement $0.903$, $\kappa = 0.806$ against hand
-adjudication on 72 messages) and is \emph{not} redefined post-hoc. Because it
-is defined as the absence of a pattern, it is mechanically anti-correlated
+symbolic restatement of givens explicitly permitted. \Pone{} is frozen at its
+validated version (\S\ref{sec:measurement}) and is \emph{not} redefined
+post-hoc. Because it is defined as the absence of a pattern, it is
+mechanically anti-correlated
 with message length, so every computation claim in this paper cites the
 length-robust \textbf{evaluated equations per 1{,}000 characters} instead,
 with the binary rate reported alongside. This matters: Arm~B's gpt-oss
@@ -77,7 +75,6 @@ Planner in the study --- while emitting a bare boxed answer and no work at
 all. A metric that rewards silence cannot measure a division of labor.
 
 \paragraph{Why several measures and not one.} They come apart, which is the
-point: collapse asks whether the agents differ, answer authorship who may
-speak, density who does the work. \S\ref{subsec:structnotcog} drives the
-second to $1.000$ without moving the third, and \S\ref{subsec:collapse} has
-two collapse measures disagreeing on an entire actor.
+point. \S\ref{subsec:structnotcog} drives answer authorship to $1.000$ without
+moving density, and \S\ref{subsec:collapse} has two collapse measures
+disagreeing on an entire actor.

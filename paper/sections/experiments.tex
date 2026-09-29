@@ -27,25 +27,23 @@ family) rather than assumed; gemma-4 is four to five times slower per call,
 so arms do not complete in equal wall-clock at equal concurrency.
 
 \paragraph{Power.} Computed by simulation (4{,}000 replicates, two-sided
-$\alpha=0.05$) from discordance rates observed in the pre-existing corpus. At
-the achieved scale the paired per-actor main effect is well powered for large
-effects and moderately powered for smaller ones, while the
-actor~$\times$~intervention interaction needs roughly twice the sample for
-equal power. \textbf{A null on P4 therefore means ``no large interaction
-detected,'' not ``no interaction.''} Organizational measures are computed per
-message, so the measurement half of the study is well powered at trajectory
-counts at which the outcome half is not.
+$\alpha=0.05$) from discordance rates in the pre-existing corpus. The paired
+per-actor main effect is well powered for large effects at this scale, while
+the actor~$\times$~intervention interaction needs roughly twice the sample:
+\textbf{a null on P4 therefore means ``no large interaction detected,'' not
+``no interaction.''} Organizational measures are computed per message, so the
+measurement half of the study is well powered at trajectory counts at which
+the outcome half is not.
 
 \paragraph{Gates and a confound caught before it became a result.} The main
-run was gated on a smoke test requiring, among other checks, that Arm~C
-produce non-zero boundary rejections with reasons logged, that answer-bearing
-calls be equal across arms, and that the backend be pinned. An early campaign
-was stopped and quarantined after 121 trajectories when $74\%$ of Arm~C
-rejections turned out to be the model cut off at the token limit mid-JSON
-rather than violating a role boundary. Truncation was not arm-specific
-($8.4\%$/$11.3\%$/$8.9\%$ over A/B/C) but its \emph{cost} was: Arms~A and B
-tolerate a truncated prose message where Arm~C rejects unparseable JSON. Left
-alone this would have produced a convincing ``enforcement lowers accuracy''
-result that was a token-budget artifact. The token limit was doubled, a
-logged salvage path added, and the pre-fix rows quarantined and never
-pooled.
+run was gated on a smoke test requiring non-zero Arm~C boundary rejections
+with reasons logged, answer-bearing calls equal across arms, and a pinned
+backend. An early campaign was stopped and quarantined after 121 trajectories
+when $74\%$ of Arm~C rejections turned out to be the model cut off at the
+token limit mid-JSON rather than violating a role boundary. Truncation was
+not arm-specific ($8.4\%$/$11.3\%$/$8.9\%$ over A/B/C) but its \emph{cost}
+was: Arms~A and B tolerate a truncated prose message where Arm~C rejects
+unparseable JSON. Left alone this would have produced a convincing
+``enforcement lowers accuracy'' result that was a token-budget artifact. The
+token limit was doubled, a logged salvage path added, and the pre-fix rows
+quarantined and never pooled.

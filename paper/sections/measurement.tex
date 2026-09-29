@@ -9,24 +9,20 @@ $0.943$, recall $0.868$, confusion 33/2/3/34) on $n=72$, and \Etwo{}
 agreement $0.923$ and $\kappa=0.843$ (precision $0.833$, recall $1.000$) on
 $n=13$.
 
-Three properties of the error structure matter more than those figures.
-\Pone{} agreement \emph{fell} from $0.967$ at $n=30$ to $0.903$ at $n=72$ as
-adjudication continued; we report the final figure and note the direction,
-because it is the reason to finish a validation sheet rather than stop at a
-good number. The residual errors point in \emph{opposite} directions --- two
-false positives are symbolic results carrying no digits, three false
-negatives are contract-permitted content --- so they do not bias the actor
-comparison consistently. And one systematic error was repaired rather than
-tolerated: the first Executor measure matched ``Step 0'' inside the
-Executor's own construction, exactly the solving-versus-following confusion
-the construct exists to avoid; it was rebuilt to require an explicit plan
-reference.
-
-A \Pone{} variant adding a symbolic-result detector to close the
-false-positive class --- the obvious next thing a reader would propose ---
-\textbf{was rejected: agreement fell to $0.694$ and recall to $0.421$},
-because the detector fired on 9 of 9 messages judged compliant, including on
-the contract's \emph{required} answer-form section.
+The error structure matters more than those figures. \Pone{} agreement
+\emph{fell} from $0.967$ at $n=30$ to $0.903$ at $n=72$ as adjudication
+continued, and we report the final figure; its residual errors point in
+\emph{opposite} directions (two false positives are symbolic results carrying
+no digits, three false negatives contract-permitted content), so they do not
+bias the actor comparison consistently. One systematic error was repaired and
+one proposed fix rejected: the first Executor measure matched ``Step 0''
+inside the Executor's own construction --- the solving-versus-following
+confusion the construct exists to avoid --- and was rebuilt to require an
+explicit plan reference, while a \Pone{} variant adding a symbolic-result
+detector \textbf{was rejected when agreement fell to $0.694$ and recall to
+$0.421$}, the detector having fired on 9 of 9 messages judged compliant
+including the contract's \emph{required} answer-form section, penalizing
+compliance with the contract it was scoring.
 
 \paragraph{Collapse is audited separately.} Because collapse carries the
 headline, it is validated against blinded adjudication and stress-tested

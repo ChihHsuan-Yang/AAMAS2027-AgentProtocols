@@ -78,33 +78,26 @@ differentiation is load-bearing for \emph{error recovery}, not for
 \emph{first-pass solving}, and only for the actor that cannot otherwise escape
 a wrong consensus.
 
-This is not the ordering capability-dependence accounts predict.
-Structure-helps-weaker-models is the standard finding, and it is monotone:
-the stronger the model, the less the scaffolding
-matters~\cite{canedo2026architecture,orogat2026architectural}. Our actors do
-not order that way. They lose essentially the same amount of organization,
-and the one that pays is neither the strongest nor the weakest. Specifically,
-we contribute:
+This is not the ordering capability-dependence accounts
+predict~\cite{canedo2026architecture,orogat2026architectural}: our actors lose
+essentially the same amount of organization, and the one that pays is neither
+the strongest nor the weakest. Specifically, we contribute:
 
-\begin{enumerate}
+\begin{enumerate}\itemsep1pt
 \item An operational definition of \textbf{load-bearing} and a budget-matched
-  design that tests it, including a single-agent control without which
+  design that tests it, including the single-agent control without which
   ``collapse is harmless'' cannot be told apart from ``the system was always
   one agent''.
 \item The \textbf{dissociation between how much organization is lost and what
-  losing it costs}: three actors lose the division of labor at
-  $0.846$--$0.975$ and their accuracy responses range from a significant
-  $-0.030$ to an indistinguishable $+0.040$. The result is not an artifact of
-  difficulty, decoding determinism, normalization, or trajectory length.
+  losing it costs}, robust to difficulty, decoding determinism, normalization
+  and trajectory length.
 \item A \textbf{measurement result we had to absorb ourselves}: an
   exact-duplication metric reports $0.000$ collapse for an actor a blinded
-  adjudication judges collapsed in $94\%$ of sampled trajectories. We report
-  it as a lower bound and rebuild the claim on a functional measure.
+  adjudication judges collapsed in $94\%$ of sampled trajectories, so we
+  report it as a lower bound and rebuild the claim on a functional measure.
 \item A \textbf{structural--functional dissociation from the other side}:
-  enforcing the boundary architecturally restores measured organization
-  completely and task performance not at all, with a pre-registered primary
-  null we report as such.
+  architectural enforcement restores measured organization completely and task
+  performance not at all, with a pre-registered primary null reported as such.
 \item A \textbf{mechanism}: roles sustain disagreement, disagreement sustains
-  recovery, and only the actor that cannot escape a wrong consensus on its own
-  needs them.
+  recovery, and only the actor that cannot escape a wrong consensus needs them.
 \end{enumerate}

@@ -91,14 +91,14 @@ differentiation in Arm~B}, at $0.944$ and $0.958$; and the byte metric has
 of what a judge sees. The adjudication used a frontier language model, not
 human annotators; \S\ref{sec:limitations} states what that establishes.
 
-\paragraph{The measures survive the obvious attacks.} Deterministic decoding
-cannot produce the duplication: \textbf{0 of 907} duplicated first passes
-arose from identical prompts, and the endpoint is measurably nondeterministic
-at temperature $0$. Normalization \emph{raises} the all-message rate from
-$0.842$ to $0.927$, so the exact measure undercounts there too. Retry
-convergence is excluded by construction. And it is not an easy-problem
-artifact: functional collapse reaches $0.64$ (gpt-oss) and $0.92$
-(gemma-4) on the hardest stratum.
+\paragraph{The measures survive the obvious attacks.} \textbf{0 of 907}
+duplicated first passes arose from identical prompts, and the endpoint is
+measurably nondeterministic at temperature $0$, so deterministic decoding
+cannot produce the duplication; normalization \emph{raises} the all-message
+rate from $0.842$ to $0.927$, so the exact measure undercounts there too;
+retry convergence is excluded by construction; and functional collapse
+reaches $0.64$ (gpt-oss) and $0.92$ (gemma-4) on the hardest stratum, so it
+is not an easy-problem artifact.
 
 \subsection{A logging defect bounds what the duplication rate can mean}
 \label{subsec:logging}
@@ -138,34 +138,27 @@ Table~\ref{tab:transition} pairs each problem with itself across arms.
 
 \begin{table}[t]
 \centering
-\caption{\textbf{Top:} the central result. Every actor loses the functional
-division of labor in Arm~B; only one loses accuracy. Accuracy is paired
-same-problem, pre-registered ungraded-as-incorrect rule.
-\textbf{Bottom:} each arm against a
-budget-matched single agent on the same problems --- the collapsed team still
-beats one agent. Post-hoc/exploratory throughout.}
+\caption{\textbf{Top:} accuracy cost of role removal, paired same-problem
+under the pre-registered ungraded-as-incorrect rule; the matching
+functional-collapse rates are in Table~\ref{tab:collapse}. \textbf{Bottom:}
+each arm against a budget-matched single agent on the same problems.
+Post-hoc/exploratory throughout.}
 \label{tab:transition}
 \small
-\begin{tabular}{lccccc}
+\begin{tabular}{lcl}
 \toprule
- & & \multicolumn{2}{c}{func.\ collapse} & \\
-\cmidrule(lr){3-4}
-actor & $n$ & A & B & B$-$A accuracy \\
+actor & $n$ & B$-$A accuracy \\
 \midrule
-\textbf{gemma-4} & $1{,}318$ & $0.000$ & $0.975$
-  & $\mathbf{-0.0296}$ \\
- & & & & \tiny$[-0.0455,-0.0137]$ \\
-gpt-oss & $1{,}313$ & $0.121$ & $0.846$ & $+0.0076$ \\
- & & & & \tiny$[-0.0107,+0.0259]$ \\
-Llama-3.3 & $125$ & $0.000$ & $0.914$ & $+0.0400$ \\
- & & & & \tiny$[-0.0240,+0.1040]$ \\
+\textbf{gemma-4} & $1{,}318$ & $\mathbf{-0.0296}$ $[-0.0455,-0.0137]$ \\
+gpt-oss & $1{,}313$ & $+0.0076$ $[-0.0107,+0.0259]$ \\
+Llama-3.3 & $125$ & $+0.0400$ $[-0.0240,+0.1040]$ \\
 \midrule
-\multicolumn{5}{l}{\emph{versus budget-matched single agent}} \\
-gpt-oss & A & \multicolumn{3}{c}{$+0.0178$ $[+0.0000,+0.0363]$} \\
+\multicolumn{3}{l}{\emph{versus budget-matched single agent}} \\
+gpt-oss & A & $+0.0178$ $[+0.0000,+0.0363]$ \\
 \textbf{gpt-oss} & \textbf{B}
-  & \multicolumn{3}{c}{$\mathbf{+0.0247}$ $\mathbf{[+0.0062,+0.0425]}$} \\
-gemma-4 & A & \multicolumn{3}{c}{$-0.0255$ $[-0.0448,-0.0062]$} \\
-gemma-4 & B & \multicolumn{3}{c}{$-0.0556$ $[-0.0749,-0.0371]$} \\
+  & $\mathbf{+0.0247}$ $\mathbf{[+0.0062,+0.0425]}$ \\
+gemma-4 & A & $-0.0255$ $[-0.0448,-0.0062]$ \\
+gemma-4 & B & $-0.0556$ $[-0.0749,-0.0371]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -202,10 +195,10 @@ unnecessary anyway.
 \subsection{Collapse is not ``the system was always a single agent''}
 \label{subsec:notsingle}
 
-The strongest objection to \S\ref{subsec:nodegradation} is that a setup where
-collapse is free never required multi-agent
-structure~\cite{zhang2026rethinking}. We test it against the budget-matched
-single-agent protocol on the same problems (Table~\ref{tab:transition}).
+We test the standing objection that a setup where collapse is free never
+required multi-agent structure~\cite{zhang2026rethinking} against the
+budget-matched single-agent protocol on the same problems
+(Table~\ref{tab:transition}).
 
 A collapsed gpt-oss team beats its own single agent by 2.5 points, interval
 excluding zero, so three agents emitting the same answer under a shared
@@ -313,9 +306,8 @@ first-pass solving --- and only for the actor that cannot otherwise escape a
 wrong consensus.}
 \end{quote}
 
-This also explains \S\ref{subsec:p4null}: enforcing answer authorship restores
-who may speak, not whether the agents \emph{differ}, and disagreement is what
-the recovering actor needed. Three caveats bound the claim. Recovery is
+This also explains \S\ref{subsec:p4null}: enforcement restores who may speak,
+not whether the agents \emph{differ}. Three caveats bound the claim. Recovery is
 conditioned on needing a retry, which is post-treatment, so this is a
 decomposition and not a causal mediation. The conditioning set is not matched
 across arms --- in Arm~A, $59\%$ (gemma-4) and $22\%$ (gpt-oss) of failed
