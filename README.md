@@ -1,63 +1,68 @@
-# AAMAS 2027 — Agent Protocols (working title)
+# When Is Multi-Agent Organization Load-Bearing?
 
-**Target:** AAMAS 2027. Abstract **2026-10-01**, full paper **2026-10-08**, both AoE.
-8 pages main text + unlimited references. Double-blind. LaTeX mandatory.
-**Likely area:** GAAI (Generative and Agentic AI). Not LEARN — no learning
-contribution is currently justified (see CLAIM-STATUS.md).
+AAMAS 2027 submission. **Abstract Oct 1, full paper Oct 8 (AoE), 8 pages main
+text + unlimited references, double-blind.** Target area: GAAI.
 
-**This is NOT the IEEE BigData SciAgentTrace dataset paper.** See `OVERLAP_AUDIT.md`.
+**Bella submits manually.** The agent's job ends at a submission-ready package
+— see `SUBMISSION_CHECKLIST.md`, section *"Bella — manual submission actions"*.
+
+## The result
+
+Multi-agent LLM systems are specified as role diagrams (Planner → Executor →
+Reviewer) and those diagrams get read as *mechanism*. We ask when the
+organization is actually **load-bearing** — defined as: removing or altering it
+causes a reproducible performance degradation under matched compute and
+information budgets.
+
+Holding agents, call budget, context policy, verifier and grading fixed, we
+delete role instructions (Arm B) and separately make the division of labor
+structurally unrepresentable (Arm C), across three actors on ~9,000 matched
+Omni-MATH trajectories.
+
+> **Deleting role instructions destroys the functional division of labor in
+> every actor tested (0.845–0.975). What differs is what it costs: one actor
+> loses accuracy (−0.029 [−0.045,−0.013]), another does not (+0.007
+> [−0.011,+0.025]). How much organization an actor loses does not predict
+> whether losing it is costly.**
+
+Not degeneration to a single agent — a collapsed team still beats its
+budget-matched single agent (+0.025 [+0.007,+0.042]). Architectural enforcement
+drives answer-authorship compliance to 1.000 and moves accuracy for neither
+actor. Mechanism: role removal leaves the vulnerable actor's first-pass solve
+rate unchanged and destroys its **recovery** (0.490 → 0.045), because without
+roles the team reaches near-total unanimity and cannot escape a wrong consensus.
 
 ## Start here
 
 | file | what it is |
 |---|---|
-| `notes/CLAIM-STATUS.md` | **read first** — what survives, what does not, and why |
-| `notes/FINDING-0*.md` | the six findings, each with its own caveats and corrections |
-| `notes/EXPERIMENT_PROPOSALS.md` | costed proposals; **nothing has been run** |
-| `OVERLAP_AUDIT.md` | BigData separation, incl. ideas self-rejected |
-| `AI_ASSISTANCE_LOG.md` | AAMAS-mandated disclosure, incl. the AI's own corrections |
-
-## Findings at a glance
-
-- **F01** confidence-argmax speaker selection ≈ random (replicated, 2 actors)
-- **F02** protocol ladder is ~50% oracle-feedback artifact; single-agent is ~100%
-- **F03** peer approval signal — **downgraded**, see its own CORRECTION section
-- **F04** effect-size reality check + held-out confirmation; P2 prediction failed
-- **F05** PER role separation instructed but not obeyed (+ a Simpson's reversal)
-- **F06** which organization wins flips sign by actor model
-
-## Data
-
-Read-only from the public release cached at
-`../IEEE-BigData-SciAgentTrace/analysis/hf_cache/release` (68,892 trajectories,
-1.89M messages, 439 MB). Nothing in this project writes to the BigData or SC26
-projects.
+| `CLAIM_STATUS.md` | **read first** — what is supported, withdrawn, and why |
+| `notes/FINDING-14-THE-RESULT.md` | the central result |
+| `notes/FINDING-11-mechanism.md` | why the actors differ |
+| `adjudication/` | blinded Opus-5 adjudication: rubric, protocol, verdicts |
+| `RESULT_PROVENANCE.md` | every headline number → run, script, commit |
+| `notes/NUMBER-REFRESH-REQUIRED.md` | figures needing a final-n refresh |
+| `OVERLAP_AUDIT.md` | separation from four prior artifacts on this corpus |
+| `AI_ASSISTANCE_LOG.md` | AAMAS-required disclosure |
+| `SUBMISSION_CHECKLIST.md` | what Bella does manually |
 
 ## Reproduce
 
 ```bash
-cd analysis/scripts
-python3 d1_oracle_decomposition.py      # oracle vs structure decomposition
-python3 d2_extract_polls.py             # build the confidence-poll panel
-python3 d3_grader.py                    # grader + CALIBRATION (run before d4)
-python3 d4_counterfactual_selection.py
-python3 d5_selection_vs_random.py       # the null
-python3 d6_confidence_decomposition.py  # the mechanism
-python3 d7_within_turn_signal.py        # feature sweep
-python3 d8_budget_matched.py
-python3 d9_blind_approval.py
-python3 d10_peer_within_item.py         # like-for-like correction to d9
-python3 d11_holdout_confirmation.py     # held-out actor model
-python3 d12_role_compliance.py
+python3 experiments/make_manifest.py 1600          # deterministic problem set
+python3 experiments/runner.py --n 1600 --arms A,B,C \
+    --actors "openai/gpt-oss-120b,google/gemma-4-31B-it" --concurrency 24
+python3 scripts/verify_paper_numbers.py            # every headline figure, live
+python3 adjudication/build_sample.py && python3 adjudication/adjudicate.py --reps 3
+python3 adjudication/analyze.py
 ```
 
-`d2` and `d12` scan all 10 message shards and take a few minutes; the rest are fast.
+Raw trajectory JSONL (~180MB) is **not** in git; it regenerates from the
+manifest + runner. Derived results and all analysis code are committed.
 
-## Standing rules for this project
-
-1. **Calibrate every grader against recorded labels before using it** (`d3`).
-2. **Hold out `gemma_4_31b` / jeebench / mascqa** for confirmation; discovery ran
-   on labbench + gpt_oss_120b.
-3. **Stratify before pooling** — two Simpson's reversals found so far (F05, F06).
-4. **No HPC campaign without Bella's sign-off** (her instruction §21/§33).
-5. Record corrections in place rather than deleting the wrong version.
+## Standing rules
+1. Calibrate any measure against a validated reference before using it.
+2. Stratify before pooling — two Simpson's reversals found in this project.
+3. Never quote a number from a data cut other than the reported n.
+4. A retracted number stays visible and struck through, never deleted.
+5. No HPC campaign, and no claim, without the artifact that supports it.
