@@ -501,3 +501,46 @@ The third actor's byte-collapse numbers will still be reported — as byte-level
 output duplication, labelled as such — but the *inverse-relationship* question
 must be answered with the adjudicated measure, not the byte flag. This is a
 scope correction to my own task, recorded before the numbers exist.
+
+## 2026-09-29 17:00 — D14. A functional collapse proxy that tracks the adjudicated label (Arms A/B only)
+
+**Problem.** The byte rule is withdrawn for under-detection (recall 0.343; it
+scores gemma-4 Arm B 0.000 while adjudication judges it 0.944 redundant). Under
+the count-matched rule Llama-3.3 is 0.000 in **every** arm, so the third actor
+cannot be positioned on the collapse axis at all. Normalized-text equality does
+not fix this (gemma-4 Arm B still 0.000) — it shares the same blind spot.
+
+**Proxy.** `frac_ALL3_boxed` = fraction of trajectories in which all three of
+the first three role messages independently assert a `\boxed` answer. This
+operationalizes the rubric's own Q2 YES example — "every agent does the same
+kind of work: all three solve the problem end-to-end and assert an answer" —
+so it targets *function*, not text overlap.
+
+**Validation against the adjudicated Q5 rates (FINDING-13), all four cells:**
+
+| arm | actor | adjudicated Q5=NO | `frac_ALL3_boxed` | byte first3 |
+|---|---|---|---|---|
+| A | gpt-oss | 0.056 | 0.117 | 0.000 |
+| A | gemma-4 | 0.000 | 0.000 | 0.000 |
+| B | gpt-oss | 0.954 | 0.845 | 0.691 |
+| B | gemma-4 | **0.944** | **0.975** | **0.000** |
+
+Max deviation 0.109; it recovers the cell the byte rule misses entirely.
+
+**SCOPE LIMIT — not valid for Arm C, and the reason is circularity.**
+Arm C's validator rejects `\boxed` outright (`schemas.py:98`,
+`answer_leak:boxed`). Arm C's 0.000 therefore measures the *constraint*, not
+behaviour. Verified directly: 1 boxed occurrence across all sampled Arm C role
+messages. **Report this proxy for Arms A and B only** — which is where the
+headline B−A contrast lives anyway.
+
+**Third actor under this proxy (n≈85/arm, run still in flight):**
+Llama-3.3 Arm A 0.000, Arm B **0.906**. For comparison, Arm B: gpt-oss 0.845,
+gemma-4 0.975. On the *functional* measure all three actors lose the division
+of labour in Arm B — consistent with the corrected headline in
+`notes/ADJUDICATION-SCOPE-NOTE.md` ("both actors lose the organization, only one
+loses accuracy"), now with a third actor pointing the same way.
+
+This is a proxy validated against 4 adjudicated cells, not a replacement for
+adjudication. The `(Llama, *, True)` stratum is still missing from the
+adjudication sample, so Llama's precision remains unmeasured.
