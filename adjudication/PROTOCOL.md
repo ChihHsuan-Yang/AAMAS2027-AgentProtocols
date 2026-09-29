@@ -59,3 +59,32 @@ It cannot reinstate the withdrawn scope claim. The byte metric's failure was
 **recall** (it misses gemma-4's collapse entirely), and a better judge can only
 raise gemma-4's measured collapse — pushing the actors closer together, never
 apart. See `ADJUDICATION-SCOPE-NOTE.md`.
+
+---
+
+## Coverage limitation, found before analysis (2026-09-29)
+
+The automated flag's positive stratum is **extremely unbalanced across actors**,
+because collapse positives only exist where the metric fires:
+
+| actor | auto_collapse = True | = False |
+|---|---|---|
+| gpt-oss-120b | **14** | 56 |
+| gemma-4-31B | **3** | 56 |
+| Llama-3.3-70B | **0** | 42 |
+
+**Consequence, stated before any result is read:**
+- **Precision** (of the flagged cases) is estimable only for **gpt-oss-120b**.
+  gemma-4 has n=3; Llama-3.3 has none.
+- **Recall** is estimable for all three, and recall is the quantity that
+  withdrew the scope claim, so the design still answers the load-bearing
+  question.
+
+This is not fixable by sampling harder: Llama-3.3 has **zero** count-matched
+collapse positives in its entire run (A 0/79, B 0/81, C 0/81). That zero was
+verified as real rather than an instrument fault — **3,235/3,235 response
+hashes recomputed from the raw text match exactly**, so its roles genuinely
+emit different strings.
+
+The paper must therefore report precision **per actor**, name the n, and not
+present a pooled precision as if it generalized.

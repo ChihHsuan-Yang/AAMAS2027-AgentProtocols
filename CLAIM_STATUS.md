@@ -40,7 +40,7 @@ Labels: OBSERVED · SUPPORTED · TENTATIVE · FALSIFIED · UNTESTED · DROPPED.
 
 | claim | reason |
 |---|---|
-| Three-actor ordering claim (G1) | only 2 actors serving; gemma-3-27b and Llama-3.3-70B both 503. Amendment 1 fires. |
+| Three-actor ordering claim (G1) | **CORRECTED 2026-09-29 16:55**: Llama-3.3-70B recovered and has generated 250+ trajectories; only gemma-3-27b is dead (0/3 probes). The claim stays dropped for a DIFFERENT reason: Llama-3.3's accuracy is 0.22-0.35 vs ~0.83, so it cannot anchor an ordering. This entry previously said both were 503, contradicting TODO P0-9 — a stale board, now reconciled. |
 | Capability-vs-fidelity dissociation | the actor carrying it (gemma3) never came up; gemma_4_31b has **zero** baseline first-pass rows. **Amendment 2 fires: report UNRESOLVED.** |
 | Two-domain claim | runner pins omnimath2; lab-bench's Planner contract has no computation clause anyway |
 | Full n=4181 stretch | marginal power not worth risking C′ and the noise floor |
