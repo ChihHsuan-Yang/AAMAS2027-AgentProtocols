@@ -115,3 +115,39 @@ the JSON-extraction path, not necessarily missing answers — the grader reads t
 trajectory's `final_answer`, not this field, so accuracy is unaffected. But it
 means this particular table under-counts gemma-4 Arm C and must not be read as
 "the executor stopped answering". Flagged for the functional-metrics worker.
+
+---
+
+## THE SHARPEST VERSION (count-matched rule, 2026-09-29)
+
+Re-running the transition table under the count-matched (first-pipeline-pass)
+collapse rule gives the cleanest statement of the phenomenon:
+
+| actor | transition | n | acc A | acc B | B − A |
+|---|---|---|---|---|---|
+| **gpt-oss-120b** | **differentiated → COLLAPSED** | **879** | 0.895 | 0.912 | **+0.0171 [+0.0023,+0.0319]** |
+| gpt-oss-120b | differentiated → differentiated | 381 | 0.651 | 0.648 | −0.0026 [−0.0499,+0.0446] |
+| **gemma-4-31B** | **differentiated → differentiated** | **1266** | 0.849 | 0.820 | **−0.0292 [−0.0450,−0.0134]** |
+
+Read together, this is the paper in three lines:
+
+1. **gpt-oss loses its organization on 879 problems and gets slightly BETTER**
+   (+0.017, CI excludes zero). Losing the division of labor is not merely free —
+   in the first-pass-collapse subset it is marginally beneficial.
+2. **gemma-4 never collapses on the first pass at all** (0.000) and *still*
+   loses accuracy when role instructions are removed (−0.029, CI excludes zero).
+   So its loss is **not** mediated by visible organizational collapse.
+3. Therefore **visible collapse and performance loss are dissociated in both
+   directions**: collapse without loss (gpt-oss), and loss without collapse
+   (gemma-4).
+
+Point 3 is stronger than the original framing. The earlier reading — "the actor
+that collapses most loses least" — is true but incomplete; the count-matched
+analysis shows gemma-4's penalty arrives **without any visible collapse to
+explain it**. Whatever role instructions do for gemma-4, it is not sustaining
+output differentiation.
+
+**This also retires a tempting but wrong explanation.** One could have said
+gemma-4 loses accuracy *because* its organization degrades. Under the
+count-matched rule that mechanism is unavailable: there is no first-pass
+degradation to blame.
