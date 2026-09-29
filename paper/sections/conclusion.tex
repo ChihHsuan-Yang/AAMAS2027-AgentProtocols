@@ -5,24 +5,31 @@ We asked when multi-agent organization is load-bearing --- when removing or
 altering it degrades performance under matched compute and information
 budgets. Holding agents, calls, context policy, verifier, and grading fixed
 and varying only what each agent is told it is, organization and multi-agent
-computation turn out to be separable, and which of them carries the load
-depends on the actor. For the more capable actor, deleting every role
-instruction destroys the visible organization --- $69.8\%$ of first pipeline
-passes collapse to byte-identical outputs --- at no accuracy cost, on hard
-problems as much as easy ones. For the less capable actor the same deletion
-produces no first-pass collapse and costs accuracy anyway. Restoring the
+computation turn out to be separable, and measuring the organization does not
+tell you which of them carries the load. Deleting every role instruction
+destroys the functional division of labor in all three actors we tested
+($0.845$--$0.975$ of first pipeline passes become three independent solvers),
+and one of them loses accuracy while the others do not. Restoring the
 organization architecturally completes the picture from the other side:
-answer-authorship compliance reaches $1.000$, collapse ${\approx}0$, and
-accuracy nowhere, with our pre-registered primary test null.
+answer-authorship compliance reaches $1.000$, and accuracy moves nowhere,
+with our pre-registered primary test null.
 
 Two guards keep this from overreaching. A collapsed team still beats its
-budget-matched single agent ($+0.0248$), so ``multi-agent systems are just
+budget-matched single agent ($+0.0247$), so ``multi-agent systems are just
 single agents'' is refuted by our own data; and the actor that loses accuracy
 loses 3 points, so ``roles do not matter'' is refuted too. The defensible
 claim is narrower: role \emph{differentiation} is load-bearing for one actor
-and parallel \emph{computation} for the other. The mechanism says where the
-load sits --- role removal leaves the vulnerable actor's first-pass solve
-rate unchanged and destroys its recovery ($0.490 \rightarrow 0.045$), because
-without roles the team reaches a unanimity it cannot escape. Whether an
-organization is load-bearing is therefore not a property of the organization,
-but of the organization--actor pair, and must be measured on both sides.
+and redundant \emph{computation} for another. The mechanism says where the
+load sits --- role removal leaves the vulnerable actor's first-submission
+rate unchanged and costs it recovery, because without roles the team reaches
+a unanimity it cannot escape.
+
+The measurement lesson travels with the result. Our first reading of this
+experiment came from an exact-duplication metric, which reported that one
+actor collapsed and another did not; a blinded adjudication showed the
+second actor collapsing just as thoroughly in language the metric could not
+see. \textbf{Whether an organization is load-bearing is not a property of the
+organization alone, and cannot be read off how much visible differentiation
+an intervention destroys.} It has to be measured on the outcome, on both
+sides, with an instrument that has been shown to see the failure it is
+supposed to detect.

@@ -26,28 +26,31 @@ graph, call budget, retry budget, decoding parameters, verifier, and grading
 fixed, and vary only what each agent is told it is, or what its interface
 will let it emit.
 
-\paragraph{Removing the organization is free for the actor that loses it
-most.} Under generic prompts that delete every role instruction while changing
-nothing else (Arm~B), the organization visibly disappears for one actor and
-not the other. Measured on the first pipeline pass, so that the measure is not
-confounded with trajectory length, \textbf{$69.8\%$ of gpt-oss-120b
-trajectories collapse to byte-identical agent outputs}, against $0.000$ for
-gemma-4-31B and $0.000$ for both actors under soft roles. Yet on the $879$
-matched problems where gpt-oss goes from differentiated to collapsed, accuracy
-does not fall: $0.895 \rightarrow 0.912$, a change of $+0.0171$
-$[+0.0023,+0.0319]$. It does not fall on hard problems either --- collapse is
-\emph{most} frequent on the hardest stratum ($0.827$) and the change in
-accuracy is non-negative in every difficulty band. The converse holds for the
-other actor. gemma-4 never collapses on the first pass at all, and
-\emph{still} loses accuracy when the same role instructions are removed
-($-0.0292$ $[-0.0450,-0.0134]$ on $1{,}266$ matched problems that stay
-differentiated in both arms). Visible organization and task performance are
-dissociated in \emph{both} directions: collapse without loss, and loss without
-collapse.
+\paragraph{Every actor loses the organization; only some pay for it.}
+Under generic prompts that delete every role instruction while changing
+nothing else (Arm~B), the division of labor disappears for \emph{every} actor
+we tested. We measure it functionally, on the first pipeline pass so that the
+measure is not confounded with trajectory length: the rate at which all three
+agents independently assert their own final answer --- three solvers rather
+than a pipeline. That rate is $0.000$, $0.118$, and $0.000$ under soft roles
+for gemma-4-31B, gpt-oss-120b, and Llama-3.3-70B, and $0.975$, $0.845$, and
+$0.917$ once the role instructions are removed. A blinded, rubric-frozen
+adjudication of sampled trajectories agrees with this measure, including on
+the cell where exact output duplication reports zero
+(\S\ref{subsec:collapse}).
+
+Their accuracy does not follow. On matched problems gemma-4 loses $-0.0301$
+$[-0.0456,-0.0147]$ when roles are removed, while gpt-oss does not move
+($+0.0070$ $[-0.0108,+0.0255]$). \textbf{The two actors lose the same amount
+of organization and only one of them pays for it}, so how much visible
+differentiation an intervention destroys does not tell you whether destroying
+it is costly. This is a sharper statement than a contrast between actors that
+lost different amounts of organization would be, because the amount lost is
+held roughly fixed and only the consequence varies.
 
 Neither half licenses the conclusion that the agents were redundant. A
 collapsed gpt-oss team still beats its own budget-matched single agent by
-$+0.0248$ $[+0.0072,+0.0424]$. Three agents emitting the same string under a
+$+0.0247$ $[+0.0062,+0.0425]$. Three agents emitting the same answer under a
 shared evaluator loop is not the same system as one agent, even when nothing
 distinguishes what they say.
 
@@ -57,8 +60,8 @@ than merely requested: the Planner emits an object parsed against a schema
 with no answer field, so a final answer cannot be expressed and is rejected
 and regenerated (Arm~C). This works as an organizational manipulation and
 fails as a performance one. Answer-authorship compliance goes to $1.000$ in
-every cell, collapse falls to ${\approx}0$, and hundreds of boundary
-rejections per cell confirm the constraint bound --- while accuracy does not
+every cell and hundreds of boundary rejections per cell confirm the
+constraint bound --- while accuracy does not
 move for either actor, and the pre-registered primary test of the
 actor~$\times$~intervention interaction is null. Enforcement buys back the
 organization in the diagram and nothing that the diagram was invoked to
@@ -69,35 +72,42 @@ disagreement is what the recovering actor needed.
 \paragraph{Contribution.}
 The two halves together say something narrower and more useful than either
 alone: \textbf{multi-agent computation and differentiated organization are
-separable, and which of the two is load-bearing depends on the actor.} For
-gpt-oss, the redundant parallel computation is load-bearing and the
-differentiation is not. For gemma-4, the differentiation is load-bearing and
-does its work somewhere the organizational measure cannot see. A mechanism
-analysis locates that work: gemma-4's first-pass solve rate is unchanged to
-three decimals when roles are removed ($0.809 \rightarrow 0.809$) and its
-entire loss is recovery collapsing from $0.490$ to $0.045$. Role
+separable, and measuring the organization does not tell you which one is
+carrying the load.} For gpt-oss, the redundant computation is load-bearing and
+the differentiation is not. For gemma-4, the differentiation is load-bearing
+and does its work somewhere a snapshot of the organization cannot see. A
+mechanism analysis locates that work: gemma-4's first-pass solve rate is
+essentially unchanged when roles are removed ($0.807 \rightarrow 0.806$) and
+its loss is concentrated in recovery after a failed submission. Role
 differentiation is load-bearing for \emph{error recovery}, not for
 \emph{first-pass solving}, and only for the actor that cannot otherwise escape
 a wrong consensus.
 
-This inverts the sign every capability-dependence account
-predicts. Structure-helps-weaker-models is the standard finding, and it is
-monotone: the stronger the model, the less the scaffolding
-matters~\cite{canedo2026architecture,orogat2026architectural}. Here the
-\emph{more} capable actor is the one whose organization collapses almost
-completely, and it is the one that pays nothing; the \emph{less} capable actor
-keeps its organization intact and pays anyway. Specifically, we contribute:
+This is not the ordering capability-dependence accounts predict.
+Structure-helps-weaker-models is the standard finding, and it is monotone: the
+stronger the model, the less the scaffolding
+matters~\cite{canedo2026architecture,orogat2026architectural}. Our three
+actors do not order that way on the quantity that matters. They lose
+essentially the same amount of organization, and the actor that pays for it is
+neither the strongest nor the weakest --- the one weakest on this benchmark,
+Llama-3.3, shows no detectable loss at the sample size we have for it.
+Specifically, we contribute:
 
 \begin{enumerate}
 \item An operational definition of \textbf{load-bearing} and a budget-matched
   design that tests it, including a single-agent control without which
   ``collapse is harmless'' cannot be told apart from ``the system was always
   one agent''.
-\item The \textbf{actor-dependent sign inversion}: on matched problems, the
-  actor with near-total organizational collapse loses nothing, and the actor
-  with none loses accuracy. We report both directions and neither is an
-  artifact of difficulty, decoding determinism, normalization, or trajectory
-  length.
+\item The \textbf{dissociation between how much organization is lost and what
+  losing it costs}: three actors lose the division of labor at
+  $0.845$--$0.975$ and their accuracy responses range from a significant
+  $-0.030$ to an indistinguishable $+0.024$. The result is not an artifact of
+  difficulty, decoding determinism, normalization, or trajectory length.
+\item A \textbf{measurement result that we had to absorb ourselves}: an
+  exact-duplication metric reports $0.000$ collapse for an actor a blinded
+  adjudication judges collapsed in $94\%$ of sampled trajectories. We report
+  the metric as a lower bound with its validation, and rebuild the claim on a
+  functional measure.
 \item A \textbf{structural--functional dissociation from the other side}:
   enforcing the boundary architecturally restores measured organization
   completely and task performance not at all, with a pre-registered primary

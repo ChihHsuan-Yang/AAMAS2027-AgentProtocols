@@ -1,6 +1,39 @@
 \section{Limitations}
 \label{sec:limitations}
 
+\paragraph{A logging defect limits what the duplication rate can mean.} Our
+runner recorded each response's content field and fell back to the reasoning
+field only when content was empty, so a short answer accompanied by a long
+hidden reasoning trace was logged as the short answer
+(\S\ref{subsec:logging}). \textbf{This affects $84.6\%$ of gpt-oss Arm~B
+messages, and $97.4\%$ of its first passes contain at least one such
+message}; the flag intended to document the substitution reports $5.7\%$.
+The campaign was \textbf{not} re-run: the defect was found late, and the two
+measures the paper's claims rest on --- accuracy, graded from a final answer
+that was always present, and functional collapse, read from answer
+assertions --- do not depend on the discarded text. The consequences we
+accept are that no point estimate of gpt-oss's true duplication rate is
+recoverable, that we cannot claim the hidden computation was redundant, and
+that our Level-2 similarity metrics for that cell describe only the visible
+tip of what the model produced. The logger now captures reasoning
+unconditionally, which does not repair the data already collected.
+
+\paragraph{The collapse validation is model adjudication, not human
+annotation.} The 180-item validation in \S\ref{subsec:collapse} was performed
+by a frontier language model against a rubric frozen before the first
+judgement, with actor, arm, correctness and the automated label withheld. It
+is \textbf{not ground truth}, and three limits qualify it. There was a
+\textbf{single annotator and therefore no inter-annotator agreement}; the
+judge's stability is estimated from repeated independent calls instead.
+\textbf{Blinding is partial}: role labels are retained inside the
+transcripts, because the question ``did this agent perform a distinct role
+function'' is unanswerable without them, so a determined judge could
+sometimes infer the arm from content even after we neutralized the explicit
+role words. And it covers one snapshot of one domain. Precision is also
+estimable only for gpt-oss, which has 14 flagged positives in the sample
+against gemma-4's 3 and Llama-3.3's none; we therefore report precision as a
+per-actor quantity and do not present the pooled figure as general.
+
 \paragraph{Collapse is post-treatment.} Whether a trajectory collapses is an
 outcome of the intervention, not a randomized factor, so conditioning on the
 transition (Table~\ref{tab:transition}) yields an association however sharp
@@ -17,15 +50,19 @@ merits pre-registered replication, not as a confirmed primary result. The
 pre-registered \Pone{} manipulation objective also failed; we report that as
 a failed objective before reporting what we learned from it.
 
-\paragraph{Two actors, one organization, one domain.} The sign inversion
-rests on a single actor pair, on competition mathematics, in one
-Planner--Executor--Reviewer organization. Two points cannot separate a
-capability ordering from any other ordering aligned with it, so ``the more
-capable actor collapses more'' describes this pair and is not an established
-monotone relation with capability. A third actor (Llama-3.3-70B) was launched
-late and had too few matched trajectories to enter any contrast here; nothing
-depends on it. Replication on a third substrate is the most valuable
-extension, and we do not claim the general form until it exists.
+\paragraph{Three actors, one organization, one domain.} The result rests on
+three actors, on competition mathematics, in one
+Planner--Executor--Reviewer organization. All three lose the division of
+labor, but only two carry usable accuracy contrasts: Llama-3.3-70B was
+launched late, reaches $n=84$ matched problems, and scores $0.22$--$0.35$ on
+this benchmark, so we use it to corroborate the collapse rate and draw no
+accuracy conclusion from it. With one significant accuracy loss among three
+actors we can say that the amount of organization lost does not predict the
+cost, which is a negative claim and the one we make; we cannot say what
+\emph{does} predict it. The mechanism in \S\ref{subsec:mechanism} proposes
+consensus behavior, and testing that properly requires actors selected for
+their consensus behavior rather than for their size, which this panel does
+not do.
 
 \paragraph{The recovery loop is oracle-gated.} The evaluator that triggers
 retries sees ground truth, so ``recovery'' means recovery \emph{with} an
@@ -43,18 +80,27 @@ null. It does \emph{not} make C and A context-matched, and we do not claim
 it does; matching them exactly would require feeding raw prose back in, which
 would dissolve the constraint that defines the arm.
 
-\paragraph{Attrition is arm-specific.} Arm~C hard-fails on $6.5\%$ and
-$5.4\%$ of trajectories against $0.000$ in Arms~A and B, because it rejects
+\paragraph{Attrition is arm-specific.} Arm~C hard-fails on $7.3\%$ and
+$5.9\%$ of trajectories against $0.000$ in Arms~A and B, because it rejects
 unparseable structured output where the other arms tolerate truncated prose.
 We apply the pre-registered ungraded-as-incorrect rule; dropping failures
-instead would make Arm~C look better by 5.8 and 7.8 points. Both are
+instead would make Arm~C look better by 6.6 and 8.0 points. Both are
 reported. The structural penalty for requiring structured output is
-confounded with the intervention and cannot be separated in this design.
+confounded with the intervention and cannot be separated in this design. The
+same attrition is why the two grading conventions disagree on C$'-$C for
+gemma-4 (\S\ref{subsec:p4null}).
 
-\paragraph{Measurement blind spots.} Collapse is exact byte identity, which
-normalization shows to be conservative ($0.842 \rightarrow 0.927$): it
+\paragraph{Measurement blind spots.} Exact duplication has precision $1.000$
+and recall $0.343$ against blinded adjudication, and normalization raises
+the all-message rate from $0.842$ to $0.927$: it
 undercounts near-identical outputs and says nothing about semantic
-redundancy, which we do not claim to have measured. \Pone{} is blind to
+redundancy, which we do not claim to have measured. The functional measure
+that replaces it is also a proxy: it detects that every agent asserted its
+own answer, not that their reasoning was the same, and it is
+\textbf{inapplicable to Arms~C and C$'$}, where the schema forbids the
+Planner an answer field, so a zero there would record the constraint rather
+than the behavior. We therefore report no functional collapse figure for
+those arms. \Pone{} is blind to
 symbolic results carrying no digits and slightly over-credits compliance; a
 variant closing this made human agreement substantially worse and was
 rejected rather than silently adopted. It is also mechanically

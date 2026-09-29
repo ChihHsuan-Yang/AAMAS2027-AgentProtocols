@@ -8,18 +8,20 @@ comparison is paired at the problem level. A second domain was designed and
 dropped: the runner pins one domain, and the other domain's Planner contract
 carries no computation clause, so its components would not be comparable.
 
-\paragraph{Actors.} Two actor models served from one vLLM endpoint:
-\textbf{gpt-oss-120b} and \textbf{gemma-4-31B}. A third (Llama-3.3-70B) was
-added late; it had not accumulated enough matched trajectories to enter any
-contrast reported here, and no claim depends on it. Two further candidates
+\paragraph{Actors.} Three actor models served from one vLLM endpoint:
+\textbf{gpt-oss-120b}, \textbf{gemma-4-31B}, and \textbf{Llama-3.3-70B}. The
+third was added late and reaches $n=84$ matched problems, enough to
+corroborate the collapse rate and not enough for an accuracy contrast; we use
+it only for the former. Two further candidates
 were probed and rejected as unavailable rather than assumed available. The
 evaluator is gpt-oss-120b in every cell, which is one of the actors under
 study --- see \S\ref{sec:limitations}.
 
-\paragraph{Scale.} 8{,}490 trajectories over 61{,}624 agent messages:
-1{,}285 problems per arm for Arms~A, B, and C in each of two actors, plus
-400 problems per actor in Arm~C$'$. Paired accuracy contrasts rest on
-1{,}222--1{,}224 matched problems per actor. Concurrency was set per actor at
+\paragraph{Scale.} 8{,}827 trajectories over 57{,}764 agent messages:
+${\approx}1{,}295$ problems per arm for Arms~A, B, and C in each of two
+actors, plus 400 problems per actor in Arm~C$'$ and 85--89 per arm for the
+third actor. Paired accuracy contrasts rest on
+1{,}291--1{,}296 matched problems per actor. Concurrency was set per actor at
 levels measured on the live endpoint (25 for gpt-oss, 10 for the gemma
 family) rather than assumed; gemma-4 is four to five times slower per call,
 so arms do not complete in equal wall-clock at equal concurrency.

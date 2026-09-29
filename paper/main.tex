@@ -61,26 +61,28 @@ load-bearing if removing or altering it causes a reproducible performance
 degradation under matched compute and information budgets. Holding agents,
 call budget, context policy, verifier, and grading fixed, we delete all role
 instructions (Arm~B) and, separately, make the division of labor structurally
-unrepresentable (Arm~C), across two actor models on 8{,}490 matched
-trajectories. Deleting role instructions collapses the organization of the
-\emph{more} capable actor almost completely -- $69.8\%$ of first pipeline
-passes become byte-identical agent outputs -- at no accuracy cost, including
-on the hardest problems, where collapse is most frequent. The less capable
-actor shows \emph{no} first-pass collapse and loses accuracy anyway. Visible
-organization and performance are thus dissociated in both directions. This
-is not degeneration to a single agent: the collapsed team still beats its
-budget-matched single agent by $+0.0248$ $[+0.0072,+0.0424]$. Architectural
+unrepresentable (Arm~C), across three actor models on 8{,}827 matched
+trajectories. Deleting role instructions destroys the functional division of
+labor in \emph{every} actor we tested: the rate at which all three agents
+independently assert their own final answer rises from $0.000$--$0.118$ under
+soft roles to $0.845$--$0.975$, and a blinded rubric-frozen adjudication
+agrees, including on a cell where an exact-duplication metric reports zero.
+What differs is what it costs. One actor loses accuracy ($-0.0301$
+$[-0.0456,-0.0147]$) and the other does not ($+0.0070$ $[-0.0108,+0.0255]$).
+\textbf{How much organization an actor loses therefore does not predict
+whether losing it is costly}, which retires the intuition that visible
+differentiation is evidence about the mechanism supporting performance. This
+is not degeneration to a single agent: a collapsed team still beats its
+budget-matched single agent by $+0.0247$ $[+0.0062,+0.0425]$. Architectural
 enforcement completes the picture from the other side, driving
-answer-authorship compliance to $1.000$ and collapse to ${\approx}0$ while
-moving accuracy for neither actor -- our pre-registered primary test is null,
-and we report it as such. A mechanism analysis locates the difference: role
-removal leaves the vulnerable actor's first-pass solve rate unchanged
-($0.809 \rightarrow 0.809$) and destroys its recovery ($0.490 \rightarrow
-0.045$), because without roles the team reaches near-total unanimity and
-cannot escape a wrong consensus. Multi-agent computation and differentiated
-organization are separable, and which one is load-bearing is
-actor-dependent -- a sign inversion that monotone capability accounts, under
-which structure helps weaker models, do not predict.
+answer-authorship compliance to $1.000$ while moving accuracy for neither
+actor -- our pre-registered primary test is null, and we report it as such. A
+mechanism analysis locates the difference: role removal leaves the vulnerable
+actor's first-pass solve rate unchanged ($0.807 \rightarrow 0.806$) and
+destroys its recovery, because without roles the team reaches near-total
+unanimity ($0.961$) and cannot escape a wrong consensus. Multi-agent
+computation and differentiated organization are separable, and organizational
+measurement alone cannot tell you which one is carrying the load.
 \end{abstract}
 
 \begin{CCSXML}

@@ -41,16 +41,26 @@ Three measures are used, each answering a different question. Full
 definitions, the frozen annotation rules, and the validation sheet are
 carried over unchanged from the measurement apparatus this study inherits.
 
-\paragraph{Organizational collapse (primary).} A trajectory \emph{collapses}
-if two or more of its role messages are byte-identical. The compared object
-is \texttt{sha256} of the raw model completion, taken before parsing and
-before any scaffold field is added, so it is what the model actually emitted
-and carries no role wrapper. Two rules are reported: the \textbf{count-matched}
-rule inspects only the first pipeline pass (first three role messages) and is
-primary, because the all-message rule gives longer trajectories more chances
-to collapse; the all-message rule is reported alongside it. Collapse is a
-measure of whether the agents are behaviorally distinct at all --- the
-weakest possible reading of ``the organization exists.''
+\paragraph{Functional collapse (primary).} A first pipeline pass
+\emph{collapses} if \emph{all three} agents independently assert their own
+final answer, making the pipeline three solvers rather than a division of
+labor. This targets the property the role diagram asserts --- that the
+agents do different jobs --- rather than the property a hash can see. It is
+measured on the first pipeline pass so that it is not confounded with
+trajectory length, and it is \textbf{not applicable to Arms~C/C$'$}, where
+the schema forbids the Planner and Reviewer an answer field and a zero would
+therefore record the constraint rather than the behavior.
+
+\paragraph{Exact output duplication (secondary, a lower bound).} A trajectory
+\emph{duplicates} if two or more of its role messages are byte-identical. The
+compared object is \texttt{sha256} of the raw model completion, taken before
+parsing and before any scaffold field is added, so it is what the model
+actually emitted and carries no role wrapper. Against blinded adjudication
+this measure has precision $1.000$ and recall $0.343$
+(\S\ref{subsec:collapse}), so we use it to establish that at least a given
+amount of collapse occurred and \textbf{never to compare how much
+organization two actors lost}. We report it on the first pipeline pass for
+the same length reason, with the all-message rule alongside.
 
 \paragraph{Answer authorship (\Ptwo{}).} Whether a Planner message contains a
 final answer. This is the clause Arm~C structurally enforces, and it is the
