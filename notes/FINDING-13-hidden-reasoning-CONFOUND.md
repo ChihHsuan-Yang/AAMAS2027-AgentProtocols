@@ -86,3 +86,45 @@ The real rate is 82%. A flag that only fires on the *empty-content* case cannot
 measure the *short-content* case — the same error class as this project's
 earlier retractions: an instrument that cannot observe the failure it is
 supposed to detect.
+
+---
+
+## CORRECTION to this file's own 0.367 figure (Master, 2026-09-29, later)
+
+My "0.367 on fully-logged cycles (n=442)" used a **weak filter**: it excluded
+only cycles where *all three* messages looked hidden. Cycles with one or two
+hidden messages were counted as "fully logged". That is not fully logged.
+
+Re-doing it with the strict filter (**every** one of the three messages above
+the threshold), and sweeping the threshold:
+
+| threshold | strictly-clean n | collapse |
+|---|---|---|
+| ≥5 ch/s | 235 | **0.630** |
+| ≥10 ch/s | 88 | **0.284** |
+| ≥20 ch/s | 34 | **0.176** |
+| ≥50 ch/s | 12 | 0.083 |
+
+**The estimate is strongly threshold-dependent and the clean sample collapses
+to n=34 at the threshold I originally used.** There is no defensible point
+estimate of "the true collapse rate for gpt-oss Arm B" from this data: 97.4% of
+its cycles contain at least one message whose reasoning we discarded.
+
+### Revised ruling — stronger than before
+
+1. **Withdraw the 0.367 figure.** It was computed under a filter that does not
+   mean what its label said. Replace with the sensitivity table above.
+2. **No point estimate of gpt-oss Arm B collapse is reportable.** Report the
+   byte rate (0.691) as *measured output duplication*, state that 97.4% of
+   those cycles have discarded reasoning, and give the sensitivity analysis.
+3. The **direction** still holds — gpt-oss duplicates output far more than
+   gemma-4 (0.691 vs 0.000 byte) — but the *magnitude* is not recoverable and
+   must not be presented as if it were.
+4. **This strengthens the case for leading with the accuracy result**, which is
+   unaffected by the logging defect, rather than with a collapse rate.
+
+### Why I am recording rather than quietly fixing
+The first version of this finding was itself a correction of a worker's claim,
+and I introduced a new error while making it — by accepting a filter label
+without checking what the filter did. Same error class as the defect it was
+correcting. The sensitivity table is the honest artifact.
