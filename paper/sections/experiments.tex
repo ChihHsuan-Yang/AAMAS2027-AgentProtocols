@@ -2,11 +2,11 @@
 \label{sec:experiments}
 
 \paragraph{Task and problems.} Competition mathematics (Omni-MATH), sampled
-by a deterministic seeded manifest so that every prefix of the run is itself
-a valid random sample. All arms run on the same problems, so every arm
+by a deterministic seeded manifest so every prefix of the run is itself a
+valid random sample. All arms run on the same problems, so every arm
 comparison is paired at the problem level. A second domain was designed and
-dropped: the runner pins one domain, and the other domain's Planner contract
-carries no computation clause, so its components would not be comparable.
+dropped: its Planner contract carries no computation clause, so its
+components would not be comparable.
 
 \paragraph{Actors.} Three actor models served from one vLLM endpoint:
 \textbf{gpt-oss-120b}, \textbf{gemma-4-31B}, and \textbf{Llama-3.3-70B}. The

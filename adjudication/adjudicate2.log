@@ -1,0 +1,22 @@
+items=171 reps=3 model=claude-opus-5 rubric=4f624de5b1073940 already_done=106
+  20/407 ok=20 err=0
+  40/407 ok=40 err=0
+  60/407 ok=60 err=0
+  80/407 ok=80 err=0
+  100/407 ok=100 err=0
+  120/407 ok=120 err=0
+  140/407 ok=140 err=0
+  160/407 ok=160 err=0
+  180/407 ok=180 err=0
+  200/407 ok=200 err=0
+  220/407 ok=220 err=0
+  240/407 ok=240 err=0
+  260/407 ok=260 err=0
+  280/407 ok=280 err=0
+  300/407 ok=299 err=0
+  320/407 ok=319 err=0
+  340/407 ok=339 err=0
+  360/407 ok=359 err=0
+  380/407 ok=379 err=0
+  400/407 ok=399 err=0
+done: parsed=406 errors=0

@@ -3,16 +3,16 @@
 
 We asked when multi-agent organization is load-bearing --- when removing or
 altering it degrades performance under matched compute and information
-budgets. Holding agents, calls, context policy, verifier, and grading fixed
+budgets. Holding agents, calls, context policy, verifier and grading fixed
 and varying only what each agent is told it is, organization and multi-agent
 computation turn out to be separable, and measuring the organization does not
-tell you which of them carries the load. Deleting every role instruction
-destroys the functional division of labor in all three actors we tested
-($0.846$--$0.975$ of first pipeline passes become three independent solvers),
-and one of them loses accuracy while the others do not. Restoring the
-organization architecturally completes the picture from the other side:
-answer-authorship compliance reaches $1.000$, and accuracy moves nowhere,
-with our pre-registered primary test null.
+tell you which carries the load. Deleting every role instruction destroys the
+functional division of labor in all three actors tested ($0.846$--$0.975$ of
+first pipeline passes become three independent solvers), and one loses
+accuracy while the others do not. Enforcing the organization architecturally
+completes the picture from the other side: answer-authorship compliance
+reaches $1.000$ and accuracy moves nowhere, with our pre-registered primary
+test null.
 
 Two guards keep this from overreaching. A collapsed team still beats its
 budget-matched single agent ($+0.0247$), refuting ``multi-agent systems are
@@ -20,13 +20,12 @@ just single agents'' from our own data; and the actor that loses accuracy
 loses 3 points, refuting ``roles do not matter'' too. The defensible claim is
 narrower: role \emph{differentiation} is load-bearing for one actor and
 redundant \emph{computation} for another, and role removal leaves the
-vulnerable actor's first-submission rate unchanged while costing it recovery,
-because without roles the team reaches a unanimity it cannot escape.
+vulnerable actor's first-submission rate unchanged while costing it recovery.
 
 The measurement lesson travels with the result. Our first reading came from
 an exact-duplication metric reporting that one actor collapsed and another
 did not; a blinded adjudication showed the second collapsing just as
 thoroughly, in language the metric could not see. \textbf{Whether an
 organization is load-bearing cannot be read off how much visible
-differentiation an intervention destroys.} It has to be measured on the
+differentiation an intervention destroys}, but has to be measured on the
 outcome, with an instrument shown to see the failure it is meant to detect.

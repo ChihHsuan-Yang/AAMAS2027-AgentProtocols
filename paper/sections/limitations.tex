@@ -13,23 +13,21 @@ functional collapse, read from answer assertions --- do not depend on the
 discarded text. We accept in exchange that no point estimate of gpt-oss's
 duplication rate is recoverable, that we cannot claim the hidden computation
 was redundant, and that our similarity metrics for that cell describe only
-the visible tip of what the model produced. The logger now captures reasoning
-unconditionally, which does not repair data already collected.
+the visible tip of what the model produced.
 
 \paragraph{The collapse validation is model adjudication, not human
-annotation.} The 180-item validation in \S\ref{subsec:collapse} was performed
-by a frontier language model against a rubric frozen before the first
-judgement, with actor, arm, correctness and the automated label withheld. It
-is \textbf{not ground truth}. There was a \textbf{single annotator and
+annotation.} The 180-item validation in \S\ref{subsec:collapse} used a
+frontier language model against a rubric frozen before the first judgement,
+with actor, arm, correctness and the automated label withheld. It is
+\textbf{not ground truth}. There was a \textbf{single annotator and
 therefore no inter-annotator agreement}; the judge's stability is estimated
 from repeated independent calls instead. \textbf{Blinding is partial}: role
-labels are retained inside the transcripts, because the question ``did this
-agent perform a distinct role function'' is unanswerable without them, so a
-determined judge could sometimes infer the arm from content even after we
-neutralized the explicit role words. It covers one snapshot of one domain.
-And precision is estimable only for gpt-oss, which has 14 flagged positives
-in the sample against gemma-4's 3 and Llama-3.3's none, so we report it per
-actor and never pool it.
+labels are retained in the transcripts, because ``did this agent perform a
+distinct role function'' is unanswerable without them, so a determined judge
+could sometimes infer the arm from content even after we neutralized the
+explicit role words. It covers one snapshot of one domain, and precision is
+estimable only for gpt-oss (14 flagged positives against gemma-4's 3 and
+Llama-3.3's none), so we report it per actor and never pool it.
 
 \paragraph{Collapse is post-treatment.} Whether a trajectory collapses is an
 outcome of the intervention, not a randomized factor, so conditioning on it
@@ -39,11 +37,10 @@ the weaker but cleaner statement.
 
 \paragraph{Provenance of the headline.} The pre-registered primary endpoint
 (P4) is null, and the A-versus-B contrast this paper is organized around was
-pre-registered as secondary and exploratory. It should be read as a
-well-audited observation meriting pre-registered replication, not a confirmed
-primary result. The pre-registered \Pone{} manipulation objective also
-failed; we report that as a failed objective before reporting what we learned
-from it.
+pre-registered as secondary and exploratory: a well-audited observation
+meriting pre-registered replication, not a confirmed primary result. The
+pre-registered \Pone{} manipulation objective also failed; we report that as
+a failed objective before what we learned from it.
 
 \paragraph{Three actors, one organization, one domain.} The result rests on
 three actors, on competition mathematics, in one
@@ -53,31 +50,26 @@ launched late, reaches $n=125$, and scores $0.25$--$0.31$ here, so we use it
 to corroborate the collapse rate only. With one significant accuracy loss
 among three actors we can say the amount of organization lost does not
 predict the cost --- a negative claim, and the one we make --- but not what
-\emph{does} predict it. \S\ref{subsec:mechanism} proposes consensus
-behavior; testing that requires actors selected for consensus behavior
-rather than size, which this panel does not do.
+\emph{does}. Testing \S\ref{subsec:mechanism}'s consensus-behavior proposal
+needs actors selected for that behavior rather than size.
 
 \paragraph{The recovery loop is oracle-gated.} The evaluator that triggers
 retries sees ground truth, so the mechanism claim does not establish that
-role differentiation aids recovery under a self-assessed stopping rule
-(\S\ref{subsec:mechanism}). Relatedly, stop-on-correct censors destructive
-revision, so this design cannot measure how often collaboration destroys a
-correct answer.
+role differentiation aids recovery under a self-assessed stopping rule; and
+stop-on-correct censors destructive revision, so this design cannot measure
+how often collaboration destroys a correct answer.
 
-\paragraph{Arm~C$'$ is a partial context control.} Arm~C carries less context
-than Arm~A by construction, because compact structured objects replace raw
-transcripts. C$'$ restores shared history at fixed enforcement, licensing
-the contrast ``the effect of adding context at fixed enforcement.'' It does
-\emph{not} make C and A context-matched: that would require feeding raw prose
-back in, dissolving the constraint that defines the arm.
+\paragraph{Arm~C$'$ is a partial context control.} It restores shared history
+at fixed enforcement but does \emph{not} make C and A context-matched: that
+would require feeding raw prose back in, dissolving the constraint that
+defines the arm.
 
 \paragraph{Attrition is arm-specific.} Arm~C hard-fails on $7.9\%$ and
 $5.9\%$ of trajectories against $0.000$ in Arms~A and B, because it rejects
 unparseable structured output where the other arms tolerate truncated prose.
-Dropping failures instead of applying the pre-registered rule would make
-Arm~C look better by 7.1 and 8.0 points; both are reported. The structural
-penalty for requiring structured output is confounded with the intervention
-and cannot be separated here, and the same attrition is why the two grading
+Dropping failures rather than applying the pre-registered rule would make
+Arm~C look better by 7.1 and 8.0 points; both are reported. That penalty is
+confounded with the intervention, and the same attrition is why the grading
 conventions disagree on C$'-$C for gemma-4 (\S\ref{subsec:p4null}).
 
 \paragraph{Measurement blind spots.} Exact duplication (precision $1.000$,
@@ -86,15 +78,13 @@ semantic redundancy, which we do not claim to have measured. The functional
 measure replacing it is also a proxy: it detects that every agent asserted
 its own answer, not that their reasoning was the same, and it is
 \textbf{inapplicable to Arms~C and C$'$}, where the schema forbids an answer
-field. \Pone{} is blind to symbolic results carrying no digits and slightly
-over-credits compliance; a variant closing this made agreement worse and was
-rejected rather than silently adopted. It is also mechanically
-anti-correlated with message length, which is why every computation claim
-cites the length-robust density instead.
+field. \Pone{} is blind to symbolic results carrying no digits, slightly
+over-credits compliance, and is mechanically anti-correlated with message
+length --- which is why every computation claim cites the length-robust
+density instead.
 
 \paragraph{Power and the evaluator.} Interaction endpoints need roughly twice
 the sample of a main effect for equal power, so a null on P4 is ``no large
 interaction detected.'' The evaluator is one of the actor models under study,
 so its independence from that actor's outputs is not established. Backends
-have shown large accuracy differences for an identical cell; ours is pinned
-and uniform.
+have shown large accuracy differences for an identical cell; ours is pinned.

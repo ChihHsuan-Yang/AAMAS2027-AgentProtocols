@@ -22,12 +22,11 @@ Executor's own construction, exactly the solving-versus-following confusion
 the construct exists to avoid; it was rebuilt to require an explicit plan
 reference.
 
-We also built a \Pone{} variant adding a symbolic-result detector to close
-the false-positive class. \textbf{It was rejected: agreement fell to $0.694$
-and recall to $0.421$}, because the detector fired on 9 of 9 messages judged
-compliant, including on the contract's \emph{required} answer-form section.
-The ``improvement'' penalized compliance with the contract it was scoring. We
-report this because it is the obvious next thing a reader would propose.
+A \Pone{} variant adding a symbolic-result detector to close the
+false-positive class --- the obvious next thing a reader would propose ---
+\textbf{was rejected: agreement fell to $0.694$ and recall to $0.421$},
+because the detector fired on 9 of 9 messages judged compliant, including on
+the contract's \emph{required} answer-form section.
 
 \paragraph{Collapse is audited separately.} Because collapse carries the
 headline, it is validated against blinded adjudication and stress-tested
