@@ -8,7 +8,11 @@ tokens.json
 # large data
 *.parquet
 analysis/hf_cache/
+# raw trajectory JSONL is too large for git (155MB) and is regenerable from
+# the manifest + runner; keep derived results, not raw rows.
 runs/**/*.jsonl
+experiments/results/**/*.jsonl
+experiments/results/**/*.log
 *.zst
 __pycache__/
 .DS_Store
