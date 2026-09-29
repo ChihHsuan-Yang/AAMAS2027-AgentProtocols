@@ -675,3 +675,31 @@ That is a real property of the third actor and must be stated plainly in the
 report: **its B-A contrast sits on a ~0.35 accuracy base, not a ~0.82 base**,
 and the arms are therefore not on comparable footing with the incumbents' arms
 for anything that depends on headroom.
+
+### D14 addendum 2 (18:42) — the functional proxy is NOT length-confounded, and its unit is verified
+
+Two checks the byte rule fails, run on the corrected 400-problem set.
+
+**(i) The unit is one real pipeline pass.** The proxy reads the first three role
+messages. Verified they are exactly planner -> executor -> reviewer, in order,
+and not e.g. three planner retries: **0 out of 242/241 (Llama A/B), 0/338
+(gpt-oss A/B), 0/339 (gemma-4 A/B)** are out of order. (Arm C has 35-38
+out-of-order cases per actor, which is a further reason the proxy is already
+scoped out of Arm C.)
+
+**(ii) It does not vary with trajectory length — the defect that sank the byte
+rule.** The byte project rule swings 0.000 (len 3) -> 0.978 (len 10+) for
+gemma-4 Arm B. The functional proxy is flat within every actor x arm:
+
+| actor | arm | len 3 | len 10+ |
+|---|---|---|---|
+| Llama-3.3 | A | 0.000 (n=64) | 0.000 (n=173) |
+| Llama-3.3 | B | **0.900** (n=90) | **0.919** (n=149) |
+| gemma-4 | A | 0.000 (n=235) | 0.000 (n=83) |
+| gemma-4 | B | **0.985** (n=268) | **0.894** (n=66) |
+| gpt-oss | A | 0.117 (n=179) | 0.138 (n=94) |
+| gpt-oss | B | **0.880** (n=242) | 0.662 (n=71) |
+
+So the high Arm B rate is a property of the arm, not of long trajectories, and
+Llama-3.3's 0.907 is not an artifact of it emitting ~2x more messages. This was
+the specific way the byte metric misled, and the proxy does not repeat it.
