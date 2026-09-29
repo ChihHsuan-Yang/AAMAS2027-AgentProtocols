@@ -3,27 +3,14 @@
 
 The two clause measures were hand-adjudicated against definitions frozen
 \emph{before} the adjudication sheet was opened, so they could not be tuned
-to flatter the automated scores (Table~\ref{tab:validation}). Both clear a
-pre-set agreement threshold of $0.80$.
+to flatter the automated scores. Both clear a pre-set agreement threshold of
+$0.80$: \Pone{} reaches agreement $0.903$ and $\kappa=0.806$ (precision
+$0.943$, recall $0.868$, confusion 33/2/3/34) on $n=72$, and \Etwo{}
+agreement $0.923$ and $\kappa=0.843$ (precision $0.833$, recall $1.000$) on
+$n=13$.
 
-\begin{table}[t]
-\centering
-\caption{Validation against hand adjudication. Positive class = honors the
-clause.}
-\label{tab:validation}
-\small
-\begin{tabular}{lcccccl}
-\toprule
-measure & $n$ & agr. & $\kappa$ & prec. & rec. & confusion \\
-\midrule
-\Pone{} & $72$ & $0.903$ & $0.806$ & $0.943$ & $0.868$ & 33/2/3/34 \\
-\Etwo{} & $13$ & $0.923$ & $0.843$ & $0.833$ & $1.000$ & 5/1/0/7 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Three properties of the error structure matter more than the headline
-figures. First, \Pone{} agreement \emph{fell} from $0.967$ at $n=30$ to
+Three properties of the error structure matter more than those figures.
+First, \Pone{} agreement \emph{fell} from $0.967$ at $n=30$ to
 $0.903$ at $n=72$ as adjudication continued; we report the final figure and
 note the direction, because it is the normal one and the reason to finish a
 validation sheet rather than stop at a good number. Second, the residual
