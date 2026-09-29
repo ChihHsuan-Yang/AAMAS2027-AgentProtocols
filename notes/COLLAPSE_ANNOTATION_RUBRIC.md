@@ -345,3 +345,18 @@ frozen target n. Seed, strata, eligibility and blinding are unchanged.
 
 **Status:** recorded BEFORE the first annotation row. No annotation or
 aggregate agreement number had been computed at the time of this amendment.
+
+---
+
+# RESULTS (recorded after annotation was complete; rubric above unchanged)
+
+Full results: `notes/FINDING-13-human-validation-collapse.md`.
+Artifacts: `experiments/results/human_validation/` (frozen snapshot, sample key,
+blinded file, ANNOTATIONS.jsonl, build_sample.py, analyze.py).
+
+Headline: the exact-collapse flag has **precision 1.000** (0 of 36 fired cases
+were judged to have real division of labour) but **recall 0.343** pooled /
+0.522 within (arm B x gpt-oss), kappa 0.303 pooled / **0.083** within-cell.
+**Arm A: 2/72 judged NO division of labour. Arm B: 103/108 (0.954).**
+Byte-identity is a sound but severely incomplete indicator of a much broader
+functional phenomenon.
