@@ -19,8 +19,8 @@ measures and say which claim rests on which.
 \paragraph{Exact duplication is sound and far too narrow.} The natural
 automated measure is whether two or more agents emit byte-identical text,
 applied to the first pipeline pass so it is not confounded with trajectory
-length. It fires on $0.691$ of gpt-oss Arm~B trajectories and \textbf{never}
-on gemma-4 or Llama-3.3 in any arm --- a gap that is a property of the
+length. It fires on $0.690$ of gpt-oss Arm~B trajectories and essentially never
+on gemma-4 or Llama-3.3 in any arm ($\leq 0.008$) --- a gap that is a property of the
 instrument. A blinded adjudication judges gemma-4's Arm~B trajectories
 redundant at $0.944$ where this metric reports $0.000$, because its agents
 paraphrase at length instead of copying, so no hash matches even though
@@ -49,13 +49,13 @@ record the constraint rather than the behavior.}
 arm & actor & collapse & duplication & no division \\
 \midrule
 A  & gemma-4-31B   & $0.000$ & $0.000$ & $0.000$ \\
-A  & gpt-oss-120b  & $0.118$ & $0.000$ & $0.056$ \\
+A  & gpt-oss-120b  & $0.121$ & $0.000$ & $0.056$ \\
 A  & Llama-3.3-70B & $0.000$ & $0.000$ & --- \\
 \textbf{B} & \textbf{gemma-4-31B}   & $\mathbf{0.975}$ & $0.000$
   & $\mathbf{0.944}$ \\
-\textbf{B} & \textbf{gpt-oss-120b}  & $\mathbf{0.845}$ & $0.691$
+\textbf{B} & \textbf{gpt-oss-120b}  & $\mathbf{0.846}$ & $0.690$
   & $\mathbf{0.958}$ \\
-\textbf{B} & \textbf{Llama-3.3-70B} & $\mathbf{0.917}$ & $0.000$ & --- \\
+\textbf{B} & \textbf{Llama-3.3-70B} & $\mathbf{0.914}$ & $0.008$ & --- \\
 C  & both          & n/a & $0.000$ & --- \\
 C$'$ & both        & n/a & $0.000$--$0.003$ & --- \\
 \bottomrule
@@ -75,7 +75,7 @@ three definitions in all nine actor$\times$marker cells.
 rate.} Arm~B is not ``roles blurred'': $0.90$--$0.98$ of \emph{planners} emit
 a final answer, against $0.00$--$0.18$ in Arm~A. Under the byte metric this
 looked like a large contrast between actors; under a measure of the property
-the diagram asserts, that contrast is absent.
+the diagram asserts, it is absent.
 
 \paragraph{Validation by blinded adjudication.} Because the choice of measure
 carries the result, we validated it on 180 sampled trajectories against a
@@ -84,20 +84,20 @@ the automated label withheld, and role words neutralized after we found they
 leaked the arm (42 occurrences in Arm~A against 3 in Arm~B). Three things
 follow (Table~\ref{tab:collapse}, last column). \textbf{Arm~A is genuinely
 differentiated} ($0.000$ and $0.056$ judged to have no division of labor), so
-the soft-role baseline is not a straw man. \textbf{Both actors lose that
-differentiation in Arm~B}, at $0.944$ and $0.958$. And the byte metric has
-\textbf{precision $1.000$} (0 false positives in 36 firings) and
-\textbf{recall $0.343$}: what it flags is genuine, and it misses two-thirds
+the soft-role baseline is not a straw man; \textbf{both actors lose that
+differentiation in Arm~B}, at $0.944$ and $0.958$; and the byte metric has
+\textbf{precision $1.000$} (0 false positives in 36 firings) with
+\textbf{recall $0.343$}, so what it flags is genuine and it misses two-thirds
 of what a judge sees. The adjudication used a frontier language model, not
 human annotators; \S\ref{sec:limitations} states what that establishes.
 
 \paragraph{The measures survive the obvious attacks.} Deterministic decoding
-cannot produce the duplication: \textbf{0 of 893} duplicated first passes
+cannot produce the duplication: \textbf{0 of 907} duplicated first passes
 arose from identical prompts, and the endpoint is measurably nondeterministic
 at temperature $0$. Normalization \emph{raises} the all-message rate from
 $0.842$ to $0.927$, so the exact measure undercounts there too. Retry
 convergence is excluded by construction. And it is not an easy-problem
-artifact: functional collapse reaches $0.636$ (gpt-oss) and $0.921$
+artifact: functional collapse reaches $0.64$ (gpt-oss) and $0.92$
 (gemma-4) on the hardest stratum.
 
 \subsection{A logging defect bounds what the duplication rate can mean}
@@ -109,20 +109,19 @@ measure. Our runner logged each response's \texttt{content} and fell back to
 returns a short content string alongside a long hidden reasoning trace:
 verified live, one request returned 17 characters of content and 546 of
 reasoning, which our logger would record as the 17 characters while the flag
-meant to document the substitution stayed false.
-
-Flagging messages whose visible characters per second of latency falls far
-below the corpus norm, \textbf{$84.6\%$ of gpt-oss Arm~B messages are
-affected and $97.4\%$ of its first passes contain at least one}; the
-documented flag reports $5.7\%$. gemma-4 and Llama-3.3 are essentially
-unaffected ($0.7$--$5.0\%$), so the defect sits in exactly the cell where
-byte duplication fires. Restricting to first passes whose three messages all
-clear a visibility threshold yields no stable estimate, because the clean
-subsample shrinks with it: $0.630$ at $n=235$ ($\geq5$ ch/s), $0.284$ at
-$n=88$, $0.176$ at $n=34$, $0.083$ at $n=12$ ($\geq50$ ch/s).
+meant to document the substitution stayed false. Flagging messages whose
+visible characters per second of latency falls far below the corpus norm,
+\textbf{$84.7\%$ of gpt-oss Arm~B messages are affected and $97.3\%$ of its
+first passes contain at least one}; the documented flag reports $5.7\%$.
+gemma-4 and Llama-3.3 are essentially unaffected ($0.7$--$5.0\%$), so the
+defect sits in exactly the cell where byte duplication fires. Restricting to
+first passes whose three messages all clear a visibility threshold yields no
+stable estimate, because the clean subsample shrinks with it: $0.614$ at
+$n=241$ ($\geq5$ ch/s), $0.278$ at $n=90$, $0.171$ at $n=35$, $0.083$ at
+$n=12$ ($\geq50$ ch/s).
 
 Three conclusions follow and no fourth. \textbf{No point estimate of
-gpt-oss's true duplication rate is recoverable}; $0.691$ is reported
+gpt-oss's true duplication rate is recoverable}; $0.690$ is reported
 throughout as \emph{measured output duplication} with this sensitivity
 attached. \textbf{Byte-identical outputs may not be glossed as ``the agents
 did the same work''} --- with the reasoning discarded we can say only that
@@ -154,13 +153,13 @@ beats one agent. Post-hoc/exploratory throughout.}
 \cmidrule(lr){3-4}
 actor & $n$ & A & B & B$-$A accuracy \\
 \midrule
-\textbf{gemma-4} & $1{,}295$ & $0.000$ & $0.975$
-  & $\mathbf{-0.0301}$ \\
- & & & & \tiny$[-0.0456,-0.0147]$ \\
-gpt-oss & $1{,}292$ & $0.118$ & $0.845$ & $+0.0070$ \\
- & & & & \tiny$[-0.0108,+0.0255]$ \\
-Llama-3.3 & $84$ & $0.000$ & $0.917$ & $+0.0238$ \\
- & & & & \tiny$[-0.0595,+0.1071]$ \\
+\textbf{gemma-4} & $1{,}318$ & $0.000$ & $0.975$
+  & $\mathbf{-0.0296}$ \\
+ & & & & \tiny$[-0.0455,-0.0137]$ \\
+gpt-oss & $1{,}313$ & $0.121$ & $0.846$ & $+0.0076$ \\
+ & & & & \tiny$[-0.0107,+0.0259]$ \\
+Llama-3.3 & $125$ & $0.000$ & $0.914$ & $+0.0400$ \\
+ & & & & \tiny$[-0.0240,+0.1040]$ \\
 \midrule
 \multicolumn{5}{l}{\emph{versus budget-matched single agent}} \\
 gpt-oss & A & \multicolumn{3}{c}{$+0.0178$ $[+0.0000,+0.0363]$} \\
@@ -173,21 +172,21 @@ gemma-4 & B & \multicolumn{3}{c}{$-0.0556$ $[-0.0749,-0.0371]$} \\
 \end{table}
 
 The organizational column is nearly flat and the accuracy column is not.
-Every actor arrives in Arm~B with the division of labor gone ($0.845$ to
-$0.975$) and their accuracy responses run from a significant $-0.0301$ to an
-indistinguishable $+0.0238$. \textbf{How much organization an intervention
+Every actor arrives in Arm~B with the division of labor gone ($0.846$ to
+$0.975$) and their accuracy responses run from a significant $-0.0296$ to an
+indistinguishable $+0.0400$. \textbf{How much organization an intervention
 destroys does not predict whether destroying it costs anything.} With the
 amount lost held roughly fixed across three actors, the difference in cost
 has to come from somewhere other than the visible organization, and
 \S\ref{subsec:mechanism} locates it.
 
 The Llama-3.3 row corroborates the collapse rate only: its accuracy on this
-benchmark is $0.22$--$0.35$ and its interval spans zero at $n=84$, so we draw
+benchmark is $0.25$--$0.31$ and its interval spans zero at $n=125$, so we draw
 no accuracy conclusion from it.
 
 \paragraph{One conflation we explicitly avoid.} On the subset of problems
-where gpt-oss goes from differentiated to byte-duplicated, B$-$A is $+0.0146$
-$[-0.0011,+0.0303]$; its whole-arm B$-$A is $+0.0070$ $[-0.0108,+0.0255]$.
+where gpt-oss goes from differentiated to byte-duplicated, B$-$A is $+0.0155$
+$[+0.0000,+0.0309]$; its whole-arm B$-$A is $+0.0076$ $[-0.0107,+0.0259]$.
 Both are indistinguishable from zero, and we write ``no detectable loss''
 rather than ``a gain'' for either. Both signs were also stable as the campaign
 grew, checked cumulatively in problem-completion order at 25/50/75/100\% of
@@ -226,10 +225,10 @@ so for that actor the organization is actively costly at this budget.
 
 The manipulation is checked three ways and passes all three.
 Answer-authorship compliance reaches exactly $1.000$ in every Arm~C and
-Arm~C$'$ cell, against $0.982$ (gemma-4) and $0.604$ (gpt-oss) under soft
+Arm~C$'$ cell, against $0.993$ (gemma-4) and $0.817$ (gpt-oss) under soft
 roles; independently measured, the Planner emits an answer in $0.000$ of
 Arm~C trajectories for all three actors; and the constraint visibly bound,
-with 651 and 921 role-boundary rejections per Arm~C cell ($0.50$/$0.72$ per
+with 694 and 971 role-boundary rejections per Arm~C cell ($0.53$/$0.74$ per
 trajectory), formatting coercions logged separately and excluded. Exact
 duplication falls to $0.000$ (Table~\ref{tab:collapse}). Enforcement holds
 the organization apart --- though, as \S\ref{subsec:structnotcog} shows, only
@@ -241,25 +240,25 @@ test is null}
 
 \textbf{P4 --- the actor~$\times$~intervention interaction on accuracy, and
 the pre-registered primary test of this paper's original thesis --- is
-null: $-0.0077$ $[-0.0318,+0.0178]$.} P3 is null in both actors as well:
-C$-$A is $-0.0147$ $[-0.0324,+0.0031]$ for gemma-4 and $-0.0062$
-$[-0.0240,+0.0116]$ for gpt-oss. This is pre-declared Pattern~E, whose
+null: $-0.0121$ $[-0.0369,+0.0125]$.} P3 is null in both actors as well:
+C$-$A is $-0.0174$ $[-0.0349,+0.0000]$ for gemma-4 and $-0.0053$
+$[-0.0228,+0.0122]$ for gpt-oss. This is pre-declared Pattern~E, whose
 committed interpretation reads: \emph{the central causal theory fails; do not
 force it}. We report it as a failure of that theory, not as a supporting
 detail of a different one.
 
 Two candidate explanations are ruled out rather than assumed away. Arm~C$'$
 restores shared history at fixed enforcement: under the pre-registered
-ungraded-as-incorrect rule C$'-$C is $+0.0463$ $[+0.0123,+0.0802]$ for
-gemma-4 and $+0.0000$ $[-0.0402,+0.0372]$ for gpt-oss, while restricted to
+ungraded-as-incorrect rule C$'-$C is $+0.0547$ $[+0.0182,+0.0912]$ for
+gemma-4 and $-0.0031$ $[-0.0429,+0.0337]$ for gpt-oss, while restricted to
 problems graded in both arms it is $+0.0204$ $[-0.0034,+0.0442]$ and
 $-0.0072$ $[-0.0361,+0.0217]$. \textbf{The two conventions disagree for
 gemma-4}; we report the pre-registered one as primary, and the difference is
 attrition rather than context, since Arm~C$'$ leaves fewer trajectories
 ungraded than Arm~C. Either way C$'$ remains at or below Arm~A. Attrition is
-Arm-C-specific ($7.3\%$/$5.9\%$ hard failures against $0.000$ in A and B);
+Arm-C-specific ($7.9\%$/$5.9\%$ hard failures against $0.000$ in A and B);
 dropping failures instead of applying the pre-registered rule would make
-Arm~C look \emph{better} ($0.897$/$0.890$), which is why the rule was fixed
+Arm~C look \emph{better} ($0.897$/$0.889$), which is why the rule was fixed
 in advance and why we report both.
 
 \paragraph{What the two nulls together mean.} Enforcement restores the
@@ -295,11 +294,11 @@ If both actors lose the same organization, the difference in cost has to come
 from somewhere else. Decomposing each actor's B$-$A into first-submission
 success and recovery after a failed submission, paired on the same problems,
 locates it. Removing roles costs gemma-4 essentially nothing on problems it
-solves outright --- its first-submission rate moves $0.807 \rightarrow 0.806$
-($n=1{,}295$). What changes is what happens after a wrong first answer, where
-its recovery falls $0.200 \rightarrow 0.048$. gpt-oss also loses recovery
-($0.346 \rightarrow 0.241$) but gains first-pass ($0.724 \rightarrow 0.771$,
-$n=1{,}288$), and the two roughly cancel --- which is the shape of its null.
+solves outright --- its first-submission rate moves $0.804 \rightarrow 0.804$
+($n=1{,}318$). What changes is what happens after a wrong first answer, where
+its recovery falls $0.202 \rightarrow 0.050$. gpt-oss also loses recovery
+($0.341 \rightarrow 0.242$) but gains first-pass ($0.720 \rightarrow 0.766$,
+$n=1{,}310$), and the two roughly cancel --- which is the shape of its null.
 
 What differs is whether the team can disagree with itself. In Arm~B, on first
 passes where all three agents state an answer, gemma-4 is unanimous in
@@ -316,16 +315,14 @@ first-pass solving --- and only for the actor that cannot otherwise escape a
 wrong consensus.}
 \end{quote}
 
-This also explains \S\ref{subsec:p4null}. Enforcing answer authorship restores
-who may speak; it does not restore whether the agents \emph{differ}. Arm~C
-gives back the boundary and not the disagreement, and disagreement is what the
-recovering actor needed. Three caveats bound the claim. Recovery is
+This also explains \S\ref{subsec:p4null}: enforcing answer authorship restores
+who may speak, not whether the agents \emph{differ}, and disagreement is what
+the recovering actor needed. Three caveats bound the claim. Recovery is
 conditioned on needing a retry, which is post-treatment, so this is a
-decomposition and not a causal mediation. The conditioning set is also not
-matched across arms: in Arm~A, $59\%$ (gemma-4) and $22\%$ (gpt-oss) of failed
+decomposition and not a causal mediation. The conditioning set is not matched
+across arms --- in Arm~A, $59\%$ (gemma-4) and $22\%$ (gpt-oss) of failed
 first submissions were never retried before the round budget ran out, against
-$0\%$ and $2\%$ in Arm~B, so the Arm~A recovery denominators are a selected
-subset and the level of the A-side rates should not be read as an unconditional
-recovery probability. And the retry loop is oracle-gated, so ``recovery''
-means recovery \emph{with} an oracle signal --- a property of this protocol
-family that bounds the mechanism's external validity.
+$0\%$ and $2\%$ in Arm~B --- so the A-side denominators are a selected subset
+and their level is not an unconditional recovery probability. And the retry
+loop is oracle-gated, so ``recovery'' means recovery \emph{with} an oracle
+signal.

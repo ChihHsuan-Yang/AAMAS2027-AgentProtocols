@@ -29,15 +29,15 @@ nothing else (Arm~B), the division of labor disappears for \emph{every} actor
 we tested. We measure it functionally, on the first pipeline pass so that the
 measure is not confounded with trajectory length: the rate at which all three
 agents independently assert their own final answer --- three solvers rather
-than a pipeline. That rate runs $0.000$--$0.118$ under soft roles across
-gemma-4-31B, gpt-oss-120b and Llama-3.3-70B, and $0.845$--$0.975$ once the
+than a pipeline. That rate runs $0.000$--$0.121$ under soft roles across
+gemma-4-31B, gpt-oss-120b and Llama-3.3-70B, and $0.846$--$0.975$ once the
 role instructions are removed. A blinded, rubric-frozen adjudication agrees,
 including on the cell where exact output duplication reports zero
 (\S\ref{subsec:collapse}).
 
-Their accuracy does not follow. On matched problems gemma-4 loses $-0.0301$
-$[-0.0456,-0.0147]$ when roles are removed, while gpt-oss does not move
-($+0.0070$ $[-0.0108,+0.0255]$). \textbf{The actors lose the same amount of
+Their accuracy does not follow. On matched problems gemma-4 loses $-0.0296$
+$[-0.0455,-0.0137]$ when roles are removed, while gpt-oss does not move
+($+0.0076$ $[-0.0107,+0.0259]$). \textbf{The actors lose the same amount of
 organization and only one pays for it}, so how much visible differentiation
 an intervention destroys does not tell you whether destroying it is costly.
 That is sharper than a contrast between actors that lost \emph{different}
@@ -72,7 +72,7 @@ carrying the load.} For gpt-oss, the redundant computation is load-bearing and
 the differentiation is not. For gemma-4, the differentiation is load-bearing
 and does its work somewhere a snapshot of the organization cannot see. A
 mechanism analysis locates that work: gemma-4's first-pass solve rate is
-essentially unchanged when roles are removed ($0.807 \rightarrow 0.806$) and
+essentially unchanged when roles are removed ($0.804 \rightarrow 0.804$) and
 its loss is concentrated in recovery after a failed submission. Role
 differentiation is load-bearing for \emph{error recovery}, not for
 \emph{first-pass solving}, and only for the actor that cannot otherwise escape
@@ -93,8 +93,8 @@ we contribute:
   one agent''.
 \item The \textbf{dissociation between how much organization is lost and what
   losing it costs}: three actors lose the division of labor at
-  $0.845$--$0.975$ and their accuracy responses range from a significant
-  $-0.030$ to an indistinguishable $+0.024$. The result is not an artifact of
+  $0.846$--$0.975$ and their accuracy responses range from a significant
+  $-0.030$ to an indistinguishable $+0.040$. The result is not an artifact of
   difficulty, decoding determinism, normalization, or trajectory length.
 \item A \textbf{measurement result we had to absorb ourselves}: an
   exact-duplication metric reports $0.000$ collapse for an actor a blinded

@@ -225,3 +225,55 @@ that it currently rests on a single actor pair.
 | Arm D dropped; Arm B = control | Bella concurred |
 | Third actor = gemma3_27b | AI recommendation, awaiting Bella |
 | Scale = PREFERRED (n=400, 2 domains) | AI recommendation, awaiting Bella |
+
+
+---
+
+## 2026-09-28/29 — Execution phase (sessions 5-7)
+
+**Tool:** Claude Code, Claude Opus 5 (`claude-opus-5[1m]`), acting as Master
+Agent with sub-agents. **Human:** Bella Yang, who set the direction, ordered
+the storyline pivot, and required blinded frontier-model adjudication.
+
+### Human instructions (archived in `notes/prompts/`)
+Bella (a) moved the project into execution mode with authority to run
+endpoints/HPC and dispatch sub-agents; (b) **pivoted the storyline** away from
+"specified vs realized organization" to *"when is multi-agent organization
+load-bearing?"*, naming the candidate headline and requiring it be
+stress-tested rather than assumed; (c) replaced the collapse-validation plan
+with **blinded Opus-5 adjudication**, specifying rubric freezing, blinding,
+repeated independent calls, and a full audit trail; (d) removed OpenReview from
+the agent's scope.
+
+### AI-generated, human-approved
+Experimental design (arms A/B/C/C′), the functional-collapse measure, the
+mechanism analysis, the adjudication protocol, and all analysis code.
+
+### A frontier model was used as a MEASUREMENT INSTRUMENT, not only as an author
+Opus 5 served as the blinded adjudicator for the collapse construct
+(`adjudication/`). This is disclosed in the paper as model-based adjudication,
+explicitly **not** human ground truth, with judge, protocol, rubric hash,
+stability, and limitations reported.
+
+### Errors the AI made and corrected, this phase
+| # | error | caught by | correction |
+|---|---|---|---|
+| 1 | Arm C validators rejected valid plans (string-vs-array; LaTeX escapes; max_tokens truncation) | live smoke + campaign monitoring | three fixes, each re-verified against planted violations; 121 rows quarantined |
+| 2 | Gate script read `violated_constraint` at the wrong nesting level | auditing my own gate output | reported 0 boundary violations when there were 5 |
+| 3 | Gate 4 compared realized mean calls, not budget | reading the failure | redefined to median + shared ceiling |
+| 4 | Relayed a worker's "AURORA IS DOWN" from a stale status file | probing the host | port 22 was open |
+| 5 | Called the first collapse pass "human validation" | reading the worker's own limitations section | it was an LLM sub-agent; relabelled, and the error disclosed |
+| 6 | Reported byte-collapse 0.367 as "fully logged" | re-deriving with a strict filter | the filter did not mean what its label said; no point estimate is reportable (0.630/0.284/0.176/0.083 across thresholds) |
+| 7 | Blinding leak: role names in transcripts, 42 Arm A vs 3 Arm B | pre-run leak audit | neutralized uniformly before any judging |
+| 8 | Adjudication `max_tokens` too small — 25% empty verdicts | parse-failure triage | raised and re-queued; would have biased coverage toward easy items |
+
+### Claims RETRACTED after evidence
+- "gemma-4 shows no first-pass collapse" (byte-metric artifact; recall 0.343)
+- "the actor that collapses most loses least" (both actors lose it equally)
+- the byte-collapse magnitude (logging defect)
+- my own 0.367 correction (bad filter)
+
+### Net
+The launch hypothesis was **falsified by the project's own data** twice, and
+the pre-registered primary test returned null. The surviving contribution is
+narrower, better supported, and reported with its failures intact.
