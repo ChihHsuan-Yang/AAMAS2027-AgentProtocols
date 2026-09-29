@@ -18,9 +18,8 @@ topology and budget; all three agents receive the same generic prompt
 (``You are one of three agents solving this problem collaboratively;
 continue the work''). Role names are retained for routing only, so the
 pipeline still runs and the budget is untouched. Arm~B is \emph{not} ``\PER{}
-minus role words'' --- it is the same topology with no division of labor
-specified at all, which is precisely the ablation the load-bearing definition
-calls for.
+minus role words'' but the same topology with no division of labor specified
+at all --- the ablation the load-bearing definition calls for.
 
 \paragraph{Arm~C --- architectural enforcement (organization made
 unavoidable).} Specialization is enforced by the interface rather than by
@@ -40,22 +39,19 @@ wording:
 
 The contrast in one checkable sentence: \emph{in Arm~C the Planner's output
 is parsed against a schema with no answer field, and a message containing a
-final answer is rejected by the parser and regenerated, so contract violation
-is unrepresentable rather than discouraged.} Submit-by-reference exists
-because deleting the Reviewer's answer field outright would change \emph{who
-submits} as well as who may \emph{author}, confounding enforcement with an
-altered submission path. Arm~C removes no capability: planning, computing,
-answering and critiquing are all still performed, each by exactly one agent,
-under the same call budget.
+final answer is rejected and regenerated, so contract violation is
+unrepresentable rather than discouraged.} Submit-by-reference exists because
+deleting the Reviewer's answer field outright would change \emph{who submits}
+as well as who may \emph{author}. Arm~C removes no capability: planning,
+computing, answering and critiquing are all still performed, each by one
+agent, under the same call budget.
 
 \paragraph{Arm~C$'$ --- context control.} Arm~C with shared history restored
-in all three role templates; schema, routing, budgets unchanged. Arm~C
-necessarily carries less context than Arm~A, because compact structured
-objects replace raw transcripts. C$'$ therefore licenses the identified
-contrast ``the effect of adding context at fixed enforcement.'' It is a
-\emph{partial} control and we say so: it does not make C and A
-context-matched, and matching them exactly would require feeding raw prose
-back in, dissolving the constraint that defines the arm.
+in all three role templates; schema, routing and budgets unchanged. Since
+Arm~C necessarily carries less context than Arm~A, C$'$ licenses the
+identified contrast ``the effect of adding context at fixed enforcement.'' It
+is a \emph{partial} control: matching C and A exactly would require feeding
+raw prose back in, dissolving the constraint that defines the arm.
 
 \paragraph{Single-agent reference.} A budget-matched single-agent protocol
 runs on the same problems. Without it, ``collapse costs nothing'' cannot be
@@ -79,9 +75,9 @@ this discipline and is reported in \S\ref{subsec:logging}.
 \subsection{Pre-registered analyses, and what became of them}
 \label{subsec:prereg}
 
-All endpoints were fixed in writing, and committed, before any intervention
+All endpoints were fixed in writing and committed before any intervention
 data existed. Units are (problem, actor) pairs; all arms run on the same
-problems, so every test is paired, with bootstrap clustering by problem.
+problems, so every test is paired with bootstrap clustering by problem, and
 P1--P5 carry a Holm correction.
 
 \begin{description}\itemsep1pt
@@ -106,8 +102,7 @@ the check named a clause the intervention does not enforce; it was
 re-designated to answer authorship and the failure reported in
 \S\ref{subsec:structnotcog}.
 
-Exclusions were fixed in advance: trajectories that fail to parse are counted
-as incorrect rather than dropped; in Arm~C the regenerated message is the one
-analyzed and the rejection count is reported; no arm is dropped after results
-are seen, and an arm that fails its manipulation check is reported as having
-failed it.
+Exclusions were fixed in advance: unparseable trajectories count as incorrect
+rather than dropped; in Arm~C the regenerated message is analyzed and the
+rejection count reported; no arm is dropped after results are seen, and an
+arm failing its manipulation check is reported as having failed it.

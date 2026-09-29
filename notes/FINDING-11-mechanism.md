@@ -74,3 +74,37 @@ whether they differ.
   means recovery *with* an oracle signal. This is a property of the protocol
   family, documented since F02, and bounds the external validity of the
   mechanism claim.
+
+---
+
+## Confirmed at the full cut, and the third actor corroborates (2026-09-29)
+
+| actor | n | first-pass A→B | **recovery A→B** | Arm B unanimity |
+|---|---|---|---|---|
+| gemma-4-31B | 1,320 | 0.803 → 0.804 (**+0.001**) | **0.505 → 0.050 (−0.454)** | **0.951** |
+| gpt-oss-120b | 1,317 | 0.718 → 0.765 (+0.046) | 0.436 → 0.250 (−0.186) | 0.741 |
+| Llama-3.3-70B | 129 | 0.248 → 0.295 (+0.047) | **0.333 → 0.012 (−0.322)** | 0.841 |
+
+The mechanism replicates on a third actor that was not available when it was
+formulated: **Llama-3.3's first-pass rate also rises (+0.047) while its
+recovery is destroyed (0.333 → 0.012)** — the same signature as gemma-4.
+
+### The ordering that emerges
+Recovery damage tracks **Arm B unanimity**, not collapse:
+
+| actor | unanimity | recovery damage |
+|---|---|---|
+| gemma-4 | 0.951 | −0.454 |
+| Llama-3.3 | 0.841 | −0.322 |
+| gpt-oss | 0.741 | −0.186 |
+
+Monotone across all three. The more completely a role-free team agrees, the
+more of its error-recovery it loses. This is the sharpest statement of the
+mechanism the data supports, and it is consistent with the account that roles
+are load-bearing for *escaping wrong consensus* rather than for solving.
+
+**Caveats.** Three points is an ordering, not a relationship — reported as
+such. Llama-3.3's absolute rates are low (first-pass 0.25-0.30), so it
+corroborates the *pattern* and not the magnitudes. Recovery is conditioned on
+needing a retry, which is post-treatment: this is a decomposition, not a
+mediation estimate. And the retry loop is oracle-gated throughout.
