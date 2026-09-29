@@ -199,3 +199,37 @@ changed.
 "no detectable loss", never "a gain". The +0.0171 gain reported earlier is for
 the *differentiated→collapsed subset specifically*, not for Arm B overall, and
 those two numbers must not be conflated.
+
+---
+
+## §12 — Is the single-agent control FAIR? Audited, and it is CONSERVATIVE
+
+The guard against "the collapsed team is just one agent" only works if the
+single-agent comparator is not handicapped. Audited on the axes that matter:
+
+| | evaluator calls (**oracle exposure**) | actor calls |
+|---|---|---|
+| historical `single_agent`, gpt-oss | **1.69** | 3.40 |
+| historical `single_agent`, gemma-4 | **1.66** | 3.16 |
+| our Arm A, gpt-oss | 1.34 | 7.26 |
+| our Arm A, gemma-4 | 1.10 | 6.63 |
+| our Arm B, gpt-oss | 1.80 | 6.04 |
+| our Arm B, gemma-4 | 1.93 | 5.81 |
+
+**Oracle exposure — the dimension this project has repeatedly shown to be
+decisive (F02) — favours the single agent**: it gets 1.66-1.69 evaluator calls
+against Arm A's 1.10-1.34. The single agent is *not* starved of the retry
+signal; if anything it gets more of it.
+
+Actor calls favour the team (≈6-7 vs ≈3.2-3.4), which is the honest asymmetry:
+three agents make more calls than one. So the correct statement is **not**
+"equal compute" but:
+
+> A collapsed three-agent team still outperforms a single agent that receives
+> **more** oracle feedback and roughly half the model calls.
+
+That is the conservative direction for our claim about oracle exposure and the
+generous direction for compute. Both must be stated. The claim the paper can
+make is therefore about **multi-agent computation retaining value**, not about
+compute-matched equivalence — and the word "parallel" must not be used, since
+the pipeline executes sequentially.

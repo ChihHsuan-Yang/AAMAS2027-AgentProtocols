@@ -74,3 +74,27 @@ DONE = artifact exists **and** Master reviewed **and** validation passed.
 **Rejected from the review:** third actor (endpoints 503/flapping — write the
 limitation instead); second organization; full n=4181 stretch. Chasing these
 would risk R-2/R-9, which matter more.
+
+
+---
+
+## Post-pivot board (2026-09-29)
+
+| id | task | pri | status | evidence |
+|---|---|---|---|---|
+| N-1 | Collapse measurement audit | P0 | **DONE** | determinism 0/1364, normalization raises it, not difficulty-driven |
+| N-2 | Count-matched collapse rule adopted as PRIMARY | P0 | **DONE** | earned its keep on the third actor (F12) |
+| N-3 | Paired A→B transition table | P0 | **DONE** | gpt-oss n=879 +0.017; gemma-4 −0.029 |
+| N-4 | Difficulty stratification (risk #2) | P0 | **DONE** | B−A ≥0 in every stratum |
+| N-5 | Stability as n grows (risk #3) | P0 | **DONE** | signs stable at 25/50/75/100% |
+| N-6 | MECHANISM: why the actors differ (risk #5) | P0 | **DONE** | recovery 0.490→0.045; first-pass unchanged |
+| N-7 | Pre-registration provenance | P0 | **DONE** | Case 2; prereg 22:52:33Z < launch 23:00:42Z |
+| N-8 | Single-agent control fairness | P1 | **DONE** | control gets MORE oracle exposure — conservative |
+| N-9 | Human validation of collapse (risk #1) | P0 | ACTIVE | rubric frozen + snapshot taken |
+| N-10 | Functional contribution metrics | P1 | ACTIVE | — |
+| N-11 | Manuscript rewrite | P0 | ACTIVE | — |
+| N-12 | Third actor completion | P1 | ACTIVE | 140/1200; prelim says first-pass collapse 0.000 |
+| N-13 | Novelty audit vs redundancy literature (risk #4) | P0 | **DONE** | 4th group paper found; framing constrained to the inversion |
+| N-14 | R4 reviewer annotation OR narrow the claim | P1 | TODO | decide after human validation |
+| N-15 | C2 strict-computation arm | P2 | **DROPPED_WITH_REASON** | cannot implement a defensible validator before Oct 8 without risking P0s; v3 is the warning |
+| N-16 | Final page budget + AAMAS class swap | P0 | TODO | currently 9pp with acmart substitution |
