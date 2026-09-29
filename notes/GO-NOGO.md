@@ -9,7 +9,7 @@ the schedule is now the binding risk rather than the science.
 ## What is now established (and validated)
 
 - Actor-dependence of realized fidelity: **all six pairwise differences
-  significant** under human-validated, frozen metrics (κ 0.81 / 0.84).
+  significant** under adjudicator-validated, frozen metrics (κ 0.81 / 0.84).
 - Organization × actor interaction, paired on 828 common problems:
   **+0.1522 [+0.1135, +0.1896]**.
 - A **discriminating prediction** that separates us from 2608.21747: capability

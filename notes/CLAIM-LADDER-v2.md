@@ -19,7 +19,7 @@ Conservative. Each level states the strongest claim **currently justified**.
 > **O3.** Realized fidelity differs across actor models given **byte-identical
 > prompts within a domain**: P1a gemma3 .266 / gemma_4 .111 / gpt_oss .042;
 > E2v2 gemma_4 .243 / gemma3 .112 / gpt_oss .062. **All six pairwise
-> differences significant** under frozen, human-validated metrics (κ 0.81/0.84).
+> differences significant** under frozen, adjudicator-validated metrics (κ 0.81/0.84).
 
 > **O4.** The two fidelity components **order the actors differently**. There is
 > no single "most faithful" actor. gpt_oss_120b is last on both.

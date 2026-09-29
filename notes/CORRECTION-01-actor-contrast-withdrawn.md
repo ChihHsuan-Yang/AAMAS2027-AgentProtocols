@@ -9,7 +9,7 @@ That first-pass organizational collapse is **actor-specific**: gpt-oss 0.698,
 gemma-4 **0.000**. This underpinned the framing "the actor whose organization
 collapses most loses the least."
 
-## What 180 blinded human annotations show
+## What 180 blinded frontier-model adjudications show
 
 | actor / arm | n | **human: NO division of labor** | byte flag fires |
 |---|---|---|---|

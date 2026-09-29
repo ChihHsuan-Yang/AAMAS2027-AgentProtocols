@@ -440,3 +440,64 @@ count-matched rule alongside the project rule.
 **Status.** `results/main/actor3.jsonl`, run-id `actor3-n400`, n=400 x A,B,C =
 1200 trajectories, resumable. The n=400 manifest is a strict subset of n=1600
 (same seed), so all three actors are comparable on the identical 400 problems.
+
+## 2026-09-29 16:55 — D13. Two cross-worker corrections from the third-actor run
+
+### (1) CLAIM_STATUS DROPPED_WITH_REASON is out of date on the live-model fact
+
+`CLAIM_STATUS.md` drops the three-actor ordering claim (G1) saying
+"gemma-3-27b and Llama-3.3-70B both 503". **Llama-3.3-70B is not 503.** Probed
+with real POSTs at 15:38Z, 15:40Z, 15:47Z and again at 16:50Z: **HTTP 200 every
+time**, and it has been generating continuously since 15:52Z. `P0-9` in TODO.md
+already records the same conclusion ("substitute Llama-3.3-70B, verified live"),
+so the two boards disagree. gemma-3-27b IS dead (0/3, 503 "online but not ready").
+
+G1's drop reason should be re-examined against `results/main/actor3.jsonl`
+rather than left as a stale endpoint fact.
+
+### (2) The adjudication sample drew Llama-3.3 from an IN-PROGRESS run
+
+`adjudication/SAMPLING_MANIFEST.json` contains
+`('Llama-3.3-70B-Instruct','A'/'B'/'C', False)` = 71/74/79 trajectories, sampled
+while `actor3.jsonl` was ~12% complete (it is still writing now). Two
+consequences, one benign and one not:
+
+**Completion-order bias is real.** Measured on campaign_v2/gemma-4 by taking
+prefixes in `ended_at` order — an early prefix over-represents SLOW, LONG
+trajectories:
+
+| prefix | n | mean role msgs | collapse (project rule) |
+|---|---|---|---|
+| first 5% | 194 | 7.37 | 0.170 |
+| first 10% | 388 | 7.13 | 0.149 |
+| first 20% | 776 | 6.64 | 0.122 |
+| FULL | 3883 | 6.09 | 0.108 |
+
+**But the count-matched rule the adjudication actually uses is robust to it:**
+gpt-oss arm B first-12% `first3`=0.623 vs FULL 0.692; every 0.000 cell stays
+0.000. So the sample is *usable*, not invalid.
+
+**The real limitation is a missing cell, not bias.** All 42 Llama items are
+`auto_collapse=False`, because at n=238 Llama-3.3 has **zero** count-matched
+collapse positives in any arm (A 0/79, B 0/81, C 0/81). There is no
+`(Llama, *, True)` stratum to sample, so the adjudication cannot measure
+**precision** on this actor — only recall. Given that recall is exactly what
+killed the metric for gemma-4 (0.343 pooled, 0.000 on gemma-4), this is the
+cell that matters, and it is the one Llama can speak to.
+
+Verified this is a property of the actor and not an instrument fault:
+**3,235 of 3,235 `response_sha256_12` values recomputed from `text` match
+exactly (0 mismatches).** Llama-3.3's three roles genuinely emit different text.
+
+### (3) Consequence for the third-actor deliverable — my own framing was wrong
+
+I had been preparing to report Llama-3.3's position on a "collapse rate vs B-A"
+plane against gpt-oss (0.846) and gemma-4 (0.173). **Those coordinates are from
+a withdrawn metric** (CORRECTION-01: precision 1.000 but recall 0.343; gemma-4
+Arm B judged 0.944 functionally redundant while the byte flag fires 0.000).
+Placing a third actor on that plane would extend a retracted measurement.
+
+The third actor's byte-collapse numbers will still be reported — as byte-level
+output duplication, labelled as such — but the *inverse-relationship* question
+must be answered with the adjudicated measure, not the byte flag. This is a
+scope correction to my own task, recorded before the numbers exist.

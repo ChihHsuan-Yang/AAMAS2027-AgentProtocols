@@ -17,7 +17,7 @@ Labels: OBSERVED · SUPPORTED · TENTATIVE · FALSIFIED · UNTESTED · DROPPED.
 |---|---|
 | Role distinguishability rests on format, not the governed function | 0.896 full vs **0.714** computation-only vs **0.768** length-only control |
 | Per-clause compliance varies enormously inside one contract | 0.961 (decomposes) to 0.042 (abstains from computing) |
-| Realized fidelity is actor-dependent under byte-identical prompts | all 6 pairwise differences significant; frozen metrics, human-validated κ 0.806/0.843 |
+| Realized fidelity is actor-dependent under byte-identical prompts | all 6 pairwise differences significant; frozen metrics, adjudicator-validated κ 0.806/0.843 |
 | **Arm C enforces ANSWER AUTHORSHIP** | **P2 = 1.000 in every Arm C cell**, vs Arm A 0.562 (gpt-oss) / 1.000 (gemma-4). This is the redesignated manipulation check and it passes. |
 | Architectural enforcement engages and is discriminating | boundary rejections observed live; 4/4 planted violations caught, incl. `\boxed` smuggled in prose outside the JSON |
 
@@ -69,7 +69,7 @@ That is narrower than the launch hypothesis and it is what the evidence supports
 | **B** actor-specific surprise | the actor with the largest collapse loses the least | **SUPPORTED** — and it runs both ways: gpt-oss collapses 0.698 and loses nothing; gemma-4 collapses 0.000 and loses 0.029 |
 | **C** structural dissociation | enforcement restores structure without restoring capability | **SUPPORTED** — P2 → 1.000, collapse → ~0, C−A null both actors, C′ rules out context |
 | **D** functional dissociation | structural compliance ≠ cognitive division of labor | **SUPPORTED** — Planner computation persists at or above soft-role density; the pre-registered P1a objective **failed** (see PREREGISTRATION-PROVENANCE.md) |
-| **E** broad | visible specialization is neither necessary nor sufficient | **NOT CLAIMED** — needs human validation (in flight) and the third actor |
+| **E** broad | visible specialization is neither necessary nor sufficient | **NOT CLAIMED** — needs frontier-model adjudication (in flight) and the third actor |
 
 ## Mechanism (F11) — SUPPORTED, and it is what lifts this above an anecdote
 
@@ -105,7 +105,7 @@ only 0.638. gpt-oss stays split 0.251 and escapes 0.772.
 
 | claim | why |
 |---|---|
-| "gemma-4 shows no first-pass collapse (0.000)" | **Byte-metric artifact.** 180 blinded human annotations: gemma-4 Arm B is judged 0.944 no-division-of-labor. Its agents paraphrase instead of duplicating bytes. |
+| "gemma-4 shows no first-pass collapse (0.000)" | **Byte-metric artifact.** 180 blinded frontier-model adjudications: gemma-4 Arm B is judged 0.944 no-division-of-labor. Its agents paraphrase instead of duplicating bytes. |
 | "the actor that collapses most loses least" | Both actors lose their division of labor at the same rate (0.944 / 0.958). The *scope* contrast does not exist. |
 | "~70% / 84% collapse" as the headline figure | **Logging defect (F13).** 81.8% of gpt-oss Arm B messages had hidden reasoning discarded. Defensible figure on fully-logged cycles is **0.367** (n=442); 0.692 is an upper bound. |
 
@@ -113,7 +113,7 @@ only 0.638. gpt-oss stays split 0.251 and escapes 0.772.
 
 | claim | evidence |
 |---|---|
-| **Arm A has genuine functional division of labor** | humans judge no-division at 0.000 (gemma-4) / 0.056 (gpt-oss) |
+| **Arm A has genuine functional division of labor** | the adjudicator judged no-division at 0.000 (gemma-4) / 0.056 (gpt-oss) |
 | **Removing role instructions destroys it for BOTH actors** | 0.944 / 0.958 judged no-division in Arm B |
 | **Only one actor loses accuracy** | gemma-4 −0.029 [−0.045,−0.013]; gpt-oss +0.008 [−0.010,+0.026] |
 | **Mechanism** | gemma-4 first-pass unchanged 0.809→0.809; **recovery 0.490→0.045**; escapes wrong consensus 0.638 vs gpt-oss 0.772 |

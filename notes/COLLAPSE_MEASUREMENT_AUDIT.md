@@ -79,14 +79,14 @@ gpt-oss the identical transition is free.
   embedding/edit-distance work dispatched.
 - **Level 3 functional contribution** — NOT YET DONE. Required before claiming
   "no material contribution". Dispatched.
-- **Human validation** — NOT YET DONE. Required before the headline is final.
+- **frontier-model adjudication** — NOT YET DONE. Required before the headline is final.
 
 ## Verdict so far
 
 The exact-collapse measure is **sound, conservative, and not explainable** by
 determinism, normalization, retry convergence, or problem easiness. The headline
 survives this audit. It is **not yet** licensed to claim *functional* redundancy
-— that needs Level 3 plus human validation.
+— that needs Level 3 plus frontier-model adjudication.
 
 ---
 

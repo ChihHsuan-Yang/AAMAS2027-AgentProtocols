@@ -90,11 +90,11 @@ would risk R-2/R-9, which matter more.
 | N-6 | MECHANISM: why the actors differ (risk #5) | P0 | **DONE** | recovery 0.490→0.045; first-pass unchanged |
 | N-7 | Pre-registration provenance | P0 | **DONE** | Case 2; prereg 22:52:33Z < launch 23:00:42Z |
 | N-8 | Single-agent control fairness | P1 | **DONE** | control gets MORE oracle exposure — conservative |
-| N-9 | Human validation of collapse (risk #1) | P0 | ACTIVE | rubric frozen + snapshot taken |
+| N-9 | frontier-model adjudication of collapse (risk #1) | P0 | ACTIVE | rubric frozen + snapshot taken |
 | N-10 | Functional contribution metrics | P1 | ACTIVE | — |
 | N-11 | Manuscript rewrite | P0 | ACTIVE | — |
 | N-12 | Third actor completion | P1 | ACTIVE | 140/1200; prelim says first-pass collapse 0.000 |
 | N-13 | Novelty audit vs redundancy literature (risk #4) | P0 | **DONE** | 4th group paper found; framing constrained to the inversion |
-| N-14 | R4 reviewer annotation OR narrow the claim | P1 | TODO | decide after human validation |
+| N-14 | R4 reviewer annotation OR narrow the claim | P1 | TODO | decide after frontier-model adjudication |
 | N-15 | C2 strict-computation arm | P2 | **DROPPED_WITH_REASON** | cannot implement a defensible validator before Oct 8 without risking P0s; v3 is the warning |
 | N-16 | Final page budget + AAMAS class swap | P0 | TODO | currently 9pp with acmart substitution |

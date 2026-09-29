@@ -38,7 +38,7 @@ well.
    inert when roles are removed. That is consistent with, and supportive of,
    the redundancy story.
 4. State plainly in Limitations that Reviewer *behaviour* was not
-   human-validated, and that no claim rests on it.
+   adjudicator-validated, and that no claim rests on it.
 
 **Consequence for the earlier flagged risk.** VALIDATION-FINAL.md noted that R4
 would become Arm C's manipulation check *if* the constrained critique interface
