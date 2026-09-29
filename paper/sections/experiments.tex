@@ -42,11 +42,11 @@ run was gated on a smoke test requiring, among other checks, that Arm~C
 produce non-zero boundary rejections with reasons logged, that answer-bearing
 calls be equal across arms, and that the backend be pinned. An early campaign
 was stopped and quarantined after 121 trajectories when $74\%$ of Arm~C
-rejections turned out to be the model being cut off at the token limit
-mid-JSON rather than violating a role boundary. Truncation itself was not
-arm-specific ($8.4\%$/$11.3\%$/$8.9\%$ over A/B/C) but its \emph{cost} was:
-Arms~A and B tolerate a truncated prose message where Arm~C rejects
-unparseable JSON. Left alone this would have produced a convincing
-``enforcement lowers accuracy'' result that was a token-budget artifact. The
-token limit was doubled, a salvage path added for truncated objects with the
-salvage rate logged, and the pre-fix rows were quarantined and never pooled.
+rejections turned out to be the model cut off at the token limit mid-JSON
+rather than violating a role boundary. Truncation was not arm-specific
+($8.4\%$/$11.3\%$/$8.9\%$ over A/B/C) but its \emph{cost} was: Arms~A and B
+tolerate a truncated prose message where Arm~C rejects unparseable JSON. Left
+alone this would have produced a convincing ``enforcement lowers accuracy''
+result that was a token-budget artifact. The token limit was doubled, a
+logged salvage path added, and the pre-fix rows quarantined and never
+pooled.

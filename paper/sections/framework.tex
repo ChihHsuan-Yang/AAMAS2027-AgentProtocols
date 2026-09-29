@@ -3,21 +3,20 @@
 
 \subsection{What ``load-bearing'' means here}
 
-An organization is specified by a tuple: a set of agents, an interaction
-order, a message-passing graph, a context-visibility policy, and a
-\emph{role contract} per agent. A contract is a set of clauses asserting
-either that the agent performs some function (\textsc{must} decompose the
-problem) or that it does not (\textsc{must not} state a final answer).
-Clauses of the second kind make the specification a \emph{division} of labor:
-they assign work away from one agent and implicitly to another.
+An organization is specified by a tuple: agents, an interaction order, a
+message-passing graph, a context-visibility policy, and a \emph{role
+contract} per agent. A contract is a set of clauses asserting that the agent
+performs some function (\textsc{must} decompose the problem) or that it does
+not (\textsc{must not} state a final answer); clauses of the second kind make
+the specification a \emph{division} of labor, assigning work away from one
+agent and implicitly to another.
 
 The \emph{realized} organization is the behavior that occurs when that
-specification is executed by a particular actor substrate. Because a clause
-is prose handed to a language model, realization is not guaranteed, and
-nothing in the specification records which clauses were honored. An
-evaluation that observes only task outcome cannot distinguish an organization
-that divided the work as specified from one in which every agent did
-everything. Both appear as a score.
+specification is executed by a particular actor. Because a clause is prose
+handed to a language model, realization is not guaranteed, and nothing
+records which clauses were honored. An evaluation observing only task outcome
+cannot distinguish an organization that divided the work as specified from
+one in which every agent did everything. Both appear as a score.
 
 \begin{quote}
 \textbf{Definition.} A component of an organization is \textbf{load-bearing}
@@ -52,15 +51,13 @@ the schema forbids the Planner and Reviewer an answer field and a zero would
 therefore record the constraint rather than the behavior.
 
 \paragraph{Exact output duplication (secondary, a lower bound).} A trajectory
-\emph{duplicates} if two or more of its role messages are byte-identical. The
-compared object is \texttt{sha256} of the raw model completion, taken before
-parsing and before any scaffold field is added, so it is what the model
-actually emitted and carries no role wrapper. Against blinded adjudication
-this measure has precision $1.000$ and recall $0.343$
-(\S\ref{subsec:collapse}), so we use it to establish that at least a given
-amount of collapse occurred and \textbf{never to compare how much
-organization two actors lost}. We report it on the first pipeline pass for
-the same length reason, with the all-message rule alongside.
+\emph{duplicates} if two or more role messages are byte-identical, compared
+as \texttt{sha256} of the raw completion before parsing and before any
+scaffold field is added. Against blinded adjudication it has precision
+$1.000$ and recall $0.343$ (\S\ref{subsec:collapse}), so we use it to
+establish that at least a given amount of collapse occurred and
+\textbf{never to compare how much organization two actors lost}. We report
+it on the first pipeline pass, with the all-message rule alongside.
 
 \paragraph{Answer authorship (\Ptwo{}).} Whether a Planner message contains a
 final answer. This is the clause Arm~C structurally enforces, and it is the

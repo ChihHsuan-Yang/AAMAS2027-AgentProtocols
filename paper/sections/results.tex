@@ -3,11 +3,10 @@
 
 All contrasts are paired at the problem level with bootstrap intervals
 clustered by problem, under the pre-registered rule that ungraded
-trajectories count as incorrect. P1--P5 are the pre-registered endpoints and
-carry a Holm correction. The A-versus-B contrast supplying this paper's
-headline was pre-registered as \emph{secondary and exploratory}; it is
-labeled \textbf{post-hoc} everywhere it appears, and its importance does not
-change that label.
+trajectories count as incorrect; P1--P5 carry a Holm correction. The
+A-versus-B contrast supplying this paper's headline was pre-registered as
+\emph{secondary and exploratory} and is labeled \textbf{post-hoc} everywhere
+it appears.
 
 \subsection{Removing role instructions collapses the organization of every
 actor}
@@ -196,13 +195,12 @@ the run.
 
 \paragraph{It is not a difficulty artifact.} Stratifying the
 differentiated~$\rightarrow$~duplicated subset ($n=892$) by pre-treatment
-difficulty --- historical one-shot baseline accuracy on the same problem ---
+difficulty (historical one-shot baseline accuracy on the same problem),
 B$-$A is non-negative in every band: HARD ($n=152$) $+0.0329$
 $[-0.0395,+0.1053]$, MED ($n=154$) $+0.0455$ $[+0.0000,+0.0974]$, EASY
-($n=586$) $+0.0017$ $[-0.0034,+0.0085]$. Functional collapse is likewise high
-in every band, including the hardest ($0.636$ gpt-oss, $0.921$ gemma-4), so
-the phenomenon is not confined to problems where roles were unnecessary
-anyway.
+($n=586$) $+0.0017$ $[-0.0034,+0.0085]$. Functional collapse is high in every
+band, so the phenomenon is not confined to problems where roles were
+unnecessary anyway.
 
 \subsection{Collapse is not ``the system was always a single agent''}
 \label{subsec:notsingle}
@@ -219,11 +217,9 @@ computation buys something real, though nothing attributable to
 \emph{differentiated} roles. The comparison is conservative on the axis this
 project has found decisive --- the single agent receives \emph{more} oracle
 feedback (1.66--1.69 evaluator calls against Arm~A's 1.10--1.34) and roughly
-half the actor calls --- so the claim is that multi-agent computation retains
-value, not that budgets are matched in every respect. The same panel carries
-a fact we report rather than bury: gemma-4's team is \emph{worse} than its own
-single agent in both arms, so for that actor the organization is actively
-costly at this budget.
+half the actor calls. The same panel carries a fact we report rather than
+bury: gemma-4's team is \emph{worse} than its own single agent in both arms,
+so for that actor the organization is actively costly at this budget.
 
 \subsection{Architectural enforcement restores the organization}
 \label{subsec:enforce}
@@ -231,14 +227,13 @@ costly at this budget.
 The manipulation is checked three ways and passes all three.
 Answer-authorship compliance reaches exactly $1.000$ in every Arm~C and
 Arm~C$'$ cell, against $0.982$ (gemma-4) and $0.604$ (gpt-oss) under soft
-roles. Independently measured, the Planner emits an answer in $0.000$ of
-Arm~C trajectories for all three actors. And the constraint visibly bound:
-651 and 921 role-boundary rejections per Arm~C cell ($0.50$/$0.72$ per
-trajectory), counted from boundary violations only, with formatting coercions
-logged separately and excluded. Exact duplication falls to $0.000$
-(Table~\ref{tab:collapse}). Enforcement holds the organization apart ---
-though, as \S\ref{subsec:structnotcog} shows, only the part of it that
-concerns who may speak.
+roles; independently measured, the Planner emits an answer in $0.000$ of
+Arm~C trajectories for all three actors; and the constraint visibly bound,
+with 651 and 921 role-boundary rejections per Arm~C cell ($0.50$/$0.72$ per
+trajectory), formatting coercions logged separately and excluded. Exact
+duplication falls to $0.000$ (Table~\ref{tab:collapse}). Enforcement holds
+the organization apart --- though, as \S\ref{subsec:structnotcog} shows, only
+the part concerning who may speak.
 
 \subsection{But it does not restore performance: the pre-registered primary
 test is null}
@@ -254,19 +249,18 @@ force it}. We report it as a failure of that theory, not as a supporting
 detail of a different one.
 
 Two candidate explanations are ruled out rather than assumed away. Arm~C$'$
-restores shared history at fixed enforcement. Under the pre-registered
+restores shared history at fixed enforcement: under the pre-registered
 ungraded-as-incorrect rule C$'-$C is $+0.0463$ $[+0.0123,+0.0802]$ for
-gemma-4 and $+0.0000$ $[-0.0402,+0.0372]$ for gpt-oss; restricted to
+gemma-4 and $+0.0000$ $[-0.0402,+0.0372]$ for gpt-oss, while restricted to
 problems graded in both arms it is $+0.0204$ $[-0.0034,+0.0442]$ and
 $-0.0072$ $[-0.0361,+0.0217]$. \textbf{The two conventions disagree for
-gemma-4} --- the pre-registered one is reported as primary, and the
-difference is attrition, not context, since Arm~C$'$ leaves fewer
-trajectories ungraded than Arm~C. Either way the context control does not
-rescue Arm~C's accuracy: C$'$ remains at or below Arm~A.
-Attrition is Arm-C-specific ($7.3\%$/$5.9\%$ hard failures against $0.000$ in
-A and B) and we apply the pre-registered ungraded-as-incorrect rule; dropping
-failures instead would make Arm~C look \emph{better} ($0.897$/$0.890$), which
-is why the rule was fixed in advance and why we report both.
+gemma-4}; we report the pre-registered one as primary, and the difference is
+attrition rather than context, since Arm~C$'$ leaves fewer trajectories
+ungraded than Arm~C. Either way C$'$ remains at or below Arm~A. Attrition is
+Arm-C-specific ($7.3\%$/$5.9\%$ hard failures against $0.000$ in A and B);
+dropping failures instead of applying the pre-registered rule would make
+Arm~C look \emph{better} ($0.897$/$0.890$), which is why the rule was fixed
+in advance and why we report both.
 
 \paragraph{What the two nulls together mean.} Enforcement restores the
 organizational measure completely and the performance not at all. Combined

@@ -30,7 +30,10 @@ does not attempt them and does not report them as blockers.
 | 9 | This checklist | LIVE |
 
 ## Anonymity gates (Master Agent owns these)
-- [ ] no repo URL, HF org (`AgentsSci`), or author GitHub account in the PDF
-- [ ] prior group work (arXiv:2609.27822, arXiv:2608.14927) cited in **third person**
-- [ ] no "our prior work" phrasing — grep before final build
-- [ ] AAMAS document class in place of the current acmart substitution
+- [x] **no repo URL, HF org (`AgentsSci`), or author account in the rendered PDF** — audited 2026-09-29 against the PDF text, not just the source: zero hits for AgentsSci / ChihHsuan / github.com / huggingface / Argonne / ALCF / Sophia / bellayang
+- [x] **PDF metadata clean** — no Author field; Creator/Producer are toolchain strings only; no local paths
+- [x] **author block renders "Anonymous Author(s)"**
+- [x] **.bib warning comments do not render** — verified they are stripped by bibtex
+- [x] prior group work (2609.27822, 2608.14927, **2607.15388**) cited in **third person**
+- [ ] AAMAS document class in place of the current acmart substitution — **the official .cls could not be fetched**; acmart `[sigconf,anonymous,review]` is the documented substitution, one-line swap noted in main.tex
+- [ ] re-run this audit after the final trim + number refresh (anonymity is not a one-time check)
