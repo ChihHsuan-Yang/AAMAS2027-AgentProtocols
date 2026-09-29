@@ -151,3 +151,25 @@ output differentiation.
 gemma-4 loses accuracy *because* its organization degrades. Under the
 count-matched rule that mechanism is unavailable: there is no first-pass
 degradation to blame.
+
+---
+
+## RISK #2 CLOSED: the gpt-oss result is not a difficulty artifact (2026-09-29)
+
+Stratifying the **A_differentiated → B_collapsed** subset (n=884) by
+pre-treatment difficulty (historical one-shot baseline accuracy on the same
+problem):
+
+| stratum | n | acc A | acc B | B − A |
+|---|---|---|---|---|
+| HARD (baseline ≤1/3) | 147 | 0.497 | 0.537 | **+0.0408 [−0.0272, +0.1156]** |
+| MED | 152 | 0.888 | 0.934 | +0.0461 [+0.0000, +0.0987] |
+| EASY (baseline >2/3) | 585 | 0.997 | 0.998 | +0.0017 [−0.0034, +0.0085] |
+
+**Losing the organization is free in every stratum, including the hardest.**
+The point estimate is *positive* on hard problems (+0.041), though its CI spans
+zero at n=147. There is no difficulty band in which gpt-oss pays for collapse.
+
+This closes the most obvious reviewer objection ("collapse only happens where
+roles were unnecessary anyway"): collapse is both *frequent* on hard problems
+(0.827) and *costless* on them.
