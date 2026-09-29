@@ -33,11 +33,10 @@ in the sample against gemma-4's 3 and Llama-3.3's none, so we report it per
 actor and never pool it.
 
 \paragraph{Collapse is post-treatment.} Whether a trajectory collapses is an
-outcome of the intervention, not a randomized factor, so conditioning on the
-transition (Table~\ref{tab:transition}) yields an association however sharp
-its intervals, and licenses no causal reading of
-collapse~$\rightarrow$~accuracy. The unconditional arm contrasts, properly
-randomized by problem, are reported alongside it as the weaker but cleaner
+outcome of the intervention, not a randomized factor, so conditioning on it
+yields an association however sharp its intervals, and licenses no causal
+reading of collapse~$\rightarrow$~accuracy. The unconditional arm contrasts,
+randomized by problem, are reported alongside as the weaker but cleaner
 statement.
 
 \paragraph{Provenance of the headline.} The pre-registered primary endpoint
@@ -70,11 +69,10 @@ collaboration destroys a correct answer.
 
 \paragraph{Arm~C$'$ is a partial context control.} Arm~C carries less context
 than Arm~A by construction, because compact structured objects replace raw
-transcripts. C$'$ restores shared history at fixed enforcement and licenses
-the contrast ``the effect of adding context at fixed enforcement,'' which is
-null. It does \emph{not} make C and A context-matched, and we do not claim
-it does; matching them exactly would require feeding raw prose back in, which
-would dissolve the constraint that defines the arm.
+transcripts. C$'$ restores shared history at fixed enforcement, licensing
+the contrast ``the effect of adding context at fixed enforcement.'' It does
+\emph{not} make C and A context-matched: that would require feeding raw prose
+back in, dissolving the constraint that defines the arm.
 
 \paragraph{Attrition is arm-specific.} Arm~C hard-fails on $7.3\%$ and
 $5.9\%$ of trajectories against $0.000$ in Arms~A and B, because it rejects
@@ -105,4 +103,4 @@ the sample of a main effect for equal power, so a null on P4 is ``no large
 interaction detected.'' The evaluator is one of the actor models under study,
 so its independence from that actor's outputs is not established. Backends
 have shown large accuracy differences for an identical cell; ours is pinned
-and uniform across the run.
+and uniform.
