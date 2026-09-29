@@ -329,3 +329,19 @@ written; only these three trajectories were read.
 ---
 **FREEZE BANNER — nothing above this line may be edited after the first
 annotation row is recorded. Amendments go below, dated.**
+
+---
+
+## AMENDMENT A1 (2026-09-29, before any annotation row was recorded)
+
+**What changed:** `TARGET_PER_CELL` 12 → 18.
+
+**Why:** the frozen plan specified a target of ~180 trajectories over 2x2x2x2 =
+16 cells, i.e. ~12 per cell. On drawing, only **10** of the 16 cells are
+non-empty — exactly the structural limitation pre-declared in Part 3 (collapsed
+rows exist only in Arm B / gpt-oss). At 12 per cell the sample would be n=120,
+below the frozen target. Raising to 18 per cell gives n=180, which honors the
+frozen target n. Seed, strata, eligibility and blinding are unchanged.
+
+**Status:** recorded BEFORE the first annotation row. No annotation or
+aggregate agreement number had been computed at the time of this amendment.
