@@ -19,8 +19,13 @@ df = pd.DataFrame(rows)
 df["actor"] = df.actor_model.str.split("/").str[-1]
 df["c0"] = df.correct.fillna(0)
 def coll(r):
+    """PRIMARY rule: first pipeline pass only (first 3 role messages).
+    The all-message rule is confounded with trajectory length -- longer
+    trajectories get more chances to collapse, and the actors differ in
+    length. See COLLAPSE_MEASUREMENT_AUDIT.md round 2."""
     h = [m.get("response_sha256_12") for m in (r.get("messages") or [])
-         if m.get("role") in ("planner","executor","reviewer") and m.get("response_sha256_12")]
+         if m.get("role") in ("planner","executor","reviewer")
+         and m.get("response_sha256_12")][:3]
     return (len(set(h)) < len(h)) if len(h) >= 2 else np.nan
 df["collapse"] = [coll(r) for r in rows]
 
@@ -48,7 +53,7 @@ for k,a in enumerate(ACT):
         axis.errorbar(x+off, m, yerr=[lo,hi], marker="o", ms=7, lw=2.2,
                       capsize=3, color=COL[a], label=a if i==0 else None)
 
-ax[0].set_ylabel("organizational collapse\n(identical agent outputs)")
+ax[0].set_ylabel("organizational collapse\n(identical outputs, first pass)")
 ax[0].set_ylim(-0.05,1.0); ax[0].grid(alpha=.25, axis="y")
 ax[0].legend(frameon=False, fontsize=9, loc="center left")
 ax[0].set_title("Organization moves a lot.  Accuracy does not.", fontsize=11, pad=8)

@@ -297,6 +297,18 @@ def analyse_cycle(job: dict) -> dict:
     # ---- INERTNESS ---------------------------------------------------------
     o["exec_inert"] = int(o["new_eq_E_distinct"] == 0 and o["ans_differs_E"] == 0)
     o["rev_inert"] = int(o["new_eq_R_distinct"] == 0 and o["ans_differs_R"] == 0)
+    # DESIGN-NEUTRAL variants.  The answer clause is NOT comparable across arms:
+    # Arm A's planner prompt forbids an answer (0.0/17.3% carry one), Arm B tells
+    # every agent to emit one (~90-98%), Arm C forbids it by schema for planner
+    # and reviewer (0%).  So a no-answer-change is near-automatic in A and C and
+    # near-impossible in B, for reasons of prompt design, not behaviour.  These
+    # variants drop that clause and use only channels every arm can populate.
+    o["exec_inert_eqonly"] = int(o["new_eq_E_distinct"] == 0)
+    o["rev_inert_eqonly"] = int(o["new_eq_R_distinct"] == 0)
+    o["exec_inert_tok10"] = int((o["new_tok_E"] if o["new_tok_E"] == o["new_tok_E"] else 0) < 0.10)
+    o["rev_inert_tok10"] = int((o["new_tok_R"] if o["new_tok_R"] == o["new_tok_R"] else 0) < 0.10)
+    o["exec_inert_neutral"] = int(o["exec_inert_eqonly"] == 1 and o["exec_inert_tok10"] == 1)
+    o["rev_inert_neutral"] = int(o["rev_inert_eqonly"] == 1 and o["rev_inert_tok10"] == 1)
     o["exec_inert_strong"] = int(o["exec_inert"] == 1 and (o["new_tok_E"] or 0) < 0.05)
     o["rev_inert_strong"] = int(o["rev_inert"] == 1 and (o["new_tok_R"] or 0) < 0.05
                                 and o["has_novel_critique_R"] == 0)

@@ -134,3 +134,68 @@ new. That is the separation.
 *observational analyses of this corpus*. A fourth observational analysis is
 thin-slicing by definition. **The controlled arms are the precondition for
 submitting, not an enhancement.**
+
+---
+
+# CRITICAL UPDATE 2026-09-29 — a FOURTH group paper on this corpus
+
+**arXiv:2607.15388 — "Precise but Uncoupled: Reviewer Precision Does Not
+Guarantee Critique Uptake in Multi-Agent Math Reasoning."**
+Yang, Jiang, Vasudevan, Yang, Zheng, Chen, Huerta, Vishwanath.
+**Verified by Master: abs page fetched, title and author list confirmed.**
+
+This was **not** in any previous overlap audit. It is the most overlapping
+artifact yet found, and it must be dealt with before novelty matters.
+
+## Why it is the closest
+
+| axis | 2607.15388 | this paper |
+|---|---|---|
+| corpus | **4,181 Omni-MATH** | same slice, subsampled |
+| actor | **gpt-oss-120b** | gpt-oss-120b + gemma-4-31B (+ Llama-3.3-70B running) |
+| architecture | **PER** and broadcast | **PER** (A/B/C/C′) |
+| logical move | **decouples a role-quality metric (reviewer precision 0.861) from task gain** | decouples a role-*organization* metric (collapse) from task gain |
+| interventions | "matched PER interventions": forced acknowledgment, guidance in solver context | role removal (B), architectural enforcement (C), context control (C′) |
+
+The shared logical move — *a role property can look good while the system does
+not benefit* — is uncomfortably close to our framing, on the same corpus and
+the same architecture.
+
+## Distinctness — the honest version
+
+| | 2607.15388 | ours |
+|---|---|---|
+| object | **critique uptake**: does a reviewer's correct criticism change the next candidate? | **organizational differentiation**: do the agents behave like distinct roles at all? |
+| manipulation | prompt-level PER variants, roles retained throughout | **roles removed entirely (B)** and **structurally enforced (C)** |
+| measurement | reviewer precision / uptake / repair rate | byte-identical output collapse, per-clause contract fidelity |
+| actors | **one** | **two, with the sign inversion between them** |
+| finding | reviewer quality ≠ system gain | **visible organization and capability dissociate in BOTH directions, and the direction depends on the actor** |
+
+**What I will NOT claim:** that "a role metric can decouple from performance" is
+novel. 2607.15388 (ours) and 2607.21627 (external, "Role Drift") both own that.
+
+**What survives:** the **sign inversion across actors** — the *more capable*
+actor collapses far more (0.698 vs 0.000 first-pass) and loses nothing, while
+the *less capable* one never collapses and still loses accuracy. Every
+capability-dependence paper found (2607.16133, 2512.08296, 2609.20804,
+2603.28990) predicts the **monotone** direction: structure helps weaker models.
+Our inversion is not predicted by any of them.
+
+## Consequence for the paper — binding
+1. **2607.15388 must be cited, in third person**, and its relationship stated
+   explicitly in Related Work. Hiding it is the fastest route to a desk reject.
+2. The paper may **not** be framed as "role property decouples from performance".
+   It must be framed as **the actor-dependent inversion**.
+3. Five artifacts now exist on this corpus (BigData resource, 2609.27822,
+   2608.14927, 2607.15388, this). **The controlled arms are not merely the
+   novelty — they are the only thing distinguishing this from a fifth slice.**
+
+## Two external papers that are direct threats
+- **2607.21627 "Role Drift"** defines drift as *"modules preserve or improve
+  end-task performance while deviating from their assigned roles"* — our half-1
+  sentence, by name. Cite it; lead with half 2 and the inversion instead.
+- **2609.05933 (EMNLP 2026)** argues reported MAS efficiency gains *"arise from
+  structural collapse... where random pruning already preserves accuracy."*
+  This is a weapon aimed at exactly our gpt-oss result. **Our defense is the
+  single-agent guard**: collapsed gpt-oss still beats its own budget-matched
+  single agent by **+0.0248 [+0.0072,+0.0424]**. That must be in the paper.
