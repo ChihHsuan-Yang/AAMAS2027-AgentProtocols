@@ -173,3 +173,29 @@ zero at n=147. There is no difficulty band in which gpt-oss pays for collapse.
 This closes the most obvious reviewer objection ("collapse only happens where
 roles were unnecessary anyway"): collapse is both *frequent* on hard problems
 (0.827) and *costless* on them.
+
+---
+
+## RISK #3 CLOSED: the actor interaction is stable as the campaign grows
+
+Cumulative B−A by problem-completion order (so this is a genuine "did the
+answer change as n grew" check, not a random resample):
+
+| share of campaign | gemma-4-31B | gpt-oss-120b |
+|---|---|---|
+| 25% (n≈340) | −0.0531 [−0.0885,−0.0235] | +0.0176 [−0.0118,+0.0471] |
+| 50% (n≈616) | −0.0325 [−0.0568,−0.0097] | +0.0146 [−0.0098,+0.0407] |
+| 75% (n≈939) | −0.0224 [−0.0405,−0.0053] | +0.0128 [−0.0064,+0.0330] |
+| **100% (n≈1,280)** | **−0.0304 [−0.0468,−0.0133]** | **+0.0078 [−0.0102,+0.0259]** |
+
+**Both signs are stable at every checkpoint.** gemma-4 is negative with a CI
+excluding zero throughout; gpt-oss hovers just above zero with a CI spanning it
+throughout. The magnitude shrank for gemma-4 from the 25% reading (−0.053 →
+−0.030), which is the usual early-sample inflation, but the *conclusion* never
+changed.
+
+**Honest note on gpt-oss:** its whole-campaign B−A is **+0.0078
+[−0.0102,+0.0259]** — indistinguishable from zero. The paper must say
+"no detectable loss", never "a gain". The +0.0171 gain reported earlier is for
+the *differentiated→collapsed subset specifically*, not for Arm B overall, and
+those two numbers must not be conflated.
