@@ -43,6 +43,13 @@ KNOWN MEASUREMENT HAZARDS, handled explicitly
     channel, so "answer change" in Arm C is architectural, not behavioural.
   * autojunk=True changes difflib ratios by up to 0.83 on this corpus, so it is
     forced OFF.
+  * autojunk=False in turn blows up on degenerate tiny-alphabet text (one cycle
+    >110 s).  Such pairs are measured on whitespace TOKENS instead (see
+    pair_metrics).  That fires on 3.7% of pairs and is CONCENTRATED IN ARM A
+    (986 of 1839), and token-unit ratios run about 0.11 LOWER than char-unit
+    ones -- so cross-arm comparisons of `ratio` are mildly biased against Arm A.
+    Jaccard and overlap do not use difflib and are unaffected: prefer them for
+    the cross-arm claims, and read `token_unit_*` before quoting a ratio.
 
 Usage:
   python3 x3_functional_collapse.py <paths...>
@@ -198,20 +205,44 @@ def pair_metrics(x: str, y: str) -> dict:
     containment  matched chars / len(shorter)   -- NOT capped by length skew
     jaccard      content-token set Jaccard
     overlap      content-token overlap coefficient |A&B| / min(|A|,|B|)
+
+    PATHOLOGY GUARD.  autojunk=False is required (autojunk=True shifts ratios by
+    up to 0.83 on this corpus) but it makes SequenceMatcher blow up when the
+    alphabet is tiny relative to the length: degenerate repetitive Arm B outputs
+    reach 20,000 chars over as few as 32 distinct characters, and one such cycle
+    ran >110 s against ~0.18 s for a typical one.  When a pair looks like that we
+    measure on WHITESPACE TOKENS instead of characters: far fewer elements over a
+    much larger alphabet, same definition of the statistic, milliseconds not
+    minutes.  `ratio_unit` records which was used so the two are never silently
+    pooled; token-level ratios are systematically a little lower, so the affected
+    rows are reported, not hidden.
     """
     xc, yc = x[:CHAR_CAP], y[:CHAR_CAP]
-    sm = difflib.SequenceMatcher(None, xc, yc, autojunk=False)
+    lo_alpha = min(len(set(xc)) or 1, len(set(yc)) or 1)
+    big = min(len(xc), len(yc)) >= 3000
+    unit = "token" if (big and lo_alpha < 120) else "char"
+    if unit == "token":
+        a_seq, b_seq = xc.split(), yc.split()
+    else:
+        a_seq, b_seq = xc, yc
+    sm = difflib.SequenceMatcher(None, a_seq, b_seq, autojunk=False)
     matched = sum(b.size for b in sm.get_matching_blocks())
-    denom = len(xc) + len(yc)
+    if unit == "token":
+        # same statistic, counted in tokens rather than characters
+        denom = len(a_seq) + len(b_seq)
+        shorter = min(len(a_seq), len(b_seq))
+    else:
+        denom = len(xc) + len(yc)
+        shorter = min(len(xc), len(yc))
     ratio = (2.0 * matched / denom) if denom else 1.0
-    shorter = min(len(xc), len(yc))
     contain = (matched / shorter) if shorter else 1.0
     a, b = set(content_tokens(x)), set(content_tokens(y))
     inter = len(a & b)
     jac = inter / len(a | b) if (a or b) else 1.0
     ov = inter / min(len(a), len(b)) if (a and b) else (1.0 if not (a or b) else 0.0)
     return dict(ratio=ratio, containment=min(contain, 1.0), jaccard=jac, overlap=ov,
-                capped=int(len(x) > CHAR_CAP or len(y) > CHAR_CAP))
+                capped=int(len(x) > CHAR_CAP or len(y) > CHAR_CAP),
+                token_unit=int(unit == "token"))
 
 
 # ---------------------------------------------------------------- worker job
@@ -599,6 +630,11 @@ def main(paths, workers=None, quick=0):
         print(f"    ratio_PE mean={bc.ratio_PE.mean():.4f} min={bc.ratio_PE.min():.4f}   "
               f"jaccard_PE mean={bc.jaccard_PE.mean():.4f} min={bc.jaccard_PE.min():.4f}")
         print("    -> if these are not ~1.000 the similarity metric is broken.")
+    ntok = int(df[["token_unit_PE", "token_unit_PR", "token_unit_ER"]].sum().sum()) \
+        if "token_unit_PE" in df else 0
+    print(f"\n  pathology guard: {ntok} of {3*len(df)} pairs measured on TOKENS, not chars")
+    print("    (tiny-alphabet degenerate text; see pair_metrics docstring). ratio for those")
+    print("    rows is a token-level ratio and runs slightly lower than a char-level one.")
     ctrl = pd.DataFrame([dict(control="synthetic_identical", **ident),
                          dict(control="synthetic_unrelated", **diffr),
                          dict(control="corpus_byte_identical_cycles",

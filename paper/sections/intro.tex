@@ -1,103 +1,109 @@
 \section{Introduction}
 \label{sec:intro}
 
-A multi-agent LLM system is specified by writing down an organization. One
-agent is told it is a Planner and must decompose without solving; a second is
-told it is an Executor and must carry out the plan it receives; a third is told
-it is a Reviewer and must critique rather than re-derive. The specification is
-a division of labor: a statement about which agent is responsible for which
-part of the work, and by implication which agent is responsible for none of it.
+A multi-agent LLM system is usually presented as a diagram. One box is a
+Planner that decomposes without solving; a second is an Executor that carries
+out the plan it receives; a third is a Reviewer that critiques rather than
+re-derives. Arrows between the boxes say who hands what to whom. The diagram
+is read as a \emph{mechanism}: an explanation of where the system's competence
+comes from, and a justification for paying for three agents instead of one.
+But the diagram is not what runs. What runs is three prompts handed to a
+language model, and the model may honor the division of labor, ignore it, or
+satisfy its surface while doing the whole task in every box. Whether the
+organization in the diagram is the organization that produces the result is
+almost never measured, because a system evaluated on task accuracy alone
+returns the same score either way.
 
-What the system \emph{realizes} is a different object. The specification is
-prose handed to a language model, and the model may satisfy it, partially
-satisfy it, or satisfy its surface while performing the whole task alone. The
-gap between the two is not a prompting bug to be engineered away; it is the
-central empirical fact about organizations built this way, and it is what this
-paper measures. We call the written specification the \emph{specified} role and
-the behavior the actor substrate actually produces the \emph{realized}
-organization.
+\paragraph{The question.}
+We therefore ask a question that a diagram cannot answer: \textbf{when is
+multi-agent organization load-bearing?} We give the term an operational
+definition and use it throughout. A component of an organization is
+\textbf{load-bearing} if removing or altering it causes a reproducible
+degradation in task performance \emph{under matched compute and information
+budgets}. The budget clause carries the weight. Removing role instructions
+while also removing agents, calls, or context tests nothing about
+organization; it tests scale. Our interventions hold the agent count, the
+interaction order, the message-passing graph, the total call budget, the retry
+budget, the decoding parameters, the verifier, and the grading fixed, and vary
+only what each agent is told it is, or what its interface will let it emit.
 
-\paragraph{A strong hypothesis, and its falsification by our own data.}
-The most striking version of this concern is that role labels are cosmetic:
-that Planner and Executor prompts produce interchangeable behavior and the
-apparent organization is a narrative laid over undifferentiated work. We tested
-it and \textbf{it is false}. On 145{,}411 role messages from matched
-Planner--Executor--Reviewer trajectories, a classifier using only behavioral
-features -- with prompt-template markers removed -- recovers an agent's role at
-$0.896$ three-way balanced accuracy (chance $0.333$), and separates Planner
-from Executor at $\mathrm{AUC}=0.995$. Prompted roles induce behavior that is
-highly distinguishable. Any account that treats role prompts as inert is
-refuted by this measurement, and we abandon it.
+\paragraph{Removing the organization is free for the actor that loses it
+most.} Under generic prompts that delete every role instruction while changing
+nothing else (Arm~B), the organization visibly disappears for one actor and
+not the other. Measured on the first pipeline pass, so that the measure is not
+confounded with trajectory length, \textbf{$69.8\%$ of gpt-oss-120b
+trajectories collapse to byte-identical agent outputs}, against $0.000$ for
+gemma-4-31B and $0.000$ for both actors under soft roles. Yet on the $879$
+matched problems where gpt-oss goes from differentiated to collapsed, accuracy
+does not fall: $0.895 \rightarrow 0.912$, a change of $+0.0171$
+$[+0.0023,+0.0319]$. It does not fall on hard problems either --- collapse is
+\emph{most} frequent on the hardest stratum ($0.827$) and the change in
+accuracy is non-negative in every difficulty band. The converse holds for the
+other actor. gemma-4 never collapses on the first pass at all, and
+\emph{still} loses accuracy when the same role instructions are removed
+($-0.0292$ $[-0.0450,-0.0134]$ on $1{,}266$ matched problems that stay
+differentiated in both arms). Visible organization and task performance are
+dissociated in \emph{both} directions: collapse without loss, and loss without
+collapse.
 
-The result that survives is more specific and, we argue, more consequential.
-\emph{What} the roles are distinguishable by is not the division of labor the
-contract governs. Single-feature analysis attributes the separation to output
-formatting (numbered steps, $\mathrm{AUC}=0.890$) and to answer commitment (a
-boxed final answer, $0.707$). Restricted to computation behavior -- the
-dimension the Planner's contract explicitly regulates -- separability falls to
-$0.714$, barely above a message-length nuisance control at $0.768$. The agents
-look different. They do not divide the reasoning the way the specification
-says they do. Compliance with individual clauses of a single contract ranges
-from $0.961$ (decomposes the problem) to $0.042$ (abstains from computing), and
-two \textsc{must not} clauses sitting in the same prompt block diverge from
-$0.540$ to $0.042$.
+Neither half licenses the conclusion that the agents were redundant. A
+collapsed gpt-oss team still beats its own budget-matched single agent by
+$+0.0248$ $[+0.0072,+0.0424]$. Three agents emitting the same string under a
+shared evaluator loop is not the same system as one agent, even when nothing
+distinguishes what they say.
 
-\paragraph{Realization is a property of the actor, not only of the prompt.}
-Holding the prompt byte-identical within a domain, realized fidelity differs
-sharply across the model filling the role: the Planner abstains from computing
-in $0.266$ of messages under one actor, $0.111$ under a second, and $0.042$
-under a third, with all six pairwise differences excluding zero under
-human-validated metrics ($\kappa = 0.81$ and $0.84$). The same written
-organization, executed by different substrates, is a different organization.
+\paragraph{Restoring the structure does not restore the performance.}
+The symmetric intervention makes the division of labor unrepresentable rather
+than merely requested: the Planner emits an object parsed against a schema
+with no answer field, so a final answer cannot be expressed and is rejected
+and regenerated (Arm~C). This works as an organizational manipulation and
+fails as a performance one. Answer-authorship compliance goes to $1.000$ in
+every cell, collapse falls to ${\approx}0$, and hundreds of boundary
+rejections per cell confirm the constraint bound --- while accuracy does not
+move for either actor, and the pre-registered primary test of the
+actor~$\times$~intervention interaction is null. Enforcement buys back the
+organization in the diagram and nothing that the diagram was invoked to
+explain. It also fails to restore the thing that actually mattered: it
+governs who may \emph{speak}, not whether the agents \emph{differ}, and
+disagreement is what the recovering actor needed.
 
-\paragraph{Does enforcing the division of labor change anything?}
-If a specification is advice, the natural intervention is to stop giving
-advice. We therefore ask whether enforcing the division of labor
-\emph{architecturally} -- constraining what each agent can structurally emit,
-so that a contract violation is unrepresentable rather than discouraged --
-changes both the realized organization and the organization's effectiveness,
-and whether that change depends on the actor. Concretely, the Planner emits an
-object parsed against a schema with no answer field; a message carrying a final
-answer is rejected by the parser and regenerated, and the rejection count is
-logged as evidence that the constraint bound at all. This is a constraint on a
-\emph{relation between agents}: ``the Planner may not emit an answer'' is
-meaningful only because a second agent exists to emit one, and it has no
-single-agent analogue.
+\paragraph{Contribution.}
+The two halves together say something narrower and more useful than either
+alone: \textbf{multi-agent computation and differentiated organization are
+separable, and which of the two is load-bearing depends on the actor.} For
+gpt-oss, the redundant parallel computation is load-bearing and the
+differentiation is not. For gemma-4, the differentiation is load-bearing and
+does its work somewhere the organizational measure cannot see. A mechanism
+analysis locates that work: gemma-4's first-pass solve rate is unchanged to
+three decimals when roles are removed ($0.809 \rightarrow 0.809$) and its
+entire loss is recovery collapsing from $0.490$ to $0.045$. Role
+differentiation is load-bearing for \emph{error recovery}, not for
+\emph{first-pass solving}, and only for the actor that cannot otherwise escape
+a wrong consensus.
 
-\paragraph{What this is not, and the prediction that separates it.}
-That structured specifications help weaker models more is already published.
-Canedo~\cite{canedo2026architecture} gives one coding agent five
-informationally equivalent specification formats across six models and reports
-a strong format~$\times$~model interaction in which format barely matters for
-the strongest models and matters a great deal for the weakest, framing
-structured architecture specifications as a \emph{capability equalizer} whose
-value is inversely proportional to model strength. An interaction of that shape
-in our setting would not be a new finding. We therefore state the discriminating
-prediction \emph{before} reporting any outcome. A capability-equalizer account
-predicts that enforcement helps the weakest actor most. A realized-organization
-account predicts that enforcement helps the actor whose realized fidelity is
-low, which need not be the weakest. In our panel these come apart: on the one
-actor pair where both quantities are measurable, the \emph{more} capable model
-is the \emph{less} faithful one (one-shot baseline accuracy $0.568$ with
-Planner abstention $0.042$, against $0.425$ with $0.266$). The design can
-therefore return the answer that makes our framing wrong, and we pre-registered
-the interpretation of every outcome, including that one.
+This inverts the sign every capability-dependence account
+predicts. Structure-helps-weaker-models is the standard finding, and it is
+monotone: the stronger the model, the less the scaffolding
+matters~\cite{canedo2026architecture,orogat2026architectural}. Here the
+\emph{more} capable actor is the one whose organization collapses almost
+completely, and it is the one that pays nothing; the \emph{less} capable actor
+keeps its organization intact and pays anyway. Specifically, we contribute:
 
-\paragraph{Contributions.}
 \begin{enumerate}
-\item We distinguish \emph{role distinguishability} from \emph{role fidelity},
-  show that they dissociate on a large corpus of role messages, and report that
-  the strong ``roles are cosmetic'' hypothesis is falsified while the weaker,
-  contract-relative one is not.
-\item We give contract-derived, clause-level fidelity measures, validate them
-  against hand adjudication ($\kappa = 0.81$ / $0.84$), and report an
-  ``improved'' metric variant that we \emph{rejected} because it degraded
-  agreement.
-\item We show that realized fidelity is actor-dependent under byte-identical
-  prompts, and that its two components order the actors differently -- so there
-  is no single most-faithful actor and no defensible single fidelity scalar.
-\item We run a controlled three-arm experiment in which specialization is
-  enforced by the interface rather than by wording, with a mandatory
-  manipulation check, and test the actor~$\times$~intervention interaction as
-  the primary endpoint. \TODO{state the outcome once the arms report}
+\item An operational definition of \textbf{load-bearing} for organizational
+  components, and a budget-matched design that tests it --- including a
+  budget-matched single-agent control, without which ``collapse is harmless''
+  cannot be distinguished from ``the system was always one agent''.
+\item The \textbf{actor-dependent sign inversion}: on matched problems, the
+  actor with near-total organizational collapse loses nothing, and the actor
+  with none loses accuracy. We report both directions and neither is an
+  artifact of difficulty, decoding determinism, normalization, or trajectory
+  length.
+\item A \textbf{structural--functional dissociation from the other side}:
+  enforcing the boundary architecturally restores measured organization
+  completely and task performance not at all, with a pre-registered primary
+  null we report as such.
+\item A \textbf{mechanism}: roles sustain disagreement, disagreement sustains
+  recovery, and only the actor that cannot escape a wrong consensus on its own
+  needs them.
 \end{enumerate}

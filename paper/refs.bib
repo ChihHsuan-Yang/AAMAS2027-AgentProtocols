@@ -5,10 +5,17 @@
 % https://arxiv.org/abs/<id> and copying the title and author list verbatim
 % from the abstract page. No metadata in this file was generated from memory.
 %
-% Known metadata caveat: for 2609.04217 and 2609.27822 the abstract page's
-% rendered submission date disagreed with the month encoded in the arXiv
-% identifier (YYMM). The arXiv API was unreachable from the build host, so
-% MONTH fields are deliberately omitted throughout; YEAR is taken from the
+% RE-VERIFIED 2026-09-29: every entry below was fetched again from
+% arxiv.org/abs/<id> and its title, author list, and primary class read from
+% the raw citation_title / citation_author meta tags (not from a summarizer).
+% All pre-existing entries matched; the entries added on that date were
+% verified the same way.
+%
+% Known metadata caveat: for 2609.04217, 2609.27822, and 2604.00026 the
+% abstract page's submission date is genuinely earlier than the month encoded
+% in the arXiv identifier (YYMM) -- a real announcement-versus-submission lag,
+% confirmed against the arXiv API on 2026-09-29, not a fetch error. MONTH
+% fields are deliberately omitted throughout; YEAR is taken from the
 % identifier prefix, which is authoritative for the announcement year.
 
 @misc{orogat2026architectural,
@@ -60,8 +67,10 @@
   primaryClass = {cs.AI},
   doi          = {10.48550/arXiv.2503.13657},
   note         = {Version v3 (26 Oct 2025). Introduces the MAST failure
-                  taxonomy; failure mode FM-1.2 is ``Disobey role
-                  specification''.}
+                  taxonomy over 1{,}600+ annotated traces. The
+                  ``disobey role specification'' mode is cited from the paper
+                  body; the v3 abstract page does not print mode identifiers,
+                  so the FM-1.2 label is not asserted here.}
 }
 
 @misc{cao2026modules,
@@ -148,4 +157,103 @@
   primaryClass = {cs.AI},
   doi          = {10.48550/arXiv.2608.14927},
   note         = {23 pages, 6 figures.}
+}
+
+% ---------------------------------------------------------------------------
+% Added 2026-09-29 for the load-bearing framing. Each verified by fetching
+% arxiv.org/abs/<id> and reading the raw citation_* meta tags.
+% ---------------------------------------------------------------------------
+
+% DOUBLE-BLIND HAZARD: same author group as this submission. Third person only.
+% Its arXiv comments field names a HuggingFace organization; that URL must not
+% appear anywhere in the submitted text.
+@misc{yang2026precise,
+  title        = {Precise but Uncoupled: Reviewer Precision Does Not Guarantee
+                  Critique Uptake in Multi-Agent Math Reasoning},
+  author       = {Yang, Chih-Hsuan and Jiang, Jingyan and Vasudevan, Vikram and
+                  Yang, Cheng-Hau and Zheng, Huihuo and Chen, Le and
+                  Huerta, Eliu A. and Vishwanath, Venkatram and
+                  Foster, Ian T. and Thakur, Rajeev},
+  year         = {2026},
+  eprint       = {2607.15388},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2607.15388},
+  note         = {48 pages, 20 figures, 25 tables.}
+}
+
+@misc{zhang2026rethinking,
+  title        = {Rethinking the Evaluation of Efficiency Methods for
+                  Multi-Agent Systems},
+  author       = {Zhang, Jiamu and Zhang, Lingxi and Lu, Pengjun and
+                  Zhang, Qiyue and Chuang, Yu-Neng and Li, Zhengchen and
+                  Xu, Shuai and Chaudhary, Vipin and Chen, Hanjie},
+  year         = {2026},
+  eprint       = {2609.05933},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2609.05933},
+  note         = {Conference on Empirical Methods in Natural Language
+                  Processing (EMNLP) 2026.}
+}
+
+@misc{dochkina2026drop,
+  title        = {Drop the Hierarchy and Roles: How Self-Organizing {LLM}
+                  Agents Outperform Designed Structures},
+  author       = {Dochkina, Victoria},
+  year         = {2026},
+  eprint       = {2603.28990},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2603.28990},
+  note         = {Submitted to IEEE Access; not accepted at time of writing.}
+}
+
+@misc{chen2026agentslimming,
+  title        = {{AgentSlimming}: Towards Efficient and Cost-Aware
+                  Multi-Agent Systems},
+  author       = {Chen, Yulang and Peng, Haoxuan and Liu, Jinyan and
+                  Wen, Zichen and Liu, Dongrui and Zhang, Linfeng},
+  year         = {2026},
+  eprint       = {2605.08813},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2605.08813}
+}
+
+@misc{yu2026bottleneck,
+  title        = {When Do Multi-Agent Systems Help? An Information Bottleneck
+                  Perspective},
+  author       = {Yu, Wendi and Zhou, Lianhao and Dong, Xiangjue and
+                  Barath, Sai Sudarshan and Staunton, Declan and
+                  Yoon, Byung-Jun and Qian, Xiaoning and Caverlee, James and
+                  Ji, Shuiwang},
+  year         = {2026},
+  eprint       = {2607.16133},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2607.16133}
+}
+
+@misc{kandoussi2026whoami,
+  title        = {``Who Am I, and Who Else Is Here?'' Behavioral
+                  Differentiation Without Role Assignment in Multi-Agent
+                  {LLM} Systems},
+  author       = {Kandoussi, Houssam EL},
+  year         = {2026},
+  eprint       = {2604.00026},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CL},
+  doi          = {10.48550/arXiv.2604.00026}
+}
+
+@misc{patel2026representational,
+  title        = {Representational Collapse in Multi-Agent {LLM} Committees:
+                  Measurement and Diversity-Aware Consensus},
+  author       = {Patel, Dipkumar},
+  year         = {2026},
+  eprint       = {2604.03809},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2604.03809}
 }
