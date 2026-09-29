@@ -544,3 +544,38 @@ loses accuracy"), now with a third actor pointing the same way.
 This is a proxy validated against 4 adjudicated cells, not a replacement for
 adjudication. The `(Llama, *, True)` stratum is still missing from the
 adjudication sample, so Llama's precision remains unmeasured.
+
+### D14 addendum (17:28) — sensitivity of the functional proxy to its answer-marker
+
+D14 chose `\boxed` as the answer-assertion marker. That choice was made before
+testing alternatives, so I tested it after the fact against the adjudicated
+cells. Three markers, scored on mean absolute error vs the FINDING-13 rates:
+
+| marker | max err | mean err |
+|---|---|---|
+| `\boxed` (D14's choice) | **0.108** | **0.051** |
+| `\boxed` OR "answer is" | 0.169 | 0.076 |
+| `\boxed` OR "final answer" | 0.561 | 0.235 |
+
+`\boxed` is the best-calibrated of the three, so D14's number stands — but it
+was luck, not method, and the margin is not large enough to call the proxy
+token-independent.
+
+**Arm A is token-sensitive; Arm B is not.** Llama-3.3 Arm A moves 0.000 ->
+0.538 across markers, gpt-oss 0.121 -> 0.617. Arm B moves only 0.846 -> 0.982
+across all actors and markers. So any *absolute* Arm A figure from this proxy
+is unreliable and should not be quoted; the Arm B figures are stable.
+
+**The D14 conclusion survives all three markers** — this is the check that
+matters, and it passes in all 9 actor x marker cells:
+
+| marker | gpt-oss B-A | gemma-4 B-A | Llama-3.3 B-A |
+|---|---|---|---|
+| `\boxed` | +0.726 | +0.975 | +0.910 |
+| `\boxed`/"final answer" | +0.234 | +0.728 | +0.421 |
+| `\boxed`/"answer is" | +0.635 | +0.979 | +0.876 |
+
+Arm B functional collapse is high (0.846-0.982) for **every actor under every
+marker**, B-A is large and positive in all 9 cells, and Llama-3.3 always falls
+between the two incumbents. The magnitudes are marker-dependent; the finding
+that all three actors lose the division of labour in Arm B is not.

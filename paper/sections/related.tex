@@ -1,17 +1,17 @@
 \section{Related Work}
 \label{sec:related}
 
-Three literatures bear on the question of when organization is load-bearing.
-Each has established a piece of it; the gap is stated at the end.
+Three literatures bear on when organization is load-bearing; the gap is
+stated at the end.
 
 \paragraph{Role specialization and role drift.}
 That prompted roles are not reliably obeyed is established. Cemri et
 al.~\cite{cemri2025why} derive MAST from 1{,}600+ annotated traces, with
 disobeying the role specification a named failure mode. Cao et
 al.~\cite{cao2026modules} give the training-time account --- \emph{role
-drift}, in which modules ``preserve or improve end-task performance while
-deviating from their assigned roles,'' and 86\% of one pipeline's apparent RL
-gain vanishes once the decomposer is held to its role --- while Orogat et
+drift}, where modules preserve end-task performance while deviating from
+assigned roles, and 86\% of one pipeline's apparent RL gain vanishes once the
+decomposer is held to its role --- while Orogat et
 al.~\cite{orogat2026architectural} find prompt-level role conditioning does
 not induce the intended specialization. Patel~\cite{patel2026representational}
 measures the phenomenon we call collapse directly, reporting near-identical
@@ -27,11 +27,10 @@ as such.
 
 \emph{What is already owned here.} ``A role-quality metric can decouple from
 task performance'' is not available as a contribution: Cao et
-al.~\cite{cao2026modules} own it for training-time drift, and Yang et
-al.~\cite{yang2026precise} own it for this architecture and one of these
-actors, with reviewer precision at $0.861$ while critique uptake does not
-follow, on the same corpus this work instruments. We state that overlap
-plainly and do not claim the decoupling itself.
+al.~\cite{cao2026modules} own it for training-time drift and Yang et
+al.~\cite{yang2026precise} for this architecture and one of these actors, on
+the same corpus this work instruments. We do not claim the decoupling
+itself.
 
 \paragraph{Redundancy and pruning in multi-agent systems.}
 A second literature asks whether the agents are needed at all. Chen et
@@ -101,12 +100,11 @@ losing it, not an ordering of actors along a collapse axis --- an axis our
 own measurement work found to be an artifact of the metric.
 
 \paragraph{Studies of the same trace corpus.}
-Three prior studies analyze the trajectory corpus this work instruments:
-an audit of confidence-routed broadcast~\cite{jiang2026confidence},
-cost-aware routing \emph{across} protocols~\cite{yang2026protocol}, and
-reviewer precision versus critique uptake within this
-architecture~\cite{yang2026precise}. All three are observational, none
-intervenes on the organization, and none measures whether the specified
+Three prior studies analyze the corpus this work instruments: an audit of
+confidence-routed broadcast~\cite{jiang2026confidence}, cost-aware routing
+\emph{across} protocols~\cite{yang2026protocol}, and reviewer precision
+versus critique uptake~\cite{yang2026precise}. All three are observational,
+none intervenes on the organization, and none measures whether the specified
 division of labor is realized. The controlled arms of \S\ref{sec:method} do
-not exist in that corpus, and they are what separates this work from a fourth
+not exist in that corpus, and are what separates this work from a fourth
 reanalysis of it.

@@ -1,30 +1,27 @@
 \section{Introduction}
 \label{sec:intro}
 
-A multi-agent LLM system is usually presented as a diagram. One box is a
-Planner that decomposes without solving; a second is an Executor that carries
-out the plan it receives; a third is a Reviewer that critiques rather than
-re-derives. Arrows between the boxes say who hands what to whom. The diagram
-is read as a \emph{mechanism}: an explanation of where the system's competence
-comes from, and a justification for paying for three agents instead of one.
-But the diagram is not what runs. What runs is three prompts handed to a
-language model, and the model may honor the division of labor, ignore it, or
-satisfy its surface while doing the whole task in every box. Whether the
-organization in the diagram is the organization that produces the result is
-almost never measured, because a system evaluated on task accuracy alone
-returns the same score either way.
+A multi-agent LLM system is usually presented as a diagram: a Planner that
+decomposes without solving, an Executor that carries out the plan it
+receives, a Reviewer that critiques rather than re-derives, and arrows saying
+who hands what to whom. The diagram is read as a \emph{mechanism} --- an
+explanation of where the system's competence comes from, and a justification
+for paying for three agents instead of one. But the diagram is not what runs.
+What runs is three prompts handed to a language model, which may honor the
+division of labor, ignore it, or satisfy its surface while doing the whole
+task in every box. Which of these happened is almost never measured, because
+a system evaluated on accuracy alone returns the same score either way.
 
 \paragraph{The question.}
-We therefore ask a question that a diagram cannot answer: \textbf{when is
-multi-agent organization load-bearing?} A component of an organization is
-\textbf{load-bearing} if removing or altering it causes a reproducible
-degradation in task performance \emph{under matched compute and information
-budgets}. The budget clause carries the weight: removing role instructions
-while also removing agents, calls, or context tests scale, not organization.
-Our interventions hold the agent count, interaction order, message-passing
-graph, call budget, retry budget, decoding parameters, verifier, and grading
-fixed, and vary only what each agent is told it is, or what its interface
-will let it emit.
+We therefore ask what a diagram cannot answer: \textbf{when is multi-agent
+organization load-bearing?} A component is \textbf{load-bearing} if removing
+or altering it causes a reproducible degradation in task performance
+\emph{under matched compute and information budgets}. The budget clause
+carries the weight: removing role instructions while also removing agents,
+calls, or context tests scale, not organization. Our interventions hold agent
+count, interaction order, message-passing graph, call budget, retry budget,
+decoding parameters, verifier and grading fixed, and vary only what each
+agent is told it is, or what its interface will let it emit.
 
 \paragraph{Every actor loses the organization; only some pay for it.}
 Under generic prompts that delete every role instruction while changing
@@ -60,13 +57,12 @@ with no answer field, so a final answer cannot be expressed and is rejected
 and regenerated (Arm~C). This works as an organizational manipulation and
 fails as a performance one. Answer-authorship compliance goes to $1.000$ in
 every cell and hundreds of boundary rejections per cell confirm the
-constraint bound --- while accuracy does not
-move for either actor, and the pre-registered primary test of the
-actor~$\times$~intervention interaction is null. Enforcement buys back the
-organization in the diagram and nothing that the diagram was invoked to
-explain. It also fails to restore the thing that actually mattered: it
-governs who may \emph{speak}, not whether the agents \emph{differ}, and
-disagreement is what the recovering actor needed.
+constraint bound, while accuracy moves for neither actor and the
+pre-registered primary test of the actor~$\times$~intervention interaction is
+null. Enforcement buys back the organization in the diagram and nothing the
+diagram was invoked to explain --- it governs who may \emph{speak}, not
+whether the agents \emph{differ}, and disagreement is what the recovering
+actor needed.
 
 \paragraph{Contribution.}
 The two halves together say something narrower and more useful than either
@@ -83,14 +79,12 @@ differentiation is load-bearing for \emph{error recovery}, not for
 a wrong consensus.
 
 This is not the ordering capability-dependence accounts predict.
-Structure-helps-weaker-models is the standard finding, and it is monotone: the
-stronger the model, the less the scaffolding
-matters~\cite{canedo2026architecture,orogat2026architectural}. Our three
-actors do not order that way on the quantity that matters. They lose
-essentially the same amount of organization, and the actor that pays for it is
-neither the strongest nor the weakest --- the one weakest on this benchmark,
-Llama-3.3, shows no detectable loss at the sample size we have for it.
-Specifically, we contribute:
+Structure-helps-weaker-models is the standard finding, and it is monotone:
+the stronger the model, the less the scaffolding
+matters~\cite{canedo2026architecture,orogat2026architectural}. Our actors do
+not order that way. They lose essentially the same amount of organization,
+and the one that pays is neither the strongest nor the weakest. Specifically,
+we contribute:
 
 \begin{enumerate}
 \item An operational definition of \textbf{load-bearing} and a budget-matched
@@ -102,11 +96,10 @@ Specifically, we contribute:
   $0.845$--$0.975$ and their accuracy responses range from a significant
   $-0.030$ to an indistinguishable $+0.024$. The result is not an artifact of
   difficulty, decoding determinism, normalization, or trajectory length.
-\item A \textbf{measurement result that we had to absorb ourselves}: an
+\item A \textbf{measurement result we had to absorb ourselves}: an
   exact-duplication metric reports $0.000$ collapse for an actor a blinded
   adjudication judges collapsed in $94\%$ of sampled trajectories. We report
-  the metric as a lower bound with its validation, and rebuild the claim on a
-  functional measure.
+  it as a lower bound and rebuild the claim on a functional measure.
 \item A \textbf{structural--functional dissociation from the other side}:
   enforcing the boundary architecturally restores measured organization
   completely and task performance not at all, with a pre-registered primary

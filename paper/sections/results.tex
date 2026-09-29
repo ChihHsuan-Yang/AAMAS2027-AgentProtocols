@@ -14,25 +14,25 @@ actor}
 \label{subsec:collapse}
 
 Arm~B deletes every role instruction and changes nothing else. How one
-measures the surviving organization turns out to decide the answer, so we
-report two measures and are explicit about which claim rests on which.
+measures the surviving organization decides the answer, so we report two
+measures and say which claim rests on which.
 
 \paragraph{Exact duplication is sound and far too narrow.} The natural
 automated measure is whether two or more agents emit byte-identical text,
-applied to the first pipeline pass so that it is not confounded with
-trajectory length. It fires on $0.691$ of gpt-oss Arm~B trajectories and
-\textbf{never} on gemma-4 or Llama-3.3 in any arm --- a gap that turns out to
-be a property of the instrument. A blinded adjudication judges gemma-4's
-Arm~B trajectories redundant at $0.944$ where this metric reports $0.000$,
-because gemma-4's agents paraphrase each other at length instead of copying,
-so no hash matches even though nothing is added. \textbf{Exact duplication is
-therefore a conservative lower bound: usable to say that at least this much
-collapse occurred, never to compare how much organization two actors lost.}
+applied to the first pipeline pass so it is not confounded with trajectory
+length. It fires on $0.691$ of gpt-oss Arm~B trajectories and \textbf{never}
+on gemma-4 or Llama-3.3 in any arm --- a gap that is a property of the
+instrument. A blinded adjudication judges gemma-4's Arm~B trajectories
+redundant at $0.944$ where this metric reports $0.000$, because its agents
+paraphrase at length instead of copying, so no hash matches even though
+nothing is added. \textbf{Exact duplication is therefore a conservative lower
+bound: usable to say that at least this much collapse occurred, never to
+compare how much organization two actors lost.}
 
-\paragraph{Functional collapse.} We therefore measure the failure of the
-property the diagram actually asserts --- that the agents do different jobs
---- by asking whether \emph{every} agent independently asserts its own final
-answer, making the pipeline three solvers (Table~\ref{tab:collapse}).
+\paragraph{Functional collapse.} We therefore measure failure of the property
+the diagram asserts --- that the agents do different jobs --- by asking
+whether \emph{every} agent independently asserts its own final answer
+(Table~\ref{tab:collapse}).
 
 \begin{table}[t]
 \centering
@@ -61,6 +61,15 @@ C  & both          & n/a & $0.000$ & --- \\
 C$'$ & both        & n/a & $0.000$--$0.003$ & --- \\
 \bottomrule
 \end{tabular}
+
+\vspace{2pt}
+\footnotesize\emph{Sensitivity.} The functional measure keys on an answer
+marker. Arm~B is stable across three marker definitions
+($0.847$--$0.982$ for every actor). \textbf{Arm~A is not}: it ranges
+$0.000$--$0.247$ (gemma-4), $0.121$--$0.617$ (gpt-oss) and $0.000$--$0.533$
+(Llama-3.3) depending on the marker, so the Arm~A column should be read as
+``low'' rather than as a point estimate. The A-vs-B contrast holds under all
+three definitions in all nine actor$\times$marker cells.
 \end{table}
 
 \textbf{All three actors lose the division of labor at essentially the same
@@ -72,61 +81,57 @@ the diagram asserts, that contrast is absent.
 \paragraph{Validation by blinded adjudication.} Because the choice of measure
 carries the result, we validated it on 180 sampled trajectories against a
 rubric frozen before the first judgement, with actor, arm, correctness and
-the automated label withheld, and with role words neutralized after we found
-they leaked the arm (42 occurrences in Arm~A against 3 in Arm~B). Three
-things follow (Table~\ref{tab:collapse}, last column). \textbf{Arm~A is
-genuinely differentiated} ($0.000$ and $0.056$ judged to have no division of
-labor), so the soft-role baseline is not a straw man. \textbf{Both actors
-lose that differentiation in Arm~B}, at $0.944$ and $0.958$. And the byte
-metric has \textbf{precision $1.000$} (0 false positives in 36 firings) with
-\textbf{recall $0.343$}: everything it flags is genuine, and it misses about
-two-thirds of what a judge sees. The adjudication was performed by a frontier
-language model, not by human annotators; \S\ref{sec:limitations} states what
-that does and does not establish.
+the automated label withheld, and role words neutralized after we found they
+leaked the arm (42 occurrences in Arm~A against 3 in Arm~B). Three things
+follow (Table~\ref{tab:collapse}, last column). \textbf{Arm~A is genuinely
+differentiated} ($0.000$ and $0.056$ judged to have no division of labor), so
+the soft-role baseline is not a straw man. \textbf{Both actors lose that
+differentiation in Arm~B}, at $0.944$ and $0.958$. And the byte metric has
+\textbf{precision $1.000$} (0 false positives in 36 firings) and
+\textbf{recall $0.343$}: what it flags is genuine, and it misses two-thirds
+of what a judge sees. The adjudication used a frontier language model, not
+human annotators; \S\ref{sec:limitations} states what that establishes.
 
 \paragraph{The measures survive the obvious attacks.} Deterministic decoding
 cannot produce the duplication: \textbf{0 of 893} duplicated first passes
 arose from identical prompts, and the endpoint is measurably nondeterministic
 at temperature $0$. Normalization \emph{raises} the all-message rate from
 $0.842$ to $0.927$, so the exact measure undercounts there too. Retry
-convergence is excluded by construction, since the primary rule reads the
-first pass. And it is not an easy-problem artifact: functional collapse is
-high in every difficulty band, reaching $0.636$ (gpt-oss) and $0.921$
+convergence is excluded by construction. And it is not an easy-problem
+artifact: functional collapse reaches $0.636$ (gpt-oss) and $0.921$
 (gemma-4) on the hardest stratum.
 
 \subsection{A logging defect bounds what the duplication rate can mean}
 \label{subsec:logging}
 
-We found, and report rather than quietly repair, a defect that constrains the
-duplication measure specifically. Our runner logged each response's
-\texttt{content} field and fell back to \texttt{reasoning} only when
-\texttt{content} was \emph{empty}. gpt-oss-120b is a reasoning model that
-frequently returns a short content string alongside a long hidden reasoning
-trace; verified live against the endpoint, one request returned 17 characters
-of content and 546 of reasoning. Such a response was logged as the 17
-characters and the derivation discarded, while the flag meant to document the
-substitution stayed false.
+We report rather than quietly repair a defect that constrains the duplication
+measure. Our runner logged each response's \texttt{content} and fell back to
+\texttt{reasoning} only when content was \emph{empty}. gpt-oss-120b often
+returns a short content string alongside a long hidden reasoning trace:
+verified live, one request returned 17 characters of content and 546 of
+reasoning, which our logger would record as the 17 characters while the flag
+meant to document the substitution stayed false.
 
-Flagging any message whose visible characters per second of latency falls far
+Flagging messages whose visible characters per second of latency falls far
 below the corpus norm, \textbf{$84.6\%$ of gpt-oss Arm~B messages are
 affected and $97.4\%$ of its first passes contain at least one}; the
 documented flag reports $5.7\%$. gemma-4 and Llama-3.3 are essentially
 unaffected ($0.7$--$5.0\%$), so the defect sits in exactly the cell where
 byte duplication fires. Restricting to first passes whose three messages all
 clear a visibility threshold yields no stable estimate, because the clean
-subsample shrinks with the threshold: $0.630$ at $n=235$ ($\geq5$ ch/s),
-$0.284$ at $n=88$, $0.176$ at $n=34$, $0.083$ at $n=12$ ($\geq50$ ch/s).
+subsample shrinks with it: $0.630$ at $n=235$ ($\geq5$ ch/s), $0.284$ at
+$n=88$, $0.176$ at $n=34$, $0.083$ at $n=12$ ($\geq50$ ch/s).
 
-We draw three conclusions and no fourth. \textbf{No point estimate of
-gpt-oss's true duplication rate is recoverable from this run}; $0.691$ is
-reported throughout as \emph{measured output duplication} with this
-sensitivity attached. \textbf{Byte-identical outputs may not be glossed as
-``the agents did the same work''} --- with the reasoning discarded we can
-state only that they emitted the same output. And the claims this paper rests
-on are unaffected: accuracy is graded from a final answer that was always
-present, and the functional and adjudicated measures read answer assertions,
-not derivations. The logger now captures reasoning unconditionally; the
-campaign was not re-run (\S\ref{sec:limitations}).
+Three conclusions follow and no fourth. \textbf{No point estimate of
+gpt-oss's true duplication rate is recoverable}; $0.691$ is reported
+throughout as \emph{measured output duplication} with this sensitivity
+attached. \textbf{Byte-identical outputs may not be glossed as ``the agents
+did the same work''} --- with the reasoning discarded we can say only that
+they emitted the same output. And the paper's claims are unaffected: accuracy
+is graded from a final answer that was always present, and the functional and
+adjudicated measures read answer assertions, not derivations. The logger now
+captures reasoning unconditionally; the campaign was not re-run
+(\S\ref{sec:limitations}).
 
 \subsection{Identical organizational loss, opposite consequences}
 \label{subsec:nodegradation}
@@ -203,9 +208,8 @@ anyway.
 \label{subsec:notsingle}
 
 The strongest objection to \S\ref{subsec:nodegradation} is that a setup where
-collapse is free never required multi-agent structure, so the apparent gain
-was an evaluation artifact~\cite{zhang2026rethinking}. We test it rather than
-argue it, against the budget-matched single-agent protocol on the same
+collapse is free never required multi-agent structure~\cite{zhang2026rethinking}.
+We test it against the budget-matched single-agent protocol on the same
 problems (Table~\ref{tab:transition}, lower panel).
 
 A collapsed gpt-oss team beats its own single agent by 2.5 points, interval
@@ -275,11 +279,11 @@ explaining, it is not the accuracy.
 
 The pre-registered manipulation check was that Arm~C would drive \Pone{} ---
 the Planner abstaining from \emph{computation} --- to ${\approx}1.0$.
-\textbf{That objective failed}, because the check named a clause the
-intervention does not enforce: the schema forbids emitting an \emph{answer},
-and nothing in it stops a Planner writing $=1/27$. We re-designated the
-manipulation check to answer authorship and report the \Pone{} outcome as a
-finding, in that order.
+\textbf{That objective failed}: the check named a clause the intervention
+does not enforce, since the schema forbids emitting an \emph{answer} and
+nothing stops a Planner writing $=1/27$. We re-designated the manipulation
+check to answer authorship and report the \Pone{} outcome as a finding, in
+that order.
 
 The finding is that computation does not move. Under enforcement the
 Planner's evaluated-equation density is $2.80$ and $3.44$ per 1{,}000

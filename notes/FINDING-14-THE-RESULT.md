@@ -62,3 +62,38 @@ place on the collapse axis and spread only on the accuracy axis.
 - the byte-collapse headline number (F13 sensitivity: no point estimate)
 - "the actor that collapses most loses least" (CORRECTION-01)
 - any collapse-vs-role-value ordering claim (no such axis)
+
+---
+
+## Marker-sensitivity audit (2026-09-29, verified by Master)
+
+The functional measure keys on an answer marker, so it must be shown not to
+depend on that choice. Three definitions tested:
+
+| actor / arm | `\boxed` | `\boxed`\|"answer is" | `\boxed`\|"final answer" | spread |
+|---|---|---|---|---|
+| gemma-4 / A | 0.000 | 0.003 | 0.247 | **0.247** |
+| gpt-oss / A | 0.121 | 0.225 | 0.617 | **0.496** |
+| Llama-3.3 / A | 0.000 | 0.041 | 0.533 | **0.533** |
+| **gemma-4 / B** | 0.975 | 0.982 | 0.975 | 0.007 |
+| **gpt-oss / B** | 0.847 | 0.861 | 0.852 | 0.014 |
+| **Llama-3.3 / B** | 0.911 | 0.919 | 0.959 | 0.048 |
+
+**Arm B is essentially marker-independent (spread ≤0.048). Arm A is brittle
+(spread up to 0.533).**
+
+### Consequence, applied to the paper
+- **No absolute Arm A funcColl number may be quoted as a point estimate.** The
+  results table now carries an explicit sensitivity note saying the Arm A
+  column reads as "low", not as a value.
+- **The A-vs-B contrast is unaffected** — it holds in all nine
+  actor × marker cells, with B−A between +0.234 and +0.979.
+- The headline (all actors lose the division of labour in Arm B at 0.85-0.98
+  while accuracy responses differ) rests entirely on the **stable** Arm B side.
+
+### Process note
+The worker chose `\boxed` before testing alternatives and said so plainly —
+it happened to be the best-calibrated against the adjudicated rates (max error
+0.108 vs 0.169 and 0.561), but that was luck rather than method. Recording it
+because the *order* matters: a proxy should be selected by calibration, not
+validated after the fact. The conclusion survives; the procedure is the lesson.

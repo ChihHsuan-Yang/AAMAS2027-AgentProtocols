@@ -2,13 +2,12 @@
 \label{sec:method}
 
 To ask whether organization is load-bearing we vary it in both directions
-from the same baseline: remove it, and enforce it. Everything else is held
-fixed. All arms share three agents, the same interaction order
-(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), the same
-message-passing graph, the same total call budget, the same verifier and
-verifier prompt, the same retry budget, the same decoding parameters
-(temperature $0$, identical \texttt{max\_tokens}), the same stopping rule,
-and the same grading. This is what makes the comparison a test of
+from the same baseline: remove it, and enforce it. All arms share three
+agents, the same interaction order
+(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), message-passing
+graph, total call budget, verifier and verifier prompt, retry budget,
+decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
+stopping rule, and grading. This is what makes the comparison a test of
 organization rather than of scale.
 
 \paragraph{Arm~A --- soft-role \PER{} (control).} Role prompts as ordinarily
@@ -96,17 +95,16 @@ P1--P5 carry a Holm correction.
   explicitly not causal, since both are consequences of one intervention.
 \end{description}
 
-Two things must be stated here rather than in Results, because they concern
-provenance and not findings. \textbf{First, P4 is null} and we report it as
-the failure of the thesis it was written to test. \textbf{Second, the
-A-versus-B contrast that this paper is organized around was pre-registered as
-secondary and exploratory}, not primary. It is labeled post-hoc everywhere it
-appears, and its importance does not change its provenance. Additionally, the
-pre-registered P1 manipulation objective --- that enforcement would drive
-Planner computation-abstention to ${\approx}1.0$ --- \textbf{failed}, because
-the check named a clause the intervention does not enforce; the manipulation
-check was re-designated to answer authorship and the failure is reported as
-such in \S\ref{subsec:structnotcog}.
+Two things belong here rather than in Results, because they concern
+provenance. \textbf{First, P4 is null} and we report it as the failure of the
+thesis it was written to test. \textbf{Second, the A-versus-B contrast this
+paper is organized around was pre-registered as secondary and exploratory},
+and is labeled post-hoc everywhere it appears. The pre-registered P1
+manipulation objective --- that enforcement would drive Planner
+computation-abstention to ${\approx}1.0$ --- also \textbf{failed}, because
+the check named a clause the intervention does not enforce; it was
+re-designated to answer authorship and the failure reported in
+\S\ref{subsec:structnotcog}.
 
 Exclusions were fixed in advance: trajectories that fail to parse are counted
 as incorrect rather than dropped; in Arm~C the regenerated message is the one
