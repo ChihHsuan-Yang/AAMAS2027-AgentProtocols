@@ -822,3 +822,63 @@ This does not change the D14 functional-collapse conclusion, which is not an
 accuracy contrast. It does mean **no accuracy claim in this study is resolvable
 above scorer noise** — which should be stated as a limitation in its own right,
 not buried beside the B-A table.
+
+## 2026-09-29 19:50 — D19. "Arm B collapse" is TWO different behaviours under one label, and the third actor is what exposes it
+
+### The proxy is really a planner-abstention measure — and it duplicates P1a
+
+Decomposing D14's `frac_ALL3_boxed` by role shows the executor is at ceiling in
+both arms (0.885-1.000) and the entire A-vs-B signal is carried by the
+**planner**:
+
+| actor | arm | planner boxed | executor | reviewer |
+|---|---|---|---|---|
+| Llama-3.3 | A | **0.000** | 1.000 | 0.498 |
+| Llama-3.3 | B | **0.896** | 0.981 | 0.964 |
+| gemma-4 | A | **0.000** | 0.969 | 0.779 |
+| gemma-4 | B | **0.969** | 0.992 | 1.000 |
+| gpt-oss | A | **0.190** | 0.885 | 0.801 |
+| gpt-oss | B | **0.885** | 0.930 | 0.958 |
+
+So it measures "did the planner abstain from answering", which is the project's
+existing **P1a**, inverted. I should have found that before naming a new metric.
+
+**It does NOT inherit P1a's length confound** (FINDING-09: P1a is absence-based,
+so short messages score as compliant). Mine is presence-based: within each
+actor x arm the rate is flat across planner-length buckets (Llama B 0.891 at
+2k+ vs 0.908 at 500-2k; gemma-4 B 0.952 vs 1.000). A long Arm B planner still
+boxes. So it is a length-robust complement to P1a, not a re-run of it.
+
+### THE FINDING — one label, two mechanisms
+
+Arm B planner message length, corrected 400-problem set:
+
+| actor | n | median planner chars | frac < 500 |
+|---|---|---|---|
+| **gpt-oss-120b** | 356 | **42** | **0.716** |
+| gemma-4-31B | 359 | 2,390 | 0.014 |
+| Llama-3.3-70B | 309 | 2,913 | 0.010 |
+
+gpt-oss's Arm B planner emits a bare `\boxed{x} [Agree]` — F08's total collapse,
+median 42 characters. gemma-4's and Llama-3.3's Arm B planners write **full
+independent solutions ~2,400-2,900 characters long** and then box an answer.
+
+Both score ~0.9 on the functional proxy and both are "no division of labour" to
+the adjudicator, but they are not the same phenomenon:
+- **gpt-oss**: the planner stops working and rubber-stamps. Degenerate.
+- **gemma-4 / Llama-3.3**: the planner does the *executor's* job in full.
+  Redundant duplication of labour, not absence of it.
+
+This is why the byte metric fired at 0.846 for gpt-oss and 0.000-0.005 for the
+other two: byte-identity only detects the *rubber-stamp* variant. It was never
+measuring a general phenomenon; it was measuring gpt-oss's specific failure
+mode. The adjudication's recall problem (0.343) has the same root.
+
+**The third actor's real contribution.** Not a point on a collapse-vs-accuracy
+plane. Llama-3.3 sits with gemma-4 on the duplication variant, establishing
+that gpt-oss's rubber-stamping is **the minority behaviour — 1 of 3 actors**,
+not the norm the headline generalized from.
+
+**Report requirement:** any "collapse rate" table must split these two, e.g. by
+median planner length or a <500-char rubber-stamp flag. Pooling them and
+quoting one rate is what produced the withdrawn headline.
