@@ -746,3 +746,46 @@ Every contrast collapses toward zero with a CI spanning it. The -0.0617 was a
    incumbents', and let the full matched set be the only accuracy comparison.
 3. The functional-collapse finding (D14) is untouched: it does not depend on
    accuracy base, and it is measured on the full matched set.
+
+## 2026-09-29 19:15 — D18. Grader noise floor measured at ~4%, and a possible self-favouring signal that needs a proper test
+
+**Method (free control).** When two actors submit a byte-identical
+`final_answer` on the same problem in the same arm, the evaluator should return
+the same verdict. Disagreement there is grader inconsistency, independent of
+actor skill. 329 such pairs on the corrected 400-problem set, Arm A.
+
+**Noise floor: 13/329 = 3.95%** of identical-answer pairs are graded
+differently. Directly comparable to the 9.35% finalizer nondeterminism recorded
+on the GTT project — same phenomenon, this scorer, this benchmark.
+
+**Worked example — the same string graded both ways.** `omni2_2877`: all three
+actors submit `218`; gemma-4 PASS, gpt-oss PASS, Llama-3.3 FAIL. `omni2_2`: all
+three submit `1`; gpt-oss PASS, Llama-3.3 PASS, gemma-4 FAIL. Temperature is 0.
+
+**A directional signal I cannot yet call bias.** The evaluator is
+`openai/gpt-oss-120b`, which is also one of the actors (R-10, listed UNTESTED
+in CLAIM_STATUS). Among identical-answer disagreements involving gpt-oss, it is
+graded correct in **8 of 9** (two-sided binomial p = 0.039). The control is what
+makes this interesting: between the two **non-grader** actors the asymmetry is
+absent (3 vs 1, p = 0.625).
+
+**I nearly mislabelled this.** My script printed "-> no evidence of
+self-favouring" next to p = 0.039. The verdict string was hardcoded, not
+derived from the statistic. Right number, wrong stated conclusion — the harder
+error to catch, because the number is correct and only the sentence is wrong.
+
+**Why it is not yet a finding.** n = 9 is tiny; one reclassified item moves p
+across 0.05. The evaluator sees the derivation, not only the final answer, so
+identical answers with different reasoning *can* legitimately differ. And 9
+disagreements is the same order as the 4% noise floor, so this may be noise
+that happened to land one way.
+
+**Required before any claim (do not report R-10 as tested on this):** re-grade
+a fixed set of identical (answer, derivation) pairs K times under the same
+scorer, with actor identity stripped, and compare pass rates. That isolates
+grader nondeterminism from actor identity. Not run.
+
+**What IS reportable now:** a measured ~4% grader noise floor. Any accuracy
+difference smaller than that is inside scorer noise — which includes **every
+B-A contrast in this study** (largest |B-A| = 0.040). State this beside the
+B-A table, not in a footnote.
