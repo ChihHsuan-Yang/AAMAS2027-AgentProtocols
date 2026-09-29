@@ -257,3 +257,88 @@
   primaryClass = {cs.LG},
   doi          = {10.48550/arXiv.2604.03809}
 }
+
+% ---------------------------------------------------------------------------
+% Recovery / self-correction / lock-in literature.
+% Every entry below was verified on 2026-09-29 by fetching the arXiv abstract
+% page (title + author list read from citation_title / citation_author meta
+% tags). huang2024selfcorrect was additionally checked against the full text:
+% its Table 2 oracle condition IMPROVES accuracy (GSM8K 75.9->84.3) and the
+% 74.7% figure we cite is the ANSWER-RETENTION rate from Sec 3.3, NOT the
+% round-2 accuracy that coincidentally shares the same digits in Table 3.
+% ---------------------------------------------------------------------------
+
+@inproceedings{huang2024selfcorrect,
+  author       = {Huang, Jie and Chen, Xinyun and Mishra, Swaroop and
+                  Zheng, Huaixiu Steven and Yu, Adams Wei and Song, Xinying
+                  and Zhou, Denny},
+  title        = {Large Language Models Cannot Self-Correct Reasoning Yet},
+  booktitle    = {International Conference on Learning Representations},
+  year         = {2024},
+  eprint       = {2310.01798},
+  archivePrefix= {arXiv}
+}
+
+@article{jiang2026exactfeedback,
+  author       = {Jiang, Haitong and Liu, Chunlin and Wang, Yile and Feng, Yuhong},
+  title        = {Exact Feedback Is Not Control: Evaluating Text-based
+                  Closed-Loop Revision in {LLM}s},
+  journal      = {arXiv preprint arXiv:2609.28150},
+  year         = {2026},
+  eprint       = {2609.28150},
+  archivePrefix= {arXiv}
+}
+
+@article{stechly2024selfverification,
+  author       = {Stechly, Kaya and Valmeekam, Karthik and Kambhampati, Subbarao},
+  title        = {On the Self-Verification Limitations of Large Language
+                  Models on Reasoning and Planning Tasks},
+  journal      = {arXiv preprint arXiv:2402.08115},
+  year         = {2024},
+  eprint       = {2402.08115},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{liang2024divergent,
+  author       = {Liang, Tian and He, Zhiwei and Jiao, Wenxiang and Wang, Xing
+                  and Wang, Yan and Wang, Rui and Yang, Yujiu and Shi, Shuming
+                  and Tu, Zhaopeng},
+  title        = {Encouraging Divergent Thinking in Large Language Models
+                  through Multi-Agent Debate},
+  booktitle    = {Proceedings of EMNLP},
+  year         = {2024},
+  eprint       = {2305.19118},
+  archivePrefix= {arXiv}
+}
+
+@article{oh2026entrenchment,
+  author       = {Oh, Jihwan and Jeong, Minchan and Ko, Jongwoo and Yun, Se-Young},
+  title        = {From Belief Entrenchment to Robust Reasoning in {LLM} Agents},
+  journal      = {Transactions of the Association for Computational Linguistics},
+  year         = {2026},
+  eprint       = {2503.16814},
+  archivePrefix= {arXiv}
+}
+
+@article{kamoi2024when,
+  author       = {Kamoi, Ryo and Zhang, Yusen and Zhang, Nan and Han, Jiawei
+                  and Zhang, Rui},
+  title        = {When Can {LLM}s Actually Correct Their Own Mistakes?
+                  A Critical Survey of Self-Correction of {LLM}s},
+  journal      = {Transactions of the Association for Computational Linguistics},
+  volume       = {12},
+  pages        = {1417--1440},
+  year         = {2024},
+  eprint       = {2406.01297},
+  archivePrefix= {arXiv}
+}
+
+@article{yang2026contamination,
+  author       = {Yang, Zhanfu},
+  title        = {Why Retrying Fails: Context Contamination in {LLM}
+                  Agent Pipelines},
+  journal      = {arXiv preprint arXiv:2605.08563},
+  year         = {2026},
+  eprint       = {2605.08563},
+  archivePrefix= {arXiv}
+}

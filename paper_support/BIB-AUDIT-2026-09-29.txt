@@ -1,0 +1,26 @@
+OK   orogat2026architectural        2602.03128   title_match=True author_match=True
+OK   canedo2026architecture         2608.21747   title_match=True author_match=True
+OK   dylan2026equal                 2609.04217   title_match=True author_match=True
+OK   cemri2025why                   2503.13657   title_match=True author_match=True
+OK   cao2026modules                 2607.21627   title_match=True author_match=True
+OK   stettler2026progressive        2609.28693   title_match=True author_match=True
+OK   ge2026roles                    2605.28433   title_match=True author_match=True
+OK   barrak2025traceability         2510.07614   title_match=True author_match=True
+OK   jiang2026confidence            2609.27822   title_match=True author_match=True
+OK   yang2026protocol               2608.14927   title_match=True author_match=True
+OK   yang2026precise                2607.15388   title_match=True author_match=True
+OK   zhang2026rethinking            2609.05933   title_match=True author_match=True
+OK   dochkina2026drop               2603.28990   title_match=True author_match=True
+OK   chen2026agentslimming          2605.08813   title_match=True author_match=True
+OK   yu2026bottleneck               2607.16133   title_match=True author_match=True
+OK   kandoussi2026whoami            2604.00026   title_match=True author_match=True
+OK   patel2026representational      2604.03809   title_match=True author_match=True
+OK   huang2024selfcorrect           2310.01798   title_match=True author_match=True
+OK   jiang2026exactfeedback         2609.28150   title_match=True author_match=True
+OK   stechly2024selfverification    2402.08115   title_match=True author_match=True
+OK   liang2024divergent             2305.19118   title_match=True author_match=True
+OK   oh2026entrenchment             2503.16814   title_match=True author_match=True
+OK   kamoi2024when                  2406.01297   title_match=True author_match=True
+OK   yang2026contamination          2605.08563   title_match=True author_match=True
+
+SUMMARY: 0 problem entries

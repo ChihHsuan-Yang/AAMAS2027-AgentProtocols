@@ -105,17 +105,17 @@ We report rather than quietly repair a defect that constrains the duplication
 measure. Our runner logged each response's \texttt{content} and fell back to
 \texttt{reasoning} only when content was \emph{empty}; gpt-oss-120b often
 returns a short content string alongside a long hidden reasoning trace (one
-request, verified live, returned 17 characters of content and 546 of
-reasoning), so the derivation was discarded while the flag meant to document
-the substitution stayed false. Flagging messages whose visible characters per
-second of latency falls far below the corpus norm, \textbf{$84.7\%$ of
-gpt-oss Arm~B messages are affected and $97.3\%$ of its first passes contain
-at least one}; the documented flag reports $5.7\%$. gemma-4 and Llama-3.3 are
-essentially unaffected ($0.7$--$5.0\%$), so the defect sits in exactly the
-cell where byte duplication fires. Restricting to first passes whose three
-messages all clear a visibility threshold yields no stable estimate, the
-clean subsample shrinking with it: $0.614$ at $n=241$ ($\geq5$ ch/s), $0.278$
-at $n=90$, $0.171$ at $n=35$, $0.083$ at $n=12$ ($\geq50$ ch/s).
+verified request returned 17 characters of content and 546 of reasoning), so
+the derivation was discarded while the flag documenting the substitution
+stayed false. Flagging messages whose visible characters per second of
+latency falls far below the corpus norm, \textbf{$84.7\%$ of gpt-oss Arm~B
+messages are affected and $97.3\%$ of its first passes contain at least one};
+the documented flag reports $5.7\%$. gemma-4 and Llama-3.3 are essentially
+unaffected ($0.7$--$5.0\%$), so the defect sits in exactly the cell where
+byte duplication fires. Restricting to first passes whose three messages all
+clear a visibility threshold yields no stable estimate, the clean subsample
+shrinking with it: $0.614$ at $n=241$ ($\geq5$ ch/s) through $0.083$ at
+$n=12$ ($\geq50$ ch/s).
 
 Three conclusions follow and no fourth. \textbf{No point estimate of
 gpt-oss's true duplication rate is recoverable}; $0.690$ is reported
@@ -270,15 +270,15 @@ making it stop doing the work.}
 \subsection{Mechanism: roles are load-bearing for recovery, not for solving}
 \label{subsec:mechanism}
 
-If both actors lose the same organization, the difference in cost has to come
-from somewhere else. Decomposing each actor's B$-$A into first-submission
-success and recovery after a failed submission, paired on the same problems,
-locates it. Removing roles costs gemma-4 essentially nothing on problems it
-solves outright --- its first-submission rate moves $0.804 \rightarrow 0.804$
-($n=1{,}318$). What changes is what happens after a wrong first answer, where
-its recovery falls $0.202 \rightarrow 0.050$. gpt-oss also loses recovery
-($0.341 \rightarrow 0.242$) but gains first-pass ($0.720 \rightarrow 0.766$,
-$n=1{,}310$), and the two roughly cancel --- which is the shape of its null.
+If both actors lose the same organization, the difference in cost comes from
+somewhere else. Decomposing each actor's B$-$A into first-submission success
+and recovery after a failed submission, paired on the same problems, locates
+it. Removing roles costs gemma-4 nothing on problems it solves outright
+($0.804 \rightarrow 0.804$, $n=1{,}318$); what changes is what follows a wrong
+first answer, where recovery falls $0.202 \rightarrow 0.050$. gpt-oss also
+loses recovery ($0.341 \rightarrow 0.242$) but gains first-pass
+($0.720 \rightarrow 0.766$, $n=1{,}310$), and the two roughly cancel --- the
+shape of its null.
 
 What differs is whether the team can disagree with itself. In Arm~B, on first
 passes where all three agents state an answer, gemma-4 is unanimous in
@@ -295,12 +295,31 @@ wrong consensus.}
 \end{quote}
 
 This also explains \S\ref{subsec:p4null}: enforcement restores who may speak,
-not whether the agents \emph{differ}. Three caveats bound the claim. Recovery is
-conditioned on needing a retry, which is post-treatment, so this is a
-decomposition and not a causal mediation. The conditioning set is not matched
-across arms --- in Arm~A, $59\%$ (gemma-4) and $22\%$ (gpt-oss) of failed
-first submissions were never retried before the round budget ran out, against
-$0\%$ and $2\%$ in Arm~B --- so the A-side denominators are a selected subset
-and their level is not an unconditional recovery probability. And the retry
-loop is oracle-gated, so ``recovery'' means recovery \emph{with} an oracle
-signal.
+not whether the agents \emph{differ}.
+
+\paragraph{Not fewer chances --- fewer uses of them.}
+Every arm runs the same six deliberation cycles, and the evaluator fires only
+on Reviewer approval, so evaluator calls count \emph{submissions}, not
+opportunities. Cycle spend is near-identical ($5.5$ vs $5.8$, gemma-4,
+first-pass-wrong); what differs is its use. Arm~B converts almost every cycle
+into a submission ($5.82$ of $5.84$); Arm~A submits $1.53$ times and spends
+$4.01$ cycles revising. In $98.5\%$ of gemma-4's Arm~B trajectories the
+Reviewer never once declines to submit, against $5.3\%$ in Arm~A, and at full
+spend the answer is never revised at all in $0.866~[0.823,0.906]$ of Arm~B
+against $0.353~[0.294,0.417]$ of Arm~A.
+
+\paragraph{Caveats.}
+Conditioning on needing a retry --- and on cycles or context below --- is
+post-treatment, so this is a decomposition, not a causal mediation. The
+conditioning set is unmatched: in Arm~A, $59\%$ (gemma-4) and $22\%$ (gpt-oss)
+of failed first submissions were never \emph{resubmitted} before the budget
+ran out, against $0\%$ and $2\%$ in Arm~B, so A-side levels are not
+unconditional recovery probabilities. Every trajectory in every cell did
+receive further cycles. Accumulated context is a real competing driver
+\cite{yang2026contamination}: within Arm~A alone gpt-oss recovery falls
+$0.702 \rightarrow 0.061$ across context terciles. It does not account for the
+arm gap, which survives context matching in the lower quartiles ($0.649$ vs
+$0.148$, gemma-4; $0.694$ vs $0.236$, gpt-oss) --- but in gpt-oss's top
+quartile the ordering \emph{reverses} ($0.072$ vs $0.167$): where context is
+longest, Arm~A's own contamination costs more than roles return. Finally the
+loop is oracle-gated: no cell recovers before the first oracle verdict.

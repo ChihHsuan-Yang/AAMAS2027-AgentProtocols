@@ -703,3 +703,46 @@ gemma-4 Arm B. The functional proxy is flat within every actor x arm:
 So the high Arm B rate is a property of the arm, not of long trajectories, and
 Llama-3.3's 0.907 is not an artifact of it emitting ~2x more messages. This was
 the specific way the byte metric misled, and the proxy does not repeat it.
+
+## 2026-09-29 18:55 — D17. The actors cannot be matched on headroom, and a subgroup B-A I computed was a selection artifact
+
+Following D16's finding that Llama-3.3 runs on a ~0.36 Arm A base vs ~0.80 for
+both incumbents, I tried to put them on comparable footing.
+
+**Headroom cannot be equalized by subsetting.** Restricting the incumbents to
+the problems Llama got wrong in Arm A still leaves them at base 0.741 / 0.772 —
+nowhere near Llama's 0.365. The actors are too far apart in capability on this
+benchmark for a matched-headroom comparison to exist in this data.
+
+**And that subset produced a result I nearly reported.** On it:
+
+| actor | n | base | B-A |
+|---|---|---|---|
+| gpt-oss | 162 | 0.741 | +0.0494 [-0.0062,+0.1049] |
+| gemma-4 | 162 | 0.772 | **-0.0617 [-0.1173,-0.0123]** |
+
+A CI excluding zero, and the two incumbents diverging *more* on harder problems.
+That is a publishable-looking claim.
+
+**It does not survive a neutral selector.** The subset was defined by *Llama's*
+Arm A outcome. That is not arm-neutral: it selects problems by difficulty, and
+difficulty can interact with the manipulation. Re-running with a selector
+unrelated to the actor being measured — the OTHER incumbent's Arm A failures:
+
+| target | selector | n | base | B-A |
+|---|---|---|---|---|
+| gemma-4 | gpt-oss wrong | 69 | 0.449 | +0.0000 [-0.1014,+0.1014] |
+| gpt-oss | gemma-4 wrong | 61 | 0.377 | -0.0164 [-0.1475,+0.1148] |
+| Llama-3.3 | gpt-oss wrong | 44 | 0.045 | +0.0227 [+0.0000,+0.0682] |
+| Llama-3.3 | gemma-4 wrong | 39 | 0.051 | +0.0000 [+0.0000,+0.0000] |
+
+Every contrast collapses toward zero with a CI spanning it. The -0.0617 was a
+**selected-subgroup artifact**, not a hard-problem effect.
+
+**Consequences.**
+1. Do not report a hard-problem B-A divergence. It does not replicate under a
+   selector independent of the measured actor.
+2. State plainly that the third actor's B-A cannot be headroom-matched to the
+   incumbents', and let the full matched set be the only accuracy comparison.
+3. The functional-collapse finding (D14) is untouched: it does not depend on
+   accuracy base, and it is measured on the full matched set.

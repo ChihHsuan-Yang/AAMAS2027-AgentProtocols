@@ -1,23 +1,36 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Organization and multi-agent computation turn out to be separable, and
-measuring the organization does not tell you which carries the load. Deleting
-every role instruction destroys the functional division of labor in all three
-actors tested ($0.846$--$0.975$ of first pipeline passes become three
-independent solvers), and one loses accuracy while the others do not;
-enforcing the organization architecturally completes the picture from the
-other side, driving answer-authorship compliance to $1.000$ while accuracy
-moves nowhere and our pre-registered primary test is null. Two guards keep
-this from overreaching: a collapsed team still beats its budget-matched
-single agent ($+0.0247$), and the actor that loses accuracy loses 3 points
---- refuting ``multi-agent systems are just single agents'' and ``roles do
-not matter'' alike, from our own data. The defensible claim is narrower: role
-\emph{differentiation} is load-bearing for one actor and redundant
-\emph{computation} for another, role removal leaving the vulnerable actor's
-first-submission rate unchanged while costing it recovery.
+Organization and multi-agent computation are separable, and measuring the
+organization does not tell you which carries the load. Deleting every role
+instruction destroys the functional division of labor in all three actors
+($0.846$--$0.975$ of first pipeline passes become three independent solvers)
+while first-pass accuracy is unchanged or improves --- a parity consistent
+with prior role ablations~\cite{dylan2026equal,orogat2026architectural}. The
+cost appears only after a wrong answer, and not because the role-free team is
+stopped early: it holds the same six-cycle budget, submits on almost every
+cycle rather than revising, and at full spend never revises its answer at all
+in $0.866$ of trajectories against $0.353$ under roles. What roles preserve is
+the production of a second distinct candidate.
 
-The measurement lesson travels with the result. \textbf{Whether an
+This sharpens a known limit rather than discovering one. That models restate
+answers under correction is Degeneration-of-Thought~\cite{liang2024divergent},
+and it persists under complete external
+feedback~\cite{jiang2026exactfeedback,stechly2024selfverification}; the
+standard remedy prescribed for it is multi-agency. Our result inverts that
+prescription --- a multi-agent system without role differentiation does not
+escape it --- and makes the effect a matter of degree rather than kind. Oracle
+self-correction is worth $+8.4$ points to a single
+agent~\cite{huang2024selfcorrect}; the same oracle loop is worth $+4.1$ points
+to our role-labeled team and $+0.9$ to the same team with the labels removed.
+Role structure is a control variable on what an external correctness signal
+can buy.
+
+Two guards keep this from overreaching: a collapsed team still beats its
+budget-matched single agent ($+0.0247$), and our pre-registered primary test
+was null --- refuting ``multi-agent systems are just single agents'' and
+``roles do not matter'' alike, from our own data. \textbf{Whether an
 organization is load-bearing cannot be read off how much visible
 differentiation an intervention destroys}: it has to be measured on the
-outcome, with an instrument shown to see the failure it is meant to detect.
+outcome, at the phase where it acts, with an instrument shown to see the
+failure it is meant to detect.
