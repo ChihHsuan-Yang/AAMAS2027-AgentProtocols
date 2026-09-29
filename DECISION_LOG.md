@@ -882,3 +882,88 @@ not the norm the headline generalized from.
 **Report requirement:** any "collapse rate" table must split these two, e.g. by
 median planner length or a <500-char rubber-stamp flag. Pooling them and
 quoting one rate is what produced the withdrawn headline.
+
+## 2026-09-29 20:20 — D20. RETRACTION: my grader-noise control keyed on the wrong field. D18 and its addendum are withdrawn.
+
+Coordinator raised this; I verified every claim independently against the code
+and the JSONL before accepting it. All of it holds.
+
+### The defect
+
+`runner.py:886-887`:
+
+    traj.final_answer = current_answer   # last answer the team HELD
+    traj.correct      = last_correct     # grade of the last answer SUBMITTED
+
+The evaluator never reads `final_answer`. It grades
+`evaluator_history[i].candidate`, and its prompt is
+`fill(EVALUATOR_PREPEND, task_description, solution=candidate, result=gold)`
+(runner.py:774-775) — problem + candidate + gold, **no derivation, no arm, no
+actor**. So for a fixed (problem, candidate) the prompt is byte-identical at
+temperature 0 and any disagreement is pure nondeterminism.
+
+I keyed my control on `final_answer`. Measured: it differs from the string
+actually graded in **218/3274 = 6.7%** of trajectories. So I was pairing
+gradings of *different strings* and scoring their legitimate disagreement as
+scorer noise.
+
+### What I verified, independently
+
+| statistic | my key (`final_answer`) | correct key (`candidate`) |
+|---|---|---|
+| noise floor | 0.0365 (arm A) | **19/12,150 = 0.0016** |
+| arm A | 13/356 = 0.0365 | 0/460 = 0.0000 |
+| arm B | 1/353 = 0.0028 | 14/5,201 = 0.0027 |
+| arm C | 21/392 = 0.0536 | 0/671 = 0.0000 |
+| Fisher A vs B | p = 0.0017 | **p = 0.6216** |
+
+**Proof it was measuring the scoring defect, not the grader:** of my 35
+same-arm discordant pairs, **34 (97.1%) involve a row whose `final_answer`
+differs from the graded string** — base rate 6.7%, so **14.6x enriched**.
+Per arm: A 13/13, C 21/21, B 0/1. Arms A and C were 100% this defect.
+
+**Arm B's "quietness" was structural, not low noise.** The mismatch rate by arm
+is A 0.046 / B 0.008 / C 0.156 — the same rank order as my bogus noise floor.
+Arm B rarely revises after submitting, so it *cannot* exhibit the defect. I
+measured revision behaviour and called it scorer noise: the same variable twice.
+
+My length control was sound and the asymmetry did survive it. It was simply not
+the confound at work — a reminder that surviving one control is not survival.
+
+### Three retractions
+
+1. **"No accuracy claim in this study is resolvable above scorer noise."**
+   WITHDRAWN. The floor is ~0.0016-0.0023 with no arm difference. The largest
+   |B-A| is well above it, and symmetric noise attenuates toward zero and is
+   already inside the bootstrap CIs.
+2. **Per-arm noise asymmetry (13x, p=0.0017).** WITHDRAWN. p=0.62 on the
+   correct key; arm A is not the noisy arm.
+3. **gpt-oss self-favouring (8/9, p=0.039).** WITHDRAWN. On the correct key it
+   is **0 vs 8 the other way**. Mechanism is exposure: gpt-oss takes 5.50
+   gradings per discordant key vs 2.00 (Llama) and 2.67 (gemma-4) — more draws,
+   more chances to lose one. R-10 remains UNTESTED.
+
+### D19 correction — gpt-oss's short planner is UNINSTRUMENTED, not degenerate
+
+I called it "rubber-stamping (degenerate)". Wrong, and it is the actor with the
+known F13 hidden-reasoning logging defect. The 623 gpt-oss Arm B planner
+messages under 500 chars have **median 32 chars but median 22.5 s latency =
+2.0 chars/sec**, against 165 chars/sec for the same actor's long messages.
+`finish_reason=stop` in 621/623 (not truncation) and `used_reasoning_fallback`
+is **False in all 623**. The model generated for 22 seconds; our logger kept 32
+characters.
+
+Control — low chars/sec is specific to this actor, not a property of short
+messages: planner messages under 20 chars/sec are **gpt-oss 620/2486 (24.9%)**
+vs gemma-4 6/2259 (0.3%) and Llama-3.3 98/4699 (2.1%).
+
+**Corrected D19 split:** not "two model behaviours" but
+**observed duplication (gemma-4, Llama-3.3 — 2 of 3)** vs
+**instrument failed (gpt-oss — 1 of 3)**. The third-actor point survives and is
+stronger: Llama-3.3 joins gemma-4, so gpt-oss is the minority pattern — and
+part of what made it look distinctive is our own logging, not the model.
+
+**Standing corrections to the final report:** rebuild every grader-noise
+statistic on `evaluator_history.candidate` (keep runtime recomputation); report
+the floor with its construction stated; drop the asymmetry and self-favouring
+claims; present gpt-oss's short planner as uninstrumented, never as a behaviour.
