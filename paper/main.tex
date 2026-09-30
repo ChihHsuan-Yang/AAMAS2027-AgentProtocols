@@ -75,18 +75,23 @@ snapshot.
 Removing roles destroys the division of labor in all three actors: the rate at
 which every agent independently asserts its own final answer rises from
 $0.000$--$0.120$ to $0.846$--$0.976$, with the planner carrying the entire
-signal. A blinded, rubric-frozen adjudication --- model adjudication, not human
-annotation --- reproduces this, judging the division of labor intact in
-$100\%$ of Arm~A trajectories and absent in $86$--$100\%$ of Arm~B. First-pass
+signal. A rubric-frozen adjudication --- model adjudication, not human
+annotation, and outcome-blind but \emph{not} condition-blind --- concurs as a
+second opinion. First-pass
 accuracy does not follow: it is unchanged for gemma-4 and improves for gpt-oss
 ($+0.050$), a parity consistent with prior role ablations and reported here as
 our control condition. The cost appears only \emph{after} a wrong first
 answer, where recovery collapses ($0.222 \rightarrow 0.051$ gemma-4,
-$0.324 \rightarrow 0.249$ gpt-oss; Llama-3.3 recovers at $0.015$ in both arms,
-a floor effect that does not replicate the result). The role-free team is not
+$0.324 \rightarrow 0.249$ gpt-oss). For gemma-4 first-pass accuracy is equal
+to four decimals, so that recovery contrast is an exact reparameterization of
+the intent-to-treat effect rather than a post-treatment conditional.
+Llama-3.3 recovers at $0.015$ in both arms --- a genuine null specific to the
+role manipulation, since enforcement moves the same actor's recovery to
+$0.139$. The role-free team is not
 stopped early --- it holds the same six cycles and spends $5.80$ of $5.83$ on
-resubmission rather than revision. Architectural enforcement restores both
-organization and recovery but not final accuracy, and costs $8$--$17\%$
+resubmission rather than revision. Architectural enforcement restores
+organization and un-freezes answers, restores recovery in Llama-3.3, and
+restores final accuracy in none, at $8$--$17\%$
 attrition; our preregistered primary test is null. Role structure is
 load-bearing for recovering from a wrong answer, not for producing the first
 one.

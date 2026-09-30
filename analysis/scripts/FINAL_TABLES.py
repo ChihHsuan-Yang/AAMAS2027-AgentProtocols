@@ -960,6 +960,13 @@ for a in ACTORS:
 
         d = dict(actor=a, arm=arm, n=len(s), n_graded=len(g), n_ungraded=ungraded,
                  attrition=ungraded / len(s), n_unjudged=len(unjudged),
+                 # n_judged is the DENOMINATOR OF THE FIRST-PASS RATE and is
+                 # NOT n_graded: a trajectory can receive a first verdict and
+                 # then die in regeneration. Exported explicitly because a
+                 # figure that labels a first-pass bar with n_graded prints
+                 # the corrected rate beside the stale survivorship
+                 # denominator, making its own arithmetic fail to check.
+                 n_judged=len(j28),
                  firstpass=fpm, firstpass_lo=fplo, firstpass_hi=fphi,
                  recovery=rcm, recovery_lo=rclo, recovery_hi=rchi, n_fpw=len(fpw),
                  final_prereg=float(np.mean([fin_prereg(r) for r in s])),

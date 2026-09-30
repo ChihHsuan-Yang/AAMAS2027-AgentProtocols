@@ -406,6 +406,6 @@ Llama-3.3-70B-Instruct    +0.0025  [-0.0325,+0.0375]    [-0.0350,+0.0400]    NOT
     gpt-oss-120b|C                  357 ->  280 ->  262 ->  141   (recovered outside funnel: 0)
   mechanical (functional collapse, first pass): Llama-3.3-70B-Instruct|A=0.000  Llama-3.3-70B-Instruct|B=0.872  gemma-4-31B-it|A=0.000  gemma-4-31B-it|B=0.976  gpt-oss-120b|A=0.120  gpt-oss-120b|B=0.846
   wrote /Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/analysis/out/FIGDATA.json
-  sha256(FIGDATA.json)[:16] a023c92c9f070afa
+  sha256(FIGDATA.json)[:16] da87298b4dbf19fd
 
 ================================================================================================

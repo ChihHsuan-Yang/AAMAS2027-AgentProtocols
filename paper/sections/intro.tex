@@ -28,15 +28,20 @@ is load-bearing for recovering from a wrong one.} Deleting every role
 instruction (Arm~B) destroys the division of labor in all three actors we
 tested --- the rate at which every agent independently asserts its own final
 answer goes from $0.000$--$0.120$ to $0.846$--$0.976$, with the planner
-carrying the whole signal, and a blinded rubric-frozen adjudication agrees.
+carrying the whole signal; a rubric-frozen adjudication concurs as a second
+opinion, and we report below why its blinding is partial.
 First-pass accuracy does not follow: it is unchanged for gemma-4 and
-\emph{improves} for gpt-oss. That parity is not our finding; it replicates a
-published null~\cite{dylan2026equal,orogat2026architectural} and we report it
-as our control condition. The cost appears only after a wrong first answer,
-where recovery falls $0.222 \rightarrow 0.051$ for gemma-4 and
-$0.324 \rightarrow 0.249$ for gpt-oss. Llama-3.3 recovers at $0.015$ in both
-arms --- a floor effect at $0.307$ first-pass accuracy, reported as such,
-which does not replicate the recovery result.
+\emph{improves} for gpt-oss. That parity is not our finding; it is consistent
+with a published null~\cite{dylan2026equal,orogat2026architectural} and we
+report it as our control condition. The cost appears only after a wrong first
+answer, where recovery falls $0.222 \rightarrow 0.051$ for gemma-4 and
+$0.324 \rightarrow 0.249$ for gpt-oss. For gemma-4 the two arms' first-pass
+rates are equal to four decimals, which makes that recovery contrast an exact
+reparameterization of the randomized intent-to-treat effect rather than a
+post-treatment conditional. Llama-3.3 recovers at $0.015$ in both arms and
+does not replicate the recovery result --- \textbf{a genuine null specific to
+the role manipulation, not a floor}: enforcement moves that same actor's
+recovery to $0.139$, so the repair channel exists.
 
 \paragraph{It is not premature stopping.}
 The standing explanation for a team that fails to fix its own error is that it
@@ -54,9 +59,11 @@ it and multi-agency without role differentiation does not escape it.
 
 \paragraph{Neither easy reading of multi-agent computation survives.}
 A collapsed gpt-oss team still beats its own budget-matched single agent
-($+0.0294$ $[+0.0131,+0.0462]$), while gemma-4's team is significantly
+($+0.0294$ $[+0.0131,+0.0456]$), while gemma-4's team is significantly
 \emph{worse} than its own single agent in both arms ($-0.0225$, $-0.0563$) ---
-and gemma-4 is the actor the recovery result rests on. So multi-agent
+and gemma-4 is the actor the recovery result rests on. The two single-agent
+arms come from different source commits, so each direction stands but the gap
+between the actors is not something we quantify. So multi-agent
 computation is not uniformly valuable, and neither ``multi-agent systems are
 just single agents'' nor ``more agents help'' survives our own data.
 
@@ -65,11 +72,16 @@ The symmetric intervention makes the division of labor unrepresentable rather
 than merely requested: the Planner emits an object parsed against a schema
 with no answer field (Arm~C). It works as an organizational manipulation ---
 answer authorship goes to $1.000$, with hundreds of boundary rejections per
-cell --- and it restores recovery ($0.412$/$0.461$/$0.150$, above Arm~A in all
-three actors). It does \emph{not} restore final accuracy, it costs
-$8$--$17\%$ attrition from rejected output, and \textbf{our pre-registered
-primary test of the actor~$\times$~intervention interaction is null.} We keep
-that null visible.
+cell --- and it un-freezes the answer in every actor. Its recovery exceeds
+Arm~A's in all three ($0.314$/$0.395$/$0.139$ against
+$0.222$/$0.324$/$0.014$), but once the trajectories that received a wrong
+first verdict and then died in regeneration are returned to the denominator
+they belong in, \textbf{only Llama-3.3's contrast is resolvable}
+($p=3.8\times10^{-6}$); the other two are directionally consistent and not
+separable from Arm~C's attrition. It does \emph{not} restore final accuracy,
+it costs $8$--$17\%$ attrition from rejected output, and \textbf{our
+pre-registered primary test of the actor~$\times$~intervention interaction is
+null.} We keep that null visible.
 
 \paragraph{Contribution.}
 \begin{enumerate}\itemsep1pt
@@ -79,15 +91,17 @@ that null visible.
   one agent''.
 \item The \textbf{phase dissociation}: role structure is dispensable for
   first-pass solving and load-bearing for recovery, shown in two actors with
-  the third's floor effect reported rather than smoothed.
+  the third's informative null reported rather than smoothed.
 \item A \textbf{refutation of premature stopping} as the mechanism, on
   matched realized budget rather than on submission counts.
 \item A \textbf{structural--functional dissociation from the other side}:
-  architectural enforcement restores organization and recovery completely,
-  final accuracy not at all, with a pre-registered primary null and the
-  attrition that a survivorship reading of it would hide.
+  architectural enforcement restores organization and un-freezes answers,
+  restores recovery in the one actor where attrition permits the test, and
+  restores final accuracy not at all --- with a pre-registered primary null
+  and the attrition that a survivorship reading of it would hide.
 \item A \textbf{measurement result we had to absorb ourselves}: an
-  exact-duplication metric reports $0.000$ collapse for actors a blinded
-  adjudication judges collapsed, and a logging defect leaves one actor's
-  planner uninstrumented --- both reported as bounds on what we may say.
+  exact-duplication metric reports $0.000$ collapse for actors the
+  adjudication judges collapsed, a logging defect leaves one actor's planner
+  uninstrumented, and our own adjudication turns out to leak the condition it
+  was meant to be blind to --- all reported as bounds on what we may say.
 \end{enumerate}

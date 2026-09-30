@@ -41,8 +41,10 @@ length-based --- not a new construct.
 
 \paragraph{Exact output duplication (secondary, a lower bound).} Two or more
 role messages byte-identical, compared as \texttt{sha256} of the raw
-completion before parsing. Precision $1.000$, recall $0.262$ against blinded
-adjudication, so it establishes that at least a given amount of collapse
+completion before parsing. Precision $1.000$, recall $0.262$ against the
+adjudication (a within-item comparison, so unaffected by that
+adjudication's condition leak, \S\ref{subsec:collapse}), so it establishes
+that at least a given amount of collapse
 occurred and is \textbf{never used to compare how much organization two
 actors lost} --- its recall differs by actor.
 

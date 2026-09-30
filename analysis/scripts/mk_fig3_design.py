@@ -85,9 +85,15 @@ def outcome_lines(arm):
     return L
 
 
+# Verdicts must carry ACTOR SCOPE. APPROVED_CLAIMS opens with "actor scope is
+# part of the claim"; A3 is "GEMMA-4 CLEAN; GPT-OSS WEAKER; LLAMA NOT".
+# Unscoped, these were false for one actor each: arm A "repairs" is
+# contradicted by Llama's 0.014, printed two lines above in the same panel;
+# arm B "no repair" asserts more than A3 permits for gpt-oss (0.247, paired
+# p=0.246, which A3 requires be called weaker and not significant).
 VERDICT = {
-    "A": "organized,\nand repairs",
-    "B": "same answers,\nno repair",
+    "A": "organized;\nrepairs (1 of 3)",
+    "B": "same answers;\nrepair falls",
     "C": "organized,\nbut brittle",
 }
 

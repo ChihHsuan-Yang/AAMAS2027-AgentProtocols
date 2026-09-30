@@ -23,8 +23,10 @@ performance~\cite{cao2026modules,yang2026precise}. We claim neither.
 al.~\cite{dylan2026equal} hold total LLM calls fixed and find an evolved
 Planner--Executor--Critic team no better than an evolved single agent
 ($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation.} Our R2
-replicates their null and is presented as our control condition, not as a
-finding. Zhang et
+is presented as our control condition, not as a finding, and it is only a
+\emph{partial} replication of their null: gemma-4 and Llama-3.3 are flat, but
+gpt-oss \emph{improves} by $+0.0503$ with an interval excluding zero, so for
+that actor role deletion is not outcome-neutral on the first pass. Zhang et
 al.~\cite{zhang2026rethinking} argue reported multi-agent gains are setup
 artifacts of structural collapse --- an objection aimed exactly at our Arm~B,
 which is why \S\ref{subsec:notsingle} runs the single-agent control and
@@ -43,7 +45,14 @@ explicit: their
 \textbf{improves} accuracy ($75.9 \to 84.3$ on GSM8K); the \emph{intrinsic}
 condition is the one that degrades, and they separately report the model
 retaining its initial answer $74.7\%$ of the time. Our loop is oracle-gated
-like their oracle condition. \emph{Owned:} the failure, the name, and recovery-after-error as a
+like their oracle condition. Closest to our lever is Chen et
+al.~\cite{chen2026relabeling}, who hold an erroneous claim byte-identical and
+vary only the \emph{role label} it is tagged with, moving explicit-correction
+rate by $23$--$93$pp. That is the strongest published evidence that a role
+label is causal for error correction --- but it is \textbf{single-agent}, its
+roles are chat-template message roles rather than agent personas, and it has
+no recovery conditional, no answer-diversity measure and no budget matching.
+\emph{Owned:} the failure, the name, and recovery-after-error as a
 metric~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
 \textbf{inversion}: multi-agency is the prescribed cure for
 Degeneration-of-Thought, and we show a multi-agent system without role
@@ -85,6 +94,9 @@ contribute.
 \paragraph{Studies of the same trace corpus.} Three prior studies analyze the
 corpus this work instruments~\cite{jiang2026confidence,yang2026protocol,%
 yang2026precise}, and the single-agent control of \S\ref{subsec:notsingle}
-is drawn from its released form. All three are observational; none measures
-whether the specified division of labor is realized, and the controlled arms
-of \S\ref{sec:method} do not exist in that corpus.
+is drawn from its released form. Two are purely observational; the third runs
+within-\PER{} interventions that hold model family, reviewer backbone and
+budget fixed while varying how critique \emph{reaches} the
+solver~\cite{yang2026precise}. \textbf{None manipulates the role structure
+itself}, none measures whether the specified division of labor is realized,
+and the controlled arms of \S\ref{sec:method} do not exist in that corpus.

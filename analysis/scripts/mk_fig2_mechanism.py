@@ -221,7 +221,7 @@ def v3():
     ax.legend(ncol=1, loc="lower right", fontsize=S.FS_LEGEND, handlelength=1.0,
               borderaxespad=0.25)
     fig.text(0.008, 0.988,
-             "Arm B asks again far more often, and\nalmost never has a new answer to give",
+             "Arm B asks again far more often, and\nrarely has a new answer to give",
              fontsize=S.FS_TITLE, ha="left", va="top", color=S.INK, linespacing=1.2)
     off_ = [F[f"{ACTOR}|{a}"]["recovered_outside_funnel"] for a in ARMS]
     fig.text(0.008, 0.006,

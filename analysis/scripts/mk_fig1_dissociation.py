@@ -70,6 +70,15 @@ def err(cells, key):
     return m, np.vstack([m - lo, hi - m])
 
 
+def _joinnames(xs):
+    """Oxford-comma join; used so the footnote names whichever actors the
+    data says are resolvable rather than hardcoding one."""
+    if not xs: return "no"
+    if len(xs) == 1: return xs[0] + "’s"
+    if len(xs) == 2: return xs[0] + " and " + xs[1] + "’s"
+    return ", ".join(xs[:-1]) + " and " + xs[-1] + "’s"
+
+
 def ac_resolvable(a):
     """Is this actor's A-vs-C recovery contrast resolvable at ALPHA?  After the
     denominator correction only one of the three is."""
@@ -92,7 +101,7 @@ def v1():
                                         "top": 0.915, "bottom": 0.150})
     x = np.arange(len(ACTORS), dtype=float)
     w = 0.26
-    for pi, (key, nkey) in enumerate((("firstpass", "n_graded"), ("recovery", "n_fpw"))):
+    for pi, (key, nkey) in enumerate((("firstpass", "n_judged"), ("recovery", "n_fpw"))):
         A = ax[pi]
         tops = {}
         for k, arm in enumerate(ARMS):
@@ -134,10 +143,13 @@ def v1():
                        fontsize=S.FS_ANNOT, color=S.INK, ha="right", va="bottom",
                        arrowprops=dict(arrowstyle="-", lw=0.5, color=S.INK2,
                                        shrinkA=2.0, shrinkB=2.0))
-    fig.text(0.010, 0.017, f"grey digits = cell n, A / B / C.   "
-                           f"arm C hatched: {ATTR_TXT} attrition.\n"
-                           f"Only Llama’s A–C recovery gap is resolvable "
-                           f"(paired); see caption.",
+    _res = [S.ACTOR_SHORT[a].split("\n")[0] for a in ACTORS if ac_resolvable(a)]
+    _tail = " is" if len(_res) == 1 else "s are"
+    fig.text(0.010, 0.017,
+             f"grey digits = cell n, A / B / C.   "
+             f"arm C hatched: {ATTR_TXT} attrition.\n"
+             f"Only {_joinnames(_res)} A–C recovery gap{_tail} resolvable "
+             f"(paired); see caption.",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig1_v1_grouped", S.COLWIDTH_IN)
 
@@ -152,7 +164,7 @@ def v2():
                                         "top": 0.845, "bottom": 0.175})
     xs = np.arange(len(ARMS), dtype=float)
     for j, a in enumerate(ACTORS):
-        for pi, (key, nkey, dec) in enumerate((("firstpass", "n_graded", 2),
+        for pi, (key, nkey, dec) in enumerate((("firstpass", "n_judged", 2),
                                                ("recovery", "n_fpw", 3))):
             A = ax[pi][j]
             cells = [S.cell(a, arm) for arm in ARMS]
@@ -210,7 +222,7 @@ def v3():
                                         "right": 0.984, "top": 0.855, "bottom": 0.285})
     ys = np.arange(len(ACTORS), dtype=float)[::-1]
     for pi, (key, nkey, ttl) in enumerate((
-            ("firstpass", "n_graded", "First-pass accuracy  —  the arms coincide"),
+            ("firstpass", "n_judged", "First-pass accuracy  —  the arms coincide"),
             ("recovery", "n_fpw", "Recovery | first pass wrong  —  the arms diverge"))):
         A = ax[pi]
         for yi, a in zip(ys, ACTORS):

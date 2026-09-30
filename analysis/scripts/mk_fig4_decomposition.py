@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """FIGURE S1 (§19 prototype) -- the outcome decomposition per arm and actor.
 
-    first-pass success + recovered + unrecovered + ungraded = 1
+    first-pass success + recovered + unrecovered + unjudged = 1
 
 This is a PROBABILITY DECOMPOSITION, not a causal equation.  The four bands are
 a partition of the trajectories in a cell, and they sum to n by construction --
