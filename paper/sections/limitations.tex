@@ -5,23 +5,21 @@
 retries sees ground truth, and \textbf{no cell recovers before the first
 oracle verdict}, so every recovery number is recovery \emph{given} a
 ground-truth-informed failure signal --- none of this is unaided
-self-correction. Stop-on-correct censors destructive revision.
+self-correction, and stop-on-correct censors destructive revision.
 
 \paragraph{Two instrument defects, disclosed rather than repaired.} First,
 the \textbf{logging defect} of \S\ref{subsec:logging} bounds two things: no
 point estimate of gpt-oss's duplication rate is recoverable, \emph{and} its
 37-character planner cannot be read as a behavior, so we report it
 uninstrumented rather than abstaining. Second, a \textbf{scoring defect}:
-the runner records the grade of the last answer \emph{submitted} while also
-recording the answer the team last \emph{held}, and these disagree on $17\%$
-of Arm~A and $0\%$ of Arm~B first-pass-wrong trajectories --- an error whose
-size is proportional to how much an arm revises, the behavior our headline
-is about. It runs \emph{against} our claim: recoding the $62$ trajectories
-whose held answer exactly matches gold while recorded wrong (positive
-control: $0$ of $10{,}734$ non-mismatched rows) makes every recovery gap
-wider. We keep the pre-registered outcome as primary because changing it
-after seeing which way it moves is what preregistration exists to
-prevent.
+the runner grades the last answer \emph{submitted} but records the last
+answer \emph{held}, and these disagree on $17\%$ of Arm~A and $0\%$ of
+Arm~B first-pass-wrong trajectories --- an error proportional to how much an
+arm revises, the behavior our headline is about. It runs \emph{against} us:
+recoding the $62$ trajectories whose held answer matches gold while recorded
+wrong (positive control: $0$ of $10{,}734$ non-mismatched rows) widens every
+recovery gap. We keep the pre-registered outcome as primary; changing it
+after seeing which way it moves is what preregistration prevents.
 
 \paragraph{Every conditional analysis carries a post-treatment label.}
 Conditioning on first-pass-wrong, cycles used, accumulated context or
@@ -63,11 +61,15 @@ meriting pre-registered replication, not a confirmed result. The \Pone{}
 manipulation objective also failed and is reported as such. The
 single-agent comparator comes from a previously released corpus, not this
 campaign, and \textbf{its two actor arms were produced under different
-source commits}, making it a directional guard only. All three actors lose
-the division of labor, but \textbf{Llama-3.3 does not replicate the recovery
-result} --- a genuine null specific to the role manipulation and
-\textbf{not} a floor (\S\ref{subsec:recovery}) --- so the recovery claim
-rests on two actors, one domain and one \PER{} organization, with the
-evaluator itself one of the actor models under study. Finally, the
-functional measure detects that every agent asserted its own answer, not
-that their reasoning was the same, and has a marker-dependent Arm~A level.
+source commits}, making it a directional guard only. All three actors lose the division of labor, but
+\textbf{Llama-3.3 does not replicate the recovery result} --- a genuine null
+specific to the role manipulation, \textbf{not} a floor
+(\S\ref{subsec:recovery}) --- so the recovery claim
+rests on two actors and one \PER{} organization, with the evaluator itself
+one of the actor models under study. It is not confined to one domain: on SciBench
+($574$ free-response college science problems, the complete matched slice)
+gemma-4's first pass moves by $0.000$ while paired recovery falls $0.212
+\rightarrow 0.020$ ($n=99$, $p=6.6\times10^{-5}$), a shift indistinguishable
+in size from Omni-MATH; gpt-oss's cell there is underpowered ($0.42$) and
+resolves nothing. Finally, the functional measure detects that every agent asserted
+an answer, not that their reasoning was the same (Table~1 note).
