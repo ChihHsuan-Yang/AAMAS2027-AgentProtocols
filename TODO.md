@@ -1,90 +1,82 @@
 # TODO — AAMAS 2027 (authoritative task board)
 
-**Rewritten 2026-09-30.** 8 days to the full-paper deadline. The campaign is
-**complete and frozen**; everything below is write-up, correction, and
-packaging. **No experiment is in flight and no new campaign is planned** — a
-new one would need Bella's approval and there is no time for it.
+**Rewritten 2026-09-30 17:0x from VERIFIED state, not from worker reports.**
+The previous board listed eight P0 items as OPEN; I checked each against the
+artifact and **all eight were in fact closed**. A board that lags reality is
+worse than no board — a new agent would have re-done finished work. Every
+status below was re-verified by running the check named in its validation
+column, today.
 
-DONE = artifact exists **and** it was reviewed **and** validation passed.
+DONE = artifact exists **and** the validation command passes **and** Master
+Agent reviewed it.
+
+Deadlines: **abstract Oct 1 AoE** · **paper Oct 8 AoE**.
 
 ---
 
 ## P0 — submission-threatening
 
-| id | task | owner | status | validation |
+| id | task | owner | status | validation (run this) |
 |---|---|---|---|---|
-| **P0-A** | **Close out `STATISTICAL_AUDIT.md`** — 1 FATAL (tables fixed, prose open) + 5 SERIOUS, see the breakout below | paper + analysis | **OPEN** | each required change made, or explicitly declined with a reason |
-| **P0-B** | **Page budget 9 → 8** by cutting content (typesetting tricks are inadmissible) | paper | **OPEN** | `pdfinfo main.pdf \| grep Pages` shows 8 |
-| **P0-C** | **Back up `experiments/results/FROZEN/`** off this laptop | any | **OPEN** | a second copy exists, hashes re-verified there |
-| **P0-D** | **Push the 16 local commits** to `origin/main` | any | **OPEN** | `git status` says up to date |
-| **P0-E** | **Sync `paper/` → Overleaf** (clone is at `128771e`, missing the class and later rewrites) | paper | **OPEN** | Overleaf builds and matches `paper/` |
-| **P0-F** | **Abstract pass against the audit** — it still asserts two now-dead claims | paper | **OPEN** | no dead claim in `main.tex`'s abstract |
-| **P0-G** | **Re-run the anonymity audit after the final trim** | any | **OPEN** | 8/8 counts zero on the rendered PDF, metadata clean |
-| P0-H | OpenReview profiles / reciprocal reviewer / author list | **BELLA** | **BLOCKED — not a project blocker** | manual; API 403s on every call, CFP host does not resolve |
+| P0-A | Close `STATISTICAL_AUDIT.md`: 1 FATAL + 5 SERIOUS | M | **DONE** | all 6 verified in rendered PDF; see breakout |
+| P0-B | Main text ≤ 8 pages | M | **DONE** | `python3 scripts/pagecheck.py paper/main.pdf` → exit 0 |
+| P0-C | Frozen snapshot backed up off-laptop | M | **DONE** | iCloud copy, 3/3 sha256 re-verified **at the destination** |
+| P0-D | Push all commits | M | **DONE** | `git status -sb` → `## main...origin/main` |
+| P0-E | Overleaf synced | M | **DONE** | remote at `ef400b20`; fresh clone builds standalone, 0 undef |
+| P0-F | Abstract carries no dead claim | M | **DONE** | 0 hits for floor-effect / highest-of-any-arm / blinded-confirms |
+| P0-G | Anonymity audit on final PDF | M | **DONE** | 0 hits for institution / HF / GitHub / author |
+| P0-H | OpenReview profiles, author list, reciprocal reviewer | **BELLA** | **BELLA-ONLY** | not a project blocker; see `SUBMISSION_PACKAGE.md` |
+| **P0-I** | **Second fresh mock review on the revised PDF** | M | **TODO** | reviewer #1 said weak-accept if blockers cleared; they are |
+| **P0-J** | **Second independent number audit vs current output** | M | **TODO** | the last one predates 4 script fixes |
 
-### P0-A breakout — the audit findings
+### P0-A breakout — all six verified in the rendered PDF today
 
-| id | finding | required change | where |
-|---|---|---|---|
-| **F1** | **FATAL.** Arm C's recovery denominator dropped 173 trajectories with a recorded first *incorrect* verdict that then died in regeneration. Corrected 0.314/0.395/0.139; 2 of 3 paired p-values lost. | Delete "recovery … above Arm A in all three actors (p ≤ 1.6e-3)". Claim Arm C recovery for **Llama-3.3 only**; report the other two as directionally consistent, not resolvable against attrition. | `APPROVED_CLAIMS.md` A6 ✅ · `FINAL_TABLES.py` T1 ✅ (commit `ba28977`) · `results.tex` §R5 ❌ |
-| **S1** | **A false statement about the methods.** `method.tex:63` and `results.tex:6` assert a Holm correction; `holm` appears **0 times** in `FINAL_TABLES.py` and 0 times in its output. **A reviewer verifies this with one grep.** | **Run it** (preferred — the preregistration committed to it; numbers in `stat_audit_a3_multiplicity.py` §3.3). It changes no verdict: gemma C−A survives at Holm p=0.042, P4 still null. | `FINAL_TABLES.py` ❌ · `method.tex` ❌ · `results.tex` ❌ |
-| **S2** | "Floor effect" for Llama-3.3 is falsified by our own Arm C — a channel that does not exist cannot be restored, and Arm C restores it (p=3.8e-06). | Replace with "a genuine null, specific to the role manipulation," plus the power statement (~80% at 0.04–0.05 vs a gemma effect of 0.171). `limitations.tex` has it exactly backwards. | `APPROVED_CLAIMS.md` A3 ✅ · `results.tex` §R3 ❌ · `limitations.tex` ❌ |
-| **S3** | T22's quartiles are cut on the **pooled** A+B context distribution, making them arm indicators (gpt-oss Q1 = 12 Arm A vs 198 Arm B). An n=12 cell is quoted. The context measure is additionally distorted by the F13 logging defect. | Re-cut within arm; state why; drop the n=12 figure and the "All three statements stand" sentence. The reversal itself survives. | `results.tex` §R4 ❌ |
-| **S4** | Effect-size ÷ grader-disagreement-rate is not a valid operation, and the noise largely cancels in a paired contrast. | Delete every "3.9×" style ratio. Propagate the per-call rate into the bootstrap instead — same three verdicts. | `APPROVED_CLAIMS.md` A8 ✅ · `FINAL_TABLES.py` T27 ❌ · `results.tex`, `limitations.tex` ❌ |
-| **S5** | Two of three P4 DiDs have MDE 0.069/0.075 against plausible effects ≤ 0.040 — they cannot detect any plausible interaction. | Say which DiD is an informative null (only gpt-oss−gemma, MDE 0.033) and which are not. | `APPROVED_CLAIMS.md` A10 ✅ · `experiments.tex` ❌ |
-
-The audit also **reproduced T1/T2/T4/T7 exactly** and found **no arithmetic
-error anywhere in the headline pipeline**, and it attacked the gemma-4 headline
-six ways without breaking it (raw p=1.9e-08; Bonferroni over all 38 contrasts
-= 7.4e-07). Every finding above is about *what was computed*, not whether it
-was computed correctly.
+| id | finding | status |
+|---|---|---|
+| F1 | Arm C recovery denominator dropped 173 rows | **DONE** — 0.314/0.395/0.139; Llama-only claim; "all three actors" gone |
+| S1 | Holm asserted but never run | **DONE** — T29 runs it; P3 gemma Holm p=0.0120, P4 all retain |
+| S2 | Llama "floor effect" falsified by our own Arm C | **DONE** — now "a genuine null specific to the role manipulation" |
+| S3 | Context quartiles cut on the pooled distribution (n=12 cell) | **DONE** — re-cut within arm, n=12 figure gone |
+| S4 | effect ÷ disagreement-rate is not a valid operation | **DONE** — replaced by noise-propagated bootstrap CIs |
+| S5 | 2 of 3 P4 DiDs cannot detect any plausible interaction | **DONE** — only the gpt-oss−gemma DiD called informative |
 
 ---
 
-## P1 — strengthening
+## P1 — materially improves acceptance
 
 | id | task | owner | status | note |
 |---|---|---|---|---|
-| P1-1 | Choose which Figure 1 variant ships and `\includegraphics` it | figures | OPEN | three exist (`fig1_v1_grouped`, `v2_slopes`, `v3_dumbbell`), all frozen-snapshot-sourced via `FIGDATA.json`; **none is in `main.tex`** |
-| P1-2 | Decide supplementary material | paper | OPEN | must ship **inside** the submission zip (≤ 25 MB), never behind a link |
-| P1-3 | Author-independent submission metadata to paste | paper | OPEN | — |
-| P1-4 | R-10 evaluator independence — gpt-oss grades itself | — | **UNTESTED, likely won't happen** | the identical-prompt control rules out bias *on the answer string* only and **does not upgrade this**. Report as a limitation. |
-| P1-5 | Confirm `results.tex` §p4null uses **prereg** scoring with as-graded as a disclosed sensitivity and attrition beside it | paper | OPEN | F24 §6 |
+| P1-1 | SciBench A/B cross-domain replication | XDOM worker | **ACTIVE** | 919/2,296, zero failures, ETA ~55 min |
+| P1-2 | SciBench freeze + manifest | XDOM worker | TODO | freeze script pre-validated on a partial copy |
+| P1-3 | **SciBench integration decision** | M | TODO | rules fixed in advance: `notes/XDOMAIN-POWER-PREREG.md` |
+| P1-4 | Figure selection final | M | **DONE** | fig1_v1_grouped in as Figure 1; 2 and 3 held for space |
+| P1-5 | HF normalized parquet layer | steward | **DONE** | 5 tables, 181/181 values re-derived |
+| P1-6 | Supplementary ZIP (≤25MB, anonymous) | M | TODO | prompts, rubric, prereg, extra tables |
 
 ---
 
-## P2
+## P2 — only if P0/P1 secure
 
 | id | task | status |
 |---|---|---|
-| P2-1 | Internal mock review of the final draft | OPEN — the last one produced 20 confirmed defects; worth repeating if time allows |
-| P2-2 | Reviewer-annotation work (R4 / N-14) | **DECIDED: narrow the claim** rather than annotate. `notes/R4-DECISION.md`. |
+| P2-1 | SciBench Arm C | **conditional** — only if A/B is informative |
+| P2-2 | JEEBench third domain | TODO — 515 problems, free-response, MIT |
+| P2-3 | Public HF release after acceptance | blocked on acceptance; `preflight_public.py` gates it |
 
 ---
 
-## Closed — do not reopen
+## Standing rules a new agent must not violate
 
-| id | task | outcome |
-|---|---|---|
-| Main campaign (3 arms × 3 actors + C′) | **DONE** — 11,600/11,600, frozen, hashed, verified |
-| Third-actor decision | **DONE** — gemma-3-27b was 503 throughout; substituted Llama-3.3-70B, verified live |
-| Preregistration committed before confirmatory results | **DONE** — prereg 22:52:33Z < launch 23:00:42Z |
-| Smoke run + 15 launch gates | **DONE** — 15/15 pass, re-verified 2026-09-30 |
-| Blinded frontier-model adjudication | **DONE** — 171 items × 3 reps, rubric frozen, 3 defects found and fixed mid-run |
-| Official AAMAS class | **DONE** — the earlier "unobtainable" finding was wrong; the 404 was a hotlink guard |
-| Pre-declared NOT-SUBMIT condition | **EVALUATED, NOT TRIGGERED** — narrowly; see `SUBMISSION_CHECKLIST.md` |
-| Collapse measurement audit, count-matched rule, difficulty stratification, stability-as-n-grows, mechanism, single-agent fairness, novelty audit | **DONE** |
-| Verified bibliography | **DONE** — 24 entries |
-| Result provenance for every number | **DONE** — replaced by a single rule: `FROZEN/` + `FINAL_TABLES.py`, no duplicate numbers |
-
-## Dropped with reason
-
-| item | reason |
-|---|---|
-| Arm D (role shuffle) | tests a different question; would halve power on the A/B/C contrast |
-| C2 strict-computation arm | no defensible validator buildable before the deadline without risking P0s |
-| Second domain | the runner pins omnimath2; lab-bench's Planner contract has no computation clause |
-| Full n=4181 stretch | marginal power not worth risking C′ and the noise floor |
-| Second organization / topology | out of scope for the claim |
-| Releasing the poll panel as a sub-dataset | would make the dataset the contribution again — `OVERLAP_AUDIT.md` |
-| DHD | core asset of a third, already-public paper |
+1. **`APPROVED_CLAIMS.md` governs every claim.** Its DEAD table is binding.
+   After ANY change to `FINAL_TABLES.py`, re-derive that file too — it went
+   stale behind the paper once already.
+2. **No number is hand-maintained.** Every literal traces to
+   `FINAL_TABLES.py` against `experiments/results/FROZEN/`.
+3. **`scripts/pagecheck.py` is the only valid page check.** Two earlier
+   versions passed a 10-page paper; both failure modes are in its docstring.
+   Run it without a pipe — `| tail` makes `$?` report tail.
+4. **HF stays PRIVATE until acceptance.** `hf_artifact/raw/` is gitignored
+   (283MB; GitHub rejects it) and 14 rows still name the institution;
+   `scripts/preflight_public.py` fails by design until fixed.
+5. **No underpowered null may be reported as absence.** This project has made
+   that error twice.

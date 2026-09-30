@@ -240,3 +240,36 @@ corrects.
 Every contrast is reported with a **paired bootstrap CI and a seed-free exact
 McNemar** on discordant pairs, because a bootstrap bound sitting at zero gives
 a seed-dependent significance label.
+
+---
+
+## 7. Interpretation rules — pre-registered by the Master, acknowledged here
+
+The Master Agent fixed the reading of this result in
+`notes/XDOMAIN-POWER-PREREG.md` (commit `4ac8e3b`) at 761/2,296 rows, before
+any recovery contrast existed. **I am bound by those rules and my analysis
+script already conforms to them.** Restating the ones that constrain my
+reporting:
+
+1. A **gemma-4 null IS informative** (power 0.95 vs the Omni-MATH effect) and
+   is reported as a real boundary condition.
+2. A **gpt-oss null is NOT informative** (power 0.21). It must be reported as
+   "cannot detect an effect of the size seen in Omni-MATH", never as a
+   non-replication, and never counted as one of two actors failing.
+3. **No pooling of the two actors** to manufacture power. `xdom_analyze.py`
+   reports every contrast per actor and never pools.
+4. **No P1a or clause-specific fidelity metric across domains** — already
+   excluded from the script, not merely caveated.
+5. A mixed result is **supplement/rebuttal material**, not a second headline.
+   That is the Master's call, not mine.
+
+My independent power simulation, run before launch and from a different
+starting point (the upstream released corpus: PER 0.913 gemma / 0.875
+gpt-oss across 8 `target_complete` runs), agrees with the Master's: ~0.95
+power for a gemma-sized effect, ~0.20-0.27 for a gpt-oss-sized one. The
+measured first-pass-wrong rate on landed rows (0.167-0.208, projecting
+~96-120 per cell) confirms it a third way.
+
+**Consequence I will honour in the final report:** if gpt-oss comes back
+null I will say the study cannot resolve it, and I will not describe the
+overall result as a partial replication on that basis.
