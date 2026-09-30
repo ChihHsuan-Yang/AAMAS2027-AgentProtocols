@@ -936,6 +936,7 @@ for a in ACTORS:
         fpw         = [r for r in s if is_fpw(r)]
         fpr         = [r for r in s if judged(r) and fp(r) == 1]
         unjudged    = [r for r in s if not judged(r)]
+        j28         = [r for r in s if judged(r)]
         held        = sum(1 for r in fpr if fin_prereg(r) == 1)
         lost        = sum(1 for r in fpr if fin_prereg(r) == 0)
         recovered   = sum(1 for r in fpw if fin_prereg(r) == 1)
@@ -945,8 +946,17 @@ for a in ACTORS:
         assert held + lost + recovered + unrecovered + len(unjudged) == len(s), (a, arm)
         _LOST += lost
 
-        fpm, fplo, fphi = _mean_ci([fp(r) for r in g])
+        # DEFECT FIXED 2026-09-30 (master). T28 computed first-pass over
+        # graded(r) -- the SAME survivorship error INDEPENDENT_AUDIT D1 fixed
+        # in T1, still live here, so FIGDATA shipped Arm C first-pass 0.822
+        # while T1 printed 0.779 and the figures drew the stale value.
+        # Denominator is judged(r): a trajectory that received a first verdict
+        # and then died in regeneration has a first-pass result.
+        fpm, fplo, fphi = _mean_ci([fp(r) for r in j28])
         rcm, rclo, rchi = _mean_ci([fin_prereg(r) for r in fpw])
+        assert abs((1 - fpm) * len(j28) - len(fpw)) < 1e-6, (
+            f"T28 identity violated for {a}/{arm}: firstpass and n_fpw "
+            f"use different denominators")
 
         d = dict(actor=a, arm=arm, n=len(s), n_graded=len(g), n_ungraded=ungraded,
                  attrition=ungraded / len(s), n_unjudged=len(unjudged),

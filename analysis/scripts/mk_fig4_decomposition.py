@@ -14,9 +14,12 @@ correct first verdict), so no band is drawn for it.  If it ever becomes
 non-zero, that assert fires and this figure must gain a band rather than
 silently drop the rows.
 
-`ungraded` is drawn because it is the attrition the pre-registered scoring
-counts as incorrect (A7) -- hiding it would make arm C look better than the
-primary analysis says it is.
+`unjudged` (never received a first evaluator verdict) is drawn because it is
+part of arm C's attrition, which pre-registered scoring counts as incorrect
+(A7) -- hiding it would make arm C look better than the primary analysis says.
+Note this is NOT the same as `ungraded_no_final_grade`: a trajectory can be
+judged once and then die in regeneration, and those rows are already inside
+`recovered`/`unrecovered` because they belong to the recovery denominator.
 
 Every value is read from analysis/out/FIGDATA.json via mk_figstyle.figdata().
 
@@ -43,10 +46,10 @@ ARMS = ["A", "B", "C"]
 # never produced a graded answer.  Colour is ordinal here (one hue, light to
 # dark, for the two "ended correct" bands vs the two "ended wrong"), and each
 # band is ALSO labelled, so nothing is carried by hue alone.
-BANDS = [("held",        "first pass correct",   "#0072B2", ""),
+BANDS = [("held",        "first pass correct",    "#0072B2", ""),
          ("recovered",   "recovered after error", "#56B4E9", ""),
          ("unrecovered", "never recovered",       "#E8E8E8", ""),
-         ("ungraded",    "no graded answer",      "#BDBDBD", "///")]
+         ("unjudged",    "never judged",          "#BDBDBD", "///")]
 
 
 def frac(actor, arm):
@@ -69,9 +72,9 @@ def check_partition():
 # =====================================================================
 def v1():
     """Stacked columns, arms grouped within actor."""
-    fig, ax = plt.subplots(figsize=(S.COLWIDTH_IN, 2.60),
+    fig, ax = plt.subplots(figsize=(S.COLWIDTH_IN, 2.75),
                            gridspec_kw={"left": 0.135, "right": 0.988,
-                                        "top": 0.700, "bottom": 0.205})
+                                        "top": 0.700, "bottom": 0.250})
     xs, labels, ticks = [], [], []
     pos = 0.0
     for ai, a in enumerate(ACTORS):
@@ -108,9 +111,9 @@ def v1():
              "Outcome decomposition: an identity, not a causal model",
              fontsize=S.FS_TITLE, ha="left", va="top", color=S.INK)
     fig.text(0.008, 0.008,
-             "first pass correct + recovered + never recovered + no graded answer = 1\n"
-             "by construction.  Numbers above the bars are final accuracy "
-             "(pre-registered scoring).",
+             "first pass correct + recovered + never recovered + never judged = 1\n"
+             "by construction.  Numbers above the bars are final accuracy\n"
+             "under pre-registered scoring.",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig4_v1_stacked", S.COLWIDTH_IN)
 
@@ -119,9 +122,9 @@ def v1():
 def v2():
     """One 100% band per actor-arm row: easier to read the small bands."""
     rows = [(a, arm) for a in ACTORS for arm in ARMS]
-    fig, ax = plt.subplots(figsize=(S.TEXTWIDTH_IN, 2.35),
-                           gridspec_kw={"left": 0.145, "right": 0.988,
-                                        "top": 0.775, "bottom": 0.165})
+    fig, ax = plt.subplots(figsize=(S.TEXTWIDTH_IN, 2.50),
+                           gridspec_kw={"left": 0.145, "right": 0.930,
+                                        "top": 0.790, "bottom": 0.245})
     ys = np.arange(len(rows), dtype=float)[::-1]
     for yi, (a, arm) in zip(ys, rows):
         f, n, d = frac(a, arm)
@@ -152,8 +155,8 @@ def v2():
              "Outcome decomposition per cell — a probability identity, not a causal equation",
              fontsize=S.FS_TITLE, ha="left", va="top", color=S.INK)
     fig.text(0.004, 0.008,
-             "The four bands partition the cell and sum to 1 by construction; "
-             "the first two together are final accuracy under pre-registered scoring.  "
+             "The four bands partition the cell and sum to 1 by construction; the first two "
+             "together are final accuracy under pre-registered scoring.\n"
              "Bands below 0.085 are left unlabelled rather than clipped.",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig4_v2_rows", S.TEXTWIDTH_IN)

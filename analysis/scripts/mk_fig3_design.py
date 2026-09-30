@@ -110,7 +110,7 @@ def _arrow(ax, x0, y0, x1, y1, color):
 # =====================================================================
 def v1():
     """Three columns side by side: each shows its own pipeline and notes."""
-    fig, ax = plt.subplots(figsize=(S.COLWIDTH_IN, 3.45))
+    fig, ax = plt.subplots(figsize=(S.COLWIDTH_IN, 3.60))
     ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
     fig.subplots_adjust(left=0.005, right=0.995, top=0.995, bottom=0.005)
 
@@ -148,14 +148,14 @@ def v1():
         ax.text(x0 + colw / 2, 0.222, VERDICT[arm], ha="center", va="top",
                 fontsize=S.FS_ANNOT, color=col, linespacing=1.15)
 
-    ax.text(0.5, 0.118,
+    ax.text(0.5, 0.155,
             f"Identical in all arms: topology, routing and budget\n"
             f"({BUD['max_outer_rounds']}×{BUD['inner_rounds']}={MAXCYC} cycles, "
             f"max_evaluator_calls={BUD['max_evaluator_calls']}, "
             f"temperature={BUD['temperature']:g}).\n"
-            f"Only the prompt or schema differs.  Ranges span the\n"
-            f"three actors; ‘collapse’ is the mechanical functional-\n"
-            f"collapse rate (no judge).",
+            f"Only the prompt or schema differs.\n"
+            f"Ranges span the three actors; ‘collapse’ is the\n"
+            f"mechanical functional-collapse rate (no judge).",
             ha="center", va="top", fontsize=S.FS_ANNOT, color=S.INK, linespacing=1.3)
     return S.save(fig, "fig3_v1_columns", S.COLWIDTH_IN)
 

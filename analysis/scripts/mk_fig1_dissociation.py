@@ -205,7 +205,7 @@ def v2():
 # =====================================================================
 def v3():
     """Dumbbell: actor-major rows, all three arms on one shared value axis."""
-    fig, ax = plt.subplots(1, 2, figsize=(S.TEXTWIDTH_IN, 2.15), sharey=True,
+    fig, ax = plt.subplots(1, 2, figsize=(S.TEXTWIDTH_IN, 2.25), sharey=True,
                            gridspec_kw={"wspace": 0.10, "left": 0.108,
                                         "right": 0.984, "top": 0.855, "bottom": 0.285})
     ys = np.arange(len(ACTORS), dtype=float)[::-1]
@@ -228,7 +228,7 @@ def v3():
         S.clean(A, grid_axis="x")
         A.set_xlim(0, 1.0)                 # full proportion range; never truncated
         A.set_xticks(np.arange(0, 1.01, 0.25))
-        A.set_ylim(-0.62, len(ACTORS) - 0.30)
+        A.set_ylim(-0.90, len(ACTORS) - 0.30)
         A.set_title(ttl, fontsize=S.FS_TITLE, pad=3, loc="left")
         A.set_xlabel("proportion", fontsize=S.FS_LABEL, labelpad=1.5)
     ax[0].set_yticks(ys)
@@ -239,9 +239,9 @@ def v3():
                        f"but C {S.cell(a,'C')['recovery']:.3f}\n"
                        f"(p={PR[f'{a}|AC']['p']:.0e}) — not a floor",
                        xy=(S.cell(a, "C")["recovery"], yi - 0.10),
-                       xytext=(0.99, yi - 0.46),
-                       fontsize=S.FS_ANNOT, color=S.INK, ha="right", va="center",
-                       linespacing=1.15,
+                       xytext=(0.97, yi - 0.42),
+                       fontsize=S.FS_ANNOT, color=S.INK, ha="right", va="top",
+                       linespacing=1.2,
                        arrowprops=dict(arrowstyle="-", lw=0.5, color=S.INK2,
                                        shrinkA=1.0, shrinkB=3.5))
     h = [Line2D([], [], ls="none", marker=("D" if a == "C" else "o"), ms=4.4,
