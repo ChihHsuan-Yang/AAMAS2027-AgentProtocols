@@ -17,11 +17,18 @@ self-citations third person. A fresh clone of the Overleaf tree builds
 standalone (verified, not assumed).
 
 ## Title
-**Roles Buy Recovery, Not First-Pass Accuracy: When Is Multi-Agent
-Organization Load-Bearing?**
+**When Is Multi-Agent Organization Load-Bearing?**
 
-Claims a PHASE, not a mechanism, so it survives a reviewer who rejects
-answer lock-in as the explanation.
+Decided 2026-09-30. The subtitled form "Roles Buy Recovery, Not First-Pass
+Accuracy: ..." was set and then reverted: the extra title line pushed main
+text onto page 9. The page budget has a one-sentence margin and a subtitle is
+not worth a limit violation.
+
+The short form is also the safer claim. "Roles buy recovery" as a title
+asserts universally what holds cleanly for gemma-4, weakly for gpt-oss, and
+not at all for Llama-3.3. The question form claims a PHASE, not a mechanism
+and not a universal effect, so it survives a reviewer who rejects answer
+lock-in as the explanation or who reads the actor scope closely.
 
 ## Abstract (paste as plain text, ~250 words)
 See `paper/main.tex`. AAMAS wants 100-300 words plain text, due one week
