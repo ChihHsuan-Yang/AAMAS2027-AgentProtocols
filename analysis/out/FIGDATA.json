@@ -419,6 +419,107 @@
   }
  },
  "max_cycles": 6,
+ "mechanical": {
+  "Llama-3.3-70B-Instruct|A": {
+   "dup_excess": 0.14565276483229733,
+   "dup_interpretable": true,
+   "dup_null": 0.40912712942545576,
+   "dup_real": 0.5547798942577531,
+   "functional_collapse": 0.0,
+   "n": 400,
+   "n_dup": 400
+  },
+  "Llama-3.3-70B-Instruct|B": {
+   "dup_excess": 0.43232550914947965,
+   "dup_interpretable": true,
+   "dup_null": 0.22496034498656567,
+   "dup_real": 0.6572858541360453,
+   "functional_collapse": 0.871536523929471,
+   "n": 397,
+   "n_dup": 393
+  },
+  "Llama-3.3-70B-Instruct|C": {
+   "dup_excess": 0.19191252513732587,
+   "dup_interpretable": true,
+   "dup_null": 0.12282175147036417,
+   "dup_real": 0.31473427660769004,
+   "functional_collapse": 0.0,
+   "n": 391,
+   "n_dup": 177
+  },
+  "gemma-4-31B-it|A": {
+   "dup_excess": 0.1595480677376956,
+   "dup_interpretable": true,
+   "dup_null": 0.3944353420594727,
+   "dup_real": 0.5539834097971683,
+   "functional_collapse": 0.0,
+   "n": 1600,
+   "n_dup": 1600
+  },
+  "gemma-4-31B-it|B": {
+   "dup_excess": 0.452957292501177,
+   "dup_interpretable": true,
+   "dup_null": 0.2662543628241554,
+   "dup_real": 0.7192116553253324,
+   "functional_collapse": 0.975625,
+   "n": 1600,
+   "n_dup": 1600
+  },
+  "gemma-4-31B-it|C": {
+   "dup_excess": 0.20197564610902047,
+   "dup_interpretable": true,
+   "dup_null": 0.2148568958331778,
+   "dup_real": 0.41683254194219826,
+   "functional_collapse": 0.0,
+   "n": 1456,
+   "n_dup": 1425
+  },
+  "gemma-4-31B-it|Cp": {
+   "dup_excess": 0.190996771089005,
+   "dup_interpretable": true,
+   "dup_null": 0.22335202206635743,
+   "dup_real": 0.41434879315536244,
+   "functional_collapse": 0.0,
+   "n": 340,
+   "n_dup": 331
+  },
+  "gpt-oss-120b|A": {
+   "dup_excess": 0.16757207097269994,
+   "dup_interpretable": true,
+   "dup_null": 0.2973533415468072,
+   "dup_real": 0.46492541251950714,
+   "functional_collapse": 0.12015018773466833,
+   "n": 1598,
+   "n_dup": 1580
+  },
+  "gpt-oss-120b|B": {
+   "dup_excess": 0.6772575404226238,
+   "dup_interpretable": false,
+   "dup_null": 0.04424070447103277,
+   "dup_real": 0.7214982448936565,
+   "functional_collapse": 0.8455284552845529,
+   "n": 1599,
+   "n_dup": 1470
+  },
+  "gpt-oss-120b|C": {
+   "dup_excess": 0.37211342140557324,
+   "dup_interpretable": true,
+   "dup_null": 0.2754645900291224,
+   "dup_real": 0.6475780114346956,
+   "functional_collapse": 0.0,
+   "n": 1402,
+   "n_dup": 1395
+  },
+  "gpt-oss-120b|Cp": {
+   "dup_excess": 0.37315429834840136,
+   "dup_interpretable": true,
+   "dup_null": 0.28762924091324577,
+   "dup_real": 0.6607835392616471,
+   "functional_collapse": 0.0,
+   "n": 345,
+   "n_dup": 342
+  }
+ },
  "noise_floor_group_level": 0.008599068434252956,
  "paired_recovery": {
   "Llama-3.3-70B-Instruct|AB": {

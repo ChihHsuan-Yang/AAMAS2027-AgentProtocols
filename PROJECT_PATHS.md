@@ -281,3 +281,38 @@ does not.
 | `analysis/results/*` | derived — historical, may be stale | yes, but may not match FROZEN |
 | `figures/` | derived — current variants read `FROZEN/` via `FIGDATA.json` | yes (but see FIGURES above) |
 | `paper/main.pdf` | derived | yes, from `paper/` |
+
+---
+
+## Frozen-snapshot custody (added 2026-09-30 — P0-C resolved)
+
+`experiments/results/FROZEN/` is **283 MB, excluded by `.gitignore`, and NOT
+regenerable**: the endpoint is nondeterministic even at temperature 0, so a
+re-run produces different trajectories. A fresh `git clone` gets
+`MANIFEST.json` and zero rows. Losing it ends the project.
+
+**Verified backup, 2026-09-30:**
+
+```
+~/Library/Mobile Documents/com~apple~CloudDocs/AAMAS2027_FROZEN_BACKUP/
+```
+
+All three files copied and **sha256-verified against MANIFEST.json** after the
+copy (not before — a copy is not a backup until its hash is checked at the
+destination). iCloud syncs off-device, so this survives laptop loss.
+
+To re-verify at any time:
+
+```bash
+python3 - <<'PY'
+import json,hashlib,os
+bk=os.path.expanduser("~/Library/Mobile Documents/com~apple~CloudDocs/AAMAS2027_FROZEN_BACKUP")
+man=json.load(open(os.path.join(bk,"MANIFEST.json")))
+for n,m in man["files"].items():
+    h=hashlib.sha256(open(os.path.join(bk,n),'rb').read()).hexdigest()
+    print(n, "MATCH" if h==m["sha256"] else "MISMATCH")
+PY
+```
+
+A second copy belongs on ALCF `/lus/eagle` before submission; iCloud is one
+provider, not two.

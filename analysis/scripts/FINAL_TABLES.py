@@ -258,6 +258,7 @@ mino = sum(len(v)-max(collections.Counter(v).values()) for v in multi.values())
 NOISE_FLOOR = len(disc)/len(multi)
 NOISE_FLOOR_N = (len(disc), len(multi))
 print(f"  group-level (conservative) : {len(disc)}/{len(multi)} = {NOISE_FLOOR:.4f}")
+NOISE_Q = sum(len(v) for v in disc.values())/tot
 print(f"  per-call in split group    : {sum(len(v) for v in disc.values())}/{tot} = {sum(len(v) for v in disc.values())/tot:.4f}")
 print(f"  minority-verdict           : {mino}/{tot} = {mino/tot:.4f}")
 
@@ -276,6 +277,60 @@ for a in ACTORS:
         print(f"{a:<24}{arm:<5}{len(s):>6}{rej:>14.2f}{exh:>11.3f}{att:>11.3f}"
               f"{np.mean([r.get('actor_calls') or 0 for r in s]):>12.2f}"
               f"{np.mean([r.get('wall_time_s') or 0 for r in s]):>12.1f}")
+print("\n[T29] HOLM CORRECTION ACROSS THE PRE-REGISTERED FAMILY")
+print("  PREREGISTRATION.md specifies Holm across P1-P5 for the headline claim.")
+print("  It had never been APPLIED in this file -- true in substance (nothing")
+print("  changes) but false in fact, and a reviewer checks with one grep.")
+print("  P1/P2/P3/P5 are reported as effects with CIs and carry no p-value, so")
+print("  the family that is actually testable here is P4's three DiDs plus the")
+print("  three per-actor C-A contrasts P3 is built from. Both are corrected.")
+
+def _boot_p(d, n=20000):
+    """Two-sided bootstrap p: how often a resample crosses zero."""
+    d = np.asarray(d, float)
+    rng = np.random.default_rng(20261008)
+    bs = np.array([rng.choice(d, len(d)).mean() for _ in range(n)])
+    return float(min(1.0, 2 * min((bs <= 0).mean(), (bs >= 0).mean())))
+
+def holm(pairs):
+    """pairs = [(label, p)] -> [(label, p, p_holm, reject_at_05)] """
+    out, m = [], len(pairs)
+    prev = 0.0
+    for i, (lab, p) in enumerate(sorted(pairs, key=lambda z: z[1])):
+        adj = max(prev, min(1.0, (m - i) * p)); prev = adj
+        out.append((lab, p, adj, adj < 0.05))
+    return out
+
+fam = []
+for a in ACTORS:
+    X = {r["problem_uid"]: fin_prereg(r) for r in rows if actor(r)==a and r["arm"]=="A"}
+    Y = {r["problem_uid"]: fin_prereg(r) for r in rows if actor(r)==a and r["arm"]=="C"}
+    cm = sorted(set(X) & set(Y))
+    if len(cm) < 30: continue
+    fam.append((f"P3 C-A {a}", _boot_p(np.array([Y[p]-X[p] for p in cm], float))))
+print("\n  P3 family (C-A per actor), Holm across 3:")
+for lab, p, adj, rej in holm(fam):
+    print(f"    {lab:<34}p={p:.4f}  Holm={adj:.4f}  {'REJECT H0' if rej else 'retain H0'}")
+
+fam4 = []
+for i in range(len(ACTORS)):
+    for j in range(i+1, len(ACTORS)):
+        x, y = ACTORS[i], ACTORS[j]
+        dd = []
+        for a in (x, y):
+            X = {r["problem_uid"]: fin_prereg(r) for r in rows if actor(r)==a and r["arm"]=="A"}
+            Y = {r["problem_uid"]: fin_prereg(r) for r in rows if actor(r)==a and r["arm"]=="C"}
+            cm = sorted(set(X) & set(Y))
+            dd.append(np.array([Y[p]-X[p] for p in cm], float))
+        rng = np.random.default_rng(20261008)
+        bs = np.array([rng.choice(dd[0], len(dd[0])).mean() - rng.choice(dd[1], len(dd[1])).mean()
+                       for _ in range(20000)])
+        fam4.append((f"P4 DiD {x} vs {y}", float(min(1.0, 2*min((bs<=0).mean(), (bs>=0).mean())))))
+print("\n  P4 family (actor x enforcement interaction), Holm across 3:")
+for lab, p, adj, rej in holm(fam4):
+    print(f"    {lab:<44}p={p:.4f}  Holm={adj:.4f}  {'REJECT H0' if rej else 'retain H0'}")
+print("\n  P4 -- the pre-registered PRIMARY -- is null before and after Holm.")
+
 print("\n" + "=" * 96)
 
 # =====================================================================================
@@ -732,15 +787,34 @@ for a in ACTORS:
         print(f"{a:<24}{arm:<5}{len(ms):>7}{np.mean([x[0] for x in ms]):>16.3f}"
               f"{np.mean([x[1] for x in ms]):>11.3f}{np.mean(fpw):>25.3f}")
 
-print(f"\n[T27] NOISE-FLOOR MARGIN for each B-A accuracy contrast "
-      f"(floor = T6 group-level {NOISE_FLOOR_N[0]}/{NOISE_FLOOR_N[1]})")
-floor = NOISE_FLOOR   # T6 group-level; do NOT recompute from `multi` (reused in T23)
+print(f"\n[T27] B-A ACCURACY WITH GRADER NOISE PROPAGATED INTO THE BOOTSTRAP")
+print("  The earlier 'effect / floor = ratio' statistic is WITHDRAWN: dividing")
+print("  an effect size by a disagreement rate is not a valid operation, and")
+print("  grader noise largely CANCELS in a paired contrast (the same final")
+print("  string is graded on both sides of most pairs). Instead we resample")
+print("  each paired difference AND independently flip each of its two")
+print(f"  gradings with probability q = {NOISE_Q:.4f} (T6 per-call rate), which")
+print("  is what a noisy grader would actually do.")
+print(f"{'actor':<24}{'B-A':>9}{'  naive 95% CI':<24}{'  noise-propagated 95% CI':<26}{'verdict':>12}")
 for a in ACTORS:
     r_ = paired(a, "A", "B", fin_prereg)
     if not r_: continue
     m, lo, hi, n = r_
-    print(f"  {a:<24}|B-A|={abs(m):.4f}  floor={floor:.4f}  ratio={abs(m)/floor:.1f}x"
-          f"  {'clears' if abs(m)/floor >= 2 and not (lo<0<hi) else 'NOT resolvable above noise'}")
+    X = {r["problem_uid"]: fin_prereg(r) for r in rows if actor(r)==a and r["arm"]=="A"}
+    Y = {r["problem_uid"]: fin_prereg(r) for r in rows if actor(r)==a and r["arm"]=="B"}
+    cm = sorted(set(X) & set(Y))
+    xa = np.array([X[p] for p in cm], float); yb = np.array([Y[p] for p in cm], float)
+    rng = np.random.default_rng(20261008)
+    bs = []
+    for _ in range(20000):
+        idx = rng.integers(0, len(cm), len(cm))
+        u, v = xa[idx].copy(), yb[idx].copy()
+        fu = rng.random(len(u)) < NOISE_Q; fv = rng.random(len(v)) < NOISE_Q
+        u[fu] = 1 - u[fu]; v[fv] = 1 - v[fv]
+        bs.append((v - u).mean())
+    nlo, nhi = np.percentile(bs, [2.5, 97.5])
+    verdict = "resolvable" if not (nlo < 0 < nhi) else "NOT resolvable"
+    print(f"{a:<24}{m:>+9.4f}  [{lo:+.4f},{hi:+.4f}]    [{nlo:+.4f},{nhi:+.4f}]    {verdict:>12}")
 
 print("\n" + "=" * 96)
 
@@ -900,6 +974,52 @@ for k, v in sorted(FIG["funnel"].items()):
     print(f"    {k:<30} {v['stage1_first_pass_wrong']:>4} -> {v['stage2_resubmitted']:>4}"
           f" -> {v['stage3_distinct_second_candidate']:>4} -> {v['stage4_recovered']:>4}"
           f"   (recovered outside funnel: {v['recovered_outside_funnel']})")
+
+# MECHANICAL organization measures -- A1's PRIMARY evidence as of 2026-09-30.
+# FINDING-25 established that the adjudication is outcome-blind but NOT
+# condition-blind (role-token presence separates A from B at p=1.5e-24, and
+# output format separates C), so no arm-contrastive figure may rest on the
+# judge.  These two involve no judge at all:
+#   functional_collapse = all three first-pass role messages carry an answer
+#   dup_excess          = planner/executor numeric-token Jaccard MINUS a
+#                         shuffled-pairing null, i.e. overlap above chance
+# Both recomputed here with the same definitions as T8 and T10.
+FIG["mechanical"] = {}
+for a in ACTORS:
+    for arm in ("A", "B", "C", "Cp"):
+        s_ = [r for r in rows if actor(r) == a and r["arm"] == arm]
+        if not s_: continue
+        al = []
+        P, E = [], []
+        for r in s_:
+            f = first3(r)
+            if len(f) != 3: continue
+            d_ = {m["role"]: m for m in f}
+            if set(d_) != {"planner", "executor", "reviewer"}: continue
+            al.append(all(has_answer(d_[k], arm) for k in ("planner", "executor", "reviewer")))
+            pt = set(NUMTOK.findall(d_["planner"].get("text") or ""))
+            et = set(NUMTOK.findall(d_["executor"].get("text") or ""))
+            if pt and et: P.append(pt); E.append(et)
+        if not al: continue
+        ent = dict(n=len(al), functional_collapse=float(np.mean(al)))
+        if len(P) >= 30:
+            J = lambda x, y: len(x & y) / len(x | y)
+            real = float(np.mean([J(P[i], E[i]) for i in range(len(P))]))
+            idx = RNG.permutation(len(P))
+            idx = np.where(idx == np.arange(len(P)), (idx + 1) % len(P), idx)
+            null = float(np.mean([J(P[i], E[idx[i]]) for i in range(len(P))]))
+            ent.update(dup_real=real, dup_null=null, dup_excess=real - null, n_dup=len(P))
+        FIG["mechanical"][f"{a}|{arm}"] = ent
+print("  mechanical (functional collapse, first pass): " + "  ".join(
+    f"{k}={v['functional_collapse']:.3f}" for k, v in sorted(FIG["mechanical"].items())
+    if k.endswith("|A") or k.endswith("|B")))
+
+# gpt-oss's Arm B planner is UNINSTRUMENTED (F13: 2.85 visible ch/s vs 195 in its
+# own Arm A), so its duplication excess is not interpretable and must be excluded
+# from any duplication claim.  Flag it in the data rather than in a plotting script.
+for k, v in FIG["mechanical"].items():
+    if "dup_excess" in v:
+        v["dup_interpretable"] = not (k.startswith("gpt-oss-120b") and k.endswith("|B"))
 
 _OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out", "FIGDATA.json")
 with open(_OUT, "w") as _f:

@@ -101,6 +101,26 @@ Llama-3.3-70B-Instruct  A       400          0.00      0.000      0.007       14
 Llama-3.3-70B-Instruct  B       400          0.00      0.000      0.025       13.30       418.4
 Llama-3.3-70B-Instruct  C       400          1.04      0.160      0.170       12.35       243.2
 
+[T29] HOLM CORRECTION ACROSS THE PRE-REGISTERED FAMILY
+  PREREGISTRATION.md specifies Holm across P1-P5 for the headline claim.
+  It had never been APPLIED in this file -- true in substance (nothing
+  changes) but false in fact, and a reviewer checks with one grep.
+  P1/P2/P3/P5 are reported as effects with CIs and carry no p-value, so
+  the family that is actually testable here is P4's three DiDs plus the
+  three per-actor C-A contrasts P3 is built from. Both are corrected.
+
+  P3 family (C-A per actor), Holm across 3:
+    P3 C-A gemma-4-31B-it             p=0.0040  Holm=0.0120  REJECT H0
+    P3 C-A Llama-3.3-70B-Instruct     p=0.3943  Holm=0.7886  retain H0
+    P3 C-A gpt-oss-120b               p=0.5816  Holm=0.7886  retain H0
+
+  P4 family (actor x enforcement interaction), Holm across 3:
+    P4 DiD gemma-4-31B-it vs Llama-3.3-70B-Instructp=0.0553  Holm=0.1659  retain H0
+    P4 DiD gemma-4-31B-it vs gpt-oss-120b       p=0.1452  Holm=0.2904  retain H0
+    P4 DiD gpt-oss-120b vs Llama-3.3-70B-Instructp=0.2865  Holm=0.2904  retain H0
+
+  P4 -- the pre-registered PRIMARY -- is null before and after Holm.
+
 ================================================================================================
 
 [T8] FUNCTIONAL COLLAPSE DECOMPOSED BY ROLE (first pipeline pass)
@@ -356,10 +376,18 @@ gpt-oss-120b            B       9986           0.757      0.058                 
 Llama-3.3-70B-Instruct  A       5940           0.003      0.000                    0.013
 Llama-3.3-70B-Instruct  B       5314           0.005      0.000                    0.040
 
-[T27] NOISE-FLOOR MARGIN for each B-A accuracy contrast (floor = T6 group-level 24/2791)
-  gemma-4-31B-it          |B-A|=0.0338  floor=0.0086  ratio=3.9x  clears
-  gpt-oss-120b            |B-A|=0.0163  floor=0.0086  ratio=1.9x  NOT resolvable above noise
-  Llama-3.3-70B-Instruct  |B-A|=0.0025  floor=0.0086  ratio=0.3x  NOT resolvable above noise
+[T27] B-A ACCURACY WITH GRADER NOISE PROPAGATED INTO THE BOOTSTRAP
+  The earlier 'effect / floor = ratio' statistic is WITHDRAWN: dividing
+  an effect size by a disagreement rate is not a valid operation, and
+  grader noise largely CANCELS in a paired contrast (the same final
+  string is graded on both sides of most pairs). Instead we resample
+  each paired difference AND independently flip each of its two
+  gradings with probability q = 0.0072 (T6 per-call rate), which
+  is what a noisy grader would actually do.
+actor                         B-A  naive 95% CI            noise-propagated 95% CI      verdict
+gemma-4-31B-it            -0.0338  [-0.0488,-0.0187]    [-0.0494,-0.0175]      resolvable
+gpt-oss-120b              +0.0163  [+0.0000,+0.0331]    [-0.0013,+0.0331]    NOT resolvable
+Llama-3.3-70B-Instruct    +0.0025  [-0.0325,+0.0375]    [-0.0350,+0.0400]    NOT resolvable
 
 ================================================================================================
 
@@ -376,7 +404,8 @@ Llama-3.3-70B-Instruct  B       5314           0.005      0.000                 
     gpt-oss-120b|A                  463 ->  351 ->  332 ->  150   (recovered outside funnel: 0)
     gpt-oss-120b|B                  380 ->  371 ->  292 ->   93   (recovered outside funnel: 1)
     gpt-oss-120b|C                  357 ->  280 ->  262 ->  141   (recovered outside funnel: 0)
+  mechanical (functional collapse, first pass): Llama-3.3-70B-Instruct|A=0.000  Llama-3.3-70B-Instruct|B=0.872  gemma-4-31B-it|A=0.000  gemma-4-31B-it|B=0.976  gpt-oss-120b|A=0.120  gpt-oss-120b|B=0.846
   wrote /Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/analysis/out/FIGDATA.json
-  sha256(FIGDATA.json)[:16] 1e57aa4d3be243c8
+  sha256(FIGDATA.json)[:16] cc07831638227072
 
 ================================================================================================
