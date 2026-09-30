@@ -1,0 +1,51 @@
+# Official AAMAS class — retrieved 2026-09-30
+
+Source: https://cyprusconferences.org/aamas2026/wp-content/uploads/2025/06/AAMAS-2026-Formatting-Instructions-pre-CR.zip
+linked from https://cyprusconferences.org/aamas2026/submission-instructions/
+
+## How to fetch it (this matters)
+
+A plain `curl -sL <url>` returns **HTTP 404 with a 401KB HTML page**. The
+server rejects requests without a browser User-Agent and a same-site Referer.
+This works:
+
+```
+curl -sL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" \
+     -e "https://cyprusconferences.org/aamas2026/submission-instructions/" \
+     -o t.zip "<url>"
+```
+
+**Earlier in this project the class was recorded as unobtainable** ("every
+candidate URL returned 403 or 404", main.tex header comment, 2026-09-28). That
+was wrong: the file was always there, and the 404 was a hotlink guard. The
+lesson is that a 404 whose body is 400KB of HTML is not a missing file — check
+the payload before concluding a resource does not exist.
+
+## Verified rules from the submission-instructions page (2026-09-30)
+
+- "The use of LaTeX is mandatory."
+- "Please do not modify the style files or any of the layout parameters."
+- "Papers submitted to the main track must be at most 8 pages long, with any
+  number of additional pages containing bibliographic references."
+- "Excessive use of typesetting tricks to make everything fit into 8 pages is
+  not admissible."
+- "AAMAS reviewing is double-blind."
+- Replace name/affiliation on page 1 with the paper tracking number; no
+  acknowledgements.
+- Self-cite in the third person.
+- "Papers must not include pointers to any supplementary material that is not
+  provided as part of the submission."
+- Abstract ~100-300 words, plain text, due one week before the paper.
+- Supplementary: single zip, <= 25MB, same anonymity policy.
+
+NOTE: these are the AAMAS **2026** instructions. AAMAS 2027 had not published
+its own at retrieval time. The 2027 dates Bella gave (abstract Oct 1, paper
+Oct 8 AoE) match the 2026 pattern exactly. Re-check before submission.
+
+## Class usage
+```
+\documentclass[sigconf,anonymous]{aamas}   % submission
+\documentclass[sigconf]{aamas}             % camera-ready
+```
+The copyright block in AAMAS_2026_sample.tex is marked "do not change" and
+must be carried over, with the year/venue updated for 2027 when known.
