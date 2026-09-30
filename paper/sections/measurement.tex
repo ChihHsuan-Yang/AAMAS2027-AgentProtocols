@@ -2,20 +2,16 @@
 \label{sec:measurement}
 
 The two clause measures were hand-adjudicated against definitions frozen
-\emph{before} the adjudication sheet was opened, so they could not be tuned to
-flatter the automated scores. Both clear a pre-set agreement threshold of
-$0.80$: \Pone{} reaches agreement $0.903$ and $\kappa=0.806$ on $n=72$, and
-\Etwo{} agreement $0.923$ and $\kappa=0.843$ on $n=13$.
-
-The error structure matters more than those figures. \Pone{} agreement
-\emph{fell} from $0.967$ at $n=30$ to $0.903$ at $n=72$ as adjudication
-continued, and we report the final figure; its residual errors point in
-\emph{opposite} directions, so they do not bias the actor comparison
-consistently. One systematic error was repaired and one proposed fix
-rejected: a \Pone{} variant adding a symbolic-result detector \textbf{was
-rejected when agreement fell to $0.694$}, the detector having fired on 9 of 9
-messages judged compliant including the contract's \emph{required}
-answer-form section --- penalizing compliance with the contract it was
-scoring. Collapse, which carries the headline, is checked separately against a
-model adjudication --- outcome-blind but not condition-blind --- and
-stress-tested in \S\ref{subsec:collapse}.
+\emph{before} the adjudication sheet was opened, so they could not be tuned
+to flatter the automated scores. Both clear a pre-set agreement threshold of
+$0.80$: \Pone{} reaches $0.903$ with $\kappa=0.806$ on $n=72$, \Etwo{}
+$0.923$ and $\kappa=0.843$ on $n=13$. \Pone{} agreement \emph{fell} from
+$0.967$ at $n=30$ as adjudication continued, and we report the final figure;
+its residual errors point in \emph{opposite} directions, so they do not bias
+the actor comparison. One proposed fix was rejected: adding a
+symbolic-result detector \textbf{dropped agreement to $0.694$}, having fired
+on 9 of 9 messages judged compliant including the contract's \emph{required}
+answer-form section --- penalizing compliance with the contract it scored.
+Collapse, which carries the headline, is checked separately against a model
+adjudication --- outcome-blind but not condition-blind --- in
+\S\ref{subsec:collapse}.

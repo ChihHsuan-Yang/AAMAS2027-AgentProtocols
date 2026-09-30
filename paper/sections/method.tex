@@ -1,14 +1,15 @@
 \section{Intervention}
 \label{sec:method}
 
-To ask whether organization is load-bearing we vary it in both directions from
-one baseline: remove it, and enforce it. All arms share three agents, the same
-interaction order (Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer),
-message-passing graph, total call budget, verifier and verifier prompt, retry
-budget, decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
-stopping rule, and grading; every trajectory in the frozen snapshot carries
-the identical budget record. This makes the comparison a test of organization
-rather than of scale.
+To ask whether organization is load-bearing we vary it in both directions
+from one baseline: remove it, and enforce it. All arms share three agents,
+the same interaction order
+(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), message-passing
+graph, total call budget, verifier and verifier prompt, retry budget,
+decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
+stopping rule and grading; every trajectory in the frozen snapshot carries
+the identical budget record. The comparison is therefore a test of
+organization, not of scale.
 
 \paragraph{Arm~A --- soft-role \PER{} (control).} Role prompts as ordinarily
 written. The organization as specified.
@@ -38,7 +39,7 @@ attrition in \S\ref{subsec:enforce}.
 \paragraph{Arm~C$'$ --- partial context control.} Arm~C with shared history
 restored in all three role templates; schema, routing and budgets unchanged.
 Matching C and A exactly would require feeding raw prose back in, dissolving
-the constraint that defines the arm.
+the constraint defining the arm.
 
 \paragraph{Single-agent reference.} A budget-matched single-agent protocol on
 the same problems, drawn from a previously released corpus rather than this
@@ -58,27 +59,28 @@ lose by producing fewer answers. One instrumentation gap escaped this
 discipline (\S\ref{subsec:logging}).
 
 All endpoints were fixed in writing and committed before any intervention
-data existed. Units are (problem, actor) pairs; all arms run on the same
+data existed. Units are (problem, actor) pairs; all arms run the same
 problems, so every test is paired with bootstrap clustering by problem.
 P1--P5 were pre-registered to carry a Holm correction; it is applied to the
-two families that yield p-values (P3's per-actor contrasts and P4's three
-interactions) and alters no verdict (\S\ref{sec:results}). P1, P2 and P5
-are reported as effects with intervals and carry no p-value. \textbf{P1} intervention $\rightarrow$ fidelity (also the
-manipulation check); \textbf{P2} actor $\times$ intervention on fidelity;
-\textbf{P3} intervention $\rightarrow$ accuracy; \textbf{P4} actor $\times$
-intervention on accuracy, \emph{the primary test of the original thesis};
-\textbf{P5} $\Delta$fidelity versus $\Delta$outcome, association only.
+two families that yield p-values (P3's per-actor contrasts, P4's three
+interactions) and alters no verdict (\S\ref{sec:results}); P1, P2 and P5 are
+reported as effects with intervals and carry no p-value. \textbf{P1}
+intervention $\rightarrow$ fidelity (also the manipulation check);
+\textbf{P2} actor $\times$ intervention on fidelity; \textbf{P3}
+intervention $\rightarrow$ accuracy; \textbf{P4} actor $\times$ intervention
+on accuracy, \emph{the primary test of the original thesis}; \textbf{P5}
+$\Delta$fidelity versus $\Delta$outcome, association only.
 
-Two things belong here rather than in Results, because they concern
-provenance. \textbf{First, P4 is null} and we report it as the failure of the
-thesis it was written to test. \textbf{Second, the A-versus-B contrast this
-paper is organized around was pre-registered as secondary and exploratory},
-and is labeled post-hoc everywhere. The pre-registered P1 manipulation
-objective --- that enforcement would drive Planner
-\emph{computation}-abstention to ${\approx}1.0$ --- also \textbf{failed},
-naming a clause the intervention does not enforce: the schema forbids emitting
-an \emph{answer}, and nothing stops a Planner writing $=1/27$. It was
-re-designated to answer authorship (\S\ref{subsec:enforce}).
+Two things belong here rather than in Results, concerning provenance.
+\textbf{First, P4 is null} and we report it as the failure of the thesis it
+was written to test. \textbf{Second, the A-versus-B contrast this paper is
+organized around was pre-registered as secondary and exploratory}, and is
+labeled post-hoc everywhere. The pre-registered P1 manipulation objective ---
+that enforcement would drive Planner \emph{computation}-abstention to
+${\approx}1.0$ --- also \textbf{failed}, naming a clause the intervention
+does not enforce: the schema forbids emitting an \emph{answer}, and nothing
+stops a Planner writing $=1/27$. It was re-designated to answer authorship
+(\S\ref{subsec:enforce}).
 
 Exclusions were fixed in advance: \textbf{unparseable trajectories count as
 incorrect rather than dropped} --- the rule that decides

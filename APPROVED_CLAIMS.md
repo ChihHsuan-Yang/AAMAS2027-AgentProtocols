@@ -68,10 +68,22 @@ associational, never causal.
 ### A6. Enforcement restores organization. It restores RECOVERY only for Llama-3.3.
 **CORRECTED 2026-09-30 after STATISTICAL_AUDIT found a FATAL denominator bug.**
 The recovery denominator was implemented as `graded(r) and fp==0`, which
-silently dropped 173 trajectories that received a first (incorrect) verdict
-and then died in regeneration. 173 of 173 have fp==0 — structural, since a
+silently dropped trajectories that received a first (incorrect) verdict and
+then died in regeneration. **ALL of them have fp==0** — structural, since a
 PASS on the first verdict ends the loop. They meet the definition and score 0
 under pre-registered scoring.
+
+**Three counts circulate; each is right for its own scope. Quote the one that
+matches the sentence you are writing:**
+
+| scope | n |
+|---|---|
+| **Arm C only** — use this for Arm C's recovery denominator | **150** |
+| Arm C + Arm C′ | 173 |
+| all arms (A 1, B 4, C 150, C′ 23) | 178 |
+
+Per-cell recovery denominators gained exactly 82 + 51 + 17 = 150, which is
+the Arm C figure. A6's sentence is scoped to Arm C, so it says **150**.
 
 Corrected recovery: gemma-4 **0.314** (was 0.412), gpt-oss **0.395** (was
 0.461), Llama **0.139** (was 0.150). Arms A and B move by <= 0.002.
@@ -198,3 +210,20 @@ Explicit Error Flagging". Nearest neighbour found by the forward-citation
 search. Single-agent, chat-template message roles, no recovery conditional,
 no budget matching — but it relabels roles byte-identically and moves
 explicit-correction rate 23-93pp. Cite it first rather than be handed it.
+
+
+### A11. Answer-authorship (Arm C manipulation check) — AXIS WAS INVERTED.
+`FINAL_TABLES.py` T11 prints a column named **`authored-free`**, computed as
+`au.append(not authored)`. It is a FREEDOM rate, not an authorship rate. The
+manuscript had read it as authorship and reported Arm B planners authoring in
+0.014 / 0.084 / 0.042 — the exact complement of the truth.
+
+**Correct: Arm B planners author an answer in 0.986 / 0.916 / 0.958**
+(gemma-4 / gpt-oss / Llama-3.3). Cross-checks against T8's independent planner
+column (0.979 / 0.898 / 0.889, same direction, same magnitude). Arm C is
+0.000 in all three actors, which is the manipulation check passing.
+
+Caught by the manuscript worker, 2026-09-30. Note the error was undetectable
+from the number alone — 0.014 is a plausible-looking authorship rate for a
+role-respecting planner. It was only visible by reading the code that produced
+the column.
