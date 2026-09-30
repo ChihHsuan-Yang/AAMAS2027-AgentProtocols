@@ -1,0 +1,280 @@
+{
+  "confusion": {
+    "tp": 22,
+    "fn": 0,
+    "fp": 0,
+    "tn": 8
+  },
+  "cases": [
+    {
+      "uid": "scibench:atkins:e1.1(a)(a)",
+      "gold": "24 $\\mathrm{atm}$",
+      "candidate": "2431.8 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "(no correction needed)"
+    },
+    {
+      "uid": "scibench:atkins:e1.1(a)(b)",
+      "gold": "22 $\\mathrm{atm}$",
+      "candidate": "2229.15 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "The answer matches the expected value (unit conversion is correct)."
+    },
+    {
+      "uid": "scibench:atkins:e1.11(a)",
+      "gold": "169 $\\mathrm{g} \\mathrm{mol}^{-1}$",
+      "candidate": "0.169 kg mol^-1",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.12(a)",
+      "gold": "-273 $^{\\circ} \\mathrm{C}$",
+      "candidate": "-273.0000 ^\\circ C",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": "The answer matches the expected value and unit."
+    },
+    {
+      "uid": "scibench:atkins:e1.14(a)(a)",
+      "gold": "0.0761 $\\mathrm{kg} \\mathrm{~m}^5 \\mathrm{~s}^{-2} \\mathrm{~mol}^{-2}$",
+      "candidate": "0.0761 kg m^5 s^-2 mol^-2",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.14(a)(b)",
+      "gold": "0.0000226 $\\mathrm{~m}^3 \\mathrm{~mol}^{-1}$",
+      "candidate": "2.2600e-05 m^3 mol^-1",
+      "expect": 1,
+      "kind": "sci_notation",
+      "got": 1,
+      "hint": "The answer matches the required value and units."
+    },
+    {
+      "uid": "scibench:atkins:e1.15(a)(a)",
+      "gold": "0.88",
+      "candidate": "0.8800",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": "The submitted value matches the expected compression factor."
+    },
+    {
+      "uid": "scibench:atkins:e1.15(a)(b)",
+      "gold": "1.2 $\\mathrm{dm}^3 \\mathrm{~mol}^{-1}$",
+      "candidate": "0.0012 m^3 mol^-1",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "The answer matches the expected value (unit conversion is correct)."
+    },
+    {
+      "uid": "scibench:atkins:e1.16(a)",
+      "gold": "140 $\\text{atm}$",
+      "candidate": "14185.5 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "The answer matches the expected value (unit conversion is correct)."
+    },
+    {
+      "uid": "scibench:atkins:e1.17(a)(a)",
+      "gold": "50.7 $\\mathrm{atm}$",
+      "candidate": "5137.18 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "The answer matches the expected value when converted to the appropriate pressure unit."
+    },
+    {
+      "uid": "scibench:atkins:e1.17(a)(b)",
+      "gold": "35.2 $\\mathrm{atm}$",
+      "candidate": "3566.64 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "correct value and unit conversion."
+    },
+    {
+      "uid": "scibench:atkins:e1.18(a)(c)",
+      "gold": "3 $\\mathrm{atm}$",
+      "candidate": "303.975 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "The answer matches the expected value (correct magnitude and unit conversion)."
+    },
+    {
+      "uid": "scibench:atkins:e1.19(a)(b)",
+      "gold": "0.118 $\\mathrm{nm}$",
+      "candidate": "0.1180 nm",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.2(a)(a)",
+      "gold": "3.42 $ \\mathrm{bar}$",
+      "candidate": "3.4200 bar",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.2(a)(b)",
+      "gold": "3.38 $\\mathrm{atm}$",
+      "candidate": "342.478 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": "correct value, just expressed in kPa instead of atm."
+    },
+    {
+      "uid": "scibench:atkins:e1.20(a)(a)",
+      "gold": "1410 $\\mathrm{K}$",
+      "candidate": "1.4100e+03 K",
+      "expect": 1,
+      "kind": "sci_notation",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.20(a)(b)",
+      "gold": "0.139 $\\mathrm{nm}$",
+      "candidate": "0.1390 nm",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.22(a)",
+      "gold": "0.66",
+      "candidate": "0.6600",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": "The submitted value matches the expected compression factor."
+    },
+    {
+      "uid": "scibench:atkins:e1.3(a)",
+      "gold": "30 $\\mathrm{lb} \\mathrm{in}^{-2}$",
+      "candidate": "30.0000 lb in^-2",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.4(a)",
+      "gold": "0.042 $\\text{atm}$",
+      "candidate": "4.25565 kPa",
+      "expect": 1,
+      "kind": "unit_conversion",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.5(a)",
+      "gold": "0.5 $\\text{m}^3$",
+      "candidate": "0.5000 m^3",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": "(no issues)"
+    },
+    {
+      "uid": "scibench:atkins:e1.6(a)",
+      "gold": "102 $\\mathrm{kPa}$",
+      "candidate": "102.0000 kPa",
+      "expect": 1,
+      "kind": "extra_precision",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e1.7(a)",
+      "gold": "8.3147 $\\mathrm{JK}^{-1} \\mathrm{~mol}^{-1}$",
+      "candidate": "10.3934 JK^-1 mol^-1",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The numerical value is significantly higher than expected (off by more than a few percent)."
+    },
+    {
+      "uid": "scibench:atkins:e1.9(a)",
+      "gold": "6.2 $\\text{kg}$",
+      "candidate": "7.75 kg",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The numeric value is significantly higher than expected (off by about 25 %). Check the calculation of water‑vapour mass, especially the use of saturation vapor pressure and the 60 % relative humidity "
+    },
+    {
+      "uid": "scibench:atkins:e2.1(a)(a)",
+      "gold": "2600 $\\mathrm{J}$",
+      "candidate": "3250 J",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The computed work is off by a noticeable amount (about 25 % too high), indicating an incorrect value was used for the gravitational acceleration."
+    },
+    {
+      "uid": "scibench:atkins:e2.1(a)(b)",
+      "gold": "420 $\\mathrm{J}$",
+      "candidate": "525 J",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The numeric value is significantly higher than expected (off by about 25%)."
+    },
+    {
+      "uid": "scibench:atkins:e2.10(a)",
+      "gold": "-194 $\\mathrm{~J}$",
+      "candidate": "-242.5 J",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The computed work magnitude is significantly different from the expected value."
+    },
+    {
+      "uid": "scibench:atkins:e2.11(a)",
+      "gold": "22 $\\text{kPA}$",
+      "candidate": "27.5 kPA",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The numerical value is significantly different from the expected result."
+    },
+    {
+      "uid": "scibench:atkins:e2.12(a)(a)",
+      "gold": "30 $\\mathrm{J} \\mathrm{K}^{-1} \\mathrm{~mol}^{-1}$",
+      "candidate": "37.5 J K^-1 mol^-1",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The numeric value is off by a substantial amount (incorrect magnitude)."
+    },
+    {
+      "uid": "scibench:atkins:e2.12(a)(b)",
+      "gold": "22 $\\mathrm{J} \\mathrm{K}^{-1} \\mathrm{~mol}^{-1}$",
+      "candidate": "27.5 J K^-1 mol^-1",
+      "expect": 0,
+      "kind": "near_miss_25pct",
+      "got": 0,
+      "hint": "The numeric value is significantly different from the expected result."
+    }
+  ]
+}

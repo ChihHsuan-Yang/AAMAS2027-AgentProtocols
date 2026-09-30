@@ -24,8 +24,8 @@ arm-contrastive number.**
 
 Primary evidence is therefore the MECHANICAL measures, which involve no judge:
 functional collapse 0.976 / 0.846 / 0.872 in Arm B vs 0.000 / 0.120 / 0.000 in
-Arm A; and content duplication as excess over a null pairing (+0.291 gemma-4,
-+0.300 Llama; gpt-oss -0.093, uninstrumented per F13).
+Arm A; and content duplication as excess over a null pairing (+0.290 gemma-4,
++0.287 Llama; gpt-oss -0.093, uninstrumented per F13).
 
 The adjudication (Arm B 0.964 vs Arm A 0.000, Arm C 0.136) is reported as a
 stability-checked, outcome-blind second opinion, with the leak disclosed.
@@ -167,7 +167,7 @@ null. Say which is which.
 
 - Recovery is oracle-gated. No cell recovers before the first oracle verdict.
 - F13 logging defect: gpt-oss's Arm B planner is UNINSTRUMENTED (2.85 ch/s vs 195 in its own Arm A), not abstaining.
-- F18 scoring defect: 54 trajectories under-credited; positive control 0 of 10,734.
+- F18 scoring defect: 62 trajectories under-credited; positive control 0 of 10,734.
 - Every conditional analysis is post-treatment.
 - Adjudication is MODEL adjudication, not human annotation, not ground truth.
 
@@ -227,3 +227,46 @@ Caught by the manuscript worker, 2026-09-30. Note the error was undetectable
 from the number alone — 0.014 is a plausible-looking authorship rate for a
 role-respecting planner. It was only visible by reading the code that produced
 the column.
+
+---
+
+## DRIFT AUDIT 2026-09-30 (HF Data Steward)
+
+The steward compared every number it was about to publish against canonical
+output and found this file lagging in two places. **`APPROVED_CLAIMS.md`
+governs what may be claimed, so a stale number here is more dangerous than a
+stale number in a note** — workers are instructed to follow it over their own
+derivations.
+
+| quantity | this file said | canonical | fixed |
+|---|---|---|---|
+| duplication excess B$-$A | +0.291 / +0.300 | **+0.290 / +0.287** | yes |
+| F18 under-credited | 54 | **62** | yes |
+| F18 mismatched | 409 | **509** | yes |
+
+Both moved when the `is_fpw()` denominator fix landed and I updated the
+manuscript without re-deriving this file. `paper/` already carried the
+canonical values; this file was the stale artifact, which is the reverse of
+the usual direction and worth noting.
+
+**Rule going forward: after any change to `FINAL_TABLES.py`, re-derive this
+file, not just the manuscript.**
+
+### Two instrumentation facts the steward established that we did not know
+
+1. **`config_version` does not hash the logging code.** It is byte-identical
+   across the F13 logger-fix commit, so it cannot distinguish instrumented
+   from uninstrumented rows. Measured directly: gpt-oss Arm B planner median
+   is 37 chars before the fix and 36 after — **the fix reached no released
+   row**. The release is therefore uniform, which is good, but the field
+   cannot be used to check that.
+2. **The two `config_version` values (9,600 vs 2,000 rows) differ ONLY by the
+   Arm C′ addition.** Recomputed at each source commit; A/B/C settings are
+   byte-identical, so the arms are poolable.
+
+### Licensing correction
+The old card claimed "only `problem_uid` is redistributed". **False for the
+trace layer** — agents restate problem text, so it appears verbatim in
+`role_messages.text` (16 of 606 checked problems; higher in `raw/`). Gold
+answers are genuinely absent. Apache-2.0 permits this; it is now stated
+rather than denied.

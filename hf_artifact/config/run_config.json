@@ -1,0 +1,175 @@
+{
+ "_note": "Exact held-constant experimental configuration, read from experiments/runner.py module constants at build time. Identical across all four arms except `visibility`, which IS the Arm C/C' manipulation.",
+ "config_version": {
+  "_warning": "TWO config_version values appear in this release. Neither is 'the' configuration; see config_versions below.",
+  "values": {
+   "e3afa39849c1b980": {
+    "rows": 9600,
+    "file": "campaign_v2.jsonl",
+    "arms": [
+     "A",
+     "B",
+     "C"
+    ],
+    "actors": [
+     "gemma-4-31B-it",
+     "gpt-oss-120b"
+    ],
+    "source_commit": "60fc60d",
+    "note": "the main 2x3 campaign; VISIBILITY had no 'Cp' entry yet"
+   },
+   "231b8c4fe205d04b": {
+    "rows": 2000,
+    "files": [
+     "actor3.jsonl",
+     "armCp.jsonl"
+    ],
+    "arms": [
+     "A",
+     "B",
+     "C",
+     "Cp"
+    ],
+    "actors": [
+     "Llama-3.3-70B-Instruct",
+     "gemma-4-31B-it",
+     "gpt-oss-120b"
+    ],
+    "source_commit": "8420b8d (unchanged through a21e057)",
+    "note": "third actor + the Arm C' context control; adding the Cp visibility entry changed the hash"
+   }
+  },
+  "what_differs": "ONLY the addition of the 'Cp' key to the VISIBILITY dict (and the Cp prompts). The A/B/C prompts, all three JSON schemas, temperature, max_tokens, and every call budget are BYTE-IDENTICAL across the two hashes \u2014 verified by recomputing the hash at each commit. So A/B/C trajectories from the two files are directly poolable; the hash differs because the config object grew a fourth arm, not because any A/B/C setting changed.",
+  "verification": "Recomputed config_version_hash() from experiments/runner.py at commits 60fc60d, 8420b8d and a21e057 in a clean checkout; reproduced e3afa39849c1b980 and 231b8c4fe205d04b exactly, matching the values recorded in the trace rows.",
+  "KNOWN LIMITATION \u2014 config_version does NOT cover the logger": "config_version_hash() hashes prompts, schemas and decoding/budget knobs. It does NOT hash the logging code. Commit a21e057 ('F13 logger fix') changed how hidden reasoning is captured and the hash did NOT change (231b8c4fe205d04b before and after). config_version therefore CANNOT be used to tell instrumented rows from uninstrumented ones. Measured directly instead: gpt-oss Arm B planner median visible length is 37 chars before the fix commit timestamp and 36 chars after, so the fix did NOT take effect for any frozen row. Every released trajectory is uninstrumented in the F13 sense. Use chars_per_sec, not config_version, to detect F13."
+ },
+ "config_version_definition": "sha256[:16] over every prompt string + all three JSON schemas + the held-constant knobs below. Any setup change changes this, so trajectories from different setups can never be silently pooled. Matches the `config_version` column in data/trajectories.parquet.",
+ "backend": {
+  "name": "sophia_vllm",
+  "kind": "self-hosted vLLM OpenAI-compatible endpoint on an HPC cluster",
+  "base_url": "<REDACTED: institutional inference endpoint \u2014 identifies the operating institution; withheld for double-blind review>",
+  "note": "Inference was served by vLLM behind an OpenAI-compatible chat-completions API. The endpoint URL and its auth helper are redacted; no credential is present anywhere in this artifact."
+ },
+ "actor_models": [
+  "openai/gpt-oss-120b",
+  "google/gemma-4-31B-it",
+  "meta-llama/Llama-3.3-70B-Instruct"
+ ],
+ "evaluator_model": "openai/gpt-oss-120b",
+ "evaluator_note": "The oracle grader. NOTE it is the same checkpoint as one of the three actors (openai/gpt-oss-120b); the self-grading question is addressed in SCHEMA.md and the grader noise floor is reported in the card.",
+ "decoding": {
+  "temperature": 0.0,
+  "max_tokens": 8192,
+  "max_tokens_note": "raised from 4096 to 8192 mid-design (before the frozen campaign) because 74% of Arm C rejections were finish_reason=length"
+ },
+ "deliberation_budget": {
+  "max_outer_rounds": 3,
+  "inner_rounds": 2,
+  "total_cycles": 6,
+  "identical_across_arms": true,
+  "note": "3 outer x 2 inner = 6 deliberation cycles, held by construction in every arm. This is what rules out 'premature stopping' as an explanation (APPROVED_CLAIMS A4)."
+ },
+ "call_budgets": {
+  "max_actor_calls": 30,
+  "max_evaluator_calls": 6,
+  "max_regenerations_per_turn": 3,
+  "max_regenerations_note": "Arm C / C' only. Exhausting it is the attrition mechanism; see the card's Arm C attrition defect.",
+  "max_transport_retries": 4,
+  "transport_note": "per call, on 429/503/timeout; transport retries are NOT regenerations and do not count against the Arm C allowance",
+  "request_timeout_s": 300.0
+ },
+ "role_order": [
+  "planner",
+  "executor",
+  "reviewer"
+ ],
+ "visibility_policy_per_arm": {
+  "A": {
+   "planner": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "executor": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "reviewer": [
+    "problem",
+    "shared_history",
+    "advice"
+   ]
+  },
+  "B": {
+   "planner": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "executor": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "reviewer": [
+    "problem",
+    "shared_history",
+    "advice"
+   ]
+  },
+  "C": {
+   "planner": [
+    "problem",
+    "previous_plan",
+    "advice"
+   ],
+   "executor": [
+    "problem",
+    "parsed_plan",
+    "advice"
+   ],
+   "reviewer": [
+    "problem",
+    "parsed_plan",
+    "parsed_execution",
+    "advice"
+   ]
+  },
+  "Cp": {
+   "planner": [
+    "problem",
+    "shared_history",
+    "previous_plan",
+    "advice"
+   ],
+   "executor": [
+    "problem",
+    "shared_history",
+    "parsed_plan",
+    "advice"
+   ],
+   "reviewer": [
+    "problem",
+    "shared_history",
+    "parsed_plan",
+    "parsed_execution",
+    "advice"
+   ]
+  }
+ },
+ "visibility_note": "THIS IS THE MANIPULATION. A and B are byte-identical in visibility (both see problem + shared_history + advice) and differ ONLY in prompt text. Arm C replaces the executor's view of the planner's raw text with the PARSED PLAN OBJECT; Arm C' is Arm C with shared_history restored, isolating context loss from schema enforcement. Measured: Arm C planner prompts average 1,530 chars vs Arm A's 14,186.",
+ "corpus": {
+  "benchmark_id": "omnimath2",
+  "domain": "math",
+  "problems_source": "<REDACTED local path>: the Omni-MATH-2 slice of the upstream SciAgentTrace release registry",
+  "n_problems": 1600,
+  "problem_manifest": "manifests/problem_sample.json (problem_uid list only)"
+ },
+ "second_domain_slot": {
+  "status": "NOT PRESENT IN v1.0.0",
+  "planned_benchmark": "SciBench",
+  "see": "config/SECOND_DOMAIN_SLOT.md"
+ },
+ "config_version_note_for_joining": "data/trajectories.parquet carries the per-row config_version; group by it before pooling if your analysis depends on Arm C' existing."
+}

@@ -1,0 +1,88 @@
+{
+ "executor": {
+  "additionalProperties": false,
+  "properties": {
+   "answer": {
+    "minLength": 1,
+    "type": "string"
+   },
+   "derivation": {
+    "minLength": 1,
+    "type": "string"
+   }
+  },
+  "required": [
+   "derivation",
+   "answer"
+  ],
+  "type": "object"
+ },
+ "planner": {
+  "additionalProperties": false,
+  "properties": {
+   "dependencies": {
+    "items": {
+     "type": "string"
+    },
+    "minItems": 0,
+    "type": "array"
+   },
+   "required_quantities": {
+    "items": {
+     "type": "string"
+    },
+    "minItems": 1,
+    "type": "array"
+   },
+   "strategy": {
+    "items": {
+     "type": "string"
+    },
+    "minItems": 1,
+    "type": "array"
+   },
+   "subproblems": {
+    "items": {
+     "type": "string"
+    },
+    "minItems": 1,
+    "type": "array"
+   }
+  },
+  "required": [
+   "subproblems",
+   "strategy",
+   "dependencies",
+   "required_quantities"
+  ],
+  "type": "object"
+ },
+ "reviewer": {
+  "additionalProperties": false,
+  "properties": {
+   "critique": {
+    "minLength": 0,
+    "type": "string"
+   },
+   "target": {
+    "minLength": 0,
+    "type": "string"
+   },
+   "verdict": {
+    "enum": [
+     "accept",
+     "revise_plan",
+     "revise_execution"
+    ],
+    "minLength": 1,
+    "type": "string"
+   }
+  },
+  "required": [
+   "verdict",
+   "target",
+   "critique"
+  ],
+  "type": "object"
+ }
+}

@@ -99,7 +99,7 @@ unique (verified 11,600/11,600).
 | column | type | definition |
 |---|---|---|
 | `f18_mismatch` | bool | `final_answer_held != last_submitted_answer` after normalization. See F18. |
-| `f18_under_credited` | bool | `f18_mismatch` **and** the held answer exactly matches gold **and** the trajectory was graded 0. A demonstrable under-credit. 54 cases. |
+| `f18_under_credited` | bool | `f18_mismatch` **and** the held answer exactly matches gold **and** the trajectory was graded 0. A demonstrable under-credit. 62 cases. |
 | `f13_n_low_chars_per_sec` | int64 | Count of this trajectory's role messages emitting <10 visible characters per second of latency — the F13 signature. See F13. |
 
 ---
@@ -130,7 +130,7 @@ nondeterminism — it cannot be arm bias. That makes it a free, airtight control
 ```python
 g = ec.groupby(["problem_uid", "candidate_normalized"]).verdict.agg(["nunique", "size"])
 multi = g[g["size"] >= 2]
-floor = (multi["nunique"] > 1).sum() / len(multi)     # 24 / 2791 = 0.0086
+floor = (multi["nunique"] > 1).sum() / len(multi)     # 20 / 2790 = 0.0072
 ```
 
 > **Do not group on `final_answer_held`.** An earlier analysis did, and got
@@ -178,7 +178,7 @@ clean without them. Neither is repairable from the logs.
 
 **What happened.** The runner captured the model's `reasoning` field *only when
 `content` was empty*. A short visible `content` alongside a long hidden
-reasoning trace silently discarded the reasoning. This affected **81.8% of
+reasoning trace silently discarded the reasoning. This affected **75.7% of
 gpt-oss Arm B messages**. The flag meant to record the substitution,
 `used_reasoning_fallback`, fired on only 5.7% of them — and on **0 of the 2,302**
 gpt-oss Arm B planner messages under 100 visible characters. *The flag's absence
@@ -226,13 +226,13 @@ answer it *abandoned*.
 
 | actor | arm A | arm B | arm C |
 |---|---|---|---|
-| gemma-4 | 0.171 | 0.000 | 0.244 |
-| gpt-oss | 0.164 | 0.066 | 0.216 |
-| Llama-3.3 | 0.058 | 0.004 | **0.457** |
+| gemma-4 | 0.171 | 0.000 | 0.363 |
+| gpt-oss | 0.164 | 0.066 | 0.258 |
+| Llama-3.3 | 0.058 | 0.004 | **0.478** |
 
-409 mismatched first-pass-wrong trajectories; **54 demonstrably under-credited**
+509 mismatched first-pass-wrong trajectories; **62 demonstrably under-credited**
 (held answer exactly matches gold, graded 0). A positive control on the 10,734
-non-mismatched graded rows finds **0** such cases, so 54 is a clean floor, not
+non-mismatched graded rows finds **0** such cases, so 62 is a clean floor, not
 an artifact of the matching.
 
 **Why Arm B is ~0.** Arm B resubmits on nearly every cycle, so its last held and
@@ -261,8 +261,10 @@ them here would silently break reproduction of the graded verdicts.
 
 ## What is and is not included
 
-**Included: full visible message text** (`role_messages.text`, 36.6 MB of the
-39 MB artifact). The brief allowed dropping it if it pushed the artifact past
+**Included: the raw frozen traces** (`raw/`, 283 MB) as EXACT BYTES, so their
+sha256 verifies against `raw/MANIFEST.json`, plus the derived parquet layer.
+
+**Included: full visible message text** (`role_messages.text`, 36.6 MB). The brief allowed dropping it if it pushed the artifact past
 ~200 MB. It does not: the source is 283 MB of JSONL, but the role text is 178 MB
 raw and compresses to 36.6 MB under zstd in a columnar layout. Since the
 frozen-answer, duplication, and functional-collapse analyses **cannot** be
@@ -276,12 +278,13 @@ so verdicts can be audited rather than trusted.
 
 | excluded | why | consequence |
 |---|---|---|
-| **Problem text and gold answers** | Upstream Omni-MATH-2 content; redistributing the evaluation set here adds contamination surface for no analytic gain. | Join `problem_uid` to the upstream corpus to recover them. Any re-grading analysis needs that join. |
-| **`regeneration_events[].raw_output_truncated_2000chars`** | Pre-validation drafts, truncated at 2,000 chars mid-string. The accepted text is already in `role_messages`, and `n_regeneration_rejects` + `violated_constraint` carry the enforcement-cost signal. | You cannot inspect the *content* of a rejected Arm C draft, only that it was rejected and which constraint it violated. |
-| **`budget`, `visibility_policy` per row** | Constant across the snapshot (1 distinct budget over all 11,600 rows). | Recorded once in this document rather than 11,600 times. |
+| **Gold answers** | Not redistributed anywhere in this release — no gold/reference field exists in any released row. | Any re-grading analysis needs a join to the upstream corpus. |
+| **A `problem_text` column** | The parquet layer references problems by `problem_uid` only. **Note this is not the same as "no upstream text is redistributed"**: agents restate the problem, so problem text appears verbatim inside `role_messages.text` (16 of 606 checked problems) and, at much higher rate, inside the full prompts in `raw/`. See `LICENSES/README.md`. | Join `problem_uid` to the upstream corpus for the canonical text. |
+| ~~`regeneration_events[].raw_output_truncated_2000chars`~~ **NOW INCLUDED** | v1.0.0 ships these in `data/enforcement_events.parquet` and in `raw/`. | Rejected Arm C/C′ drafts *can* be inspected, truncated at 2,000 chars mid-string. |
+| **`budget`, `visibility_policy` per row** | Constant across the snapshot (1 distinct budget over all 11,600 rows). | Recorded once here and in full in `config/run_config.json`, rather than 11,600 times. |
 | **`adjudicate.py`** | It resolves a judge endpoint and a credential helper. | The protocol, rubric, items, key, verdicts, and analysis script are all included; only the transport is not. |
 | **Internal logs, `/tmp` files, transient state** | Per the brief. | — |
-| **HTTP response bodies inside `error`** | One was a block page naming the operating institution — a deanonymization path. | Failure *class* is preserved; only the body is redacted. |
+| **HTTP response bodies inside `error`** — **in the PARQUET layer only** | Some were block pages / tracebacks naming the operating institution — a deanonymization path. | Failure *class* is preserved; only the body is redacted. **`raw/` is NOT redacted**: it ships exact bytes so its sha256 verifies against `MANIFEST.json`, and 14 rows there still carry such a body. This is why the repo is private and why `scripts/preflight_public.py` must pass before it is ever flipped public. |
 
 Constant across the snapshot, recorded here once:
 `budget = {max_actor_calls: 30, max_evaluator_calls: 6, max_regenerations: 3,
@@ -373,3 +376,131 @@ a mismatch; output is deterministic (a rebuild is byte-identical).
 > **4,824** and **195.16**. The note predates the freeze; the canonical analysis
 > output is authoritative and is what this artifact matches. The F13 conclusion
 > is unaffected — it rests on the ~68x ratio, not on either figure.
+
+---
+
+# Added in v1.0.0 — raw traces, config, and two more tables
+
+## `raw/` — the frozen traces, EXACT BYTES
+
+`campaign_v2.jsonl` (9,600 rows), `actor3.jsonl` (1,200), `armCp.jsonl` (800),
+plus `MANIFEST.json`. These are the bytes the analysis ran on, unmodified, so
+each file's sha256 verifies against the manifest. Everything in `data/` is
+derived from them; `scripts/build_artifact.py` and
+`scripts/build_extra_tables.py` both verify the three hashes before deriving
+anything and refuse to run on a mismatch.
+
+One JSON object per line. Top-level keys: `problem_uid`, `arm`, `actor_model`,
+`evaluator_model`, `domain`, `benchmark_id`, `run_id`, `backend`,
+`config_version`, `actor_calls`, `evaluator_calls`, `retries`,
+`regeneration_events`, `stopping_condition`, `final_answer`, `correct`,
+`hard_failure`, `wall_time_s`, `started_at`, `ended_at`, `rounds_used`,
+`inner_used`, `error`, `unavailable_wait_s`, `request_timeout_s`, `budget`,
+`visibility_policy`, `messages`, `evaluator_history`.
+
+**`correct` here is the F18-affected field** — the grade of the last *submitted*
+answer, while `final_answer` is the last answer *held*. See F18 above.
+
+> **`raw/` is not sanitized.** Because these are exact bytes, 14 rows still
+> carry an upstream HTTP error body inside `error` that names the operating
+> institution. Harmless while the repo is private; a deanonymization path if it
+> is not. `scripts/preflight_public.py` must exit 0 before any public flip.
+
+## `config/` — the experimental configuration
+
+`prompts.json` (all 22 prompt strings), `schemas.json` (the three Arm C/C′ JSON
+schemas), `run_config.json` (decoding, budgets, visibility policy, model ids,
+config versions), `SECOND_DOMAIN_SLOT.md`. See `config/README.md` for which
+prompt belongs to which arm.
+
+## `data/enforcement_events.parquet` — 29,796 rows, one per Arm C/C′ validation attempt
+
+Arms A and B contain **0** rows by construction — there is no schema to enforce.
+Arm C has 25,010 and Arm C′ 4,786. Of all attempts, **3,489 are rejections**,
+which reconciles exactly with `trajectories.n_regeneration_rejects` for all
+1,331 affected trajectories (0 mismatches).
+
+| column | type | meaning |
+|---|---|---|
+| `trajectory_key` | str | `problem_uid\|arm\|actor_model`; joins to every other table |
+| `problem_uid`, `arm`, `actor_model` | str | denormalized for filtering |
+| `event_index` | int | position within this trajectory's attempt sequence |
+| `role` | str | `planner` / `executor` / `reviewer` |
+| `outer_round`, `inner_round`, `attempt_index` | int | where in the loop; `attempt_index` > 0 means this is a retry of a rejected turn |
+| `validation_ok` | bool | did the output validate against the role's JSON schema |
+| **`was_rejected`** | bool | `not validation_ok` — **this is the rejection flag**; sum it for enforcement cost |
+| `was_regenerated` | bool | a replacement turn was actually generated (3,169 events). Distinct from `was_rejected`: a rejection on the last allowed attempt exhausts the allowance and is **not** regenerated — that is the attrition mechanism |
+| `violated_constraint` | str | which constraint failed; null when `validation_ok`. Top causes: `answer_leak:final_answer_phrase` (2,220), `json_parse_error` (710), `missing_field:answer` (437) |
+| `validation_detail` | str | validator's message (`valid` when OK) |
+| `n_violations`, `all_violations` | int, JSON str | all violations, not just the first |
+| `soft_signals` | JSON str | non-blocking signals the validator noted |
+| `rejected_output_truncated_2000chars` | str | the raw model output for this attempt, truncated at 2,000 chars **mid-string** |
+| `finish_reason`, `used_reasoning_fallback` | str, bool | as returned by the backend |
+| `latency_s`, `prompt_sha256_12`, `prompt_chars`, `timestamp` | — | call metadata |
+
+**Do not compute an Arm C rejection *rate* per trajectory without deciding your
+denominator.** Attempts, turns and trajectories give different answers, and the
+attrition caveat above applies to any recovery figure you build from this.
+
+## `data/adjudication.parquet` — 513 rows, one per (item × judge repetition)
+
+171 blinded items, 170 judged 3× and **one (`T0016`) judged only 2×**. Long
+form: aggregate to an item before comparing arms.
+
+| column | type | meaning |
+|---|---|---|
+| `item_id` | str | **anonymized item id** (`T0000`…); the only id the judge saw |
+| `repetition_index` | int | 0–2; independent repeated calls on identical input |
+| `judge_model` | str | `claude-opus-5` — a MODEL adjudication, not human annotation |
+| `judge_temperature` | — | **always null**: not recorded by the harness. Do not infer a value |
+| `rubric_version`, `rubric_sha256_12` | str | `RUBRIC_v1`, sha `4f624de5b107` |
+| `prompt_sha256_12`, `judged_at_utc` | str | per-call provenance |
+| `raw_judge_output` | str | **the raw judge output**, verbatim, so parsing can be audited |
+| `judge_error`, `parse_ok` | str, bool | all null / all true in this release |
+| `q1_semantic_redundancy` | YES/NO | do later agents substantially repeat earlier reasoning |
+| `q2_functional_redundancy` | YES/NO | does a later agent fail to add a role-specific function |
+| `q3_new_information` | YES/NO | does any later agent add a derivation, fact, critique or decision |
+| `q4_answer_influence` | YES/NO | does a later agent materially change the answer or method |
+| **`q5_division_of_labour_present`** | YES/NO | the headline judgement. **Mind the polarity: YES means division of labour IS present.** "No division of labour" is `Q5 == "NO"` |
+| `judge_reason` | str | the judge's stated reason |
+| `problem_uid`, `arm`, `actor_model`, `run_id`, `config_version` | str | from `KEY.jsonl` — **the unblinding key**, never shown to the judge |
+| `trajectory_correct` | float | that trajectory's outcome; **null for 4.7%**. The judge was outcome-blind |
+| `automated_collapse_label` | bool | the mechanical `functional_collapse` flag this study validates |
+| `trajectory_key` | str | joins to the other tables; 100% resolve |
+
+**Reproducing the published pooled rates.** Majority vote of `Q5` over
+repetitions per item, then `Q5 == "NO"`:
+
+```python
+import collections, json, pandas as pd
+
+# Tie-break depends on ROW ORDER, so read the verdicts in FILE order.
+# (One item, T0016, has a tied Q5 vote -- see the warning below.)
+V = [json.loads(l) for l in open("adjudication/VERDICTS.jsonl")]
+KEY = {json.loads(l)["tid"]: json.loads(l) for l in open("adjudication/KEY.jsonl")}
+byi = collections.defaultdict(list)
+for v in V:
+    if v.get("parsed"):
+        byi[v["tid"]].append(v["parsed"]["Q5"])
+maj = {t: collections.Counter(q).most_common(1)[0][0] for t, q in byi.items()}
+cells = collections.defaultdict(list)
+for t, m in maj.items():
+    if t in KEY:
+        cells[KEY[t]["arm"]].append(m == "NO")
+for arm in sorted(cells):
+    v = cells[arm]
+    print(f"{arm}: n={len(v)} rate={sum(v)/len(v):.3f}")
+# A: n=42 rate=0.000 | B: n=56 rate=0.964 | C: n=44 rate=0.136 | Cp: n=29 rate=0.172
+```
+
+**This reproduces the published figures exactly, and a convenience one-liner
+over the parquet may not.** `T0016` has only 2 reps and a **tied** Q5 vote — the
+only tie in the study — so the Arm B rate is 0.964 or 0.982 purely according to
+which verdict the tie-break sees first. `collections.Counter.most_common`
+resolves by insertion order, so the result depends on row order: iterating
+`VERDICTS.jsonl` in file order gives 0.964 (the published value), while a
+`pandas.groupby` over `data/adjudication.parquet` re-orders the rows and yields
+0.982. Every other cell is tie-free and agrees under both routes.
+
+**These pooled arm rates carry the condition leak.** They are not blinded
+across arms; see the adjudication defect in `README.md`.

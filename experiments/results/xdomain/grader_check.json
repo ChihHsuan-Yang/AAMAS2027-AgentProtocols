@@ -1,0 +1,471 @@
+{
+  "confusion": {
+    "tp": 20,
+    "fn": 0,
+    "fp": 0,
+    "tn": 20,
+    "unparsed": 0
+  },
+  "per_kind": {
+    "power_of_ten": {
+      "n": 5,
+      "caught": 5
+    },
+    "wrong_value": {
+      "n": 5,
+      "caught": 5
+    },
+    "wrong_sign": {
+      "n": 5,
+      "caught": 5
+    },
+    "incompatible_unit": {
+      "n": 5,
+      "caught": 5
+    }
+  },
+  "config_version": "aed89f28ab338bdb",
+  "evaluator_model": "openai/gpt-oss-120b",
+  "cases": [
+    {
+      "uid": "scibench:stat:Problem 1.4.15",
+      "candidate": "1/16",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "0.0625",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "The answer matches the expected value."
+    },
+    {
+      "uid": "scibench:chemmc:D-4",
+      "candidate": "0.25\\%",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "0.249 %",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "answer has appropriate value and precision."
+    },
+    {
+      "uid": "scibench:matter:35.1(a)",
+      "candidate": "1070 \\text{ kJ/mol}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "1.07 $10^3 \\mathrm{~kJ} \\mathrm{~mol}^{-1}$",
+      "actor": "gemma_4_31b",
+      "protocol": "broadcast",
+      "got": 1,
+      "hint": "(answer matches the expected value and units)"
+    },
+    {
+      "uid": "scibench:atkins:p2.17(a)",
+      "candidate": "239.7 \\text{ kJ mol}^{-1}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "240 $\\mathrm{kJ} \\mathrm{mol}^{-1}$",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "The numeric value and units match the expected answer within rounding tolerance."
+    },
+    {
+      "uid": "scibench:fund:Question 23.25",
+      "candidate": "5.0 \\times 10^{-6} \\mathrm{~C} / \\mathrm{m}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "5 $\\mu \\mathrm{C} / \\mathrm{m}$",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:atkins:e3.5(a)(b)",
+      "candidate": "9.3\\times10^{1}\\ \\text{J K}^{-1}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "+93.4 $\\mathrm{J} \\mathrm{K}^{-1}$",
+      "actor": "gpt_oss_120b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:chemmc:1-11",
+      "candidate": "1.99 \\times 10^{-15} \\text{ J}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "2 $10^{-15} \\mathrm{~J}$",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "The numeric value and units match the expected answer within acceptable precision."
+    },
+    {
+      "uid": "scibench:stat:7.4-5",
+      "candidate": "257",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "257",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "Answer matches the required value."
+    },
+    {
+      "uid": "scibench:diff:page 131-8",
+      "candidate": "\\$2283.63",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "2283.63 $",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:class:9.42 B.",
+      "candidate": "35.8^\\circ",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "36 $^\\circ$",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "The answer is within the acceptable tolerance of the reference value."
+    },
+    {
+      "uid": "scibench:stat:5.3-13",
+      "candidate": "1 - e^{-0.03}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "0.03",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "The provided expression evaluates to the same probability (≈0.03) as the reference answer."
+    },
+    {
+      "uid": "scibench:class:Problem 8.12",
+      "candidate": "76 \\text{ days}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "76 $ \\text { days }$",
+      "actor": "gemma_4_31b",
+      "protocol": "per",
+      "got": 1,
+      "hint": "The answer matches the expected value and units."
+    },
+    {
+      "uid": "scibench:atkins:e1.19(a)(b)",
+      "candidate": "1.18 \\times 10^{-10} \\text{ m}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "0.118 $\\mathrm{nm}$",
+      "actor": "gemma_4_31b",
+      "protocol": "broadcast",
+      "got": 1,
+      "hint": "The numeric value and units are equivalent to the reference answer."
+    },
+    {
+      "uid": "scibench:atkins:e1.17(a)(b)",
+      "candidate": "35.6 \\text{ bar}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "35.2 $\\mathrm{atm}$",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "The numeric value and unit are consistent with the reference after unit conversion."
+    },
+    {
+      "uid": "scibench:thermo:3.5",
+      "candidate": "292\\ \\text{K}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "292 $\\mathrm{~K}$",
+      "actor": "gpt_oss_120b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "Answer matches the expected value."
+    },
+    {
+      "uid": "scibench:atkins:p2.19",
+      "candidate": "41.40\\text{ J K}^{-1}\\text{mol}^{-1}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "41.40 $\\mathrm{J} \\mathrm{K}^{-1} \\mathrm{~mol}^{-1}$",
+      "actor": "gemma_4_31b",
+      "protocol": "broadcast",
+      "got": 1,
+      "hint": ""
+    },
+    {
+      "uid": "scibench:quan:5.8",
+      "candidate": "1",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "1",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "Correct."
+    },
+    {
+      "uid": "scibench:diff:page372-8",
+      "candidate": "16",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "16",
+      "actor": "gemma_4_31b",
+      "protocol": "baseline_llm",
+      "got": 1,
+      "hint": "(correct)"
+    },
+    {
+      "uid": "scibench:quan:10.2",
+      "candidate": "54.7^\\circ",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "54.7 $^{\\circ}$",
+      "actor": "gemma_4_31b",
+      "protocol": "broadcast",
+      "got": 1,
+      "hint": "(answer matches the expected value and unit)"
+    },
+    {
+      "uid": "scibench:atkins:p2.11(b)",
+      "candidate": "\boxed{4.1\text{ kg}}",
+      "expect": 1,
+      "kind": "upstream_correct",
+      "gold": "4.09 $\\text{kg}$",
+      "actor": "gemma_4_31b",
+      "protocol": "broadcast",
+      "got": 1,
+      "hint": "The numeric value and units match the expected answer within acceptable precision."
+    },
+    {
+      "uid": "scibench:thermo:17.21",
+      "candidate": "220 $\\mathrm{~s}$",
+      "expect": 0,
+      "kind": "power_of_ten",
+      "gold": "22 $\\mathrm{~s}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer is off by a factor of ten (incorrect magnitude)."
+    },
+    {
+      "uid": "scibench:chemmc:1-41",
+      "candidate": "3.51 $10^{-18} \\mathrm{~J} / \\alpha \\text {-particle}$",
+      "expect": 0,
+      "kind": "wrong_value",
+      "gold": "1.3 $10^{-18} \\mathrm{~J} / \\alpha \\text {-particle}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The numeric value is off by a factor (wrong magnitude) compared to the expected result."
+    },
+    {
+      "uid": "scibench:fund:Question 21.57",
+      "candidate": "-1.7 $10^8 \\mathrm{~N}$",
+      "expect": 0,
+      "kind": "wrong_sign",
+      "gold": "1.7 $10^8 \\mathrm{~N}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer has an incorrect sign; the force should be given as a positive magnitude."
+    },
+    {
+      "uid": "scibench:class:Problem 8.38",
+      "candidate": "5275 $\\JathrJ{~J} / \\JathrJ{s}$",
+      "expect": 0,
+      "kind": "incompatible_unit",
+      "gold": "5275 $\\mathrm{~m} / \\mathrm{s}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The numeric value is correct but the unit is not a velocity (m / s); it uses an incorrect unit."
+    },
+    {
+      "uid": "scibench:chemmc:1-39",
+      "candidate": "16.02 $10^{-17} \\mathrm{~J} \\cdot$ electron ${ }^{-1}$",
+      "expect": 0,
+      "kind": "power_of_ten",
+      "gold": "1.602 $10^{-17} \\mathrm{~J} \\cdot$ electron ${ }^{-1}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The magnitude is off by a factor of ten (incorrect power of ten)."
+    },
+    {
+      "uid": "scibench:matter:78.10(a)",
+      "candidate": "1449.9 $\\mathrm{s}$",
+      "expect": 0,
+      "kind": "wrong_value",
+      "gold": "537 $\\mathrm{s}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The computed time is off by a large factor (incorrect magnitude)."
+    },
+    {
+      "uid": "scibench:stat:5.6-1",
+      "candidate": "-0.4772",
+      "expect": 0,
+      "kind": "wrong_sign",
+      "gold": "0.4772",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer has the wrong sign; the probability should be positive."
+    },
+    {
+      "uid": "scibench:matter:40.3",
+      "candidate": "44 $10^3$",
+      "expect": 0,
+      "kind": "power_of_ten",
+      "gold": "4.4 $10^3$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer is off by a factor of ten (incorrect magnitude)."
+    },
+    {
+      "uid": "scibench:stat:Problem 1.3.9",
+      "candidate": "1.70673",
+      "expect": 0,
+      "kind": "wrong_value",
+      "gold": "0.6321205588",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The provided answer is not a probability (it exceeds 1); the correct result should be a number between 0 and 1."
+    },
+    {
+      "uid": "scibench:calculus:9.RP.11(a)",
+      "candidate": "9.8 $\\JathrJ{h}$",
+      "expect": 0,
+      "kind": "incompatible_unit",
+      "gold": "9.8 $\\mathrm{h}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "unit formatting issue – the answer’s unit is not correctly expressed as hours."
+    },
+    {
+      "uid": "scibench:atkins:p1.5(c)",
+      "candidate": "-0.0245 $\\mathrm{kPa}$",
+      "expect": 0,
+      "kind": "wrong_sign",
+      "gold": "0.0245 $\\mathrm{kPa}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer has the correct magnitude but the sign is opposite; the sign of the pressure change is incorrect."
+    },
+    {
+      "uid": "scibench:stat:7.3-3",
+      "candidate": "5.061",
+      "expect": 0,
+      "kind": "power_of_ten",
+      "gold": "0.5061",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer is off by a factor of ten (incorrect magnitude)."
+    },
+    {
+      "uid": "scibench:quan:2.27",
+      "candidate": "0.264 $\\JathrJ{~nJ}$",
+      "expect": 0,
+      "kind": "incompatible_unit",
+      "gold": "0.264 $\\mathrm{~nm}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer uses an energy unit (nJ) instead of the required length unit (nm), indicating a mismatch of physical quantity."
+    },
+    {
+      "uid": "scibench:thermo:9.24",
+      "candidate": "1.2582",
+      "expect": 0,
+      "kind": "wrong_value",
+      "gold": "0.466",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The computed mole fraction does not match the expected value; check the application of Raoult’s law and the algebra used to relate vapor‑phase and liquid‑phase compositions."
+    },
+    {
+      "uid": "scibench:fund:Question 23.23",
+      "candidate": "-0.32 $\\mu C$",
+      "expect": 0,
+      "kind": "wrong_sign",
+      "gold": "0.32 $\\mu C$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer has the wrong sign."
+    },
+    {
+      "uid": "scibench:matter:8.1(a)",
+      "candidate": "52 $\\JathrJ{pJ}$",
+      "expect": 0,
+      "kind": "incompatible_unit",
+      "gold": "52 $\\mathrm{pm}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer uses an incorrect or nonsensical unit; the expected unit should be a length unit (e.g., picometers)."
+    },
+    {
+      "uid": "scibench:class:13.6",
+      "candidate": "44 dB",
+      "expect": 0,
+      "kind": "power_of_ten",
+      "gold": "4.4 dB",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer is off by a factor of ten (incorrect magnitude)."
+    },
+    {
+      "uid": "scibench:stat:5.2-5",
+      "candidate": "39.96",
+      "expect": 0,
+      "kind": "wrong_value",
+      "gold": "14.80",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The numeric value is far from the expected result (off by a large factor)."
+    },
+    {
+      "uid": "scibench:diff:page 60-8",
+      "candidate": "-3930 $",
+      "expect": 0,
+      "kind": "wrong_sign",
+      "gold": "3930 $",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer has the wrong sign; it should be positive rather than negative."
+    },
+    {
+      "uid": "scibench:thermo:5.5",
+      "candidate": "57.2 $\\mathrm{~atm}^{-1}$",
+      "expect": 0,
+      "kind": "incompatible_unit",
+      "gold": "57.2 $\\mathrm{~K}^{-1}$",
+      "actor": "-",
+      "protocol": "-",
+      "got": 0,
+      "hint": "The answer uses an incorrect unit (atm⁻¹) instead of the required unit for entropy change."
+    }
+  ]
+}

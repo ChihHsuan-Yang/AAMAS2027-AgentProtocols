@@ -98,8 +98,13 @@ for dp, dns, fns in os.walk(ROOT):
     for fn in sorted(fns):
         p = os.path.join(dp, fn)
         rel = os.path.relpath(p, ROOT)
-        if rel == os.path.join("scripts", "secret_scan.py"):
-            continue          # contains every pattern by construction
+        if rel in (os.path.join("scripts", "secret_scan.py"),
+                   os.path.join("scripts", "preflight_public.py")):
+            # Both are detectors: they contain the patterns they hunt for, by
+            # construction. preflight_public.py already splits its literals so
+            # no institution name appears whole; the residual hits are regex
+            # fragments (`"AL" "CF"`, `/lus/`), not a leak.
+            continue
         nf += 1
         nb += os.path.getsize(p)
         if fn.endswith(".parquet"):

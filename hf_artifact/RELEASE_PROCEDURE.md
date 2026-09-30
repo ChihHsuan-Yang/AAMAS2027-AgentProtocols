@@ -1,184 +1,146 @@
-# Release procedure — DO NOT RUN BEFORE ACCEPTANCE
+# Release procedure — how to flip this dataset public after acceptance
 
-This artifact is **complete and ready to upload**. It has deliberately **not**
-been pushed anywhere. Read the anonymity reasoning before running anything
-below.
+**Current status: PUBLISHED, PRIVATE.**
+`AgentsSci/AAMAS2027-Roles` — private, verified two ways (see below).
 
-Status: **HELD. No HuggingFace repo has been created — not public, not private,
-not gated.**
+Nothing here should be run before the paper is accepted.
 
 ---
 
-## 1. Why it is held
+## Why it is held back
 
-AAMAS reviewing is **double-blind**. Two rules from the official submission
-instructions (verified in `paper_support/aamas_official/PROVENANCE.md`) govern
-this artifact:
+AAMAS 2027 reviewing is **double-blind**, and the hosting organization
+`AgentsSci` **identifies the research group**. That alone deanonymizes the
+submission to anyone who finds the repository.
 
-> "AAMAS reviewing is double-blind."
->
-> "Papers must not include pointers to any supplementary material that is not
-> provided as part of the submission."
+The risk does not require a pointer from the paper. The dataset reproduces the
+paper's tables exactly — 11,600 trajectories, the same three actor models, the
+same 0.222 → 0.051 recovery drop. A reviewer or competitor who encounters a
+public dataset whose numbers match the submission under review has
+deanonymized it, whether or not the PDF ever links here.
 
-A public HuggingFace dataset, created now, under an identifiable account, whose
-numbers match the paper exactly, is a **deanonymization path**. It does not
-require the paper to link to it. A reviewer who searches a distinctive
-figure — `24/2791`, `0.222 → 0.051`, "11,600 trajectories", the F13 chars/sec
-table — lands on the dataset card, and the card's owner is the author. The
-paper does not have to point at the artifact for the artifact to point back at
-the paper.
+So two rules hold for the whole review period:
 
-The upload is also **one command**, and everything it needs is already built.
-There is no schedule pressure that justifies taking the risk early.
+1. **The repository stays private.**
+2. **The HF URL never appears in the anonymous PDF** — not in the abstract, not
+   in a data-availability statement, not in a footnote, not in the
+   supplementary. It belongs only in the private GitHub handoff docs.
 
-### On a private or gated repo — my recommendation, your decision
+An accidental public dataset matching the paper's numbers is a deanonymization
+path that **cannot be undone**: it is indexed, mirrored and cached within
+minutes, and making it private again does not retract it.
 
-You asked me to flag this rather than act on it. **My recommendation is to
-create nothing at all until acceptance.** The reasoning:
+### A second, independent reason this repo cannot be flipped as-is
 
-- A **private** repo is genuinely invisible to reviewers, so the
-  deanonymization risk is near zero *while it stays private*. The real risk is
-  operational: a private repo that must later be flipped public is exactly the
-  kind of state that gets flipped early by accident, and the failure is
-  irreversible — you cannot un-disclose. Holding zero repos has no such failure
-  mode.
-- A **gated** repo is *not* safe. Gated repos are publicly listed and
-  publicly searchable: the card, title, and description are visible before any
-  access request. That is precisely the searchable surface that deanonymizes.
-  **Do not use gating as a substitute for privacy.**
-- A private repo buys essentially nothing the local directory does not already
-  provide. The artifact is built, validated, checksummed, and reproducible on
-  disk. Uploading early only moves the bytes; it does not de-risk the release.
-- One narrow exception, if you want it: AAMAS permits supplementary material as
-  a **single zip ≤ 25 MB**, submitted with the paper and under the same
-  anonymity policy. This artifact is ~39 MB, so it does not fit as-is. A
-  reduced zip (drop `role_messages.parquet`, keep trajectories + evaluator
-  calls + manifests + docs ≈ 2 MB) would fit and is the *anonymity-safe* way to
-  give reviewers the data, because it travels inside the submission rather than
-  sitting on a public host. See §5.
+`raw/` ships the frozen traces as **exact bytes** so their sha256 verifies
+against `MANIFEST.json`. Those bytes include upstream HTTP error bodies, and
+**14 rows name the operating institution** — a CDN block page carrying the
+institution's name in its `<title>`, and a service traceback carrying an
+absolute path under a service account's home directory. (The literal strings
+are deliberately not reproduced in this file; `scripts/preflight_public.py`
+locates them.) The derived parquet layer was sanitized; the raw layer
+deliberately was not, because redacting it would break the hash chain.
 
-If you decide a private repo is worth it anyway, the commands in §3 work
-unchanged with `--private`; just do not remove that flag until §2 is satisfied.
+This is harmless while the repo is private and disqualifying the moment it is
+not. It is enforced by a gate, not by memory — see step 1.
 
 ---
 
-## 2. Preconditions — all must be true before §3
+## The flip, after acceptance
 
-- [ ] Paper **accepted** (not "probably", not "conditionally pending
-      camera-ready"). A rejected or withdrawn paper may be resubmitted to
-      another double-blind venue, and a public artifact deanonymizes that
-      submission too.
-- [ ] Decision is final and you are not resubmitting this work elsewhere blind.
-- [ ] Camera-ready author list settled — the card names the same authors.
-- [ ] Co-authors have agreed to publish the data.
-- [ ] Any institutional data-release or export review completed.
-- [ ] `python3 scripts/validate_artifact.py` passes (181/181).
-- [ ] `python3 scripts/secret_scan.py` exits CLEAN.
-- [ ] `shasum -c CHECKSUMS.txt` passes.
-
----
-
-## 3. The upload — one command after the card edits in §4
+### 1. Clear the anonymity gate — this is a hard blocker
 
 ```bash
-# 0. verify, every time, immediately before upload
-cd hf_artifact
-python3 scripts/validate_artifact.py            # expect: ALL 181 CHECKS PASSED
-python3 scripts/secret_scan.py                  # expect: CLEAN
-shasum -c CHECKSUMS.txt                         # expect: all OK
-
-# 1. authenticate (interactive; never paste a token into a file in this repo)
-huggingface-cli login
-
-# 2. create the repo — PUBLIC, and only after §2 and §4 are done
-huggingface-cli repo create <ORG>/<DATASET-NAME> --type dataset
-
-# 3. upload the whole directory, excluding this file
-huggingface-cli upload <ORG>/<DATASET-NAME> . . \
-    --repo-type dataset \
-    --exclude "RELEASE_PROCEDURE.md" "**/__pycache__/**" ".DS_Store"
+python3 scripts/preflight_public.py          # must exit 0
 ```
 
-`RELEASE_PROCEDURE.md` is excluded because it is an internal process document
-that discusses the review timeline; it is not part of the published dataset.
-
-Then, in the HF web UI: confirm the dataset viewer renders all three configs,
-and confirm the license shows `apache-2.0`.
-
----
-
-## 4. What to change in the dataset card at release
-
-Edit `README.md` before uploading:
-
-1. **Delete the anonymization banner** — the HTML comment block and the line
-   "**Anonymous during review.** Author, institution, and code repository are
-   withheld. They will be added on acceptance."
-2. **Add authors and affiliations** to the YAML front matter and the card body.
-3. **Add the citation block** — the accepted AAMAS 2027 reference, with DOI once
-   the ACM DL assigns one:
-   ```bibtex
-   @inproceedings{<key>,
-     title     = {<title>},
-     author    = {<authors>},
-     booktitle = {Proceedings of the 26th International Conference on
-                  Autonomous Agents and Multiagent Systems (AAMAS 2027)},
-     year      = {2027},
-   }
-   ```
-4. **Add the code repository link** (withheld during review).
-5. **Add funding and acknowledgements** — omitted during review per the
-   anonymity rules.
-6. **Add a "Paper" section** linking to the camera-ready PDF / ACM DL page.
-7. **Keep unchanged**: the F13 and F18 defect disclosures, the adjudication
-   blinding-leak note, the scope and limitations section, and the licensing
-   section. These are the substance of the card. Do not soften them for
-   publication — a consumer who does not read them will draw wrong conclusions,
-   which is the whole reason they are there.
-
-Also update `VERSION`: set `release_status` from `HELD_PENDING_ACCEPTANCE` to
-`PUBLIC`, and record the release date and the HF repo id.
-
----
-
-## 5. Optional: anonymous supplementary zip for the submission itself
-
-If you want reviewers to have the data *during* review, this is the safe route —
-it travels inside the submission and is covered by the same anonymity policy,
-so nothing is publicly searchable.
-
-AAMAS allows a single zip, **≤ 25 MB**. The full artifact is ~39 MB, so drop the
-message text:
+It currently **FAILS**, listing the 14 affected rows. Do not flip public on a
+FAIL, and do not delete the check to get past it. To clear it:
 
 ```bash
-cd hf_artifact
-zip -r ../supplementary.zip . \
-    -x "data/role_messages.parquet" "RELEASE_PROCEDURE.md" \
-       "**/__pycache__/*" ".DS_Store"
-ls -lh ../supplementary.zip          # confirm <= 25MB
+python3 scripts/preflight_public.py --fix    # redacts ONLY the `error` field
+python3 scripts/emit_release_metadata.py     # re-stamp hashes after redaction
+python3 scripts/preflight_public.py          # re-verify: must now PASS
 ```
 
-Before attaching it, confirm the zip is anonymous:
+`--fix` replaces the captured upstream response body with a marker and leaves
+every other byte untouched (the failure *class* is preserved). It then rewrites
+`raw/MANIFEST.json` for the new hashes. **The pre-redaction hashes stay in
+`VERSION.release_history`**, so anything published against v1.0.0 remains
+checkable, and the card must then say the raw traces are byte-exact *except for
+a documented redaction of 14 `error` fields*.
+
+Bump to **1.0.1** when you do this: the released bytes changed.
+
+### 2. Re-run the full verification chain
 
 ```bash
-unzip -l ../supplementary.zip                  # no unexpected files
-python3 scripts/secret_scan.py                 # run on the directory first
+python3 scripts/secret_scan.py               # must print CLEAN (positive control must fire)
+python3 scripts/validate_artifact.py         # must print 181/181
+shasum -c CHECKSUMS.txt                      # every file OK
 ```
 
-Note in the paper that the supplement omits `role_messages.parquet` for size,
-and that the collapse, duplication, and frozen-answer analyses need it — **do
-not** point to an external host for the omitted file, as that is exactly the
-"pointer to supplementary material not provided as part of the submission" the
-instructions forbid.
+`secret_scan.py` plants a known secret and a known leak and **exits non-zero if
+its own patterns fail to catch them** — a clean run therefore means the scanner
+works and found nothing, not merely that it found nothing.
+
+### 3. Flip the repository
+
+```bash
+hf repo settings AgentsSci/AAMAS2027-Roles --repo-type=dataset --private=false
+```
+
+Then confirm anonymously, not from an authenticated session:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' \
+  https://huggingface.co/api/datasets/AgentsSci/AAMAS2027-Roles   # expect 200
+```
+
+### 4. What to change in the dataset card
+
+Only after the flip:
+
+- **Remove** the `ANONYMIZED FOR DOUBLE-BLIND REVIEW` HTML comment at the top.
+- **Remove** "Anonymous during review. Author, institution, and code repository
+  are withheld."
+- **Add** author list, affiliation, funding/grant acknowledgement, and a
+  **BibTeX citation block** for the accepted paper.
+- **Add** the code repository link and the paper DOI / proceedings link.
+- **Un-redact** `config/run_config.json`: `backend.base_url` and
+  `corpus.problems_source` are currently `<REDACTED …>` because they name the
+  institution. Restore them — they are genuinely useful for reproduction. Do
+  **not** restore any credential or auth-helper path; `adjudication/adjudicate.py`
+  stays excluded.
+- **Update** `VERSION.release_status` from
+  `PUBLISHED_PRIVATE_PENDING_ACCEPTANCE` to `PUBLIC`, and clear
+  `public_release_gate`.
+- **Keep everything else exactly as it is.** In particular keep the entire
+  *Known instrumentation defects* section, the superseded-analyses list, and
+  the licensing section. Those are not review-period hedges; they are what makes
+  the data usable.
+
+### 5. Re-verify after the flip
+
+Fresh-download in a clean directory as an anonymous user and re-check hashes
+against `CHECKSUMS.txt`, including one large trace. A CLI exit 0 is not
+evidence that the bytes on the hub are the bytes you built.
 
 ---
 
-## 6. If the paper is rejected
+## If it is published publicly by mistake, before acceptance
 
-**Do not publish.** Return to step 1: the work will most likely go to another
-double-blind venue, and the same reasoning applies unchanged. The artifact
-stays on disk, still valid, still reproducible from the frozen snapshot.
+1. Make it private immediately — `--private=true`.
+2. **Assume it was seen.** Do not assume the window was too short.
+3. Tell the authors at once so they can decide whether to notify the PC. A
+   self-reported anonymity break is recoverable; a discovered one is usually
+   not.
+4. Do not delete the repo and re-create it under a new name as a cover — the
+   deletion does not retract mirrors and the new repo is trivially linked.
 
-If the snapshot is re-frozen in the meantime, re-run
-`scripts/build_artifact.py` (it will refuse to build if the recorded hashes no
-longer match) and regenerate `CHECKSUMS.txt` and `VERSION`.
+## Adding the second domain
+
+The SciBench campaign lands as **v1.1.0**, additively. v1.0.0's files keep
+their bytes and hashes. See `config/SECOND_DOMAIN_SLOT.md`, and note SciBench
+is **MIT**, a different licence from the Apache-2.0 material here — it gets its
+own entry in `LICENSES/registry.json` rather than being absorbed.

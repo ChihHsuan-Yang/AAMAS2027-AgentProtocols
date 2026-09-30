@@ -1,140 +1,121 @@
 {
+ "artifact": "AAMAS2027-Roles",
  "artifact_version": "1.0.0",
- "release_status": "HELD_PENDING_ACCEPTANCE",
- "held_reason": "AAMAS 2027 reviewing is double-blind. A public dataset matching the paper's numbers is a deanonymization path even without a pointer from the paper. No HuggingFace repo has been created. See RELEASE_PROCEDURE.md.",
- "built_utc": "2026-09-30T16:34:27Z",
- "derived_from": {
-  "snapshot": "experiments/results/FROZEN",
-  "frozen_at": "2026-09-30T10:09:30.201557",
-  "total_rows": 11600,
-  "files": {
-   "actor3.jsonl": {
-    "sha256": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
-    "rows": 1200,
-    "bytes": 46037025
-   },
-   "armCp.jsonl": {
-    "sha256": "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4",
-    "rows": 800,
-    "bytes": 23627781
-   },
-   "campaign_v2.jsonl": {
-    "sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130",
-    "rows": 9600,
-    "bytes": 227526687
-   }
-  },
-  "hash_verification": "all 3 source sha256 verified against MANIFEST.json at build time"
- },
  "canonical_analysis": {
-  "script": "analysis/scripts/FINAL_TABLES.py",
+  "note": "FINAL_TABLES.py is the project's sole authority for every manuscript number. This artifact emits the ROWS those numbers are computed over.",
   "output": "analysis/out/FINAL_TABLES_OUTPUT.txt",
-  "note": "Per the project's source-of-truth policy, FINAL_TABLES.py is the sole authority for every manuscript number. This artifact emits the ROWS those numbers are computed over; validate_artifact.py checks 181 of them agree.",
-  "validation": "181/181 PASS"
+  "script": "analysis/scripts/FINAL_TABLES.py",
+  "validation": "scripts/validate_artifact.py -- 181/181 PASS, re-run against the canonical output regenerated 2026-09-30 14:49Z"
  },
- "upstream_corpus": {
-  "name": "Omni-MATH-2",
-  "url": "https://huggingface.co/datasets/martheballon/Omni-MATH-2",
-  "license": "Apache-2.0",
-  "verified": "upstream dataset page license tag 'apache-2.0', cross-checked against the SciAgentTrace license registry",
-  "redistributed_here": "problem_uid identifiers only; no problem text, no gold answers"
- },
- "derived_license": "Apache-2.0",
- "known_defects": {
-  "F13": "gpt-oss Arm B visible content truncated relative to hidden reasoning (81.8% of that cell); used_reasoning_fallback unreliable. See SCHEMA.md.",
-  "F18": "`correct` grades the last SUBMITTED answer, `final_answer` is the last answer HELD; disagree on up to 45.7% of some cells. See SCHEMA.md.",
-  "adjudication_blinding": "Role tokens were renamed (Agent-P/E/R), not removed; presence retains a near-perfect arm signal (42/42 Arm A vs 3/56 Arm B, p=1.5e-24), contradicting PROTOCOL.md's 'residual leaks: 0'. See SCHEMA.md."
- },
- "sanitization": [
-  "trajectories.error: upstream HTTP response bodies redacted (one named the operating institution); failure class preserved",
-  "adjudication/build_sample.py: hardcoded author home path replaced",
-  "adjudication/PROTOCOL.md: internal judge endpoint + credential helper redacted",
-  "adjudication/adjudicate.py: excluded (resolves endpoint + credential helper)"
- ],
- "emitted": {
-  "README.md": {
-   "sha256": "5c03648dc7c063a212134987ba7ca9177d575ff6b973890f161a0882cb3387fe",
-   "bytes": 8386
-  },
-  "RELEASE_PROCEDURE.md": {
-   "sha256": "569ee382efc77f4340a830a049245ad40fd59fe6daaf2e4e09de88dc16d27ec3",
-   "bytes": 7918
-  },
-  "SCHEMA.md": {
-   "sha256": "5343ddc48ea5f3b58aa82c6d7aae46d9389b155ca10b69da9d2f7790863fd668",
-   "bytes": 22573
-  },
-  "adjudication/ITEMS_blinded.jsonl": {
-   "sha256": "997d0185133a12056ec979f33904bb3e62d88caec8742a9e7a3bd93f824af325",
-   "bytes": 732375
-  },
-  "adjudication/KEY.jsonl": {
-   "sha256": "94fa8ee76b5329489f82a1dc6c294be637f4dfb974d07bfe7f1dd9c333539b8c",
-   "bytes": 32187
-  },
-  "adjudication/PROTOCOL.md": {
-   "sha256": "663b4e5a5031fc01c45c9cf2a50da459cd56f5c69b25e4a55135641154fd298c",
-   "bytes": 5549
-  },
-  "adjudication/README.md": {
-   "sha256": "6f39c2cd68bfab9cb4d3f911b181b28002e15789ffc41badfe2d09c0dce7104d",
-   "bytes": 1900
-  },
-  "adjudication/RUBRIC_v1.md": {
-   "sha256": "4f624de5b107394060ebbc720899d4228d0702f7ca33a7edb7e7c853bd66640c",
-   "bytes": 4320
-  },
-  "adjudication/SAMPLING_MANIFEST.json": {
-   "sha256": "3136f194501051efe356237bb448c574cdcda151ee595feed5543db07c0647a6",
-   "bytes": 1027
-  },
-  "adjudication/VERDICTS.jsonl": {
-   "sha256": "a6d18adabbd3f547955b99afdbacccffdf40afc0e5ab2054408c52efd7d3d01e",
-   "bytes": 321061
-  },
-  "adjudication/analyze.py": {
-   "sha256": "2d1876e85d0ae417d17ed048b612bd9dfdfa8e92c007b3b5d66197ec9cd36384",
-   "bytes": 4075
-  },
-  "adjudication/build_sample.py": {
-   "sha256": "417de041df23f04ee6fc14e65e42427cda7b3f7a5212f0a7aa3045255db34b0a",
-   "bytes": 2872
-  },
-  "scripts/build_artifact.py": {
-   "sha256": "dfc78132879a982222e99657d890dc72389131c1cf0b413bbddd7a6112ff1640",
-   "bytes": 16587
-  },
-  "scripts/secret_scan.py": {
-   "sha256": "bef6d2cb97c033fc0987fbdfb06ebd7394d3f643b3313f0eb5d26e989a0b9539",
-   "bytes": 7234
-  },
-  "scripts/validate_artifact.py": {
-   "sha256": "c971b295ac996df19164726267e606ce72965e347c613ec31368011c4bcb9f89",
-   "bytes": 9385
-  },
-  "manifests/FROZEN_MANIFEST.json": {
-   "sha256": "a22635c4b1af2281ee24db7c0031c90cbe06f9167dcb79043c64b6c636d2dc3a",
-   "bytes": 922
-  },
-  "manifests/cell_census.json": {
-   "sha256": "d1a961d8ba7b67f5d00c3b2fb6e751863b281c80d015fc1ee1affc296ea95ac2",
-   "bytes": 1388
-  },
-  "manifests/problem_sample.json": {
-   "sha256": "87861d905f8e01d480ee05ed6a9efc4073d2bd7485012c28319efa3470c7a835",
-   "bytes": 25697
-  },
-  "data/evaluator_calls.parquet": {
-   "sha256": "82bb77bb4cc4037371daeb719db8465c3e98b7c3c95eb163f7ab29cb36f8eede",
-   "bytes": 832733
-  },
-  "data/role_messages.parquet": {
-   "sha256": "0fae868cb9456a44a9d950bb876ef176c002b59117e629b36167001b4b6ff3c3",
-   "bytes": 36614423
-  },
-  "data/trajectories.parquet": {
-   "sha256": "02396ffcb4220f1ce754a2afab042c05461b238909a4a8f87aeffe5bb09ef7d8",
-   "bytes": 566022
+ "emitted_utc": "2026-09-30T22:02:26.208337+00:00",
+ "freeze_commit": "52fec9d68b5c3a2be544389cc36e7b4b99970d7a",
+ "frozen_at": "2026-09-30T10:09:30.201557",
+ "held_reason": "AAMAS 2027 reviewing is double-blind and the hosting org identifies the research group. A public dataset matching the paper's numbers is a deanonymization path even with no pointer from the paper. The repository is PRIVATE. See RELEASE_PROCEDURE.md.",
+ "licensing": "per-source; see LICENSES/README.md and LICENSES/registry.json",
+ "public_release_gate": "scripts/preflight_public.py MUST exit 0 before flipping public. It currently FAILS: 14 raw trace rows carry an upstream HTTP error body naming the operating institution.",
+ "release_history": [
+  {
+   "note": "first release; single domain (competition math, Omni-MATH-2)",
+   "status": "private",
+   "traces": {
+    "actor3.jsonl": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
+    "armCp.jsonl": "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4",
+    "campaign_v2.jsonl": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130"
+   },
+   "version": "1.0.0"
   }
+ ],
+ "release_status": "PUBLISHED_PRIVATE_PENDING_ACCEPTANCE",
+ "released_traces": {
+  "actor3.jsonl": {
+   "actor_models": {
+    "meta-llama/Llama-3.3-70B-Instruct": 1200
+   },
+   "arms": {
+    "A": 400,
+    "B": 400,
+    "C": 400
+   },
+   "backend": [
+    "sophia_vllm"
+   ],
+   "benchmark_id": "omnimath2",
+   "bytes": 46037025,
+   "config_version": {
+    "231b8c4fe205d04b": 1200
+   },
+   "domain": [
+    "math"
+   ],
+   "first_started_at": "2026-09-29T15:47:04.182156+00:00",
+   "last_started_at": "2026-09-29T20:44:16.485658+00:00",
+   "rows": 1200,
+   "run_id": [
+    "actor3-n400"
+   ],
+   "semantic_version": "1.0.0",
+   "sha256": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5"
+  },
+  "armCp.jsonl": {
+   "actor_models": {
+    "google/gemma-4-31B-it": 400,
+    "openai/gpt-oss-120b": 400
+   },
+   "arms": {
+    "Cp": 800
+   },
+   "backend": [
+    "sophia_vllm"
+   ],
+   "benchmark_id": "omnimath2",
+   "bytes": 23627781,
+   "config_version": {
+    "231b8c4fe205d04b": 800
+   },
+   "domain": [
+    "math"
+   ],
+   "first_started_at": "2026-09-28T23:57:50.201018+00:00",
+   "last_started_at": "2026-09-29T05:23:19.490039+00:00",
+   "rows": 800,
+   "run_id": [
+    "armCp-n400"
+   ],
+   "semantic_version": "1.0.0",
+   "sha256": "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4"
+  },
+  "campaign_v2.jsonl": {
+   "actor_models": {
+    "google/gemma-4-31B-it": 4800,
+    "openai/gpt-oss-120b": 4800
+   },
+   "arms": {
+    "A": 3200,
+    "B": 3200,
+    "C": 3200
+   },
+   "backend": [
+    "sophia_vllm"
+   ],
+   "benchmark_id": "omnimath2",
+   "bytes": 227526687,
+   "config_version": {
+    "e3afa39849c1b980": 9600
+   },
+   "domain": [
+    "math"
+   ],
+   "first_started_at": "2026-09-28T23:26:56.570114+00:00",
+   "last_started_at": "2026-09-29T22:29:37.082127+00:00",
+   "rows": 9600,
+   "run_id": [
+    "main-n1600-v2"
+   ],
+   "semantic_version": "1.0.0",
+   "sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130"
+  }
+ },
+ "reserved": {
+  "1.1.0": "second domain (SciBench) -- see config/SECOND_DOMAIN_SLOT.md; added as a new version, never an overwrite of 1.0.0"
  }
 }

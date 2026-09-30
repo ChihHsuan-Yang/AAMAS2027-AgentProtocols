@@ -1,0 +1,278 @@
+{
+ "all_files": {
+  "LICENSES/README.md": {
+   "bytes": 3449,
+   "sha256": "f"
+  },
+  "LICENSES/registry.json": {
+   "bytes": 6095,
+   "sha256": "b"
+  },
+  "README.md": {
+   "bytes": 16613,
+   "sha256": "9"
+  },
+  "RELEASE_PROCEDURE.md": {
+   "bytes": 6243,
+   "sha256": "3"
+  },
+  "SCHEMA.md": {
+   "bytes": 30994,
+   "sha256": "a"
+  },
+  "adjudication/ITEMS_blinded.jsonl": {
+   "bytes": 732375,
+   "sha256": "9"
+  },
+  "adjudication/KEY.jsonl": {
+   "bytes": 32187,
+   "sha256": "9"
+  },
+  "adjudication/PROTOCOL.md": {
+   "bytes": 5549,
+   "sha256": "6"
+  },
+  "adjudication/README.md": {
+   "bytes": 1900,
+   "sha256": "6"
+  },
+  "adjudication/RUBRIC_v1.md": {
+   "bytes": 4320,
+   "sha256": "4"
+  },
+  "adjudication/SAMPLING_MANIFEST.json": {
+   "bytes": 1027,
+   "sha256": "3"
+  },
+  "adjudication/VERDICTS.jsonl": {
+   "bytes": 321061,
+   "sha256": "a"
+  },
+  "adjudication/analyze.py": {
+   "bytes": 4075,
+   "sha256": "2"
+  },
+  "adjudication/build_sample.py": {
+   "bytes": 2872,
+   "sha256": "4"
+  },
+  "config/README.md": {
+   "bytes": 3251,
+   "sha256": "a"
+  },
+  "config/SECOND_DOMAIN_SLOT.md": {
+   "bytes": 2132,
+   "sha256": "2"
+  },
+  "config/prompts.json": {
+   "bytes": 12634,
+   "sha256": "3"
+  },
+  "config/run_config.json": {
+   "bytes": 6749,
+   "sha256": "1"
+  },
+  "config/schemas.json": {
+   "bytes": 1329,
+   "sha256": "9"
+  },
+  "data/adjudication.parquet": {
+   "bytes": 71969,
+   "sha256": "7"
+  },
+  "data/enforcement_events.parquet": {
+   "bytes": 15248760,
+   "sha256": "c"
+  },
+  "data/evaluator_calls.parquet": {
+   "bytes": 832733,
+   "sha256": "8"
+  },
+  "data/role_messages.parquet": {
+   "bytes": 36614423,
+   "sha256": "0"
+  },
+  "data/trajectories.parquet": {
+   "bytes": 566022,
+   "sha256": "0"
+  },
+  "manifests/FROZEN_MANIFEST.json": {
+   "bytes": 922,
+   "sha256": "a"
+  },
+  "manifests/cell_census.json": {
+   "bytes": 1388,
+   "sha256": "d"
+  },
+  "manifests/problem_sample.json": {
+   "bytes": 25697,
+   "sha256": "8"
+  },
+  "raw/MANIFEST.json": {
+   "bytes": 922,
+   "sha256": "a"
+  },
+  "raw/actor3.jsonl": {
+   "bytes": 46037025,
+   "sha256": "f"
+  },
+  "raw/armCp.jsonl": {
+   "bytes": 23627781,
+   "sha256": "0"
+  },
+  "raw/campaign_v2.jsonl": {
+   "bytes": 227526687,
+   "sha256": "e"
+  },
+  "scripts/build_artifact.py": {
+   "bytes": 16587,
+   "sha256": "d"
+  },
+  "scripts/build_extra_tables.py": {
+   "bytes": 7228,
+   "sha256": "2"
+  },
+  "scripts/emit_release_metadata.py": {
+   "bytes": 7209,
+   "sha256": "5"
+  },
+  "scripts/preflight_public.py": {
+   "bytes": 6218,
+   "sha256": "5"
+  },
+  "scripts/secret_scan.py": {
+   "bytes": 7547,
+   "sha256": "a"
+  },
+  "scripts/validate_artifact.py": {
+   "bytes": 9385,
+   "sha256": "c"
+  }
+ },
+ "artifact": "AAMAS2027-Roles",
+ "emitted_utc": "2026-09-30T22:02:26.208337+00:00",
+ "freeze_commit": "52fec9d68b5c3a2be544389cc36e7b4b99970d7a",
+ "frozen_at": "2026-09-30T10:09:30.201557",
+ "released_traces": {
+  "actor3.jsonl": {
+   "actor_models": {
+    "meta-llama/Llama-3.3-70B-Instruct": 1200
+   },
+   "arms": {
+    "A": 400,
+    "B": 400,
+    "C": 400
+   },
+   "backend": [
+    "sophia_vllm"
+   ],
+   "benchmark_id": "omnimath2",
+   "bytes": 46037025,
+   "config_version": {
+    "231b8c4fe205d04b": 1200
+   },
+   "domain": [
+    "math"
+   ],
+   "first_started_at": "2026-09-29T15:47:04.182156+00:00",
+   "last_started_at": "2026-09-29T20:44:16.485658+00:00",
+   "rows": 1200,
+   "run_id": [
+    "actor3-n400"
+   ],
+   "semantic_version": "1.0.0",
+   "sha256": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5"
+  },
+  "armCp.jsonl": {
+   "actor_models": {
+    "google/gemma-4-31B-it": 400,
+    "openai/gpt-oss-120b": 400
+   },
+   "arms": {
+    "Cp": 800
+   },
+   "backend": [
+    "sophia_vllm"
+   ],
+   "benchmark_id": "omnimath2",
+   "bytes": 23627781,
+   "config_version": {
+    "231b8c4fe205d04b": 800
+   },
+   "domain": [
+    "math"
+   ],
+   "first_started_at": "2026-09-28T23:57:50.201018+00:00",
+   "last_started_at": "2026-09-29T05:23:19.490039+00:00",
+   "rows": 800,
+   "run_id": [
+    "armCp-n400"
+   ],
+   "semantic_version": "1.0.0",
+   "sha256": "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4"
+  },
+  "campaign_v2.jsonl": {
+   "actor_models": {
+    "google/gemma-4-31B-it": 4800,
+    "openai/gpt-oss-120b": 4800
+   },
+   "arms": {
+    "A": 3200,
+    "B": 3200,
+    "C": 3200
+   },
+   "backend": [
+    "sophia_vllm"
+   ],
+   "benchmark_id": "omnimath2",
+   "bytes": 227526687,
+   "config_version": {
+    "e3afa39849c1b980": 9600
+   },
+   "domain": [
+    "math"
+   ],
+   "first_started_at": "2026-09-28T23:26:56.570114+00:00",
+   "last_started_at": "2026-09-29T22:29:37.082127+00:00",
+   "rows": 9600,
+   "run_id": [
+    "main-n1600-v2"
+   ],
+   "semantic_version": "1.0.0",
+   "sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130"
+  }
+ },
+ "semantic_version": "1.0.0",
+ "tables": {
+  "data/adjudication.parquet": {
+   "bytes": 71969,
+   "columns": 25,
+   "rows": 513,
+   "sha256": "72e16aedfa0518d6dbcc1497b7d090665b89773a0de311a82f60743496fc8524"
+  },
+  "data/enforcement_events.parquet": {
+   "bytes": 15248760,
+   "columns": 24,
+   "rows": 29796,
+   "sha256": "cf3dd74ccb6fb1cab0c0e2e907ac717240e340ef0fcda07b8880636bf6b9e47a"
+  },
+  "data/evaluator_calls.parquet": {
+   "bytes": 832733,
+   "columns": 13,
+   "rows": 17486,
+   "sha256": "82bb77bb4cc4037371daeb719db8465c3e98b7c3c95eb163f7ab29cb36f8eede"
+  },
+  "data/role_messages.parquet": {
+   "bytes": 36614423,
+   "columns": 24,
+   "rows": 83320,
+   "sha256": "0fae868cb9456a44a9d950bb876ef176c002b59117e629b36167001b4b6ff3c3"
+  },
+  "data/trajectories.parquet": {
+   "bytes": 566022,
+   "columns": 41,
+   "rows": 11600,
+   "sha256": "02396ffcb4220f1ce754a2afab042c05461b238909a4a8f87aeffe5bb09ef7d8"
+  }
+ }
+}

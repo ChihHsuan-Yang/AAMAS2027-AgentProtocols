@@ -1,0 +1,85 @@
+{
+ "_schema": "Machine-readable licence registry for this release. One entry per UPSTREAM source. This release does NOT apply a single blanket licence over source-derived material.",
+ "release": "AAMAS2027-Roles v1.0.0",
+ "derived_artifact_license": {
+  "license_id": "Apache-2.0",
+  "covers": "material authored by us: the normalized parquet layer's structure, the derivation/validation scripts, SCHEMA.md, the dataset card, the manifests, and the adjudication protocol/rubric.",
+  "does_not_cover": "upstream benchmark content, and model-generated text (see below)."
+ },
+ "upstream_sources": [
+  {
+   "benchmark_id": "omnimath2",
+   "source_dataset": "Omni-MATH-2 filtered evaluation slice",
+   "source_url": "https://huggingface.co/datasets/martheballon/Omni-MATH-2",
+   "license_id": "Apache-2.0",
+   "training_use_policy": "evaluation_only_recommended",
+   "commercial_use_policy": "allowed_with_upstream_terms",
+   "used_in_this_release": true,
+   "n_problems_used": 1600,
+   "what_is_redistributed_here": "problem_uid identifiers, AND incidental verbatim problem text quoted inside agent/prompt transcripts (measured, see redistribution_measurement).",
+   "redistribution_measurement": "The parquet layer ships no problem_text column and no gold-answer column. However role_messages.text contains agent turns that quote the problem, so upstream problem text IS incidentally redistributed: a 60-character problem prefix appears verbatim for 16 of 606 checked problems (2.6%) in role_messages, and 0 of 606 in evaluator_calls. In the raw FROZEN traces the full prompts are present, so upstream problem text is redistributed there at a much higher rate. GOLD ANSWERS: no gold/reference field exists in any released row (checked across all released trace rows and every parquet column).",
+   "obligation": "Apache-2.0 permits redistribution of the source text and of derivatives, with attribution and licence notice preserved. Attribution is given in LICENSES/README.md, README.md and VERSION. Because Apache-2.0 is permissive about redistributing the text itself, the incidental quoting above is permitted \u2014 but it is stated rather than denied, because the earlier claim 'only problem_uid is redistributed' was not accurate for the trace layer.",
+   "verification": "Upstream HF API license tag 'license:apache-2.0' and cardData.license 'apache-2.0', fetched anonymously 2026-09-30; cross-checked against registry/licenses.parquet and registry/benchmarks.parquet in the SciAgentTrace release registry, which agree."
+  },
+  {
+   "benchmark_id": "scibench",
+   "source_dataset": "SciBench",
+   "source_url": "https://github.com/mandyyyyii/scibench",
+   "license_id": "MIT",
+   "training_use_policy": "evaluation_only_recommended",
+   "commercial_use_policy": "allowed_with_upstream_terms",
+   "used_in_this_release": false,
+   "what_is_redistributed_here": "nothing \u2014 no SciBench row is present in v1.0.0",
+   "obligation": "If the reserved second-domain slot is filled (see config/SECOND_DOMAIN_SLOT.md), the upstream MIT notice and citation must be preserved and a SciBench entry added here. MIT is NOT the same licence as this release's Apache-2.0 material and must not be absorbed into it.",
+   "verification": "registry/licenses.parquet + registry/benchmarks.parquet, SciAgentTrace release registry."
+  },
+  {
+   "benchmark_id": "jeebench",
+   "source_dataset": "JEEBench",
+   "source_url": "https://github.com/dair-iitd/jeebench",
+   "license_id": "MIT",
+   "training_use_policy": "evaluation_only_recommended",
+   "commercial_use_policy": "allowed_with_upstream_terms",
+   "used_in_this_release": false,
+   "what_is_redistributed_here": "nothing",
+   "obligation": "Preserve the upstream MIT notice and citation if ever included.",
+   "verification": "registry/licenses.parquet + registry/benchmarks.parquet."
+  },
+  {
+   "benchmark_id": "labbench",
+   "source_dataset": "LAB-Bench",
+   "source_url": "https://huggingface.co/datasets/futurehouse/lab-bench",
+   "license_id": "CC-BY-SA-4.0",
+   "training_use_policy": "do_not_train_upstream_canary",
+   "commercial_use_policy": "allowed_with_attribution_and_sharealike",
+   "used_in_this_release": false,
+   "what_is_redistributed_here": "nothing",
+   "obligation": "CARRIES AN UPSTREAM DO-NOT-TRAIN CANARY. If LAB-Bench material is ever added, the canary string must be preserved verbatim, the do-not-train request honoured and restated in the card, and ShareAlike applied to redistributed source content. ShareAlike is INCOMPATIBLE with silently relicensing that content under this release's Apache-2.0.",
+   "verification": "Upstream HF API license tag 'license:cc-by-sa-4.0' and cardData.license 'cc-by-sa-4.0', fetched anonymously 2026-09-30; agrees with registry/licenses.parquet."
+  },
+  {
+   "benchmark_id": "mascqa",
+   "source_dataset": "MaScQA",
+   "source_url": "https://github.com/M3RG-IITD/MaScQA",
+   "license_id": "CC-BY-NC-SA-4.0",
+   "training_use_policy": "noncommercial_research_only",
+   "commercial_use_policy": "not_allowed",
+   "used_in_this_release": false,
+   "what_is_redistributed_here": "nothing",
+   "obligation": "NonCommercial AND ShareAlike. Adding MaScQA content would make that content non-commercial-only, which this release's Apache-2.0 statement cannot cover.",
+   "verification": "registry/licenses.parquet + registry/benchmarks.parquet."
+  }
+ ],
+ "model_generated_text": {
+  "note": "Trajectory text is generated by google/gemma-4-31B-it, openai/gpt-oss-120b and meta-llama/Llama-3.3-70B-Instruct. The respective model providers' terms govern the generated text; it is not covered by the Apache-2.0 statement above.",
+  "models": [
+   "google/gemma-4-31B-it",
+   "openai/gpt-oss-120b",
+   "meta-llama/Llama-3.3-70B-Instruct"
+  ]
+ },
+ "do_not_train": {
+  "this_release": "No do-not-train canary applies to v1.0.0, because no LAB-Bench material is included. The Omni-MATH-2 upstream is marked evaluation_only_recommended: we recommend evaluation use rather than training on these trajectories.",
+  "if_labbench_added": "the upstream canary must be preserved and the request honoured."
+ }
+}

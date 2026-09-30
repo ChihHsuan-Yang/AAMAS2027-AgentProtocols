@@ -25,3 +25,8 @@ paper/*.fdb_latexmk
 paper/*.bbl
 paper/*.blg
 paper/main.pdf
+
+# HF staging tree: raw traces are 283MB and live on HuggingFace
+# (AgentsSci/AAMAS2027-Roles, PRIVATE) and in FROZEN/, not in git.
+# Derived parquet/docs ARE tracked; raw/ is not.
+hf_artifact/raw/
