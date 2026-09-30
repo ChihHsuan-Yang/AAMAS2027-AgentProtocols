@@ -1,0 +1,34 @@
+{
+  "frozen_at": "2026-09-30T10:09:30.201557",
+  "files": {
+    "actor3.jsonl": {
+      "sha256": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
+      "rows": 1200,
+      "bytes": 46037025
+    },
+    "armCp.jsonl": {
+      "sha256": "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4",
+      "rows": 800,
+      "bytes": 23627781
+    },
+    "campaign_v2.jsonl": {
+      "sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130",
+      "rows": 9600,
+      "bytes": 227526687
+    }
+  },
+  "cells": {
+    "Llama-3.3-70B-Instruct|A": 400,
+    "Llama-3.3-70B-Instruct|B": 400,
+    "Llama-3.3-70B-Instruct|C": 400,
+    "gemma-4-31B-it|A": 1600,
+    "gemma-4-31B-it|B": 1600,
+    "gemma-4-31B-it|C": 1600,
+    "gemma-4-31B-it|Cp": 400,
+    "gpt-oss-120b|A": 1600,
+    "gpt-oss-120b|B": 1600,
+    "gpt-oss-120b|C": 1600,
+    "gpt-oss-120b|Cp": 400
+  },
+  "total_rows": 11600
+}
