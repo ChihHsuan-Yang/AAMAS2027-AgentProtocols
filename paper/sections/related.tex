@@ -16,13 +16,14 @@ differentiation arising \emph{without} assigned roles. Enforcement-side work
 makes role scope structural rather than
 advisory~\cite{stettler2026progressive,ge2026roles}. \emph{Owned:} role
 collapse as an observation, and the decoupling of a role-quality metric from
-task performance~\cite{cao2026modules,yang2026precise}. We claim neither.
+task performance~\cite{cao2026modules,yang2026precise} --- we claim
+neither.
 
 \paragraph{Redundancy, and the parity we do not claim.} Dylan et
 al.~\cite{dylan2026equal} hold total LLM calls fixed and find an evolved
 Planner--Executor--Critic team no better than an evolved single agent
-($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation.} Our R2
-is our control condition, not a finding, and only a \emph{partial}
+($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation.} Our
+R2 is our control condition, not a finding, and only a \emph{partial}
 replication of their null: gemma-4 and Llama-3.3 are flat, but gpt-oss
 \emph{improves} by $+0.0503$ with an interval excluding zero. Zhang et
 al.~\cite{zhang2026rethinking} argue reported multi-agent gains are setup
@@ -38,24 +39,22 @@ backprompts~\cite{stechly2024selfverification}; the phenomenon already has a
 name, \textbf{Degeneration-of-Thought}~\cite{liang2024divergent}, and belief
 entrenchment is studied directly~\cite{oh2026entrenchment}. Huang et
 al.~\cite{huang2024selfcorrect} are frequently misread here, so we are
-explicit: their
-\emph{oracle} condition, which uses the correct label as a stopping rule,
-\textbf{improves} accuracy ($75.9 \to 84.3$ on GSM8K); the \emph{intrinsic}
-condition is the one that degrades, and they separately report the model
-retaining its initial answer $74.7\%$ of the time. Our loop is oracle-gated
-like theirs. Closest to our lever is Chen et al.~\cite{chen2026relabeling},
-who hold an erroneous claim byte-identical and vary only the \emph{role
-label} it carries, moving explicit-correction rate $23$--$93$pp --- the
-strongest published evidence that a role label is causal for error
-correction, but \textbf{single-agent}, with chat-template message roles
-rather than agent personas, and no recovery conditional, diversity measure or
-budget matching. \emph{Owned:} the failure, the name, and recovery-after-error as a
+explicit: their \emph{oracle} condition, which uses the correct label as a
+stopping rule, \textbf{improves} accuracy ($75.9 \to 84.3$ on GSM8K); the
+\emph{intrinsic} condition is the one that degrades. Our loop is
+oracle-gated like theirs. Closest to our lever is Chen et
+al.~\cite{chen2026relabeling}, who hold an erroneous claim byte-identical and
+vary only the \emph{role label} it carries, moving explicit-correction rate
+$23$--$93$pp --- the strongest published evidence that a role label is causal
+for error correction, but \textbf{single-agent}, with chat-template message
+roles rather than agent personas, and no recovery conditional or budget
+matching. \emph{Owned:} the failure, the name, and recovery-after-error as a
 metric~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
 \textbf{inversion}: multi-agency is the prescribed cure for
 Degeneration-of-Thought, and we show a multi-agent system without role
-differentiation does not escape it --- the same oracle-gated loop is worth $+0.044$ to a
-role-labeled team and $+0.010$ to the identical team with the labels
-removed.
+differentiation does not escape it --- the same oracle-gated loop is worth
+$+0.044$ to a role-labeled team and $+0.010$ to the identical team with the
+labels removed.
 
 \paragraph{Premature consensus, which we test rather than propose.} Early
 convergence is a widely proposed explanation for multi-agent failure and
@@ -72,27 +71,21 @@ Canedo~\cite{canedo2026architecture} frames structured specification as a
 \emph{capability equalizer} whose value is inversely proportional to model
 strength; \cite{yu2026bottleneck} reaches the same prediction from theory;
 Dochkina~\cite{dochkina2026drop} argues the complementary case. Together they
-predict one monotone ordering. Our Arm~C reproduces that ordering exactly ---
-\emph{but only under a scoring rule that drops $8$--$17\%$ of trajectories},
-and under our pre-registered rule the ordering disappears
-(\S\ref{subsec:enforce}). We report both because a reader who re-derives
-either needs to find the other.
+predict one monotone ordering. Our Arm~C reproduces it exactly --- \emph{but
+only under a scoring rule that drops $8$--$17\%$ of trajectories}, and under
+our pre-registered rule it disappears (\S\ref{subsec:enforce}). We report
+both because a reader who re-derives either needs to find the other.
 
 \paragraph{The gap, stated narrowly.} Prior work establishes that roles are
 often not obeyed, that role ablation leaves first-pass accuracy intact, that
 models fail to revise under external feedback, and that structure tends to
 help weaker models. Missing is the \emph{phase} decomposition: a
 budget-matched, two-directional role intervention measuring the organization
-directly and asking which stage of the work it carries. That the answer is
-``not the first answer, but the recovery'' --- with the standing mechanism
-refuted --- is what we contribute.
-
-\paragraph{Studies of the same trace corpus.} Three prior studies analyze the
-corpus this work instruments~\cite{jiang2026confidence,yang2026protocol,%
-yang2026precise}, and the single-agent control of \S\ref{subsec:notsingle}
-is drawn from its released form. Two are purely observational; the third runs
-within-\PER{} interventions that hold model family, reviewer backbone and
-budget fixed while varying how critique \emph{reaches} the
+directly. Three prior studies analyze the corpus this work
+instruments~\cite{jiang2026confidence,yang2026protocol,yang2026precise}, and
+the single-agent control of \S\ref{subsec:notsingle} is drawn from its
+released form; two are purely observational, the third runs within-\PER{}
+interventions varying how critique \emph{reaches} the
 solver~\cite{yang2026precise}. \textbf{None manipulates the role structure
 itself}, none measures whether the specified division of labor is realized,
 and the controlled arms of \S\ref{sec:method} do not exist in that corpus.

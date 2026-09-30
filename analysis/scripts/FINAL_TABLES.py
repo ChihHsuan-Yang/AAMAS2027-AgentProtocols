@@ -225,7 +225,7 @@ for label, scorer in (("PREREG (primary)", fin_prereg), ("AS-GRADED (sensitivity
             # McNemar test on discordant pairs; the CI is still reported.
             pm = _exact_mcnemar(a, x, y, scorer)
             sig = "SIG" if (pm is not None and pm < 0.05) else ""
-            pstr = f" McNemar p={pm:.4f}" if pm is not None else ""
+            pstr = f" McNemar p={pm:.3g}" if pm is not None else ""
             print(f"      {a:<24}{m:+.4f} [{lo:+.4f},{hi:+.4f}] n={n:<6}{pstr} {sig}")
 
 # ---------------------------------------------------------------- T3 firstpass/recovery
@@ -360,7 +360,7 @@ for a in ACTORS:
     fam.append((f"P3 C-A {a}", _boot_p(np.array([Y[p]-X[p] for p in cm], float))))
 print("\n  P3 family (C-A per actor), Holm across 3:")
 for lab, p, adj, rej in holm(fam):
-    print(f"    {lab:<34}p={p:.4f}  Holm={adj:.4f}  {'REJECT H0' if rej else 'retain H0'}")
+    print(f"    {lab:<34}p={p:.3g}  Holm={adj:.3g}  {'REJECT H0' if rej else 'retain H0'}")
 
 fam4 = []
 for i in range(len(ACTORS)):
@@ -378,7 +378,7 @@ for i in range(len(ACTORS)):
         fam4.append((f"P4 DiD {x} vs {y}", float(min(1.0, 2*min((bs<=0).mean(), (bs>=0).mean())))))
 print("\n  P4 family (actor x enforcement interaction), Holm across 3:")
 for lab, p, adj, rej in holm(fam4):
-    print(f"    {lab:<44}p={p:.4f}  Holm={adj:.4f}  {'REJECT H0' if rej else 'retain H0'}")
+    print(f"    {lab:<44}p={p:.3g}  Holm={adj:.3g}  {'REJECT H0' if rej else 'retain H0'}")
 print("\n  P4 -- the pre-registered PRIMARY -- is null before and after Holm.")
 
 print("\n" + "=" * 96)

@@ -9,32 +9,41 @@ graph, total call budget, verifier and verifier prompt, retry budget,
 decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
 stopping rule and grading; every trajectory in the frozen snapshot carries
 the identical budget record. The comparison is therefore a test of
-organization, not of scale.
+organization, not of scale --- with one asymmetry we state rather than
+smooth. The evaluator fires on Reviewer approval, so an arm that submits more
+\emph{consumes} more oracle verdicts even under an identical cap: Arm~B draws
+$1.95$/$1.85$/$3.82$ evaluator calls per trajectory against Arm~A's
+$1.11$/$1.35$/$1.03$ (gemma-4 / gpt-oss / Llama-3.3), and Arm~C
+$1.20$/$1.24$/$1.43$. \textbf{This runs against our result}: the role-free
+arm receives more ground-truth signal in every actor and still recovers
+less.
+Realized actor calls run the other way and are close ($6.76$ vs $5.87$,
+gemma-4). We apply the same standard to the single-agent control
+(\S\ref{subsec:notsingle}), which consumes more oracle feedback than either.
 
 \paragraph{Arm~A --- soft-role \PER{} (control).} Role prompts as ordinarily
 written. The organization as specified.
 
 \paragraph{Arm~B --- generic roles (organization removed).} Identical topology
 and budget; all three agents receive the same generic prompt (``You are one of
-three agents solving this problem collaboratively; continue the work''). Role
-names are retained for routing only, so the pipeline still runs and the budget
-is untouched. Arm~B is \emph{not} ``\PER{} minus role words'' but the same
-topology with no division of labor specified at all.
+three agents solving this problem collaboratively; continue the work'').
+Role names are retained for routing only, so the pipeline still runs and the
+budget is untouched. Arm~B is \emph{not} ``\PER{} minus role words'' but the
+same topology with no division of labor specified at all.
 
-\paragraph{Arm~C --- architectural enforcement.} Specialization is enforced by
-the interface rather than by wording. The \textbf{Planner} emits JSON parsed
-against a schema with \emph{no answer field}, so a final answer is
+\paragraph{Arm~C --- architectural enforcement.} Specialization is enforced
+by the interface rather than by wording. The \textbf{Planner} emits JSON
+parsed against a schema with \emph{no answer field}, so a final answer is
 unrepresentable and free text is rejected and regenerated. The
 \textbf{Executor} receives the parsed plan object and the problem --- never
 the Planner's raw text --- and emits \texttt{\{derivation, answer\}}. The
 \textbf{Reviewer} emits \texttt{\{verdict, target\_span, critique\}}, and
 \texttt{accept} promotes the Executor's answer verbatim \emph{by reference},
-having no field in which to \emph{author} one --- deleting that field outright
-would change \emph{who submits} as well as who may \emph{author}. Arm~C
-removes no capability: planning, computing, answering and critiquing are all
-still performed, each by one agent, under the same budget. Its cost is that a
-rejected emission can exhaust the regeneration budget, the source of the
-attrition in \S\ref{subsec:enforce}.
+having no field in which to \emph{author} one --- deleting that field
+outright would change \emph{who submits} as well as who may \emph{author}.
+Arm~C removes no capability: planning, computing, answering and critiquing
+are all still performed, each by one agent, under the same budget. Its cost
+is that a rejected emission can exhaust the regeneration budget.
 
 \paragraph{Arm~C$'$ --- partial context control.} Arm~C with shared history
 restored in all three role templates; schema, routing and budgets unchanged.
@@ -50,34 +59,32 @@ along''~\cite{zhang2026rethinking}.
 \subsection{Instrumentation and pre-registered analyses}
 \label{subsec:prereg}
 
-An intervention that never engaged cannot explain an outcome, so engagement is
-measured rather than assumed. Every rejected-and-regenerated emission is
+An intervention that never engaged cannot explain an outcome, so engagement
+is measured rather than assumed. Every rejected-and-regenerated emission is
 logged with its reason; the enforcement rate counts \textbf{role-boundary
 violations only}, formatting coercions excluded by a definition fixed in
-advance. Answer-bearing calls are counted per arm, so an arm cannot win or
-lose by producing fewer answers. One instrumentation gap escaped this
-discipline (\S\ref{subsec:logging}).
+advance. Answer-bearing calls are counted per arm. One instrumentation gap
+escaped this discipline (\S\ref{subsec:logging}).
 
 All endpoints were fixed in writing and committed before any intervention
 data existed. Units are (problem, actor) pairs; all arms run the same
-problems, so every test is paired with bootstrap clustering by problem.
-P1--P5 were pre-registered to carry a Holm correction; it is applied to the
-two families that yield p-values (P3's per-actor contrasts, P4's three
-interactions) and alters no verdict (\S\ref{sec:results}); P1, P2 and P5 are
-reported as effects with intervals and carry no p-value. \textbf{P1}
-intervention $\rightarrow$ fidelity (also the manipulation check);
-\textbf{P2} actor $\times$ intervention on fidelity; \textbf{P3}
-intervention $\rightarrow$ accuracy; \textbf{P4} actor $\times$ intervention
-on accuracy, \emph{the primary test of the original thesis}; \textbf{P5}
-$\Delta$fidelity versus $\Delta$outcome, association only.
+problems, so every test is paired with bootstrap clustering by problem. The
+endpoints are \textbf{P1} intervention $\rightarrow$ fidelity (also the
+manipulation check); \textbf{P2} actor $\times$ intervention on fidelity;
+\textbf{P3} intervention $\rightarrow$ accuracy; \textbf{P4} actor $\times$
+intervention on accuracy, \emph{the primary test of the original thesis};
+\textbf{P5} $\Delta$fidelity versus $\Delta$outcome, association only. They
+were pre-registered to carry a Holm correction; it is applied to the two
+families that yield p-values (P3, P4) and alters no verdict
+(\S\ref{sec:results}).
 
 Two things belong here rather than in Results, concerning provenance.
 \textbf{First, P4 is null} and we report it as the failure of the thesis it
 was written to test. \textbf{Second, the A-versus-B contrast this paper is
 organized around was pre-registered as secondary and exploratory}, and is
-labeled post-hoc everywhere. The pre-registered P1 manipulation objective ---
-that enforcement would drive Planner \emph{computation}-abstention to
-${\approx}1.0$ --- also \textbf{failed}, naming a clause the intervention
+labeled post-hoc everywhere. The pre-registered \Pone{} manipulation
+objective --- that enforcement would drive Planner \emph{computation}-abstention
+to ${\approx}1.0$ --- also \textbf{failed}, naming a clause the intervention
 does not enforce: the schema forbids emitting an \emph{answer}, and nothing
 stops a Planner writing $=1/27$. It was re-designated to answer authorship
 (\S\ref{subsec:enforce}).

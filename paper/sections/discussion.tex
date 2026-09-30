@@ -5,27 +5,23 @@
 the realized organization dramatically and final accuracy barely at all, in
 opposite directions. A diagram is a hypothesis about a system, and
 task-outcome evaluation --- the only evaluation most multi-agent systems
-receive --- cannot test it. The phase decomposition separates ``the roles are
-working'' from ``the system is accurate'': an aggregate score averages over a
-stage where the organization is idle and one where it does all its work.
-Capability-dependence accounts predict a single ordering, structure helping
-weaker models and mattering less as models
+receive --- cannot test it. The phase decomposition separates ``the roles
+are working'' from ``the system is accurate'': an aggregate score averages
+over a stage where the organization is idle and one where it does all its
+work. Capability-dependence accounts predict a single ordering, structure
+helping weaker models and mattering less as models
 improve~\cite{canedo2026architecture,yu2026bottleneck,dochkina2026drop}. Our
 panel does not order that way, and the mechanism says why: what roles supply
 is not scaffolding for a weak solver but a second distinct candidate after a
-failure. Our weakest actor is the one it does not reach --- not for want of a
-repair channel, since enforcement opens that channel in the same actor, but
-because role labels do not open it there.
+failure --- and our weakest actor is the one it does not reach, though
+enforcement opens that same channel in that same actor.
 
-\paragraph{What our own measurement errors imply.} Three instruments in this
-study reported confidently on things they could not see. An
-exact-duplication metric returned $0.000$ for actors a model judge found
-collapsed, because their agents paraphrase rather than copy; a logging defect
-reduced one actor's planner to $37$ visible characters, which we nearly
-reported as a behavior before its $2.85$ characters per second showed the
-work had been done and discarded; and the adjudication built to check the
-first of these leaked the condition, its neutralized role tokens surviving in
-every Arm~A item and almost no Arm~B one. Any claim that a system's structure
-is intact should state what the instrument would have to see to report
-otherwise --- and a blinding claim should be tested on the bytes the judge
-saw, not on the substitution applied to them.
+\paragraph{What our own measurement errors imply.} Three instruments here
+reported confidently on things they could not see: an exact-duplication
+metric returned $0.000$ for actors a model judge found collapsed; a logging
+defect reduced one actor's planner to $37$ visible characters, which we
+nearly reported as a behavior; and the adjudication built to check the first
+of these leaked the condition it was meant to be blind to. Any claim that a
+system's structure is intact should state what the instrument would have to
+see to report otherwise --- and a blinding claim should be tested on the
+bytes the judge saw, not on the substitution applied to them.

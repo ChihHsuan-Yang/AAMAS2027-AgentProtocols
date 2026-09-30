@@ -1,46 +1,65 @@
 #!/usr/bin/env python3
-"""CORRECT page-limit check for a two-column layout.
+"""THE page-limit check for this project. Two earlier versions were broken.
 
-The obvious check -- "words with y < REFERENCES y" -- is COLUMN-BLIND and
-passes vacuously when REFERENCES lands at the top of the RIGHT column: every
-word in the left column then has y GREATER than the heading and is not
-counted. That check reported "11 words above REFERENCES" (two running heads)
-while 545 words of main text sat in the left column of the same page.
+v1  compared y-coordinates against the REFERENCES heading. COLUMN-BLIND: the
+    heading sat at the top of the RIGHT column, so every word in the LEFT
+    column had a LARGER y and was never counted. It reported "11 words"
+    (the running heads) while 539 words of main text sat on the page.
 
-Reading order in a 2-column page is: left column top->bottom, THEN right
-column top->bottom. A word is "before" REFERENCES iff
-    (its column index, its y) < (REFERENCES column index, REFERENCES y)
+v2  ordered by (column, y) -- correct as far as it went, but once a
+    \clearpage was added before the bibliography, "main-text words before
+    REFERENCES ON THE HEADING'S OWN PAGE" is structurally zero for EVERY
+    input. It passed a deliberately padded 10-page paper.
+
+v3 (this file) asks the question directly: what is the last page carrying
+    any main text? Positive-controlled BOTH ways -- exits 1 on a padded
+    10-page build and on a +1-sentence build, exits 0 as submitted.
+
+Run it with no pipe: `python3 scripts/pagecheck.py paper/main.pdf; echo $?`.
+Piping to `tail` makes $? report tail's status, not this script's -- which
+cost me a false PASS while testing the predecessor.
 """
 import subprocess, re, sys
 
 PDF = sys.argv[1] if len(sys.argv) > 1 else "main.pdf"
-MID = 306.0  # letter 612pt / 2
+LIMIT = int(sys.argv[2]) if len(sys.argv) > 2 else 8
+MID = 306.0
 
 pages = int(subprocess.run(["pdfinfo", PDF], capture_output=True, text=True
             ).stdout.split("Pages:")[1].split()[0])
-found = None
+RUNHEAD = {"When", "Is", "Multi-Agent", "Organization", "Load-Bearing?", "Anon.",
+           "AAMAS", "’27,", "May", "2027,", "Paphos,", "Cyprus"}
+
+ref_page = ref_col = ref_y = None
 for p in range(1, pages + 1):
     out = subprocess.run(["pdftotext", "-bbox", "-f", str(p), "-l", str(p), PDF, "-"],
                          capture_output=True, text=True).stdout
-    w = [(float(x), float(y), t) for x, y, X, Y, t in re.findall(
-         r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">(.*?)</word>',
-         out, re.S)]
-    hit = [(x, y) for x, y, t in w if t.strip().upper() == "REFERENCES"]
-    if hit:
-        found = (p, hit[0], w)
-        break
-assert found, "REFERENCES heading not located in any page -- check is vacuous"
-page, (rx, ry), words = found
-rcol = 0 if rx < MID else 1
-RUNHEAD = {"When", "Is", "Multi-Agent", "Organization", "Load-Bearing?",
-           "AAMAS", "’27,", "May", "2027,", "Paphos,", "Cyprus"}
-after = [(x, y, t) for x, y, t in words
-         if (0 if x < MID else 1, y) < (rcol, ry)
-         and not t.strip().isdigit() and t.strip() not in RUNHEAD]
-print(f"REFERENCES on page {page}, column {'LEFT' if rcol==0 else 'RIGHT'}, y={ry:.1f}")
-print(f"main-text words BEFORE it in reading order on that page: {len(after)}")
-if after:
-    print("  first 25:", " ".join(t for _, _, t in after[:25]))
-    print(f"\nRESULT: main text occupies {page} pages -> OVER the 8-page limit")
+    for x, y, X, Y, t in re.findall(
+        r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">(.*?)</word>',
+        out, re.S):
+        if t.strip().upper() == "REFERENCES":
+            ref_page, ref_col, ref_y = p, (0 if float(x) < MID else 1), float(y)
+            break
+    if ref_page: break
+assert ref_page, "REFERENCES heading not located -- check is vacuous"
+
+last_main = 0
+for p in range(1, pages + 1):
+    out = subprocess.run(["pdftotext", "-bbox", "-f", str(p), "-l", str(p), PDF, "-"],
+                         capture_output=True, text=True).stdout
+    for x, y, X, Y, t in re.findall(
+        r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">(.*?)</word>',
+        out, re.S):
+        s = t.strip()
+        if not s or s.isdigit() or s in RUNHEAD: continue
+        if p > ref_page: continue
+        if p == ref_page and ((0 if float(x) < MID else 1), float(y)) >= (ref_col, ref_y):
+            continue
+        last_main = max(last_main, p)
+
+print(f"REFERENCES starts page {ref_page} ({'LEFT' if ref_col==0 else 'RIGHT'} col)")
+print(f"last page carrying main text: {last_main}   limit: {LIMIT}")
+if last_main > LIMIT:
+    print(f"\nRESULT: main text runs to page {last_main} -> OVER the {LIMIT}-page limit")
     sys.exit(1)
-print(f"\nRESULT: main text ends by page {page-1}; references start page {page}")
+print(f"\nRESULT: main text ends by page {last_main} -> within the {LIMIT}-page limit")

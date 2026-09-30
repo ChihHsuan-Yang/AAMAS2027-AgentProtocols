@@ -38,22 +38,22 @@ Llama-3.3-70B-Instruct  C       400      0.281    0.333     0.139    251       n
 
   --- PREREG (primary) ---
     B-A:
-      gemma-4-31B-it          -0.0338 [-0.0488,-0.0187] n=1600   McNemar p=0.0000 SIG
+      gemma-4-31B-it          -0.0338 [-0.0488,-0.0187] n=1600   McNemar p=1.61e-05 SIG
       gpt-oss-120b            +0.0163 [+0.0000,+0.0331] n=1600   McNemar p=0.0621 
-      Llama-3.3-70B-Instruct  +0.0025 [-0.0325,+0.0375] n=400    McNemar p=1.0000 
+      Llama-3.3-70B-Instruct  +0.0025 [-0.0325,+0.0375] n=400    McNemar p=1 
     C-A:
-      gemma-4-31B-it          -0.0225 [-0.0387,-0.0063] n=1600   McNemar p=0.0078 SIG
-      gpt-oss-120b            -0.0050 [-0.0219,+0.0112] n=1600   McNemar p=0.6040 
-      Llama-3.3-70B-Instruct  +0.0175 [-0.0200,+0.0550] n=400    McNemar p=0.4270 
+      gemma-4-31B-it          -0.0225 [-0.0387,-0.0063] n=1600   McNemar p=0.00779 SIG
+      gpt-oss-120b            -0.0050 [-0.0219,+0.0112] n=1600   McNemar p=0.604 
+      Llama-3.3-70B-Instruct  +0.0175 [-0.0200,+0.0550] n=400    McNemar p=0.427 
 
   --- AS-GRADED (sensitivity) ---
     B-A:
-      gemma-4-31B-it          -0.0338 [-0.0488,-0.0187] n=1600   McNemar p=0.0000 SIG
+      gemma-4-31B-it          -0.0338 [-0.0488,-0.0187] n=1600   McNemar p=1.61e-05 SIG
       gpt-oss-120b            +0.0157 [-0.0006,+0.0320] n=1592   McNemar p=0.0709 
-      Llama-3.3-70B-Instruct  +0.0077 [-0.0283,+0.0437] n=389    McNemar p=0.7798 
+      Llama-3.3-70B-Instruct  +0.0077 [-0.0283,+0.0437] n=389    McNemar p=0.78 
     C-A:
-      gemma-4-31B-it          +0.0190 [+0.0054,+0.0333] n=1472   McNemar p=0.0097 SIG
-      gpt-oss-120b            +0.0361 [+0.0215,+0.0507] n=1441   McNemar p=0.0000 SIG
+      gemma-4-31B-it          +0.0190 [+0.0054,+0.0333] n=1472   McNemar p=0.00972 SIG
+      gpt-oss-120b            +0.0361 [+0.0215,+0.0507] n=1441   McNemar p=2.28e-06 SIG
       Llama-3.3-70B-Instruct  +0.0453 [+0.0030,+0.0876] n=331    McNemar p=0.0444 SIG
 
 [T3] FIRST-PASS vs RECOVERY DECOMPOSITION  (the central claim)
@@ -110,14 +110,14 @@ Llama-3.3-70B-Instruct  C       400          1.04      0.160      0.170       12
   three per-actor C-A contrasts P3 is built from. Both are corrected.
 
   P3 family (C-A per actor), Holm across 3:
-    P3 C-A gemma-4-31B-it             p=0.0040  Holm=0.0120  REJECT H0
-    P3 C-A Llama-3.3-70B-Instruct     p=0.3943  Holm=0.7886  retain H0
-    P3 C-A gpt-oss-120b               p=0.5816  Holm=0.7886  retain H0
+    P3 C-A gemma-4-31B-it             p=0.004  Holm=0.012  REJECT H0
+    P3 C-A Llama-3.3-70B-Instruct     p=0.394  Holm=0.789  retain H0
+    P3 C-A gpt-oss-120b               p=0.582  Holm=0.789  retain H0
 
   P4 family (actor x enforcement interaction), Holm across 3:
-    P4 DiD gemma-4-31B-it vs Llama-3.3-70B-Instructp=0.0553  Holm=0.1659  retain H0
-    P4 DiD gemma-4-31B-it vs gpt-oss-120b       p=0.1452  Holm=0.2904  retain H0
-    P4 DiD gpt-oss-120b vs Llama-3.3-70B-Instructp=0.2865  Holm=0.2904  retain H0
+    P4 DiD gemma-4-31B-it vs Llama-3.3-70B-Instructp=0.0553  Holm=0.166  retain H0
+    P4 DiD gemma-4-31B-it vs gpt-oss-120b       p=0.145  Holm=0.29  retain H0
+    P4 DiD gpt-oss-120b vs Llama-3.3-70B-Instructp=0.286  Holm=0.29  retain H0
 
   P4 -- the pre-registered PRIMARY -- is null before and after Holm.
 

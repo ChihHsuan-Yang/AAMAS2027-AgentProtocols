@@ -41,16 +41,28 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{May 2027}
 \usepackage{xcolor}
 \usepackage{balance}
 
+% -- Margin protrusion OFF. -------------------------------------------------
+% aamas.cls loads microtype, whose DEFAULT protrusion hangs a line-final
+% hyphen ~0.66pt into the right margin. That is deliberate typography, not
+% overflow -- but it puts 6 words past the 559.15pt text-block edge, which is
+% indistinguishable from real overflow to any margin check a reviewer runs
+% (and one such check is how Table 2's genuine 614.8pt spill was found).
+% Disabling it makes lines slightly LOOSER, never tighter, so it is not a
+% trick to fit more text into 8 pages -- the opposite. The class file is not
+% modified. Page count is unchanged with it on or off.
+\microtypesetup{protrusion=false}
+
 % -- Placeholder macro. Every unrun result MUST be wrapped in this. ----------
 % Before submission, run:  grep -n 'TODO{' main.tex sections/*.tex
 % and confirm the list is empty.
 \newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 
 % -- Shorthands for the two constructs the paper keeps apart. ----------------
+% \Pone is the Planner computation-abstention clause measure; it is spelled
+% out at first use (Sec. Definitions) rather than left as an internal tag.
+% \PER abbreviates Planner-Executor-Reviewer, expanded at first use.
 \newcommand{\Pone}{\textsf{P1a}}
-\newcommand{\Ptwo}{\textsf{P2}}
-\newcommand{\Etwo}{\textsf{E2v2}}
-\newcommand{\PER}{\textsc{Per}}
+\newcommand{\PER}{\textsc{PER}}
 
 \begin{document}
 
@@ -74,22 +86,24 @@ snapshot.
 
 Removing roles destroys the division of labor in all three actors: the rate at
 which every agent independently asserts its own final answer rises from
-$0.000$--$0.120$ to $0.846$--$0.976$, with the planner carrying the entire
-signal. A rubric-frozen adjudication --- model adjudication, not human
-annotation, and outcome-blind but \emph{not} condition-blind --- concurs as a
-second opinion. First-pass
+$0.000$--$0.120$ to $0.846$--$0.976$, the planner supplying almost all of that
+swing. For gpt-oss a logging defect leaves what its planner \emph{computed}
+unreadable, so its collapse is established on answer assertion alone. A
+rubric-frozen adjudication --- model adjudication, not human annotation, and
+outcome-blind but \emph{not} condition-blind --- concurs as a second opinion.
+First-pass
 accuracy does not follow: it is unchanged for gemma-4 and improves for gpt-oss
 ($+0.050$), a parity consistent with prior role ablations and reported here as
 our control condition. The cost appears only \emph{after} a wrong first
 answer, where recovery collapses ($0.222 \rightarrow 0.051$ gemma-4,
-$0.324 \rightarrow 0.249$ gpt-oss). For gemma-4 first-pass accuracy is equal
+$0.324 \rightarrow 0.247$ gpt-oss). For gemma-4 first-pass accuracy is equal
 to four decimals, so that recovery contrast is an exact reparameterization of
 the intent-to-treat effect rather than a post-treatment conditional.
-Llama-3.3 recovers at $0.015$ in both arms --- a genuine null specific to the
+Llama-3.3 recovers at $0.014$ and $0.015$ --- a genuine null specific to the
 role manipulation, since enforcement moves the same actor's recovery to
-$0.139$. The role-free team is not
-stopped early --- it holds the same six cycles and spends $5.80$ of $5.83$ on
-resubmission rather than revision. Architectural enforcement restores
+$0.139$. The role-free team is not stopped early: it holds the same six cycles,
+spends $5.80$ of $5.83$ on resubmission rather than revision, and draws
+\emph{more} oracle verdicts than the role-labeled team. Architectural enforcement restores
 organization and un-freezes answers, restores recovery in Llama-3.3, and
 restores final accuracy in none, at $8$--$17\%$
 attrition; our preregistered primary test is null. Role structure is
@@ -130,6 +144,10 @@ division of labor; organizational structure; ablation}
 \input{sections/limitations}
 \input{sections/conclusion}
 
+% Main text ends here, within the 8-page limit. References start on their own
+% page: the limit is on main text, and a reference list beginning mid-column
+% makes "where does the main text end" unverifiable by an automated check.
+\clearpage
 \balance
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
