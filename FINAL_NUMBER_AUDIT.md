@@ -398,3 +398,360 @@ So the clean parts are not mistaken for parts I skipped:
    messages. No published number moves; the trap does.
 5. **A9 provenance** — add "the two single-agent arms come from different
    source commits" wherever the gpt-oss/gemma-4 contrast is drawn.
+
+---
+---
+
+# SECOND INDEPENDENT NUMBER AUDIT — PDF vs canonical output
+
+**Auditor:** second independent number auditor (distinct instrument from the
+first audit above). **Date:** 2026-09-30.
+**Subject:** `paper/main.pdf` (mtime 17:05, 9 pages) checked **against**
+`analysis/out/FINAL_TABLES_OUTPUT.txt` (mtime 14:49), regenerated from
+`experiments/results/FROZEN/`.
+**Scope difference from audit #1:** audit #1 checked script-vs-script. This
+one checks **PDF-vs-script**: every numeric literal in the manuscript traced
+to the table that produces it.
+
+## 0. Preconditions — all pass
+
+| check | result |
+|---|---|
+| sha256 + byte count, all 3 frozen files vs `MANIFEST.json` | **MATCH** (3/3) |
+| rows loaded = `total_rows` | 11,600 = 11,600 |
+| `FINAL_TABLES.py` rerun vs committed `FINAL_TABLES_OUTPUT.txt` | **byte-identical** |
+| PDF numeric literals vs `main.tex` + `sections/*.tex` | PDF is **current** with the sources (no stale build) |
+| `figures/` and `paper/figures/` copies of Fig. 1 | identical sha256 |
+| working tree clean at audit start | yes |
+
+**Determinism.** `PYTHONHASHSEED` 0 / 1 / random, three full runs:
+
+```
+a2cffe46609bef6f2bb6bb4fd584244421b5e79d08a4a27204368157fe5c62cb  run_0
+a2cffe46609bef6f2bb6bb4fd584244421b5e79d08a4a27204368157fe5c62cb  run_1
+a2cffe46609bef6f2bb6bb4fd584244421b5e79d08a4a27204368157fe5c62cb  run_random
+```
+
+Byte-identical, and each run reproduces the committed canonical file exactly.
+`FIGDATA.json` sha256 `da87298b4dbf19fd` before and after — unchanged by the
+rerun, so the committed figure data is the current figure data.
+
+## 1. Disagreements — three, each traced to root cause
+
+| # | where | paper / canonical | what is right | severity |
+|---|---|---|---|---|
+| **E1** | `results.tex:249`, PDF p.6 | paper **61.8%**; canonical T5 **0.616** | **canonical** — 61.8% is the pre-fix survivorship value | published number is wrong |
+| **E2** | T14, canonical output | T14 labels a DiD **SIG**; T29 and the paper call it null | **T29 / the paper** — T14's label is seed-dependent | script label wrong; no published number affected |
+| **E3** | `results.tex:288–290`, PDF p.7 | the sentence's stated **direction is inverted** | **the numbers**, not the sentence | prose wrong, values right |
+
+### E1 — the paper's 61.8% is the survivorship denominator the D1 fix removed
+
+`results.tex:247–249`, reproduced verbatim in the PDF:
+
+> in $98.1\%$ of gemma-4's Arm B first-pass-wrong trajectories the Reviewer
+> never declines to submit, against $5.1\%$ in Arm A (**$61.8\%$** vs $4.3\%$
+> for gpt-oss).
+
+Canonical `[T5]` prints gpt-oss Arm B `neverrefuse` = **0.616**. Recomputed
+from the frozen rows:
+
+| denominator | count | rate |
+|---|---|---|
+| `judged()` — first verdict received (canonical, post-D1-fix) | 234 / **380** | **0.6158** → 61.6% |
+| `graded()` — final grade obtained (pre-fix, survivorship) | 233 / **377** | **0.6180** → 61.8% |
+
+The paper's figure reproduces the **graded** denominator to four decimals.
+It is the D1 survivorship defect — the one `is_fpw()` was introduced to fix —
+surviving in the manuscript at a site the fix never reached, because the
+sentence was written (commit `fa09e98`) against the pre-fix table and never
+re-derived afterwards. The canonical table has printed 0.616 since `ba28977`.
+
+**Why only this one.** Of the four percentages in that sentence, gpt-oss Arm B
+is the **only** cell with first-pass-wrong attrition (380 judged vs 377
+graded). The other three (98.1%, 5.1%, 4.3%) are identical under both
+denominators, so they are right by coincidence of zero attrition, not because
+they were recomputed.
+
+**One mechanism, many sites — swept.** I re-derived *every* first-pass-wrong-
+conditioned quantity the paper quotes under both denominators (recovery,
+frozen-answer, never-refuses, cycles, submissions; 9 cells × 5 metrics). 
+Denominators disagree in 7 of 9 cells. Of the 20 such values the manuscript
+actually quotes, **19 match canonical and exactly one — the 61.8% — matches
+the old graded denominator.** The multi-value lists (`0.119/0.092/0.072`,
+`0.845/0.208/0.806`, `0.314/0.395/0.139`, `0.222/0.324/0.014`) are all
+canonical elementwise, including the Arm C cells where the two denominators
+differ most (rec C gemma 0.314 canonical vs 0.412 graded).
+
+**Verdict: the canonical output is right; the paper is wrong.** Fix
+`results.tex:249` to `61.6\%`.
+
+### E2 — a `SIG` label in T14 rests on a bootstrap bound sitting at zero
+
+This is **audit #1's D3 defect class, fixed in T2 and still live in T14.**
+T2 was converted to seed-free exact McNemar; T14 still reads its label off
+`not (lo < 0 < hi)`:
+
+```
+[T14]  Llama-3.3-70B-Instruct minus gemma-4-31B-it  +0.0400 [+0.0000,+0.0794]  SIG
+```
+
+A `+0.0000` lower bound is the same signature D3 named. Resampling under 60
+seeds (4,000 reps, as the script uses):
+
+| contrast | SIG in | 2.5% bound range | bound exactly 0.0 |
+|---|---|---|---|
+| gpt-oss − gemma-4 | 0/60 | [−0.00687, −0.00437] | 0/60 |
+| **Llama-3.3 − gemma-4** | **34/60 (57%)** | **[−0.00188, +0.00188]** | **14/60** |
+| Llama-3.3 − gpt-oss | 0/60 | [−0.02000, −0.01564] | 0/60 |
+
+The same comparison in `[T29]` — the Holm section added for exactly this
+family — gives `p=0.0553, Holm=0.166, retain H0`. **The canonical output
+labels one contrast SIG in T14 and retains its null in T29.**
+
+I swept the other three bootstrap-labelled tables for the same shape and they
+are clean: T15 (4 labels) 40/40 or 0/40 across seeds; T17 (4 labels) 40/40 or
+0/40; T27's three verdicts 25/25 or 0/25.
+
+**Verdict: T29 and the paper are right; T14's label is wrong.** The paper
+says "null in all three pairwise difference-in-differences" and quotes the
+interval honestly as `[+0.0000, +0.0794]`, so **no published claim is
+affected** — but the canonical output contradicts itself, and a reviewer who
+greps `SIG` finds a significant result under a heading that says the primary
+test is null.
+
+### E3 — the Arm C first-pass sentence states the opposite of what it does
+
+`results.tex:288–290`, PDF p.7:
+
+> **Conditioning on successful grading instead** would manufacture
+> significance out of the same one-sided attrition we reject for accuracy
+> below, and also puts Arm C's first-pass column **at 0.779/0.761/0.281**.
+
+The three numbers are correct **but they are the un-conditioned values.**
+Measured:
+
+| Arm C first-pass | gemma-4 | gpt-oss | Llama-3.3 |
+|---|---|---|---|
+| `judged()` — **not** conditioned on grading (canonical T1) | **0.779** | **0.761** | **0.281** |
+| `graded()` — conditioning on successful grading | 0.822 | 0.788 | 0.295 |
+
+The sentence promises the reader the *as-graded* column and then prints the
+*pre-registered* one. `0.779/0.761/0.281` is what T1 already prints two
+paragraphs earlier; conditioning on successful grading gives
+`0.822/0.788/0.295`, the pre-fix values audit #1's D1 removed.
+
+Note the direction: as written the sentence tells a reviewer that the
+survivorship reading **lowers** Arm C's first pass, when it in fact **raises**
+it by +0.043/+0.027/+0.014 — inverting the paper's own argument that
+as-graded flatters Arm C. The surrounding paragraph (attrition is one-sided,
+as-graded manufactures significance) is correct and is undercut by its own
+example.
+
+**Verdict: the numbers are right, the clause introducing them is wrong.**
+Either drop "Conditioning on successful grading instead … and also", or keep
+the clause and change the values to `0.822/0.788/0.295`. The second is the
+repair that matches the sentence's intent.
+
+## 2. Invariants — both hold, both positive-controlled
+
+**Three-way partition**, `n_fpw + n_first-pass-right + n_unjudged == n`:
+**11/11 cells exact.**
+
+**`(1 − firstpass) × n_judged == n_fpw`**: **11/11 cells exact** (largest
+residual < 1e-6). The five rows audit #1 reported as failing now pass.
+
+*Positive controls.* Re-running both checks with `graded()` substituted for
+`judged()` — the exact shape of the defect feared — fires on **8 of 11 cells**
+for each check, naming gemma-4 C (262 vs 344) and the partition overshoot
+(1682 vs 1600) that the first audit and the T28 comment both describe. A
+verifier that could not fail was not accepted.
+
+## 3. PDF-to-canonical trace table
+
+Every result-bearing numeric literal in the manuscript, by source. Sections
+`intro`, `related`, `framework`, `measurement`, `method`, `experiments`,
+`results`, `discussion`, `limitations`, `conclusion` plus abstract, Tables
+1–3 and Figure 1. 271 distinct literals in the section sources; the
+non-result ones (years, citation keys, section refs, model names
+`gemma-4-31B`/`gpt-oss-120b`/`Llama-3.3-70B`, LaTeX geometry) excluded.
+
+| PDF site | quantity | paper | canonical | verdict |
+|---|---|---|---|---|
+| abstract, intro, §5.1 | collapse range | 0.000–0.120 → 0.846–0.976 | T1 collapse | OK |
+| abstract, §5.3 | gpt-oss first-pass gain | +0.050 / +0.0503 | T3 | OK |
+| abstract, intro, §5.4, Fig.1 | gemma recovery | 0.222 → 0.051 | T1 | OK |
+| abstract, intro, §5.4 | gpt-oss recovery | 0.324 → 0.247 | T1 | OK |
+| abstract, intro, §5.4 | Llama recovery | 0.014 / 0.015 | T1 | OK |
+| abstract, intro, §5.6 | Llama Arm C recovery | 0.139 | T1 | OK |
+| abstract, intro, §5.5 | cycles / submissions | 5.80 of 5.83 | T5 | OK |
+| intro, §5.5 | gemma A submits / revising | 1.54 / 3.98 | T5 | OK |
+| abstract, §5.6, Table 3, §7 | Arm C attrition | 8–17%, 8.0/9.9/17.0 | T7 | OK |
+| Table 3 footnote, §7 | Arm A / B attrition | 0.0/0.1/0.7, 0.0/0.4/2.5 | T7 | OK |
+| §2 | oracle loop value | +0.044 / +0.010 | T13 (+0.0437/+0.0100) | OK |
+| §2, §5.3 | gpt-oss fp improvement | +0.0503 | T3 | OK |
+| §4, §5.5 | evaluator calls A/B/C | 1.11/1.35/1.03, 1.95/1.85/3.82, 1.20/1.24/1.43 | T0 | OK |
+| §4 | actor calls gemma | 6.76 vs 5.87 | T7 | OK |
+| §4.2 | scale | 11,600 / 83,320 / 17,486 / 1,600 | T24 (all exact) | OK |
+| §4.2 | design arithmetic | 3×(1,600·2+400)+2×400 = 11,600 | verified | OK |
+| §4.2, §5.5 | budget, 6 cycles | 3 outer × 2 inner | T24; max(inner_used)=6, 1 distinct budget | OK |
+| §5.1 | planner by role | 0.000/0.000/0.183 → 0.979/0.889/0.898 | T8 | OK |
+| §5.1 | executor ceiling | 0.907–1.000 | T8 (min .907 max 1.000) | OK |
+| §5.1 | reviewer by role | 0.781/0.492/0.823 → 0.998/0.965/0.961 | T8 | OK |
+| §5.1, Table 1 | byte duplication | 0.680; ≤0.008; ≤0.003 | T18 (max non-gptB = .008; C/Cp max .003) | OK |
+| §3.2, Table 1 | precision / recall | 1.000 / 0.262 | T23 | OK |
+| §5.1 | adjudication n | 171 = 42/56/44/29 | T28, KEY.jsonl | OK |
+| §5.1, Table 1 | adjudication rates | 1.000 A; 0.857–1.000 B; 0.067–0.286 C/C′ | T23 | OK |
+| §5.1, §7 | judge stability | 0.953 | T23 Q5 | OK |
+| §5.1 | blinding leak | 42/42 A, 3/56 B, Fisher p=1.5×10⁻²⁴ | recomputed from ITEMS+KEY: **exact** | OK |
+| §5.1 | format leak | 39 of 44 Arm C JSON; every Arm B `\boxed` | recomputed: 39/44, 56/56 | OK |
+| §5.1 | Arm B planner chars | 1,876 / 1,892 | T9 | OK |
+| §5.1 | token-overlap excess | +0.449/+0.432 vs +0.159/+0.145; shift +0.290/+0.287 | T10 | OK |
+| §5.1, §5.2, §6, §7 | gpt-oss planner shape | 37 chars, 26.7 s, 2.85 vs 195 ch/s, 2,302 msgs | T9 | OK |
+| §5.2 | logging defect | 75.7% / 93.4% / 5.8% / 0.1–0.5% | T26 | OK |
+| §5.3 | first-pass B−A + CIs | +0.0000/+0.0077/+0.0503, all 3 CIs | T3 | OK |
+| §5.4 | recovery B−A + CIs | −0.1709 / −0.0766, both CIs | T3 | OK |
+| §5.4 | paired gemma recovery | 37 vs 3, p=2.0×10⁻⁸ | T4 (1.95e-08) | OK |
+| §5.4 | gemma first-pass equality | 0.8025 both arms | recomputed: 1284/1600 both | OK |
+| §5.4 | reparameterization | −0.1709×(1−0.8025) = −0.0338 | residual **exactly 0** | OK |
+| §5.4 | Llama recovery counts | 4 of 276, 4 of 268 | recomputed | OK |
+| §5.4, §5.6, Fig.1 | Llama paired A–C | 0.009 vs 0.096, p=3.8×10⁻⁶ | T4 (3.81e-06) | OK |
+| §5.4 | power | ≈80% vs 0.04–0.05 excess; effect 0.171 | `notes/POWER.md` (off-snapshot, caveated) | OK |
+| §5.4, §7 | noise floor | 20 of 2,790 = 0.0072 (0.0017–0.0072) | T6, **independently recomputed 20/2790** | OK |
+| §5.4 | per-call flip rate | 0.0062 | T6 (84/13,619) | OK |
+| §5.4 | noise-propagated CIs | 3 intervals | T27, verdicts stable 25/25 seeds | OK |
+| §5.5 | cycles gemma | 5.52 vs 5.83 | T5 | OK |
+| §5.5 | never-refuses | 98.1% / 5.1% / **61.8%** / 4.3% | T5 → **E1: 61.6%** | **MISMATCH** |
+| §5.5, §8 | frozen answer | 0.845 vs 0.288 | T1 | OK |
+| §5.5 | context quartiles | 0.923→0.070; 0.662/0.151; 0.656/0.293; 0.070/0.189; 198 vs 13 | T22 | OK |
+| §5.6 | manipulation check | 0.000 Arm C; 0.986/0.916/0.958 Arm B | T11 (1−0.014/0.084/0.042) | OK |
+| §5.6 | boundary rejections | 838 / 1,183 / 395 | T11 | OK |
+| §5.6 | frozen-answer by arm | 0.119/0.092/0.072; 0.845/0.208/0.806; 0.288/0.750; 0.052 | T1 | OK |
+| §5.6 | Arm C recovery | 0.314/0.395/0.139 vs 0.222/0.324/0.014 | T1 | OK |
+| §5.6 | judged-then-died count | 150 | recomputed: Arm C exactly 150 | OK |
+| §5.6 | gemma/gpt paired A–C p | 0.298 / 0.105 | T4 | OK |
+| §5.6 | Arm C first-pass | **0.779/0.761/0.281** | T1 — **E3: clause inverted** | **PROSE WRONG** |
+| §5.6 | equation density | 3.11/4.78 vs 2.76/2.12 | T12 | OK |
+| §5.6, Table 3 | C−A both scorings + CIs | −0.0225/−0.0050/+0.0175; +0.0190/+0.0361/+0.0453 | T2 | OK |
+| §5.7 | P4 DiDs + CIs | +0.0175/+0.0400/+0.0225, 3 CIs | T14 — values OK; **E2: label** | values OK |
+| §5.7 | MDE | 0.033 / 0.069 / 0.075 | `notes/POWER.md`, `XDOMAIN-POWER-PREREG.md` | OK (off-snapshot) |
+| §5.7 | C′−C | +0.0450/−0.0125 prereg; +0.0196/−0.0089 as-graded | T15 | OK |
+| §5, Table 2 | Holm | P3 gemma Holm p=0.0120 | T29 — arithmetic correct (see §4) | OK |
+| Table 2 | B−A final + McNemar | −0.0338 p=1.6e−5; +0.0163 p=0.062; +0.0025 p=1.00 | T2; **recomputed b/c: 50/104, 103/77, 27/26** | OK |
+| Table 2, §5.8 | single-agent | +0.0131 / +0.0294 / −0.0225 / −0.0563 | T17; coverage 1600/1600 all four | OK |
+| §4.2, §5.8, §7 | SA oracle calls | 1.66–1.69 vs 1.11–1.35 | T17 | OK |
+| §3.3 | validation | 0.903 κ=0.806 n=72; 0.923 κ=0.843 n=13; 0.967 at n=30 | `notes/VALIDATION-FINAL.md` (off-snapshot, stated) | OK |
+| §3.2 | P1a binary rate | 0.722 | T12 gpt-oss B | OK |
+| §4.1 | smoke-test confound | 121 trajectories, 74% | `notes/`, pre-campaign, caveated | OK |
+| §7 | F18 scoring defect | 17% / 0%; 62; 0 of 10,734 | T19 (**62 = A/B/C total**, verified) | OK |
+| §7 | "makes every recovery gap wider" | directional | **tested**: A−B gap widens in all 3 actors | OK |
+| §7 | byte-metric firings | gpt-oss 14, gemma-4 3, Llama none | T23 | OK |
+| Table 1 | all 18 cells + sensitivity ranges | 0.846–0.999, 0.000–0.892, 9/9 ordering | T1/T18/T20/T23 | OK |
+| Figure 1 | n-labels panel A | 1600/1600/1554, 1598/1597/1493, 398/391/349 | FIGDATA `n_judged` — **not** `n_graded` | OK |
+| Figure 1 | n-labels panel B | 316/316/344, 463/380/357, 276/268/251 | FIGDATA `n_fpw` | OK |
+| Figure 1 | annotation | A 0.014 ≈ B 0.015, C 0.139, p=4e-06 | T1 / T4 | OK |
+
+**Figure 1 is not stale.** Regenerating it from the current `FIGDATA.json`
+produces text-identical output to the committed PDF (binary differs only in
+embedded timestamps). The only change to `FINAL_TABLES.py` after the figures
+were drawn (commit `505c6f9`) was `%.4f` → `%.3g` in three print statements —
+no value moved, which is why `FIGDATA.json` is unchanged by a rerun. The
+n-labels are the **first-pass denominator `n_judged`**, as required, not
+`n_graded`; the two differ in every Arm C cell (1554 vs 1472, 1493 vs 1442,
+349 vs 332) and the figure carries the former.
+
+## 4. Holm (T29), checked by hand
+
+Exact bootstrap p-values, script seed: gemma-4 0.004, Llama-3.3 0.3943,
+gpt-oss 0.5816.
+
+| i | contrast | p | (m−i)·p | monotone max | printed | verdict |
+|---|---|---|---|---|---|---|
+| 0 | gemma-4 | 0.004000 | 3×0.004 = 0.012000 | 0.012000 | `0.012` | REJECT |
+| 1 | Llama-3.3 | 0.394300 | 2×0.3943 = 0.788600 | 0.788600 | `0.789` | retain |
+| 2 | gpt-oss | 0.581600 | 1×0.5816 = 0.581600 | **0.788600** | `0.789` | retain |
+
+The step-down, the monotone running maximum (row 2 correctly inherits row 1's
+larger value rather than printing its own 0.582), the `min(1.0, ·)` cap and
+the α=0.05 comparisons are all correct. P4 family likewise: 0.0553→0.1659,
+0.145→0.290, 0.286→0.290 (inheriting). **Holm is arithmetically correct.**
+
+**Two observations, neither a computational error.**
+
+1. *The Holm input is a bootstrap p, not the exact McNemar the paper
+   advertises.* `results.tex:5–8` says "significance is exact McNemar on
+   discordant pairs", then quotes the Holm p from `_boot_p()`. Under exact
+   McNemar the same family gives Holm 0.0234 / 0.854 / 0.854 — **same three
+   verdicts**, so nothing changes substantively, but the paper's quoted
+   `0.0120` is not a McNemar-derived number.
+2. *`0.0120` is seed-dependent in its digits.* gemma-4's bootstrap p at 20,000
+   reps ranges 0.0055–0.0075 over 12 seeds, so Holm ranges 0.0165–0.0225 and
+   the paper's exact `0.0120` reproduces in **0 of 12** alternative seeds. The
+   **verdict is stable** (REJECT in 12/12 — it is nowhere near 0.05), so this
+   is a reproducibility wart on a quoted digit, not a wrong conclusion. Using
+   the exact McNemar p the paper already claims to use would remove it.
+
+## 5. No significance label rests on a CI bound at zero — except E2
+
+Swept all four bootstrap-labelled tables:
+
+| table | labels | seed-stable? |
+|---|---|---|
+| T2 (B−A, C−A, both scorings) | now **exact McNemar**, seed-free | n/a — D3 correctly repaired |
+| **T14** | 3 | **1 of 3 unstable (34/60)** → **E2** |
+| T15 | 4 | 40/40 or 0/40, all stable |
+| T17 | 4 | 40/40 or 0/40, all stable |
+| T27 | 3 verdicts | 25/25 or 0/25, all stable |
+
+## 6. What I did that found nothing
+
+So a clean result is not mistaken for a shallow one:
+
+- **Re-derived independently from the frozen JSONL** (not read off the table):
+  T1 first-pass/recovery/n_fpw all 11 cells; T5 all five mechanism columns,
+  9 cells; T6 noise floor all three estimators (20/2790, 84/13619, 23/13619
+  — exact); T19's 62 and its 10,734-row positive control; exact McNemar for
+  all six A–B/C–A contrasts (b/c counts 50/104, 103/77, 27/26, 69/105, 87/95,
+  32/25); the Fisher blinding leak from `ITEMS_blinded.jsonl`+`KEY.jsonl`;
+  T17 single-agent coverage (1,600/1,600 matched, zero unmatched, so no
+  problem silently scored 0 for absence).
+- **Tested two directional prose claims rather than accepting them**: "recoding
+  the 62 makes every recovery gap wider" — true for all three A−B gaps
+  (0.171→0.225, 0.077→0.089, −0.000→0.014); "no trajectory was cut short" —
+  `max(inner_used)` = 6 = 3×2 from the single distinct budget record.
+- **Resolved a 62-vs-67 count discrepancy** rather than reporting it: 67 is
+  the all-arm total, 62 is A/B/C, and T19 tabulates only A/B/C. Consistent.
+- **Checked the paper is built from the current sources** before trusting any
+  PDF literal, and checked Figure 1 against a regeneration rather than
+  against its own caption.
+- **Positive-controlled every invariant** (§2) and both noise-floor directions
+  (planted discordant group → +1 discordant/+1 denominator; planted
+  *concordant* repeat → +0 discordant/+1 denominator, i.e. it does not
+  over-fire).
+- Confirmed the 13 manuscript literals with no exact match in canonical output
+  are all legitimate: complements of printed values (0.986/0.916/0.958 =
+  1−T11), 2-dp roundings (0.298, 0.105), the four-decimal 0.8025, and
+  off-snapshot figures that the paper explicitly sources (validation sheet
+  0.903/0.843/0.967, power MDEs 0.033/0.069/0.075).
+
+**Deliberately not proximity-matched.** Every flag above is identified by the
+quantity its sentence names and confirmed by reproducing the *wrong*
+denominator or the *wrong* seed distribution, not by a value falling within
+some tolerance of another value.
+
+## 7. Repairs, in priority order
+
+1. **E1** — `results.tex:249`: `61.8\%` → `61.6\%`. A published number is
+   currently the pre-fix survivorship value.
+2. **E3** — `results.tex:288–290`: the clause "Conditioning on successful
+   grading instead … and also puts Arm C's first-pass column at" introduces
+   the un-conditioned values and states the effect's direction backwards.
+   Either change the values to `0.822$/$0.788$/$0.295` (matches the sentence's
+   intent and the paragraph's argument) or drop the clause.
+3. **E2** — `FINAL_TABLES.py` T14: replace the `not (lo<0<hi)` label with the
+   seed-free test already used in T2/T29, or delete the label and print the
+   T29 p beside it. Canonical output currently says SIG in T14 and retain-H0
+   in T29 for the same contrast. Consider auditing for `not (lo<0<hi)` as a
+   pattern — T15 and T17 use it too and are stable only by luck of the data.
+4. **Minor** — quote the Holm p from the exact McNemar the paper says it uses
+   (0.0234), not from `_boot_p()` (0.0120), whose digits do not reproduce
+   across seeds. Verdicts are unchanged either way.

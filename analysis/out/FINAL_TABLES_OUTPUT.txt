@@ -200,13 +200,13 @@ Llama-3.3-70B-Instruct  B       390      0.315    0.326  +0.0103  [+0.0026,+0.02
 Llama-3.3-70B-Instruct  C       332      0.295    0.401  +0.1054  [+0.0723,+0.1386]
 
 [T14] P4 — ACTOR x INTERVENTION INTERACTION ON ACCURACY (C-A), PREREG scoring
-  gpt-oss-120b             minus gemma-4-31B-it           +0.0175 [-0.0050,+0.0412]  null
-  Llama-3.3-70B-Instruct   minus gemma-4-31B-it           +0.0400 [+0.0000,+0.0794]  SIG
-  Llama-3.3-70B-Instruct   minus gpt-oss-120b             +0.0225 [-0.0188,+0.0631]  null
+  gpt-oss-120b             minus gemma-4-31B-it           +0.0175 [-0.0050,+0.0406]  p=0.141  null
+  Llama-3.3-70B-Instruct   minus gemma-4-31B-it           +0.0400 [+0.0006,+0.0800]  p=0.05  null
+  Llama-3.3-70B-Instruct   minus gpt-oss-120b             +0.0225 [-0.0181,+0.0631]  p=0.278  null
 
 [T15] C' MINUS C (context control at fixed enforcement), both scorings
   PREREG    gemma-4-31B-it          +0.0450 [+0.0125,+0.0775] n=400  SIG
-  PREREG    gpt-oss-120b            -0.0125 [-0.0450,+0.0225] n=400
+  PREREG    gpt-oss-120b            -0.0125 [-0.0475,+0.0200] n=400
   AS-GRADED gemma-4-31B-it          +0.0196 [-0.0028,+0.0419] n=358
   AS-GRADED gpt-oss-120b            -0.0089 [-0.0357,+0.0149] n=336
 
@@ -225,10 +225,10 @@ Llama-3.3-70B-Instruct  B        268    0.865       0.015       0.068     205
   source rows 9195  sha256(file)[:16] d56dc5bdab0134fd
 
   actor                   arm       n  arm acc   SA acc   arm-SA  CI                  
-  gemma-4-31B-it          A      1600   0.8462   0.8688  -0.0225  [-0.0394,-0.0050]  SIG
-  gemma-4-31B-it          B      1600   0.8125   0.8688  -0.0563  [-0.0731,-0.0394]  SIG
-  gpt-oss-120b            A      1600   0.8031   0.7900  +0.0131  [-0.0037,+0.0300]
-  gpt-oss-120b            B      1600   0.8194   0.7900  +0.0294  [+0.0131,+0.0456]  SIG
+  gemma-4-31B-it          A      1600   0.8462   0.8688  -0.0225  [-0.0400,-0.0056]  SIG
+  gemma-4-31B-it          B      1600   0.8125   0.8688  -0.0563  [-0.0737,-0.0394]  SIG
+  gpt-oss-120b            A      1600   0.8031   0.7900  +0.0131  [-0.0044,+0.0300]
+  gpt-oss-120b            B      1600   0.8194   0.7900  +0.0294  [+0.0125,+0.0456]  SIG
 
   actor                   arm/protocol      evalcalls  actorcalls
   gemma-4-31B-it          single_agent           1.66        3.16
@@ -386,7 +386,7 @@ Llama-3.3-70B-Instruct  B       5314           0.005      0.000                 
   is what a noisy grader would actually do.
 actor                         B-A  naive 95% CI            noise-propagated 95% CI      verdict
 gemma-4-31B-it            -0.0338  [-0.0488,-0.0187]    [-0.0494,-0.0175]      resolvable
-gpt-oss-120b              +0.0163  [+0.0000,+0.0331]    [-0.0013,+0.0331]    NOT resolvable
+gpt-oss-120b              +0.0163  [+0.0000,+0.0325]    [-0.0013,+0.0331]    NOT resolvable
 Llama-3.3-70B-Instruct    +0.0025  [-0.0325,+0.0375]    [-0.0350,+0.0400]    NOT resolvable
 
 ================================================================================================
@@ -406,6 +406,6 @@ Llama-3.3-70B-Instruct    +0.0025  [-0.0325,+0.0375]    [-0.0350,+0.0400]    NOT
     gpt-oss-120b|C                  357 ->  280 ->  262 ->  141   (recovered outside funnel: 0)
   mechanical (functional collapse, first pass): Llama-3.3-70B-Instruct|A=0.000  Llama-3.3-70B-Instruct|B=0.872  gemma-4-31B-it|A=0.000  gemma-4-31B-it|B=0.976  gpt-oss-120b|A=0.120  gpt-oss-120b|B=0.846
   wrote /Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/analysis/out/FIGDATA.json
-  sha256(FIGDATA.json)[:16] da87298b4dbf19fd
+  sha256(FIGDATA.json)[:16] 671ba20ea833d438
 
 ================================================================================================

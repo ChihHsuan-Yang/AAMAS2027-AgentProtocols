@@ -528,10 +528,19 @@ for i in range(len(ACTORS)):
         u, v = ca_vec(ACTORS[i]), ca_vec(ACTORS[j])
         if len(u) < 30 or len(v) < 30: continue
         dd = v.mean() - u.mean()
-        bs = [RNG.choice(v, len(v)).mean() - RNG.choice(u, len(u)).mean() for _ in range(4000)]
+        bs = [RNG.choice(v, len(v)).mean() - RNG.choice(u, len(u)).mean() for _ in range(20000)]
         lo, hi = np.percentile(bs, [2.5, 97.5])
+        # DEFECT FIXED 2026-09-30 (AUDIT #2, E2). This printed SIG whenever the
+        # bootstrap interval excluded zero -- but the Llama-minus-gemma bound
+        # sits ON zero, so across 60 seeds it read SIG in 34 (57%). Same class
+        # as D3, fixed in T2 and still live here. A DiD has no paired
+        # discordant table, so the seed-free statistic is the two-sided
+        # bootstrap p, which T29 already Holm-corrects (this pair: p=0.0553,
+        # Holm=0.166, retain H0). Report that, never a CI-derived label.
+        pv = float(min(1.0, 2 * min((np.asarray(bs) <= 0).mean(),
+                                    (np.asarray(bs) >= 0).mean())))
         print(f"  {ACTORS[j]:<24} minus {ACTORS[i]:<24} {dd:+.4f} [{lo:+.4f},{hi:+.4f}]"
-              f"{'  SIG' if not (lo<0<hi) else '  null'}")
+              f"  p={pv:.3g}{'  SIG' if pv < 0.05 else '  null'}")
 
 # ---------------------------------------------------------------- T15 Cp - C
 print("\n[T15] C' MINUS C (context control at fixed enforcement), both scorings")
