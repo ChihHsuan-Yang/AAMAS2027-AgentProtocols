@@ -9,9 +9,10 @@ computation clause, so its components would not be comparable.
 
 \paragraph{Actors and scale.} Three actor models served from one pinned vLLM
 endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
-\textbf{Llama-3.3-70B}. The analysis reads a single frozen, sha256-manifested
-snapshot: \textbf{11{,}600 trajectories over 83{,}320 role messages and
-17{,}486 gradings}, on 1{,}600 distinct problems. Arms~A, B and C run
+\textbf{Llama-3.3-70B}. The primary analysis reads a single frozen,
+sha256-manifested snapshot: \textbf{11{,}600 trajectories over 83{,}320 role
+messages and 17{,}486 gradings}, on $1{,}600$ problems sampled uniformly at
+random from the $4{,}181$ available. Arms~A, B and C run
 $n=1{,}600$ per cell for the first two actors and $n=400$ for Llama-3.3;
 \textbf{Arm~C$'$ covers only the first two actors} at $n=400$ each, giving
 $3\times(1{,}600\cdot2+400) + 2\times400 = 11{,}600$. Every trajectory
