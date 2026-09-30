@@ -5,8 +5,8 @@
 a deterministic seeded manifest so every prefix of the run is itself a valid
 random sample. All arms run on the same problems, so every arm comparison is
 paired at the problem level. A second domain was designed and dropped: its
-Planner contract carries no computation clause, so its components would not be
-comparable.
+Planner contract carries no computation clause, so its components would not
+be comparable.
 
 \paragraph{Actors and scale.} Three actor models served from one pinned vLLM
 endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
@@ -14,23 +14,22 @@ endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
 snapshot: \textbf{11{,}600 trajectories over 83{,}320 role messages and
 17{,}486 gradings}, on 1{,}600 distinct problems. Arms~A, B and C run
 $n=1{,}600$ per cell for the first two actors and $n=400$ for Llama-3.3, plus
-$n=400$ per actor in Arm~C$'$. Every trajectory in every cell carries the same
-budget record (3 outer $\times$ 2 inner deliberation cycles, temperature $0$,
-identical \texttt{max\_tokens}); the snapshot contains exactly one distinct
-budget. Two further actor candidates were probed and rejected as unavailable
-rather than assumed available. The evaluator is gpt-oss-120b in every cell,
-which is one of the actors under study --- see \S\ref{sec:limitations}.
+$n=400$ per actor in Arm~C$'$. Every cell carries the same budget record (3
+outer $\times$ 2 inner deliberation cycles, temperature $0$, identical
+\texttt{max\_tokens}); the snapshot contains exactly one distinct budget. Two
+further actor candidates were probed and rejected as unavailable rather than
+assumed available. The evaluator is gpt-oss-120b in every cell, itself one of
+the actors under study --- see \S\ref{sec:limitations}.
 
-\paragraph{Provenance of the single-agent control.} The budget-matched
-single-agent comparator in \S\ref{subsec:notsingle} is \textbf{not} part of
-this campaign or its frozen snapshot. It is the \texttt{single\_agent}
-protocol from a previously released trace corpus of the same benchmark, joined
-to our trajectories by problem identifier, and it covers the two actors with
-$n=1{,}600$. We state this because a control a reader cannot locate is not a
-control. It is the reason the comparison is conservative in one direction and
-generous in another: that protocol consumed \emph{more} oracle feedback than
-our Arm~A ($1.66$--$1.69$ evaluator calls against $1.11$--$1.35$) and roughly
-half the actor calls.
+\paragraph{Provenance of the single-agent control.} The comparator in
+\S\ref{subsec:notsingle} is \textbf{not} part of this campaign or its frozen
+snapshot. It is the \texttt{single\_agent} protocol from a previously
+released trace corpus of the same benchmark, joined to our trajectories by
+problem identifier, covering the two actors with $n=1{,}600$. We state this
+because a control a reader cannot locate is not a control. It also makes the
+comparison conservative in one direction and generous in another: that
+protocol consumed \emph{more} oracle feedback than our Arm~A ($1.66$--$1.69$
+evaluator calls against $1.11$--$1.35$) and roughly half the actor calls.
 
 \paragraph{Power.} Computed by simulation (4{,}000 replicates, two-sided
 $\alpha=0.05$) from discordance rates in the pre-existing corpus. The paired
@@ -38,8 +37,8 @@ per-actor main effect is well powered at this scale; the
 actor~$\times$~intervention interaction needs roughly twice the sample, so
 \textbf{a null on P4 means ``no large interaction detected,'' not ``no
 interaction.''} Organizational measures are computed per message, so the
-measurement half of the study is well powered at trajectory counts at which
-the outcome half is not.
+measurement half is well powered at trajectory counts at which the outcome
+half is not.
 
 \paragraph{A confound caught before it became a result.} The main run was
 gated on a smoke test requiring non-zero Arm~C boundary rejections with
@@ -50,6 +49,6 @@ limit mid-JSON rather than violating a role boundary. Truncation was not
 arm-specific but its \emph{cost} was: Arms~A and B tolerate a truncated prose
 message where Arm~C rejects unparseable JSON, so left alone this would have
 produced a convincing ``enforcement lowers accuracy'' token-budget artifact.
-The limit was doubled, a logged salvage path added, and the pre-fix rows
-quarantined and never pooled. The residual form of this cost is Arm~C's
-attrition, reported in \S\ref{subsec:enforce} rather than removed.
+The limit was doubled, a logged salvage path added, and the pre-fix rows never
+pooled. The residual cost is Arm~C's attrition, reported in
+\S\ref{subsec:enforce} rather than removed.

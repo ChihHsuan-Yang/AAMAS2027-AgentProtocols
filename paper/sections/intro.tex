@@ -19,8 +19,6 @@ multi-agent organization load-bearing for?} A component is
 degradation in task performance \emph{under matched compute and information
 budgets}. The budget clause carries the weight: removing role instructions
 while also removing agents, calls, or context tests scale, not organization.
-Our interventions hold the whole compute and information budget fixed and vary
-only what each agent is told it is, or what its interface will let it emit.
 
 \paragraph{The answer, in one sentence.}
 \textbf{Role structure is not load-bearing for producing the first answer; it
@@ -44,10 +42,9 @@ converges too early. We test that explanation and reject it. Every arm holds
 the same six deliberation cycles and no trajectory in any cell is cut short;
 what changes is their use. The role-free team converts $5.80$ of its $5.83$
 cycles into resubmissions of the same answer while the role-labeled team
-submits $1.54$ times and spends $3.98$ revising, and in $98.1\%$ of role-free
-gemma-4 trajectories that started wrong the Reviewer never once declines to
-submit. The answer is then never revised at all in $0.845$ of those against
-$0.288$ under roles. This is
+submits $1.54$ times and spends $3.98$ revising. Its answer is then never
+revised at all in $0.845$ of first-pass-wrong trajectories against $0.288$
+under roles. This is
 Degeneration-of-Thought~\cite{liang2024divergent}; what is new is the
 \textbf{inversion}, since multi-agency is the standard prescription against
 it and multi-agency without role differentiation does not escape it.
@@ -78,15 +75,14 @@ that null visible.
   which ``collapse is harmless'' cannot be told from ``the system was always
   one agent''.
 \item The \textbf{phase dissociation}: role structure is dispensable for
-  first-pass solving and load-bearing for recovery, shown in two actors with
-  the third's floor effect reported rather than smoothed.
-\item A \textbf{refutation of premature stopping} as the mechanism, on matched
-  realized budget rather than on submission counts.
-\item A \textbf{structural--functional dissociation from the other side}:
-  architectural enforcement restores organization and recovery completely,
-  final accuracy not at all, with a pre-registered primary null and the
-  attrition that a survivorship reading of it would hide.
-\item A \textbf{measurement result we had to absorb ourselves}: an
+  first-pass solving and load-bearing for recovery, in two actors with the
+  third's floor effect reported rather than smoothed.
+\item A \textbf{refutation of premature stopping}, on matched realized
+  budget rather than on submission counts.
+\item The \textbf{dissociation from the other side}: enforcement restores
+  organization and recovery completely, final accuracy not at all, with a
+  pre-registered primary null and the attrition a survivorship reading hides.
+\item A \textbf{measurement result we absorbed ourselves}: an
   exact-duplication metric reports $0.000$ collapse for actors a blinded
   adjudication judges collapsed, and a logging defect leaves one actor's
   planner uninstrumented --- both reported as bounds on what we may say.

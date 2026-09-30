@@ -9,23 +9,21 @@ per agent. A contract asserts that an agent performs some function
 (\textsc{must} decompose the problem) or that it does not (\textsc{must not}
 state a final answer); clauses of the second kind make the specification a
 \emph{division} of labor. The \emph{realized} organization is what occurs when
-that specification is executed by a particular actor. Because a clause is
-prose handed to a language model, realization is not guaranteed and nothing
-records which clauses were honored.
+a particular actor executes that specification. Because a clause is prose
+handed to a language model, realization is not guaranteed and nothing records
+which clauses were honored.
 
 \begin{quote}
 \textbf{Definition.} A component of an organization is \textbf{load-bearing}
-if removing or altering it causes a reproducible degradation in task
-performance \emph{under matched compute and information budgets}.
+if removing or altering it reproducibly degrades task performance
+\emph{under matched compute and information budgets}.
 \end{quote}
 
-The budget clause makes the definition usable: removing role instructions
-\emph{and} agents, calls, or context tests scale, not organization. Every
-intervention below holds the full budget fixed and varies only what each agent
-is told it is or what its interface will accept. Because performance itself
-decomposes --- producing a first answer, and repairing a wrong one --- the
-definition is applied \emph{per phase}, and \S\ref{sec:results} finds the two
-phases answer differently.
+Every intervention below holds the full budget fixed and varies only what
+each agent is told it is or what its interface will accept. Because
+performance itself decomposes --- producing a first answer, and repairing a
+wrong one --- the definition is applied \emph{per phase}, and
+\S\ref{sec:results} finds the two phases answer differently.
 
 \subsection{Measuring the realized organization}
 
@@ -35,28 +33,27 @@ final answer, making the pipeline three solvers rather than a division of
 labor. It targets the property the diagram asserts rather than the property a
 hash can see, is measured on the first pass so it is not confounded with
 trajectory length, and is \textbf{not applicable to Arms~C/C$'$}, where the
-schema forbids an answer field and a zero would record the constraint rather
-than the behavior. It is inverted \Pone{}, made presence-based rather than
+schema forbids an answer field and a zero would record the constraint, not the
+behavior. It is inverted \Pone{}, made presence-based rather than
 length-based --- not a new construct.
 
 \paragraph{Exact output duplication (secondary, a lower bound).} Two or more
-role messages byte-identical, compared as \texttt{sha256} of the raw
-completion before parsing. Precision $1.000$, recall $0.262$ against blinded
-adjudication, so it establishes that at least a given amount of collapse
-occurred and is \textbf{never used to compare how much organization two actors
-lost} --- its recall differs by actor.
+role messages byte-identical, as \texttt{sha256} of the raw completion before
+parsing. Precision $1.000$, recall $0.262$ against blinded adjudication, so it
+bounds collapse from below and is \textbf{never used to compare how much
+organization two actors lost} --- its recall differs by actor.
 
 \paragraph{Answer authorship.} Whether a Planner authors a final answer. This
 is the clause Arm~C structurally enforces and the manipulation check.
 
 \paragraph{Computation (\Pone{} and density).} Whether a Planner abstains from
-computing, scored as containing no evaluated numeric equality. Because it is
-the absence of a pattern it is mechanically anti-correlated with message
-length, so every computation claim cites \textbf{evaluated equations per
-1{,}000 characters} instead. This matters: Arm~B's gpt-oss Planner scores
-$0.722$ on the binary rate --- apparently the study's most compliant Planner
---- on a 37-character message. A metric that rewards silence cannot measure a
-division of labor.
+computing, scored as containing no evaluated numeric equality. Being the
+absence of a pattern, it is mechanically anti-correlated with message length,
+so every computation claim cites \textbf{evaluated equations per 1{,}000
+characters} instead. This matters: Arm~B's gpt-oss Planner scores $0.722$ on
+the binary rate --- apparently the study's most compliant --- on a
+37-character message. A metric that rewards silence cannot measure a division
+of labor.
 
 \paragraph{Recovery.} The fraction of trajectories whose first submitted
 answer was graded wrong that nonetheless finish correct. The metric is not
