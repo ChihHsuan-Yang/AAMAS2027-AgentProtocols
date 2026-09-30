@@ -205,10 +205,10 @@ Llama-3.3-70B-Instruct  C       332      0.295    0.401  +0.1054  [+0.0723,+0.13
   Llama-3.3-70B-Instruct   minus gpt-oss-120b             +0.0225 [-0.0181,+0.0631]  p=0.278  null
 
 [T15] C' MINUS C (context control at fixed enforcement), both scorings
-  PREREG    gemma-4-31B-it          +0.0450 [+0.0125,+0.0775] n=400  SIG
-  PREREG    gpt-oss-120b            -0.0125 [-0.0475,+0.0200] n=400
-  AS-GRADED gemma-4-31B-it          +0.0196 [-0.0028,+0.0419] n=358
-  AS-GRADED gpt-oss-120b            -0.0089 [-0.0357,+0.0149] n=336
+  PREREG    gemma-4-31B-it          +0.0450 [+0.0125,+0.0775] n=400  p=0.00792  SIG
+  PREREG    gpt-oss-120b            -0.0125 [-0.0475,+0.0200] n=400  p=0.56
+  AS-GRADED gemma-4-31B-it          +0.0196 [-0.0028,+0.0419] n=358  p=0.143
+  AS-GRADED gpt-oss-120b            -0.0089 [-0.0357,+0.0149] n=336  p=0.648
 
 [T16] UNANIMITY AND ANSWER MOVEMENT, first-pass-wrong
 actor                   arm    n_fpw   unanim  recov|unan  moves|unan  n_unan
@@ -225,10 +225,10 @@ Llama-3.3-70B-Instruct  B        268    0.865       0.015       0.068     205
   source rows 9195  sha256(file)[:16] d56dc5bdab0134fd
 
   actor                   arm       n  arm acc   SA acc   arm-SA  CI                  
-  gemma-4-31B-it          A      1600   0.8462   0.8688  -0.0225  [-0.0400,-0.0056]  SIG
-  gemma-4-31B-it          B      1600   0.8125   0.8688  -0.0563  [-0.0737,-0.0394]  SIG
-  gpt-oss-120b            A      1600   0.8031   0.7900  +0.0131  [-0.0044,+0.0300]
-  gpt-oss-120b            B      1600   0.8194   0.7900  +0.0294  [+0.0125,+0.0456]  SIG
+  gemma-4-31B-it          A      1600   0.8462   0.8688  -0.0225  [-0.0400,-0.0056]  p=0.0122  SIG
+  gemma-4-31B-it          B      1600   0.8125   0.8688  -0.0563  [-0.0737,-0.0394]  p=1.22e-10  SIG
+  gpt-oss-120b            A      1600   0.8031   0.7900  +0.0131  [-0.0044,+0.0300]  p=0.152
+  gpt-oss-120b            B      1600   0.8194   0.7900  +0.0294  [+0.0125,+0.0456]  p=0.000678  SIG
 
   actor                   arm/protocol      evalcalls  actorcalls
   gemma-4-31B-it          single_agent           1.66        3.16

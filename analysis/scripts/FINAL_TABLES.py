@@ -549,8 +549,11 @@ for label, scorer in (("PREREG", fin_prereg), ("AS-GRADED", fin_asgraded)):
         r_ = paired(a, "C", "Cp", scorer)
         if not r_: continue
         m, lo, hi, n = r_
+        # SIG from a bootstrap CI is seed-dependent when a bound sits at zero
+        # (AUDIT#1 D3, AUDIT#2 E2). Paired binary contrast -> exact McNemar.
+        pm = _exact_mcnemar(a, "C", "Cp", scorer)
         print(f"  {label:<10}{a:<24}{m:+.4f} [{lo:+.4f},{hi:+.4f}] n={n}"
-              f"{'  SIG' if not (lo<0<hi) else ''}")
+              f"  p={pm:.3g}{'  SIG' if (pm is not None and pm < 0.05) else ''}")
 
 # ---------------------------------------------------------------- T16 unanimity / lock-in
 print("\n[T16] UNANIMITY AND ANSWER MOVEMENT, first-pass-wrong")
@@ -591,9 +594,17 @@ try:
             if len(cm) < 30: continue
             d = np.array([X[p] - S[p] for p in cm], float)
             lo, hi = boot(d)
+            # Seed-free significance (see T2/T14/T15): exact binomial on the
+            # discordant pairs of this paired binary contrast.
+            from math import comb as _cb
+            _b = int(sum(1 for p in cm if X[p] - S[p] == 1))
+            _c = int(sum(1 for p in cm if X[p] - S[p] == -1))
+            _m = _b + _c
+            pm = (min(1.0, 2 * sum(_cb(_m, i) for i in range(min(_b, _c) + 1)) / 2 ** _m)
+                  if _m else 1.0)
             print(f"  {a:<24}{arm:<5}{len(cm):>6}{np.mean([X[p] for p in cm]):>9.4f}"
                   f"{np.mean([S[p] for p in cm]):>9.4f}{d.mean():>+9.4f}  [{lo:+.4f},{hi:+.4f}]"
-                  f"{'  SIG' if not (lo<0<hi) else ''}")
+                  f"  p={pm:.3g}{'  SIG' if pm < 0.05 else ''}")
     print(f"\n  {'actor':<24}{'arm/protocol':<16}{'evalcalls':>11}{'actorcalls':>12}")
     for key, a in NAME.items():
         s = sa[sa.actor_model_id == key]

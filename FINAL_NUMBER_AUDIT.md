@@ -755,3 +755,38 @@ some tolerance of another value.
 4. **Minor** — quote the Holm p from the exact McNemar the paper says it uses
    (0.0234), not from `_boot_p()` (0.0120), whose digits do not reproduce
    across seeds. Verdicts are unchanged either way.
+
+---
+
+# DEFECT-CLASS CHECKLIST — what proves each class absent from the submission
+
+**Added 2026-09-30 after three audits each found real defects. The point of
+this table is to stop rediscovering a class a fourth time: for every class
+this project has actually suffered, it names the ONE check that proves the
+class is absent from the artifact, not from the script.**
+
+| # | defect class | how it bit us | the check that proves absence | status |
+|---|---|---|---|---|
+| 1 | **Stale denominator** — `graded()` where `judged()` is meant | Arm C recovery inflated 0.412 vs 0.314; first-pass 0.822 vs 0.779 | `(1-firstpass) x n_judged == n_fpw` asserted per cell in T1 **and** T28; positive-controlled by substituting `graded()` (fires 8/11) | **PASS 11/11** |
+| 2 | **Post-fix sibling** — defect repaired where reported, left running elsewhere | D1 fixed in T1, alive in T28 (figures drew stale values); D3 fixed in T2, alive in T14, T15, T17 | `grep -c "lo<0<hi" FINAL_TABLES.py` == 0; no significance label anywhere derives from a bootstrap CI | **PASS (0 sites)** |
+| 3 | **Marginal vs paired population** | T1 0.710/0.762 vs T3 0.713/0.763 — both correct, different questions | audit #2's ~75-row PDF-to-canonical trace names the population for every literal | **PASS** |
+| 4 | **As-graded vs prereg population** | C-A flips sign (-0.0225 -> +0.0190) between conventions | both columns printed side by side in the paper with attrition adjacent; T2 prints both scorings | **PASS** |
+| 5 | **Wrong test's p-value pasted** | Table 2 carried 2e-8, the recovery test's value, where 1.61e-05 belonged | every p in the paper traced to its T-row; `%.3g` formatting so no p renders as `0.0000` | **PASS** |
+| 6 | **Bootstrap nondeterminism** | `set()` iteration under `PYTHONHASHSEED`; one SIG label true in 62% of seeds | 3 runs, seeds 0/1/random, byte-identical output; all significance from exact tests | **PASS** |
+| 7 | **Missing gold lookup treated as a negative** | manifest covered n=1600, so 247 of 432 rows silently scored "not under-credited" | T19 asserts complete gold coverage and raises rather than defaulting | **PASS (assert live)** |
+| 8 | **Claims file stale behind the paper** | `APPROVED_CLAIMS` still said +0.291/+0.300 and 54 after the fix | chain rule in `SOURCE_OF_TRUTH.md`; claims file re-derived after every `FINAL_TABLES.py` change | **PASS** |
+| 9 | **Stale figure data** | FIGDATA's noise floor was fresh while its Arm C first-pass was stale — freshness of one field proves nothing about another | regenerate FIGDATA and all figures in the same run as the tables; audit #2 confirmed text-identical | **PASS** |
+| 10 | **Stale Overleaf** | held a stub for two days while GitHub had the real manuscript | file-by-file content hash GitHub `paper/` vs Overleaf tree, then `git ls-remote` after push | **PASS (`cb5e768f`)** |
+| 11 | **Page check measuring the wrong subject** | v1 column-blind (missed 539 words); v2 vacuous under `\clearpage` (passed a 10-page paper) | `scripts/pagecheck.py` v3 + positive control: pad the conclusion, confirm EXIT 1, restore, confirm EXIT 0 | **PASS, control run on the fresh clone** |
+| 12 | **Interpretation reversed while the numbers are right** | "conditioning on successful grading puts Arm C at 0.779..." — those are the UNconditioned values; the sentence inverted its own paragraph's argument | **no mechanical check exists.** Only a reader who recomputes the direction. This is why the fresh mock review is P0 and cannot be replaced by a script | **MITIGATED, not proven** |
+
+## The one class with no mechanical guard
+
+Class 12 is the reason a human-equivalent read stays in the P0 list. Every
+other class above is caught by an assert, a grep, or a positive control that
+runs in seconds. A sentence whose numbers are all correct and whose direction
+is backwards passes every one of them. Two independent number audits missed
+it; the third caught it by asking what the sentence *meant*.
+
+**Any future agent tempted to replace the mock review with more scripts
+should read this row first.**
