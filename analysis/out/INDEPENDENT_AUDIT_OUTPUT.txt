@@ -1,0 +1,307 @@
+====================================================================================================
+INDEPENDENT NUMBER AUDIT — written from definitions, not from FINAL_TABLES.py
+====================================================================================================
+
+[A0] SHA256 VERIFICATION OF THE FROZEN SNAPSHOT
+  frozen_at 2026-09-30T10:09:30.201557   manifest total_rows 11600
+  file                   manifest sha256    computed sha256    match
+  actor3.jsonl           fa22a446d5314bb6   fa22a446d5314bb6   OK
+  armCp.jsonl            038e08aec4d4aee1   038e08aec4d4aee1   OK
+  campaign_v2.jsonl      e4e53cb117d91129   e4e53cb117d91129   OK
+  VERDICT: all files match manifest (sha256 AND byte count)
+
+[A1] ROW-COUNT AND CELL-CENSUS ASSERTIONS
+  rows loaded 11600   manifest says 11600   OK
+  per-cell counts vs manifest: all 11 cells match
+
+[T0] CELL CENSUS
+  DENOMINATOR: one row per (problem, arm, actor); 'done' is that count.
+  actor                    arm    done  graded  ungraded  hardfail unjudged_fp rej/traj
+  Llama-3.3-70B-Instruct   A       400     397         3         0          2    0.000
+  Llama-3.3-70B-Instruct   B       400     390        10         0          9    0.000
+  Llama-3.3-70B-Instruct   C       400     332        68        64         51    1.045
+  gemma-4-31B-it           A      1600    1600         0         0          0    0.000
+  gemma-4-31B-it           B      1600    1600         0         0          0    0.000
+  gemma-4-31B-it           C      1600    1472       128       128         46    0.589
+  gemma-4-31B-it           Cp      400     382        18        17         11    0.453
+  gpt-oss-120b             A      1600    1598         2         0          2    0.000
+  gpt-oss-120b             B      1600    1594         6         0          3    0.000
+  gpt-oss-120b             C      1600    1442       158        95        107    1.008
+  gpt-oss-120b             Cp      400     361        39        16         23    0.835
+
+[T1] MASTER RESULTS
+  DENOMINATORS, stated explicitly:
+    firstpass  = judged rows only (empty evaluator_history EXCLUDED) -> n_judged
+    final_PRE  = ALL rows; correct=None scores 0 (preregistered)     -> n
+    final_AGR  = rows with correct not None                          -> n_graded
+    recovery   = rows whose FIRST evaluator verdict was 0            -> n_fpw
+    frozen_ans = among n_fpw; <=1 distinct answer over ALL accepted role msgs, ARM-AWARE
+    collapse   = among first-pass-wrong; planner asserts an answer in pipeline pass 1
+  actor                    arm       n   n_judg firstpas  fin_PRE  fin_AGR   n_fpw  recov_P  recov_G   frozen
+  Llama-3.3-70B-Instruct   A       400      398    0.307    0.315    0.317     276    0.014    0.015    0.746
+  Llama-3.3-70B-Instruct   B       400      391    0.315    0.318    0.326     268    0.015    0.015    0.813
+  Llama-3.3-70B-Instruct   C       400      349    0.281    0.333    0.401     251    0.139    0.150    0.076
+  gemma-4-31B-it           A      1600     1600    0.802    0.846    0.846     316    0.222    0.222    0.288
+  gemma-4-31B-it           B      1600     1600    0.802    0.812    0.812     316    0.051    0.051    0.848
+  gemma-4-31B-it           C      1600     1554    0.779    0.824    0.895     344    0.314    0.412    0.125
+  gemma-4-31B-it           Cp      400      389    0.810    0.858    0.898      74    0.378    0.418    0.216
+  gpt-oss-120b             A      1600     1598    0.710    0.803    0.804     463    0.324    0.324    0.069
+  gpt-oss-120b             B      1600     1597    0.762    0.819    0.822     380    0.247    0.249    0.192
+  gpt-oss-120b             C      1600     1493    0.761    0.798    0.886     357    0.395    0.461    0.101
+  gpt-oss-120b             Cp      400      377    0.740    0.775    0.859      98    0.316    0.378    0.184
+
+  [T1b] FUNCTIONAL COLLAPSE / UNANIMITY / REVIEWER BEHAVIOUR
+  DENOMINATORS: collapse & unanimity over first-pass-wrong rows (n_fpw);
+    unanim = among rows where ALL THREE roles assert an answer in pass 1,
+             the fraction where those answers are all identical (n_unan printed);
+    collapse is n/a for C/Cp: their planner/reviewer schemas HAVE NO answer field,
+             so 'planner asserts' is architecturally 0 and not comparable to A/B.
+  actor                    arm    n_fpw  collapse   n_unan   unanim  rev1_acpt never_ref ref/traj
+  Llama-3.3-70B-Instruct   A        276     0.000        0      nan      0.362     0.203    4.527
+  Llama-3.3-70B-Instruct   B        268     0.899      237    0.865      0.814     0.783    0.597
+  Llama-3.3-70B-Instruct   C        251       nan        0      nan      0.911     0.306    2.577
+  gemma-4-31B-it           A        316     0.000        0      nan      0.780     0.701    1.246
+  gemma-4-31B-it           B        316     0.915      287    0.889      0.994     0.994    0.009
+  gemma-4-31B-it           C        344       nan        0      nan      0.969     0.814    0.536
+  gemma-4-31B-it           Cp        74       nan        0      nan      0.977     0.844    0.385
+  gpt-oss-120b             A        463     0.307       80    0.150      0.683     0.556    1.205
+  gpt-oss-120b             B        380     0.779      260    0.462      0.926     0.874    0.229
+  gpt-oss-120b             C        357       nan        0      nan      0.874     0.754    0.672
+  gpt-oss-120b             Cp        98       nan        0      nan      0.903     0.768    0.543
+
+[T1c] FIRST-PASS DENOMINATOR SENSITIVITY — the defect this audit was built to find
+  A trajectory can receive a FIRST evaluator verdict and then die in
+  regeneration, leaving correct=None.  It IS judged on its first pass.
+  Conditioning first-pass accuracy on `correct is not None` drops exactly
+  those rows -- and every one of them is first-pass WRONG, so dropping them
+  inflates first-pass accuracy in precisely the arm that attrits.
+  actor                    arm  n_judged fp_judged  n_graded fp_graded inflation
+  Llama-3.3-70B-Instruct   A         398     0.307       397     0.307   +0.0008
+  Llama-3.3-70B-Instruct   B         391     0.315       390     0.315   +0.0008
+  Llama-3.3-70B-Instruct   C         349     0.281       332     0.295   +0.0144
+  gemma-4-31B-it           A        1600     0.802      1600     0.802   +0.0000
+  gemma-4-31B-it           B        1600     0.802      1600     0.802   +0.0000
+  gemma-4-31B-it           C        1554     0.779      1472     0.822   +0.0434
+  gemma-4-31B-it           Cp        389     0.810       382     0.825   +0.0148
+  gpt-oss-120b             A        1598     0.710      1598     0.710   +0.0000
+  gpt-oss-120b             B        1597     0.762      1594     0.763   +0.0014
+  gpt-oss-120b             C        1493     0.761      1442     0.788   +0.0269
+  gpt-oss-120b             Cp        377     0.740       361     0.773   +0.0328
+  rows judged on first pass but dropped by graded-conditioning: 178
+  of those 178 rows, 178 are first-pass WRONG (100.0%) -> the drop is ONE-SIDED
+  INTERNAL-CONSISTENCY TEST any reader can run on a published table:
+    if firstpass is computed on n_graded while n_fpw is computed on n_judged,
+    then (1-firstpass)*n_graded != n_fpw.  Check it per cell:
+    actor                    arm  (1-fp_g)*n_g    n_fpw consistent?
+    Llama-3.3-70B-Instruct   A             275      276 *** INCONSISTENT ***
+    Llama-3.3-70B-Instruct   B             267      268 *** INCONSISTENT ***
+    Llama-3.3-70B-Instruct   C             234      251 *** INCONSISTENT ***
+    gemma-4-31B-it           A             316      316 ok
+    gemma-4-31B-it           B             316      316 ok
+    gemma-4-31B-it           C             262      344 *** INCONSISTENT ***
+    gemma-4-31B-it           Cp             67       74 *** INCONSISTENT ***
+    gpt-oss-120b             A             463      463 ok
+    gpt-oss-120b             B             377      380 *** INCONSISTENT ***
+    gpt-oss-120b             C             306      357 *** INCONSISTENT ***
+    gpt-oss-120b             Cp             82       98 *** INCONSISTENT ***
+
+[T2] PAIRED CONTRASTS B-A AND C-A, BOTH SCORINGS (bootstrap by problem, 10000 reps)
+  UNIT: one problem.  PREREG pairs over ALL problems in both arms (None->0).
+        AS-GRADED pairs only over problems graded in BOTH arms (n shrinks).
+  --- PREREG ---
+    B-A:
+      gemma-4-31B-it           -0.0338 [-0.0488,-0.0187] n=1600   SIG
+      gpt-oss-120b             +0.0163 [+0.0000,+0.0325] n=1600   
+      Llama-3.3-70B-Instruct   +0.0025 [-0.0350,+0.0375] n=400    
+    C-A:
+      gemma-4-31B-it           -0.0225 [-0.0387,-0.0063] n=1600   SIG
+      gpt-oss-120b             -0.0050 [-0.0219,+0.0113] n=1600   
+      Llama-3.3-70B-Instruct   +0.0175 [-0.0200,+0.0550] n=400    
+  --- AS-GRADED ---
+    B-A:
+      gemma-4-31B-it           -0.0338 [-0.0488,-0.0187] n=1600   SIG
+      gpt-oss-120b             +0.0157 [-0.0006,+0.0320] n=1592   
+      Llama-3.3-70B-Instruct   +0.0077 [-0.0283,+0.0437] n=389    
+    C-A:
+      gemma-4-31B-it           +0.0190 [+0.0054,+0.0333] n=1472   SIG
+      gpt-oss-120b             +0.0361 [+0.0215,+0.0514] n=1441   SIG
+      Llama-3.3-70B-Instruct   +0.0453 [+0.0060,+0.0876] n=331    SIG
+
+[T2b] SEED STABILITY OF EVERY 'SIG' VERDICT (the boundary cases)
+  A bootstrap CI whose bound sits ON zero flips SIG/not-SIG with the RNG seed.
+  For each PREREG contrast: resample under 40 different seeds and report how
+  often the verdict is SIG.  Anything strictly between 0 and 1 is a verdict
+  that the seed, not the data, is deciding.  Exact McNemar is seed-free and
+  is reported beside it as the adjudicator.
+  actor                    contr      effect  SIG frac  McNemar p  McN verdict note
+  gemma-4-31B-it           B-A       -0.0338      1.00     0.0000       REJECT stable
+  gpt-oss-120b             B-A       +0.0163      0.12     0.0621           no *** SEED-DEPENDENT VERDICT ***
+  Llama-3.3-70B-Instruct   B-A       +0.0025      0.00     1.0000           no stable
+  gemma-4-31B-it           C-A       -0.0225      1.00     0.0078       REJECT stable
+  gpt-oss-120b             C-A       -0.0050      0.00     0.6040           no stable
+  Llama-3.3-70B-Instruct   C-A       +0.0175      0.00     0.4270           no stable
+
+[T3] FIRST-PASS vs RECOVERY DECOMPOSITION
+  UNIT: judged rows for first-pass; first-pass-wrong judged rows for recovery.
+  actor                       fp(A)    fp(B)    fp B-A     rec(A)     rec(B)    rec B-A
+  gemma-4-31B-it              0.802    0.802   +0.0000      0.222      0.051    -0.1709
+  gpt-oss-120b                0.710    0.762   +0.0518      0.324      0.247    -0.0766
+  Llama-3.3-70B-Instruct      0.307    0.315   +0.0080      0.014      0.015    +0.0004
+  actor                       fp(A)    fp(C)    fp C-A     rec(A)     rec(C)    rec C-A
+  gemma-4-31B-it              0.802    0.779   -0.0239      0.222      0.314    +0.0924
+  gpt-oss-120b                0.710    0.761   +0.0506      0.324      0.395    +0.0710
+  Llama-3.3-70B-Instruct      0.307    0.281   -0.0257      0.014      0.139    +0.1249
+
+[T4] PAIRED RECOVERY TRANSITIONS + EXACT McNEMAR
+  UNIT: problems FIRST-PASS WRONG under BOTH arms and JUDGED under both.
+        Recovery scored PREREG (ungraded final = not recovered).
+  actor                    contr   n_pair     both   loOnly   hiOnly  neither    McNemar p
+  gemma-4-31B-it           B-A        237        1       37        3      196    1.947e-08
+  gpt-oss-120b             B-A        327       27       52       39      209    2.082e-01
+  Llama-3.3-70B-Instruct   B-A        245        0        1        4      240    3.750e-01
+  gemma-4-31B-it           C-A        226       12       25       34      155    2.976e-01
+  gpt-oss-120b             C-A        291       50       30       45      166    1.053e-01
+  Llama-3.3-70B-Instruct   C-A        218        2        0       19      197    3.815e-06
+
+[T5] MECHANISM: OPPORTUNITY vs USE  (first-pass-wrong rows)
+  UNIT: first-pass-wrong judged rows.  cycles=inner_used, subs=len(evaluator_history).
+  cycle cap check: MAX_OUTER_ROUNDS=3 x INNER_ROUNDS=2 = 6, verified below.
+  actor                    arm    n_fpw   cycles     subs   revising
+  Llama-3.3-70B-Instruct   A        276    5.935    1.058      4.877
+  Llama-3.3-70B-Instruct   B        268    5.955    5.246      0.709
+  Llama-3.3-70B-Instruct   C        251    5.462    1.892      3.570
+  gemma-4-31B-it           A        316    5.519    1.538      3.981
+  gemma-4-31B-it           B        316    5.829    5.801      0.028
+  gemma-4-31B-it           C        344    4.503    2.061      2.442
+  gemma-4-31B-it           Cp        74    4.635    2.554      2.081
+  gpt-oss-120b             A        463    5.311    2.207      3.104
+  gpt-oss-120b             B        380    5.350    4.597      0.753
+  gpt-oss-120b             C        357    4.515    2.395      2.120
+  gpt-oss-120b             Cp        98    4.663    2.745      1.918
+  MAX inner_used over ALL 11600 trajectories = 6  -> cap of 6 HOLDS
+
+[T6] GRADER NOISE FLOOR
+  UNIT: a GROUP is one (problem_uid, NFKC+whitespace-normalized graded candidate).
+  Pairs are deliberately NOT counted: within-trajectory resubmissions cluster
+  and inflate a pair denominator (F23).
+  total gradings (evaluator_history entries with a verdict): 17486
+  distinct groups: 6652 ; groups graded >=2 times: 2790
+  group-level  : 20 discordant / 2790 repeated groups = 0.0072   <- most conservative
+  per-call     : 84 gradings in a non-unanimous group / 13624 gradings in repeated groups = 0.0062
+  minority-verd: 23 minority gradings / 13624 gradings in repeated groups = 0.0017
+
+  [T6b] NOISE-FLOOR MARGIN for each PREREG B-A and C-A contrast
+  actor                    contr    |effect|      floor margin x
+  gemma-4-31B-it           B-A        0.0338     0.0072     4.71
+  gpt-oss-120b             B-A        0.0163     0.0072     2.27  (CI spans 0)
+  Llama-3.3-70B-Instruct   B-A        0.0025     0.0072     0.35  (CI spans 0)
+  gemma-4-31B-it           C-A        0.0225     0.0072     3.14
+  gpt-oss-120b             C-A        0.0050     0.0072     0.70  (CI spans 0)
+  Llama-3.3-70B-Instruct   C-A        0.0175     0.0072     2.44  (CI spans 0)
+
+[T7] ATTRITION (Arm C enforcement cost)
+  UNIT: all rows in the cell.  attrition = fraction with correct is None.
+  actor                    arm        n  attrition    hard_fail rejects/traj
+  Llama-3.3-70B-Instruct   A        400      0.007        0.000        0.000
+  Llama-3.3-70B-Instruct   B        400      0.025        0.000        0.000
+  Llama-3.3-70B-Instruct   C        400      0.170        0.160        1.045
+  gemma-4-31B-it           A       1600      0.000        0.000        0.000
+  gemma-4-31B-it           B       1600      0.000        0.000        0.000
+  gemma-4-31B-it           C       1600      0.080        0.080        0.589
+  gemma-4-31B-it           Cp       400      0.045        0.043        0.453
+  gpt-oss-120b             A       1600      0.001        0.000        0.000
+  gpt-oss-120b             B       1600      0.004        0.000        0.000
+  gpt-oss-120b             C       1600      0.099        0.059        1.008
+  gpt-oss-120b             Cp       400      0.098        0.040        0.835
+
+[T8] P4 — ACTOR x INTERVENTION INTERACTION ON ACCURACY (C-A), PREREG scoring
+  UNIT: per-actor mean of paired per-problem (C-A); the two actors' problem
+  samples are resampled INDEPENDENTLY (no cross-actor pairing exists).
+  contrast                                                    DiD                 95% CI verdict
+  (C-A)[gemma-4-31B-it] - (C-A)[gpt-oss-120b]             -0.0175 [-0.0406,+0.0056] contains zero -> NULL
+  (C-A)[gemma-4-31B-it] - (C-A)[Llama-3.3-70B-Instruct]    -0.0400 [-0.0800,-0.0006] SIG
+  (C-A)[gpt-oss-120b] - (C-A)[Llama-3.3-70B-Instruct]     -0.0225 [-0.0625,+0.0188] contains zero -> NULL
+
+[T9] C' MINUS C (context control at fixed enforcement)
+  UNIT: the 400 problems run in BOTH C' and C for that actor.
+  PREREG     gemma-4-31B-it           +0.0450 [+0.0125,+0.0750] n=400   SIG
+  PREREG     gpt-oss-120b             -0.0125 [-0.0450,+0.0200] n=400   
+  AS-GRADED  gemma-4-31B-it           +0.0196 [-0.0028,+0.0419] n=358   
+  AS-GRADED  gpt-oss-120b             -0.0089 [-0.0357,+0.0179] n=336   
+
+[T10] ARM-AWARE vs ARM-BLIND ANSWER EXTRACTION (the frozen-answer defect)
+  UNIT: first-pass-wrong rows.  Blind = \boxed-only, which arms C/Cp never author.
+  actor                    arm    n_fpw  frozen(aware)  frozen(BLIND)
+  Llama-3.3-70B-Instruct   A        276          0.746          0.746
+  Llama-3.3-70B-Instruct   B        268          0.813          0.813
+  Llama-3.3-70B-Instruct   C        251          0.076          0.984
+  gemma-4-31B-it           A        316          0.288          0.288
+  gemma-4-31B-it           B        316          0.848          0.848
+  gemma-4-31B-it           C        344          0.125          1.000
+  gemma-4-31B-it           Cp        74          0.216          1.000
+  gpt-oss-120b             A        463          0.069          0.069
+  gpt-oss-120b             B        380          0.192          0.192
+  gpt-oss-120b             C        357          0.101          0.924
+  gpt-oss-120b             Cp        98          0.184          0.878
+
+[T10b] NOISE-FLOOR GROUPING SENSITIVITY — how much does normalization move it?
+  The definition is 'repeated IDENTICAL prompts at temp 0'.  The evaluator
+  prompt interpolates the candidate VERBATIM (prompts.EVALUATOR_PREPEND), so
+  two candidates differing by whitespace are DIFFERENT prompts and their
+  disagreement is not a nondeterminism draw.
+  exact bytes (literal identical prompt)      20 / 2790 = 0.0072   (0 of those groups fold >1 distinct raw string)
+  NFKC + collapse whitespace (this audit)     20 / 2790 = 0.0072   (0 of those groups fold >1 distinct raw string)
+  strip ALL whitespace + strip $ (looser)     24 / 2791 = 0.0086   (6 of those groups fold >1 distinct raw string)
+  A grouping that folds >1 raw string is NOT measuring identical prompts:
+  it charges genuine format sensitivity to the nondeterminism floor.
+
+[T11] BUDGET-MATCHED SINGLE-AGENT CONTROL
+  PROVENANCE WARNING: this control is NOT in experiments/results/FROZEN/.
+  Source: /Users/bellayang/Documents/note/projects/IEEE-BigData-SciAgentTrace/analysis/hf_cache/release/data/trajectories/part-00000.parquet
+  sha256 of the historical parquet (recorded here so it is pinnable): d56dc5bdab0134fdf5b8ae383c061be7da3ca8039fe1d886c3ca1cec18fdb619
+  It carries NO manifest in this repo, so its bytes are unpinned by the project.
+  single_agent x omnimath2 rows: 9195
+  hist actor                 rows        release source_commit                                  evaluator
+  gemma3_27b                  833    provisional bad2bf05b                                      gpt_oss_120b
+  gemma_4_31b                4181      candidate 7c9753541c83d4873da3f05f66755f40d068bebe       gpt_oss_120b
+  gpt_oss_120b               4181      candidate be9c47c90c95b44d60e2b3bdad49d68b11557039       gpt_oss_120b
+  SOUNDNESS NOTES (each is a reason the comparison is weaker than a within-snapshot one):
+    * different source_commit PER ACTOR — the two single-agent arms were not
+      even generated by one build, so an actor contrast inside the control is
+      itself cross-version.
+    * release_status is 'candidate'/'provisional', not 'released'.
+    * the evaluator model matches ours (gpt_oss_120b), which is the one axis
+      that IS matched.
+    * NO Llama-3.3 single-agent cell exists, so A9 can never cover all 3 actors.
+
+  ARM minus SINGLE-AGENT, paired on problem_uid, PREREG scoring for our arms.
+  UNIT: problems present in BOTH our cell and the historical single-agent cell.
+  COVERAGE ASSERTION: every one of our problems must be found in the control,
+  or the shortfall is reported — a missing key is NOT a wrong answer.
+    gemma-4-31B-it           arm A   -0.0225 [-0.0394,-0.0056] n=1600  SIG
+    gemma-4-31B-it           arm B   -0.0563 [-0.0731,-0.0394] n=1600  SIG
+    gemma-4-31B-it           arm C   -0.0450 [-0.0619,-0.0294] n=1600  SIG
+    oracle exposure — control evaluator_calls mean 1.659, model_calls mean 3.158
+    gpt-oss-120b             arm A   +0.0131 [-0.0044,+0.0300] n=1600  
+    gpt-oss-120b             arm B   +0.0294 [+0.0131,+0.0462] n=1600  SIG
+    gpt-oss-120b             arm C   +0.0081 [-0.0088,+0.0256] n=1600  
+    oracle exposure — control evaluator_calls mean 1.694, model_calls mean 3.398
+
+====================================================================================================
+POSITIVE CONTROLS — each plants the defect it claims to detect
+====================================================================================================
+  control                                                    fired  detail
+  PC1 one-byte edit -> sha256 check                          YES    MISMATCH reported on armCp.jsonl
+  PC2 missing lookup key detected, not scored 0              YES    1 key absent; naive .get(p,0) would score it 0 and inflate the denominator to 3; guarded path uses n=2 and reports the shortfall
+  PC3 unjudged rows excluded from first-pass denominator     YES    blanked all 1284 first-pass-correct rows in gemma/A: n_judged 1600->316, accuracy 0.8025->0.0000 (correct: every remaining judged row is wrong; a defect that scored unjudged as 0 would instead keep n=1600)
+  PC4 PREREG scores None as 0; AS-GRADED drops it            YES    nulled every correct=1 in gemma/A: PREREG acc=0.0000 over n=1600 (all None->0), AS-GRADED acc=0.0000 over n=246 (Nones dropped). The two scorings are demonstrably different code paths.
+  PC5 grader-noise check counts a planted discordant group   YES    discordant 20->21, repeated groups 2790->2791 (exactly +1 each)
+  PC5b concordant repeat raises denominator only             YES    discordant 20->20 (unchanged), repeated groups 2790->2791
+  PC6 arm-blind \boxed-only extractor mis-reads arm C        YES    gemma/C frozen-answer rate: arm-aware 0.1250 vs arm-BLIND 1.0000 (blind reads C as far MORE frozen, the backwards answer)
+  PC7 arm-C answer extraction is not silently empty          YES    500/500 sampled accepted arm-C executor messages yielded an answer (100.0%). A silent-empty parser would look like 'no answers', which is the failure mode that makes an arm look frozen.
+  PC8 duplicate (problem,arm,actor) key is rejected          YES    AssertionError raised: DUPLICATE trajectory key ('Llama-3.3-70B-Instruct', 'A') omni2_1018
+  PC9 exact McNemar discriminates                            YES    b=c=10 -> p=1.0000 (null); b=37,c=3 -> p=1.947e-08 (rejects)
+  PC10 bootstrap CI is not degenerate                        YES    all-zero -> 0.0000 [0.0000,0.0000]; 5% ones -> 0.0500 [0.0370,0.0640]
+  POSITIVE CONTROLS PASSED: 11 / 11
+
+[END] audit complete.

@@ -63,6 +63,25 @@ def is_fpw(r):
 def fin_prereg(r):   return int(r.get("correct") or 0)          # ungraded -> 0
 def fin_asgraded(r): return r.get("correct")                     # may be None
 
+def _exact_mcnemar(a, armx, army, scorer):
+    """Seed-free significance for a paired binary contrast.
+
+    Added 2026-09-30 (INDEPENDENT_AUDIT D3). A bootstrap CI whose bound sits
+    exactly at zero yields a significance label that depends on the RNG seed;
+    the exact binomial test on discordant pairs does not.
+    """
+    from math import comb as _comb
+    X = {r["problem_uid"]: scorer(r) for r in rows if actor(r) == a and r["arm"] == armx}
+    Y = {r["problem_uid"]: scorer(r) for r in rows if actor(r) == a and r["arm"] == army}
+    cm = sorted(p for p in set(X) & set(Y) if X[p] is not None and Y[p] is not None)
+    if len(cm) < 30: return None
+    b = sum(1 for p in cm if Y[p] - X[p] == 1)
+    c = sum(1 for p in cm if Y[p] - X[p] == -1)
+    m = b + c
+    if m == 0: return 1.0
+    return min(1.0, 2 * sum(_comb(m, i) for i in range(min(b, c) + 1)) / 2 ** m)
+
+
 def boot(x, n=20000):
     x = np.asarray(x, float)
     if len(x) < 5: return (np.nan, np.nan)
@@ -156,7 +175,17 @@ for a in ACTORS:
         s = [r for r in rows if actor(r) == a and r["arm"] == arm]
         if not s: continue
         g = [r for r in s if graded(r)]
-        f1 = np.mean([fp(r) for r in g]) if g else np.nan
+        # DEFECT FIXED 2026-09-30 (INDEPENDENT_AUDIT D1). First-pass accuracy
+        # was computed over graded(r), i.e. conditioned on obtaining a FINAL
+        # grade -- the identical survivorship error that is_fpw() was added to
+        # fix in the recovery column. 178 trajectories receive a first verdict
+        # then die in regeneration, and 178 of 178 are first-pass WRONG
+        # (structural: a first-pass PASS ends the loop), so dropping them
+        # inflates first-pass accuracy in exactly the arm that attrits
+        # (gemma-4 C 0.822 -> 0.779).
+        # Self-check: (1-firstpass)*n_denominator must equal n_fpw.
+        j = [r for r in s if judged(r)]
+        f1 = np.mean([fp(r) for r in j]) if j else np.nan
         fin = np.mean([fin_prereg(r) for r in s])
         # Denominator drawn from ALL trajectories in the cell, not from the
         # graded subset: a trajectory can receive a first verdict and then die
@@ -166,7 +195,11 @@ for a in ACTORS:
         fc = [func_collapse(r) for r in s]; fc = [x for x in fc if x is not None]
         un = [unanimous(r) for r in s];     un = [x for x in un if x is not None]
         fr = [len(set(ansseq(r))) <= 1 for r in fpw]
-        T1[(a,arm)] = dict(n=len(s), fp=f1, fin=fin, rec=rec, nfpw=len(fpw))
+        if j:
+            assert abs((1 - f1) * len(j) - len(fpw)) < 1e-6, (
+                f"T1 identity violated for {a}/{arm}: (1-fp)*n={{(1-f1)*len(j):.1f}} "
+                f"but n_fpw={len(fpw)} -- the two columns use different denominators")
+        T1[(a,arm)] = dict(n=len(s), fp=f1, fin=fin, rec=rec, nfpw=len(fpw), n_judged=len(j))
         cs = f"{np.mean(fc):.3f}" if fc and arm in ("A","B") else "n/a"
         print(f"{a:<24}{arm:<5}{len(s):>6}{f1:>11.3f}{fin:>9.3f}{rec:>10.3f}{len(fpw):>7}"
               f"{cs:>10}{(np.mean(un) if un else np.nan):>9.3f}"
@@ -182,8 +215,18 @@ for label, scorer in (("PREREG (primary)", fin_prereg), ("AS-GRADED (sensitivity
             r_ = paired(a, x, y, scorer)
             if not r_: continue
             m, lo, hi, n = r_
-            sig = "SIG" if not (lo < 0 < hi) else ""
-            print(f"      {a:<24}{m:+.4f} [{lo:+.4f},{hi:+.4f}] n={n:<6}{sig}")
+            # DEFECT FIXED 2026-09-30 (INDEPENDENT_AUDIT D3). The SIG label was
+            # read off a bootstrap CI whose 2.5% bound sits exactly at 0.0 for
+            # this contrast: across 40 seeds gpt-oss B-A prints SIG 62% of the
+            # time. A published significance label decided by an RNG seed is
+            # not a result. The module-level RNG makes reruns of THIS file
+            # agree, so the instability is invisible unless the seed is varied
+            # deliberately. Significance now comes from the seed-free exact
+            # McNemar test on discordant pairs; the CI is still reported.
+            pm = _exact_mcnemar(a, x, y, scorer)
+            sig = "SIG" if (pm is not None and pm < 0.05) else ""
+            pstr = f" McNemar p={pm:.4f}" if pm is not None else ""
+            print(f"      {a:<24}{m:+.4f} [{lo:+.4f},{hi:+.4f}] n={n:<6}{pstr} {sig}")
 
 # ---------------------------------------------------------------- T3 firstpass/recovery
 print("\n[T3] FIRST-PASS vs RECOVERY DECOMPOSITION  (the central claim)")
@@ -250,7 +293,14 @@ for r in rows:
     for e in ev(r):
         c, k = e.get("candidate"), e.get("correctness")
         if c is None or k is None: continue
-        grp[(r["problem_uid"], nrm(c))].append(int(k))
+        # DEFECT FIXED 2026-09-30 (INDEPENDENT_AUDIT D2). The key was nrm(c),
+        # which strips all whitespace -- but runner.py interpolates the
+        # candidate VERBATIM into the evaluator prompt, so '(2014, 0, 0)' and
+        # '(2014,0,0)' are two DIFFERENT prompts. Folding them counts a
+        # legitimate disagreement between distinct prompts as scorer
+        # nondeterminism. 6 of 24 discordant groups folded >1 raw string.
+        # The key must be the exact bytes the grader saw.
+        grp[(r["problem_uid"], c)].append(int(k))
 multi = {k:v for k,v in grp.items() if len(v) >= 2}
 disc  = {k:v for k,v in multi.items() if len(set(v)) > 1}
 tot = sum(len(v) for v in multi.values())
@@ -903,8 +953,18 @@ for a in ACTORS:
                  firstpass=fpm, firstpass_lo=fplo, firstpass_hi=fphi,
                  recovery=rcm, recovery_lo=rclo, recovery_hi=rchi, n_fpw=len(fpw),
                  final_prereg=float(np.mean([fin_prereg(r) for r in s])),
+                 # DEFECT FIXED 2026-09-30 (figure agent): this dict shipped
+                 # `ungraded` (= no FINAL grade) while the assert two lines
+                 # above checks `unjudged` (= no FIRST verdict).  They differ
+                 # in Arm C -- a trajectory can be judged once and then die in
+                 # regeneration -- so the five fields summed to MORE than n
+                 # (gemma-4 C: 1682 vs 1600) and were not a partition, even
+                 # though the assert passed.  Ship the partition the assert
+                 # actually validates, and keep the attrition count under its
+                 # own name so nothing that used it silently changes meaning.
                  decomp=dict(held=held, lost=lost, recovered=recovered,
-                             unrecovered=unrecovered, ungraded=ungraded))
+                             unrecovered=unrecovered, unjudged=len(unjudged),
+                             ungraded_no_final_grade=ungraded))
         if len(fpw) >= 20:   # T5 mechanism columns, first-pass-wrong only
             cy = np.array([r.get("inner_used") or 0 for r in fpw], float)
             su = np.array([len(ev(r)) for r in fpw], float)
@@ -919,8 +979,15 @@ for a in ACTORS:
 # `lost` must be 0: the loop halts on a correct first verdict.  If this ever fires,
 # the stacked decomposition figure needs a fifth visible band, not a silent fix.
 assert _LOST == 0, f"first-pass-correct -> final-wrong occurred {_LOST}x; Fig.S1 must show it"
-print(f"  outcome decomposition: 5 categories sum to n in every cell; "
-      f"first-pass-correct-then-lost = {_LOST} (structural: loop halts on a correct verdict)")
+# Check the EXPORTED dict, not the local variables: the defect fixed above was
+# invisible to an assert written over locals.
+for _k, _v in FIG["cells"].items():
+    _p = _v["decomp"]
+    _sum = _p["held"] + _p["lost"] + _p["recovered"] + _p["unrecovered"] + _p["unjudged"]
+    assert _sum == _v["n"], (_k, _sum, _v["n"])
+print(f"  outcome decomposition: held+lost+recovered+unrecovered+unjudged == n in all "
+      f"{len(FIG['cells'])} exported cells; first-pass-correct-then-lost = {_LOST} "
+      f"(structural: the loop halts on a correct verdict)")
 
 # paired A-vs-X recovery transitions (T4), for the Fig.1 panel-B annotation
 FIG["paired_recovery"] = {}

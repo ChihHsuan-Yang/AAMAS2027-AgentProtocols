@@ -96,9 +96,11 @@ Preregistered scoring: C-A = -0.0225 (gemma-4, SIG NEGATIVE), -0.0050
 "organization preserves revisability, but enforcing it is brittle."**
 
 ### A8. Grader noise floor.
-0.0086 group-level (24/2791 distinct graded strings receive contradictory
-verdicts across identical prompts at temp 0); range 0.0020-0.0086 across
-estimators. **Do NOT report "effect / floor = 3.9x"** — dividing an effect size by a
+**0.0072 group-level** (20/2790 distinct graded strings receive contradictory
+verdicts across byte-identical prompts at temp 0); range 0.0017-0.0072 across
+estimators. **Floor is 0.0072, not 0.0086** (the key must be the EXACT candidate bytes;
+whitespace-stripping folded 6 of 24 discordant groups across DIFFERENT
+evaluator prompts). **Do NOT report "effect / floor = ratio"** — dividing an effect size by a
 disagreement rate is not a valid operation, and grader noise largely cancels
 in a paired contrast. Instead propagate the per-call disagreement rate into
 the bootstrap; that gives the same three verdicts: gemma-4
@@ -156,3 +158,43 @@ null. Say which is which.
 - F18 scoring defect: 54 trajectories under-credited; positive control 0 of 10,734.
 - Every conditional analysis is post-treatment.
 - Adjudication is MODEL adjudication, not human annotation, not ground truth.
+
+
+---
+
+## CORRECTIONS 2026-09-30 (INDEPENDENT_AUDIT)
+
+### A2 first-pass numbers for Arm C changed.
+First-pass accuracy was computed on `graded(r)` — conditioned on obtaining a
+FINAL grade, the same survivorship error `is_fpw()` fixed in the recovery
+column, one column to the left. 178 trajectories get a first verdict then die
+in regeneration and **178 of 178 are first-pass wrong** (structural).
+Arm C first-pass: gemma-4 **0.822 -> 0.779**, gpt-oss **0.788 -> 0.761**,
+Llama **0.295 -> 0.281**, Cp 0.825 -> 0.810 and 0.773 -> 0.740.
+A2's headline A-vs-B numbers are UNCHANGED (they come from the paired path).
+A self-check now asserts (1-firstpass) x n == n_fpw per cell.
+
+### Significance labels are now seed-free.
+A bootstrap CI whose 2.5% bound sits exactly at zero gave gpt-oss B-A a `SIG`
+label in only 62% of 40 seeds. **Exactly one contrast in the study was
+seed-dependent and it was the one labelled SIG.** Significance now comes from
+exact McNemar: gpt-oss B-A **p = 0.0621, NOT significant** — which also makes
+the manuscript self-consistent, since A8 already calls this contrast not
+resolvable.
+
+### A9 single-agent control: the two actor arms have different source commits.
+Sound as a directional guard. **NOT sound for any statement about the size of
+the gap between actors.** Say so wherever the four numbers appear.
+
+### Related work: `yang2026precise` (2607.15388) is NOT observational.
+Its contribution #2 is titled "Interventions" — budget-matched within-PER
+probes on the same corpus. `related.tex` currently says all three prior
+studies are observational. **That sentence is false and must be fixed.** The
+surviving distinction is that it does not manipulate roles and has no
+role-free arm.
+
+### Cite `2606.05976` "The Self-Correction Illusion: Role Relabeling Gates
+Explicit Error Flagging". Nearest neighbour found by the forward-citation
+search. Single-agent, chat-template message roles, no recovery conditional,
+no budget matching — but it relabels roles byte-identically and moves
+explicit-correction rate 23-93pp. Cite it first rather than be handed it.

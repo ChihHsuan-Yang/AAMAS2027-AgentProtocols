@@ -520,7 +520,7 @@
    "n_dup": 342
   }
  },
- "noise_floor_group_level": 0.008599068434252956,
+ "noise_floor_group_level": 0.007168458781362007,
  "paired_recovery": {
   "Llama-3.3-70B-Instruct|AB": {
    "both_fail": 240,

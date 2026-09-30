@@ -603,6 +603,42 @@ def main():
                 emit("      %-24s %s [%s,%s] n=%-6d %s"
                      % (actor, f4(m), f4(l), f4(u), n, sig))
 
+    # ---------------- T2b borderline-CI seed stability --------------------
+    emit("")
+    emit("[T2b] SEED STABILITY OF EVERY 'SIG' VERDICT (the boundary cases)")
+    emit("  A bootstrap CI whose bound sits ON zero flips SIG/not-SIG with the RNG seed.")
+    emit("  For each PREREG contrast: resample under 40 different seeds and report how")
+    emit("  often the verdict is SIG.  Anything strictly between 0 and 1 is a verdict")
+    emit("  that the seed, not the data, is deciding.  Exact McNemar is seed-free and")
+    emit("  is reported beside it as the adjudicator.")
+    emit("  %-24s %-6s %10s %9s %10s %12s %s"
+         % ("actor", "contr", "effect", "SIG frac", "McNemar p", "McN verdict", "note"))
+    for contrast in ("B-A", "C-A"):
+        hi, lo = contrast.split("-")
+        for actor in ACTORS:
+            ca, cb = idx.get((actor, lo)), idx.get((actor, hi))
+            if not ca or not cb:
+                continue
+            common = sorted(set(ca) & set(cb))
+            d = np.array([cb[p]["final_prereg"] - ca[p]["final_prereg"]
+                          for p in common], float)
+            sigs = 0
+            for sd in range(40):
+                rng = np.random.default_rng(sd)
+                ii = rng.integers(0, len(d), size=(4000, len(d)))
+                mm = d[ii].mean(axis=1)
+                l2, u2 = np.percentile(mm, 2.5), np.percentile(mm, 97.5)
+                if l2 > 0 or u2 < 0:
+                    sigs += 1
+            b = int((d > 0).sum())
+            c = int((d < 0).sum())
+            pv = mcnemar_exact(b, c)
+            frac = sigs / 40.0
+            note = ("*** SEED-DEPENDENT VERDICT ***" if 0.0 < frac < 1.0 else "stable")
+            emit("  %-24s %-6s %10s %9.2f %10.4f %12s %s"
+                 % (actor, contrast, f4(float(d.mean())), frac, pv,
+                    "REJECT" if pv < 0.05 else "no", note))
+
     # ---------------- T3 first-pass vs recovery decomposition ------------
     emit("")
     emit("[T3] FIRST-PASS vs RECOVERY DECOMPOSITION")
