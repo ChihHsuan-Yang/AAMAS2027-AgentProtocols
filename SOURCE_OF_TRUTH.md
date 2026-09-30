@@ -34,3 +34,61 @@ in GitHub while Overleaf held a stub for two days; that must not recur.
 per-cell census. Denominators do not change after the freeze. If a denominator
 must change, that is a re-freeze with a new manifest and a recorded reason,
 never a silent edit.
+
+
+---
+
+## The canonical update chain (added 2026-09-30, MANDATORY)
+
+This project has repeatedly had one artifact get ahead of another: the
+manuscript ahead of `APPROVED_CLAIMS.md`, the figure export ahead of the
+tables, Overleaf behind GitHub for two days. Whenever **any** canonical
+number or scientific claim changes, walk the whole chain. Never skip a link.
+
+```
+experiments/results/FROZEN/          sha256-manifested; never edited
+    |
+    v
+analysis/scripts/FINAL_TABLES.py     the ONLY source of a numeric literal
+    |
+    v
+APPROVED_CLAIMS.md                   what may be asserted; DEAD table binding
+    |
+    v
+CLAIM_STATUS.md / RESULT_PROVENANCE.md
+    |
+    v
+paper/ source
+    |
+    v
+GitHub main                          push, confirm
+    |
+    v
+Overleaf                             push, CONFIRM THE REMOTE REF MOVED
+    |
+    v
+fresh clone -> compile -> run every check on the CLONE, not the working copy
+```
+
+Then refresh `README.md` and `TODO.md` if project state changed.
+
+### Why each link is listed separately
+- **FROZEN -> FINAL_TABLES**: a number computed any other way is not this
+  project's number.
+- **FINAL_TABLES -> APPROVED_CLAIMS**: skipped once. The claims file went
+  stale *behind* the paper, and since workers are told to follow it over
+  their own derivations, that is the most dangerous staleness available.
+- **paper -> GitHub -> Overleaf**: skipped once. Overleaf held a stub for two
+  days while GitHub had the real manuscript.
+- **Overleaf -> fresh clone**: a push that exits 0 is not evidence the remote
+  tree builds. Clone it and compile it.
+- **checks on the clone**: running them on the working copy tests the wrong
+  artifact.
+
+### Verification that is not optional
+- `git ls-remote origin` after every Overleaf push; compare to local HEAD.
+- `python3 scripts/pagecheck.py <pdf>` with **no pipe** (`| tail` makes `$?`
+  report tail's status, which cost me a false PASS).
+- Positive-control the page check periodically: pad the conclusion, confirm
+  it FAILS, restore, confirm it PASSES. Two earlier versions passed a
+  ten-page paper.
