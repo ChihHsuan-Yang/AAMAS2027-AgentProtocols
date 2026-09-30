@@ -49,3 +49,40 @@ Oct 8 AoE) match the 2026 pattern exactly. Re-check before submission.
 ```
 The copyright block in AAMAS_2026_sample.tex is marked "do not change" and
 must be carried over, with the year/venue updated for 2027 when known.
+
+---
+
+## AAMAS 2027 author kit: DOES NOT EXIST YET (checked 2026-09-30)
+
+Bella's brief asked for "the current official AAMAS 2027 author kit, not a
+2026 kit with the year manually changed." I looked for one. **There is none.**
+
+Checked:
+- `aamas2027.org` — does not resolve (HTTP 000, no DNS).
+- `ifaamas.org` — no 2027 link anywhere on the site.
+- `ifaamas.org/previousaamas.html` — lists every AAMAS from 2002 to 2026.
+  **2027 is absent entirely**: no URL, no location, no dates, no organizers.
+  The most recent listed edition is 2026, Paphos, 25-29 May.
+
+So the 2026 kit is not a convenient substitute; it is **the newest kit that
+exists**. The submission therefore uses `aamas.cls` from the AAMAS-2026 kit
+(sha256 `f0af39a7…`, byte-identical to the downloaded original — verified,
+never edited) with the copyright block's year advanced to 2027.
+
+### What this means for the submission
+Nothing blocking. Venue metadata in an anonymous submission is cosmetic; the
+class controls the layout, and the layout rules (8 pages main text, unlimited
+references, double-blind, no style-file edits, no typesetting tricks) have
+been stable across AAMAS editions.
+
+### What must be re-checked, and when
+`CAMERA_READY_CHECKLIST.md` carries this. When IFAAMAS publishes the 2027
+kit, re-verify and update:
+- the `\acmConference` block (venue name, dates, city, editors);
+- `\copyrightyear` / `\acmYear`;
+- the page limit and any anonymity-rule change;
+- whether `aamas.cls` itself changed.
+
+**Do not treat the year-advanced 2026 block as correct metadata.** It is a
+placeholder chosen because no 2027 source exists, and it is flagged in
+`main.tex`'s header comment as such.
