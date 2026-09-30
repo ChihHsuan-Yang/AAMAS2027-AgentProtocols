@@ -116,6 +116,7 @@ append to.
 analysis/scripts/FINAL_TABLES.py        THE canonical table generator (712 lines)
 analysis/scripts/mk_fig1_dissociation.py  Figure 1 (3 variants)
 analysis/scripts/mk_figstyle.py           shared style + figdata() accessor
+analysis/scripts/stat_audit_*.py        18 scripts behind STATISTICAL_AUDIT.md
 analysis/scripts/{d,r,x}*.py            ~40 exploratory scripts, historical
 scripts/verify_paper_numbers.py         live cross-check of headline figures
 scripts/smoke_gates.py                  the 15 launch gates
@@ -124,7 +125,11 @@ experiments/{runner,schemas,prompts,make_manifest}.py   the campaign itself
 experiments/infra/*.py                  endpoint probes, concurrency ladder
 ```
 
-**Only `FINAL_TABLES.py` may source a manuscript number.** It reads
+**Only `FINAL_TABLES.py` may source a manuscript number** — with one exception
+forced by `STATISTICAL_AUDIT.md`: **T27's noise-floor ratio is not a valid
+statistic and must never be quoted** (use `stat_audit_a5_noisefloor.py`). T1's
+Arm C recovery had the same status until commit `ba28977` regenerated it. See
+`RESULT_PROVENANCE.md`. It reads
 `FROZEN/` exclusively (plus two clearly-marked external sources, T17 and T23).
 Every other script under `analysis/scripts/` reads `experiments/results/main/`
 or older cuts and exists for the audit record; its printed numbers may predate
@@ -271,7 +276,8 @@ does not.
 | `experiments/manifest_omnimath2_n*.json` | which problems were run | yes, from the sibling parquet |
 | GitHub `origin/main` | code and workflow | — |
 | Overleaf project | the submitted manuscript | — |
-| `analysis/out/FINAL_TABLES_OUTPUT.txt` | derived — a cached print of FROZEN | yes, exactly |
+| `analysis/out/FINAL_TABLES_OUTPUT.txt` | derived — a cached print of FROZEN (**T27's ratio is invalid; never quote it**) | yes, exactly |
+| `STATISTICAL_AUDIT.md` + `analysis/scripts/stat_audit_*.py` | the adversarial audit; corrected Arm C recovery | yes |
 | `analysis/results/*` | derived — historical, may be stale | yes, but may not match FROZEN |
 | `figures/` | derived — current variants read `FROZEN/` via `FIGDATA.json` | yes (but see FIGURES above) |
 | `paper/main.pdf` | derived | yes, from `paper/` |

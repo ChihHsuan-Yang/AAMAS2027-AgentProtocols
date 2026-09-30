@@ -138,6 +138,73 @@ somewhere safe today; that is not a camera-ready task.
 - The Overleaf clone's `origin` URL — it embeds a credential.
 - Raw evaluator prompts containing gold answers, if the benchmark's license restricts redistribution of answers. **Check the Omni-MATH / source-corpus license before publishing gold-bearing rows.**
 
+### 3.5 STATUS UPDATE — the artifact is BUILT and HELD (data-artifact worker, 2026-09-30)
+
+`hf_artifact/` now exists: a complete, validated, uploadable HuggingFace
+artifact. **Nothing has been published — no HF repo was created, public,
+private, or gated.** Publishing is one command after acceptance; see
+`hf_artifact/RELEASE_PROCEDURE.md`.
+
+This resolves several open items above.
+
+| item in §3.3 / §3.4 | resolution |
+|---|---|
+| "Re-verify all three sha256 before upload" | **Done, and enforced.** All 3 match `MANIFEST.json`. The builder re-verifies and *refuses to build* on a mismatch. Manifest ships as `manifests/FROZEN_MANIFEST.json`. |
+| "Secret scan the JSONL itself, not just the code" | **Done, and wider.** `scripts/secret_scan.py` scans every file *including decompressed parquet text columns* (39 MB), for 17 secret patterns and 13 deanonymization patterns. Result **CLEAN**, with a planted positive control proving the scanner fires. |
+| "HF card must state F18" | **Done**, on the card and at length in `SCHEMA.md` — plus **F13**, which §3.3 did not list and which invalidates every text-based measure over gpt-oss Arm B. |
+| "Check the Omni-MATH license before publishing gold-bearing rows" | **Verified independently**: Omni-MATH-2 is **Apache-2.0** (upstream dataset page tag, cross-checked against the SciAgentTrace license registry). The derived artifact may carry Apache-2.0. Moot in practice — **no gold answers and no problem text are redistributed**, only `problem_uid`. |
+| "The frozen JSONL is too large for git (297 MB)" | The artifact is **38 MB**, because it is derived and columnar, not a raw dump. Full role-message text is *included* (36 MB zstd, from 178 MB raw) — so the collapse, duplication, and frozen-answer analyses stay reproducible. |
+| "Decide the HF org" | Still open, and still Bella's call. Note the logged-in account's orgs include `argonne-private` and `AgentsSci`; **both name the institution or the group**, which is the §3.1 hazard. Decide at release, not now. |
+| "Ship MANIFEST/PREREG/APPROVED_CLAIMS/FINDING-* with the data" | **Partly done.** Manifest, cell census, problem ids, and the full adjudication bundle ship. `PREREGISTRATION.md`, `APPROVED_CLAIMS.md`, and `notes/FINDING-*.md` are **not** copied in — they are owned by other workers and contain unredacted internal prose. Their *substance* (both scorings, both defects, the dead claims, the caveats) is carried in `SCHEMA.md`. Decide before release whether to ship them verbatim. |
+| "temperature 0 is not deterministic on this endpoint" | Carried as the measured grader noise floor, 0.0086 (24/2791), with the construction stated so a reader can recheck it. |
+
+**Reproducibility gate.** `hf_artifact/scripts/validate_artifact.py` re-derives
+**181 published values** from the parquet and checks them against
+`analysis/out/FINAL_TABLES_OUTPUT.txt`: cell census, first-pass/final accuracy,
+recovery, frozen-answer, functional collapse, cycles and submissions, the noise
+floor, F18 mismatch and under-credit counts, and the F13 planner signature.
+**All 181 pass.** The build is deterministic (rebuild is byte-identical).
+
+Sanitization applied, all reproducible in the builder rather than by hand:
+- `trajectories.error` — 3 error classes embedded an upstream HTTP body, one a
+  block page **naming the operating institution**. Failure class kept, body
+  redacted.
+- `adjudication/build_sample.py` — hardcoded author home path removed.
+- `adjudication/PROTOCOL.md` — internal judge endpoint + credential helper
+  redacted. `adjudicate.py` excluded entirely (it resolves both).
+
+### 3.6 BLOCKER for the adjudication owner — the blinding leak was renamed, not removed
+
+`adjudication/PROTOCOL.md` reports "post-fix residual leaks: **0**". That is
+true of the literal strings and **false of the signal.** The role tokens were
+renamed `Planner/Executor/Reviewer` → `Agent-P/E/R`; their **presence** carries
+the same near-perfect arm signal the original leak did:
+
+| arm | items containing `Agent-P/E/R` | rate |
+|---|---|---|
+| A | 42 / 42 | **1.000** |
+| B | 3 / 56 | 0.054 |
+| C | 0 / 44 | 0.000 |
+| C' | 0 / 29 | 0.000 |
+
+Fisher exact A vs B: **p = 1.5e-24**. Verified against the released items file,
+whose sha256 matches `items_sha256_after_neutralization` in
+`SAMPLING_MANIFEST.json` — so this is the file the judge actually saw, not a
+stale copy. The rename made the *token* uninformative while leaving its
+*presence* informative, because Arm A's prompts mention roles and Arm B's do
+not.
+
+Recall-based conclusions are unaffected (estimated within actor across arms).
+But **arm-contrastive adjudication numbers are not protected by the blinding
+the protocol claims — including A1's headline Arm B "no division of labour"
+0.964 vs Arm A 0.000.**
+
+Decide before camera-ready: re-run on items with the presence signal removed
+(delete the tokens, or insert an equivalent token into every item in every
+arm), or disclose the limitation in the paper. The artifact ships the protocol
+claim and the contradicting measurement side by side and fixes neither
+silently. **Not the data-artifact worker's file to change.**
+
 ---
 
 ## 4. Page budget

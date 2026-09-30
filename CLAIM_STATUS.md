@@ -1,6 +1,8 @@
 # CLAIM_STATUS — every claim, its label, its evidence, its finding note
 
 **Rewritten 2026-09-30 against `APPROVED_CLAIMS.md`, which is the authority.**
+**Re-synced later the same day after `STATISTICAL_AUDIT.md` forced corrections to
+A3, A6, A8 and A10 and added two dead claims.**
 
 `APPROVED_CLAIMS.md` is owned by the Master Agent and is the source of
 scientific truth. This file is a navigational index to it: same claims, same
@@ -22,8 +24,9 @@ Labels:
 # ⛔ FALSIFIED — DO NOT RESURRECT
 
 **Read this section before writing a single sentence of prose.** Every entry
-below was asserted in this project by someone who believed it. Nine of them
-were killed by our own follow-up measurement. They are listed first because
+below was asserted in this project by someone who believed it. Eleven of them
+were killed by our own follow-up measurement or by the adversarial statistical
+audit. They are listed first because
 the failure mode is not inventing them — it is *re-deriving* them from an old
 note, or reaching for one because it makes a paragraph flow better.
 
@@ -41,6 +44,9 @@ makes the prose cleaner."*
 | D7 | "per-opportunity, Arm B recovers better" | Matched on a post-treatment variable (submissions). Matched on cycles the sign reverses. | **F17** |
 | D8 | "no accuracy claim is resolvable above scorer noise" | Built on the wrong grading key (`final_answer` instead of the evaluator's actual input). The per-arm "noise asymmetry" was 100% the F18 defect, and it reverses under the correct key. | **F21** |
 | D9 | "roles prevent premature stopping" | Refuted **by construction** — MAX_OUTER_ROUNDS 3 × INNER_ROUNDS 2 = 6 cycles in every arm. Arm B receives *more* evaluator feedback, not less. | **F17** |
+
+| D10 | "Arm C recovery is highest of any arm, above Arm A in all three actors (p ≤ 1.6e-3)" | The recovery denominator dropped 173 trajectories with a first incorrect verdict that then died in regeneration. Corrected, two of three paired p-values are lost (0.298, 0.105). | **STATISTICAL_AUDIT FATAL-1** |
+| D11 | Llama-3.3's null recovery is a **"floor effect"** | Arm C restores recovery in that same actor (0.096 vs 0.009, p=3.8e-06), so the channel exists and is movable. ~80% power at 0.04–0.05 against an effect of 0.171. It is a genuine null specific to the ROLE manipulation. | **STATISTICAL_AUDIT SERIOUS-2** |
 
 ## Four more that must not come back
 
@@ -83,9 +89,16 @@ control condition. Note: **F19**.
   in the paper.
 - gpt-oss: marginal 0.324 → 0.249, but the **paired** contrast is **p = 0.246**
   — must be described as weaker and not significant when paired.
-- Llama-3.3: 0.015 → 0.015. **FLOOR EFFECT. Does NOT replicate. Say so.**
+- Llama-3.3: 0.014 → 0.015. **A genuine null, NOT a floor effect.** Its
+  recovery channel exists and is movable — architectural enforcement raises it
+  to 0.096 vs 0.009 (p=3.8e-06) — so the absence is specific to the
+  *role-instruction* manipulation. ~80% power against an effect of 0.04–0.05
+  against a gemma effect of 0.171: informative for a gemma-sized effect,
+  uninformative below ~0.04. **The recovery result does not replicate in the
+  weakest actor and we do not explain that away.**
 
-Evidence: T3, T4. Note: **F11, F14, F17**.
+Evidence: T3, T4. Note: **F11, F14, F17**; corrected by **STATISTICAL_AUDIT
+SERIOUS-2** — "floor effect" is now a dead claim, falsified by our own Arm C.
 
 ### A4 — It is not premature stopping, and not less feedback.
 Same 6 cycles in every arm by construction. gemma-4 first-pass-wrong: Arm A
@@ -93,12 +106,29 @@ Same 6 cycles in every arm by construction. gemma-4 first-pass-wrong: Arm A
 Arm B receives **more** evaluator feedback.
 Evidence: T5. Note: **F17** (this claim exists *because* F17 corrected D6/D9).
 
-### A6 — Enforcement restores organization AND recovery.
-Arm C adjudicated no-division 0.136; frozen-answer 0.122/0.069/0.064 (lowest
-of any arm); recovery 0.412/0.461/0.150 — highest of any arm, above Arm A in
-all three actors (paired p ≤ 1.6e-3). Llama's Arm C is the **only** cell where
-a manipulation restores its recovery (0.150 vs 0.015, p=4e-06).
-Evidence: T1, T4, T23.
+### A6 — Enforcement restores organization. It restores RECOVERY only for Llama-3.3.
+**CORRECTED 2026-09-30 — `STATISTICAL_AUDIT` FATAL-1 found a denominator bug.**
+The recovery denominator was implemented as `graded(r) and fp==0`, silently
+dropping 173 trajectories that received a first (incorrect) verdict and then
+died in regeneration. All 173 have `fp==0` — structural, since a passing first
+verdict ends the loop — so they meet the definition and score 0 under
+preregistered scoring.
+
+Corrected recovery: gemma-4 **0.314** (was 0.412), gpt-oss **0.395** (was
+0.461), Llama **0.139** (was 0.150). Arms A and B move by ≤ 0.002.
+Paired A-vs-C after correction: gemma-4 p=0.298 and gpt-oss p=0.105 are **no
+longer resolvable**; Llama-3.3 p=**3.81e-06** survives intact (0.096 vs 0.009).
+
+**MAY CLAIM:** Arm C restores organization (adjudicated no-division 0.136) and
+un-freezes answers (0.119/0.092/0.072, lowest of any arm). Arm C restores
+recovery **for Llama-3.3**; for gemma-4 and gpt-oss the direction is consistent
+but not resolvable against Arm C's attrition.
+**MAY NOT CLAIM:** "recovery highest of any arm, above Arm A in all three
+actors." **Dead.**
+Evidence: T23 for organization; **T1 now carries the corrected recovery**
+(fixed in commit `ba28977`; cross-check
+`analysis/scripts/stat_audit_a4b_assumptionfree.py`). Any artifact still
+showing 0.412/0.461/0.150 is pre-`ba28977` and stale.
 
 ### A7 — But enforcement does not improve final accuracy, because it is brittle.
 Preregistered scoring: C−A = −0.0225 (gemma-4, **significantly negative**),
@@ -111,10 +141,13 @@ preserves revisability, but enforcing it is brittle."* Note: **F24**.
 ### A8 — Grader noise floor.
 **0.0086** group-level (24/2791 distinct graded strings receive contradictory
 verdicts across identical prompts at temp 0); range 0.0020–0.0086 across
-estimators. gemma-4's B−A clears it **3.9×**.
-Guard: **gpt-oss's and Llama's accuracy contrasts do NOT clear it** and must be
-reported as not resolvable.
-Evidence: T6, T27. Note: **F21, F23**.
+estimators. Guard: **do NOT report "effect / floor = 3.9×".** Dividing an effect size by a
+disagreement rate is not a valid operation, and grader noise largely cancels in
+a paired contrast. Instead propagate the per-call disagreement rate into the
+bootstrap — same three verdicts: gemma-4 [−0.0488,−0.0175] **SIG**, gpt-oss
+null, Llama null.
+Evidence: T6. **T27 prints the invalid ratio — do not quote it.**
+Note: **F21, F23**; corrected by **STATISTICAL_AUDIT SERIOUS-4**.
 
 ### A9 — Single-agent control. **BOTH DIRECTIONS, ALWAYS TOGETHER.**
 gpt-oss A +0.0131, B +0.0294 (collapsed team beats its single agent);
@@ -124,11 +157,19 @@ snapshot** — it comes from the historical released corpus, and that must be
 stated wherever it is used.
 Evidence: T17.
 
-### A10 — The preregistered primary (P4) is null.
-All three pairwise difference-in-differences contain zero. **Keep visible.**
+### A10 — The preregistered primary (P4) is null — and the Holm correction must be RUN.
+All three pairwise difference-in-differences contain zero. **But the claim that
+P1–P5 carry a Holm correction is FALSE of the reported analysis**: `holm`
+appears nowhere in `FINAL_TABLES.py` or its output, and a reviewer verifies
+that with one grep. Applying it changes nothing (gemma C−A Holm p=0.042; P4
+still null), so **the fix is to run it, not to reword**.
+
+Two of three P4 DiDs have MDE 0.069 and 0.075 at n=400 against plausible
+effects ≤ 0.040, so **only the gpt-oss−gemma DiD (MDE 0.033) is an informative
+null. Say which is which.**
 Evidence: T14. Note: **F24** (the not-submit condition was evaluated and not
-triggered — but only narrowly, and only because the preregistration's own
-exclusion rule says to score ungraded as incorrect).
+triggered — narrowly, and only because the preregistration's own exclusion rule
+scores ungraded as incorrect); **STATISTICAL_AUDIT SERIOUS-1, SERIOUS-5**.
 
 ---
 
@@ -208,7 +249,8 @@ endorsement of the paragraph it is not in.
 7. **Llama-3.3 is much weaker on this benchmark** (Arm A 0.307 vs ~0.80). Its contrasts sit on a ~0.31 base. Same-direction evidence; never a matched third point.
 8. **Arm C carries differential attrition** (8–17% vs 0.0–2.5%). Report it beside every Arm C figure, not only in limitations.
 9. **One benchmark, one domain.** omnimath2, math. No second-domain claim — the runner pins omnimath2.
-10. **The evaluator grades its own family.** gpt-oss-120b is the evaluator and one of the three actors. R-10 (evaluator independence with a second judge) is **UNTESTED**; the identical-prompt control rules out bias *on the answer string* only, and does not upgrade it.
+10. **T27 still prints an invalid statistic.** Its "effect ÷ floor = 3.9x clears" line is on the dead list above but `FINAL_TABLES.py` still emits it — never quote a T27 ratio. T1's Arm C recovery had the same status until commit `ba28977` regenerated it; it is now correct at 0.314/0.395/0.139.
+11. **The evaluator grades its own family.** gpt-oss-120b is the evaluator and one of the three actors. R-10 (evaluator independence with a second judge) is **UNTESTED**; the identical-prompt control rules out bias *on the answer string* only, and does not upgrade it.
 
 ---
 

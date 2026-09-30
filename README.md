@@ -44,15 +44,19 @@ labor in all three actors (blinded adjudication: 0.964 "no division of labor"
 in Arm B vs 0.000 in Arm A). First-pass accuracy is unchanged or improves,
 which is our control condition and is consistent with prior role-ablation work.
 The cost is localized to *recovery* conditional on a wrong first pass, and only
-one actor shows it cleanly (gemma-4 0.222 → 0.051, McNemar p=2e-08). It is not
+one actor shows it cleanly (gemma-4 0.222 → 0.051, McNemar p=2e-08); Llama-3.3
+does not replicate it, and that is a genuine null rather than a floor — its
+recovery channel is demonstrably movable by Arm C. It is not
 premature stopping: every arm holds the same six deliberation cycles by
 construction, and the role-free arm receives *more* evaluator feedback, having
 converted nearly every cycle into a resubmission instead of a revision. The
 proximate mechanism is failure to produce a distinct second candidate —
 frozen-answer rate 0.288 → 0.845 — which is Liang's Degeneration-of-Thought
 arriving in a setting where multi-agency was the prescribed cure. Architectural
-enforcement (Arm C) restores both the organization and the recovery, but not
-final accuracy, and costs 8–17% attrition.
+enforcement (Arm C) restores the organization, and restores recovery in
+Llama-3.3 (p=3.8e-06) — the other two actors move in the same direction but
+are not resolvable against Arm C's 8–17% attrition. It does not improve final
+accuracy in any actor.
 
 One sentence, from `APPROVED_CLAIMS.md`:
 
@@ -69,11 +73,12 @@ All numbers from `analysis/out/FINAL_TABLES_OUTPUT.txt`, frozen
 | **functional collapse**, Arm A → B (T8) | 0.000 → 0.976 | 0.120 → 0.846 | 0.000 → 0.872 |
 | **adjudicated** "no division of labor", A / B / C (T23) | 0.000 / 0.857 / 0.188 | 0.000 / 1.000 / 0.143 | 0.000 / 1.000 / 0.071 |
 | **first pass**, A → B (T3) | 0.802 → 0.802 (+0.000) | 0.713 → 0.763 (**+0.050**) | 0.308 → 0.316 (+0.008) |
-| **recovery**, A → B (T3) | **0.222 → 0.051** | 0.324 → 0.249 | 0.015 → 0.015 (floor) |
+| **recovery**, A → B (T3) | **0.222 → 0.051** | 0.324 → 0.249 | 0.014 → 0.015 (a genuine null, **not** a floor) |
 | paired recovery McNemar, A vs B (T4) | **p=1.95e-08** | p=0.246 (**n.s.**) | p=0.375 (**n.s.**) |
+| paired recovery A vs C (post-correction) | p=0.298 (**n.s.**) | p=0.105 (**n.s.**) | **p=3.81e-06** |
 | **final accuracy** B−A, prereg (T2) | −0.0338 [−0.0488,−0.0187] | +0.0163 [+0.0000,+0.0331] | +0.0025 [−0.0325,+0.0375] |
 | **final accuracy** C−A, prereg (T2) | −0.0225 [−0.0387,−0.0063] | −0.0050 (null) | +0.0175 (null) |
-| **recovery** Arm C (T1) | 0.412 | 0.461 | 0.150 |
+| **recovery** Arm C (T1, post-`ba28977`) | 0.314 | 0.395 | 0.139 |
 | Arm C attrition (T7) | 0.080 | 0.099 | 0.170 |
 | frozen-answer rate, A / B / C (T1) | 0.288 / 0.845 / 0.122 | 0.052 / 0.202 / 0.069 | 0.749 / 0.805 / 0.064 |
 | vs its budget-matched single agent, A / B (T17) | −0.0225 / −0.0563 | +0.0131 / +0.0294 | — |
@@ -81,8 +86,24 @@ All numbers from `analysis/out/FINAL_TABLES_OUTPUT.txt`, frozen
 Two figures that carry the argument: every arm uses the **same 6 cycles**
 (T5) — gemma-4 first-pass-wrong spends 5.52 cycles / 1.54 submissions / 3.98
 revising in Arm A, against 5.83 / 5.80 / **0.03** in Arm B. And the grader
-noise floor is **0.0086** (T6), which gemma-4's B−A clears 3.9× and the other
-two actors' contrasts **do not** (T27).
+noise floor is **0.0086** (T6): propagating the per-call disagreement rate into
+the bootstrap leaves gemma-4's B−A significant ([−0.0488,−0.0175]) and gpt-oss
+and Llama null.
+
+> **The two Arm C recovery rows above are post-correction.**
+> `STATISTICAL_AUDIT.md` (2026-09-30) found a fatal denominator bug — the Arm C
+> recovery denominator dropped 173 trajectories that received a first incorrect
+> verdict and then died in regeneration. **Fixed in commit `ba28977`; T1 now
+> prints the corrected 0.314/0.395/0.139** (the pre-fix values were
+> 0.412/0.461/0.150, and any artifact still showing those is stale). Arms A and
+> B moved by ≤ 0.002. Two of three paired A-vs-C p-values were lost.
+>
+> **T27 is still wrong and still prints.** Its "|B−A| ÷ floor = 3.9x clears"
+> line divides an effect size by a grader-disagreement rate, which is not a
+> valid operation, and the noise largely cancels in a paired contrast
+> (SERIOUS-4). **Do not quote any T27 ratio.** Propagate the per-call rate into
+> the bootstrap instead — `analysis/scripts/stat_audit_a5_noisefloor.py`; the
+> three verdicts are unchanged.
 
 **Do not quote a number from anywhere else.** See Source-of-Truth Policy.
 
@@ -93,16 +114,29 @@ The authority is **`APPROVED_CLAIMS.md`** (Master Agent owns it).
 
 **SUPPORTED** (A1–A4, A6–A10): roles → division of labor destroyed in all three
 actors; first-pass parity (our control, not our novelty); the recovery cost,
-gemma-4 clean / gpt-oss weaker / Llama not at all; not premature stopping;
-enforcement restores organization and recovery; enforcement does not improve
-accuracy and is brittle; the noise floor; the two-directional single-agent
-control; and the preregistered primary (P4) is **null**.
+gemma-4 clean / gpt-oss weaker / Llama a genuine null; not premature stopping;
+enforcement restores organization, and recovery **for Llama-3.3 only**;
+enforcement does not improve accuracy and is brittle; the noise floor; the
+two-directional single-agent control; and the preregistered primary (P4) is
+**null**.
+
+**An adversarial statistical audit ran on 2026-09-30** —
+`STATISTICAL_AUDIT.md`. It independently reproduced T1/T2/T4/T7 exactly, found
+**no arithmetic error anywhere in the headline pipeline**, and attacked the
+gemma-4 headline six ways without breaking it. It did find one FATAL and five
+SERIOUS issues of *what was computed*: the Arm C recovery denominator (now
+corrected), a Holm correction the methods assert but the code never applies, a
+"floor effect" the paper's own Arm C falsifies, T22's pooled quartiles acting
+as arm indicators, an invalid effect÷noise ratio, and two underpowered P4 DiDs.
+**Read it before writing prose.** Its required changes are reflected in
+`APPROVED_CLAIMS.md` and `CLAIM_STATUS.md`; several are still open in
+`paper/`.
 
 **EXPLORATORY**: the lock-in mechanism (A5 — post-treatment, descriptive,
 never causal); context contamination; the duplication-vs-null measure; the
 C′−C context control; the Reviewer's unexercised critique function.
 
-**FALSIFIED — DO NOT RESURRECT** (13 claims). The prominent ones:
+**FALSIFIED — DO NOT RESURRECT** (15 claims). The prominent ones:
 
 | dead claim | note |
 |---|---|
@@ -116,6 +150,8 @@ C′−C context control; the Reviewer's unexercised critique function.
 | "gpt-oss's Arm B planner rubber-stamps" — it is **uninstrumented**, 2.85 ch/s | **F22** |
 | preregistered actor × enforcement interaction on accuracy — P4 null | prereg |
 | monotone unanimity → recovery damage across actors | freeze |
+| "Arm C recovery is highest of any arm, above Arm A in all three actors (p ≤ 1.6e-3)" — denominator dropped 173 rows; 2 of 3 p-values lost | **audit FATAL-1** |
+| Llama-3.3's null recovery is a "floor effect" — Arm C moves it (p=3.8e-06), so the channel exists | **audit SERIOUS-2** |
 
 A dead claim gets reintroduced by being re-derived from an old note, not by
 being invented. **Old notes under `notes/` contain numbers from earlier cuts
@@ -379,6 +415,8 @@ Full board with owners and validation criteria: **`TODO.md`**.
 - Re-run the anonymity audit **after** the final trim (it is not a one-time check).
 - Bella-only, cannot be agent-verified: OpenReview profiles (API 403s on every call), reciprocal-reviewer requirement, author-list lock.
 
+- **Act on `STATISTICAL_AUDIT.md`.** FATAL-1 is **DONE** (`ba28977` — T1's Arm C recovery regenerated on the corrected denominator); the corresponding `results.tex` §R5 edit is still open. SERIOUS-1: actually run the Holm correction the methods claim — `holm` appears zero times in `FINAL_TABLES.py`, and a reviewer verifies that with one grep. SERIOUS-2/3/4/5: the corresponding edits in `results.tex`, `method.tex` and `limitations.tex`.
+
 **P1 — strengthening**
 - Decide which Figure 1 variant ships (`fig1_v1_grouped` / `v2_slopes` / `v3_dumbbell`) and `\includegraphics` it — none is in `main.tex` yet. All three are frozen-snapshot-sourced via `FIGDATA.json`.
 - R-10 evaluator independence: gpt-oss grades itself. **UNTESTED.** The identical-prompt control rules out bias on the answer string only and does not upgrade this.
@@ -521,8 +559,8 @@ Longer versions in **Current Story** above. The one-sentence version lives in
 
 ## 3. What has been falsified?
 
-**13 claims. Do not resurrect any of them.** They are listed with evidence in
-`CLAIM_STATUS.md` §FALSIFIED and (the canonical 9) in `APPROVED_CLAIMS.md`
+**15 claims. Do not resurrect any of them.** They are listed with evidence in
+`CLAIM_STATUS.md` §FALSIFIED and (the canonical 11) in `APPROVED_CLAIMS.md`
 §DEAD. Each with its finding note:
 
 | dead claim | note file |
@@ -540,10 +578,13 @@ Longer versions in **Current Story** above. The one-sentence version lives in
 | preregistered actor × enforcement interaction on accuracy (P4 null) | `PREREGISTRATION.md`, `notes/FINDING-24-P4-NOTSUBMIT-CHECK.md` |
 | monotone unanimity → recovery damage across actors | `APPROVED_CLAIMS.md` §DEAD |
 | "Huang et al. showed LLMs cannot self-correct even with oracle feedback" | `notes/FINDING-19-POSITIONING-AFTER-AUDIT.md` |
+| "Arm C recovery highest of any arm, above Arm A in all three actors" | `STATISTICAL_AUDIT.md` FATAL-1 |
+| Llama-3.3's null recovery is a "floor effect" | `STATISTICAL_AUDIT.md` SERIOUS-2 |
 
-Nine of these were killed by the project's own follow-up measurement. The
-failure mode is not inventing them — it is re-deriving one from an old note, or
-reaching for one because it makes a paragraph flow better.
+Eleven of these were killed by the project's own follow-up measurement or by
+the adversarial statistical audit. The failure mode is not inventing them — it
+is re-deriving one from an old note, or reaching for one because it makes a
+paragraph flow better.
 
 ## 4. What is frozen?
 
@@ -556,6 +597,7 @@ reaching for one because it makes a paragraph flow better.
 
 ## 5. What is still active?
 
+- **Closing out `STATISTICAL_AUDIT.md`** — FATAL-1 is fixed in the tables (`ba28977`); five SERIOUS findings remain open, in `paper/` and in `FINAL_TABLES.py` (T27's invalid ratio, the unapplied Holm correction).
 - The manuscript (page budget 9 → 8; Overleaf sync). **Owned by the paper worker.**
 - Figures — whether Fig 1 ships and on what measure. **Owned by the figures worker.**
 - This documentation set.
@@ -708,10 +750,11 @@ carries no Author field; Creator/Producer are toolchain strings.
 6. **Pick up P0** from §Current TODO / `TODO.md`.
 7. **Nothing is running.** No campaign, no job, no endpoint work in flight. If you think you need a new campaign: Bella's approval is required for any new HPC/inference generation, and it is 8 days to the deadline with the data already frozen.
 
-## 10. Five things that will bite you
+## 10. Six things that will bite you
 
 1. **The frozen JSONL is not in git.** Clone ≠ reproducible. 297 MB, one machine, no backup.
 2. **`latexmk -pdf main.tex` fails from a clean tree.** Use the four-command pdflatex/bibtex sequence.
 3. **`figures/fig1_dissociation.*` is the superseded figure** — byte-identity collapse, a lower-bound metric whose scope reading is dead claim F22, read from `main/` not `FROZEN/`. The current script writes `fig1_v{1,2,3}_*` from `FIGDATA.json`. Do not revive the old one.
 4. **Two scoring conventions disagree in sign for Arm C.** PREREG is primary; AS-GRADED is sensitivity only and carries 8–17% one-sided survivorship. Quoting the as-graded numbers as the headline would reproduce the pre-declared NOT-SUBMIT pattern (F24).
-5. **Old notes contain dead claims and stale numbers by design.** `notes/` is the audit trail. Retracted figures are kept visible on purpose. Source nothing from them.
+5. **T27 still prints an invalid statistic.** Its "effect ÷ noise floor = 3.9x clears" line is not a valid operation and is on the dead list, but `FINAL_TABLES.py` still emits it. (T1's Arm C recovery *was* the same kind of problem and **has** been fixed, in `ba28977` — so do not assume the reverse.)
+6. **Old notes contain dead claims and stale numbers by design.** `notes/` is the audit trail. Retracted figures are kept visible on purpose. Source nothing from them.

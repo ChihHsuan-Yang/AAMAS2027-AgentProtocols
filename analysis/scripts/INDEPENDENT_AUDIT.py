@@ -197,6 +197,9 @@ def norm_candidate(c):
 # 2. LOAD — stream once, keep only compact derived per-trajectory records
 # ==========================================================================
 
+RAW_EVAL = []  # (problem_uid, raw candidate, verdict) for the grouping sensitivity
+
+
 def load(frozen_dir, corrupt=None):
     """corrupt: optional callable(dict)->dict applied to each raw record, used
     ONLY by the positive controls."""
@@ -245,6 +248,7 @@ def derive(d, grader_groups):
         if v is None:
             continue
         grader_groups[(d["problem_uid"], norm_candidate(e.get("candidate")))].append(int(v))
+        RAW_EVAL.append((d["problem_uid"], e.get("candidate"), int(v)))
 
     # ---- messages ---------------------------------------------------------
     role_msgs = [m for m in msgs if m.get("role") in ("planner", "executor", "reviewer")]
@@ -422,7 +426,9 @@ def main():
         emit("  aborting.")
         return 1
 
+    del RAW_EVAL[:]
     trajs, groups = load(args.frozen)
+    trajs_raw_eval = list(RAW_EVAL)
     idx = cell_index(trajs)
 
     # row-count assertion against the manifest
@@ -522,6 +528,49 @@ def main():
         emit("  %-24s %-4s %7d %9s %8d %8s %10s %9s %8.3f"
              % (actor, arm, len(fpw), f3(col), len(unan_pool), f3(unan),
                 f3(rev1), f3(never), refpt))
+
+    # ---------------- T1c first-pass denominator sensitivity --------------
+    emit("")
+    emit("[T1c] FIRST-PASS DENOMINATOR SENSITIVITY — the defect this audit was built to find")
+    emit("  A trajectory can receive a FIRST evaluator verdict and then die in")
+    emit("  regeneration, leaving correct=None.  It IS judged on its first pass.")
+    emit("  Conditioning first-pass accuracy on `correct is not None` drops exactly")
+    emit("  those rows -- and every one of them is first-pass WRONG, so dropping them")
+    emit("  inflates first-pass accuracy in precisely the arm that attrits.")
+    emit("  %-24s %-4s %8s %9s %9s %9s %9s"
+         % ("actor", "arm", "n_judged", "fp_judged", "n_graded", "fp_graded", "inflation"))
+    tot_dropped = 0
+    for (actor, arm) in cells_present(idx):
+        rs = [idx[(actor, arm)][p] for p in sorted(idx[(actor, arm)])]
+        judged = [r for r in rs if not r["unjudged_fp"]]
+        gj = [r for r in judged if not r["ungraded_final"]]
+        dropped = len(judged) - len(gj)
+        tot_dropped += dropped
+        a = rate(sum(r["fp"] for r in judged), len(judged))
+        b = rate(sum(r["fp"] for r in gj), len(gj))
+        emit("  %-24s %-4s %8d %9s %9d %9s %9s"
+             % (actor, arm, len(judged), f3(a), len(gj), f3(b), f4(b - a)))
+    emit("  rows judged on first pass but dropped by graded-conditioning: %d" % tot_dropped)
+    n_all_wrong = sum(1 for t in trajs
+                      if (not t["unjudged_fp"]) and t["ungraded_final"])
+    n_wrong = sum(1 for t in trajs
+                  if (not t["unjudged_fp"]) and t["ungraded_final"] and t["fp"] == 0)
+    emit("  of those %d rows, %d are first-pass WRONG (%.1f%%) -> the drop is ONE-SIDED"
+         % (n_all_wrong, n_wrong, 100.0 * n_wrong / max(n_all_wrong, 1)))
+    emit("  INTERNAL-CONSISTENCY TEST any reader can run on a published table:")
+    emit("    if firstpass is computed on n_graded while n_fpw is computed on n_judged,")
+    emit("    then (1-firstpass)*n_graded != n_fpw.  Check it per cell:")
+    emit("    %-24s %-4s %12s %8s %s" % ("actor", "arm", "(1-fp_g)*n_g", "n_fpw", "consistent?"))
+    for (actor, arm) in cells_present(idx):
+        rs = [idx[(actor, arm)][p] for p in sorted(idx[(actor, arm)])]
+        judged = [r for r in rs if not r["unjudged_fp"]]
+        gj = [r for r in judged if not r["ungraded_final"]]
+        b = rate(sum(r["fp"] for r in gj), len(gj))
+        implied = (1 - b) * len(gj)
+        nfpw = sum(1 for r in judged if r["fp"] == 0)
+        emit("    %-24s %-4s %12.0f %8d %s"
+             % (actor, arm, implied, nfpw,
+                "ok" if abs(implied - nfpw) < 0.5 else "*** INCONSISTENT ***"))
 
     # ---------------- T2 paired contrasts --------------------------------
     emit("")
@@ -759,6 +808,38 @@ def main():
         aw = rate(sum(1 for r in fpw if r["n_distinct_answers"] <= 1), len(fpw))
         bl = rate(sum(1 for r in fpw if r["n_distinct_answers_blind"] <= 1), len(fpw))
         emit("  %-24s %-4s %7d %14s %14s" % (actor, arm, len(fpw), f3(aw), f3(bl)))
+
+    # ---------------- T10b noise-floor grouping sensitivity ---------------
+    emit("")
+    emit("[T10b] NOISE-FLOOR GROUPING SENSITIVITY — how much does normalization move it?")
+    emit("  The definition is 'repeated IDENTICAL prompts at temp 0'.  The evaluator")
+    emit("  prompt interpolates the candidate VERBATIM (prompts.EVALUATOR_PREPEND), so")
+    emit("  two candidates differing by whitespace are DIFFERENT prompts and their")
+    emit("  disagreement is not a nondeterminism draw.")
+    import collections as _c
+    variants = {}
+    for label, keyfn in (
+            ("exact bytes (literal identical prompt)", lambda c: c),
+            ("NFKC + collapse whitespace (this audit)", norm_candidate),
+            ("strip ALL whitespace + strip $ (looser)",
+             lambda c: (re.sub(r"\s+", "", str(c)).strip("$").strip() or None)),
+    ):
+        g = _c.defaultdict(list)
+        for t in trajs_raw_eval:
+            puid, cand, verdict = t
+            g[(puid, keyfn(cand))].append(verdict)
+        multi = {k: v for k, v in g.items() if len(v) >= 2}
+        disc = {k: v for k, v in multi.items() if len(set(v)) > 1}
+        # how many discordant groups fold MORE THAN ONE distinct raw candidate?
+        raw = _c.defaultdict(set)
+        for puid, cand, verdict in trajs_raw_eval:
+            raw[(puid, keyfn(cand))].add(cand)
+        folded = sum(1 for k in disc if len(raw[k]) > 1)
+        variants[label] = (len(disc), len(multi), folded)
+        emit("  %-42s %3d / %4d = %.4f   (%d of those groups fold >1 distinct raw string)"
+             % (label, len(disc), len(multi), rate(len(disc), len(multi)), folded))
+    emit("  A grouping that folds >1 raw string is NOT measuring identical prompts:")
+    emit("  it charges genuine format sensitivity to the nondeterminism floor.")
 
     # ---------------- T11 single-agent control ---------------------------
     emit("")

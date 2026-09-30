@@ -14,10 +14,25 @@ can be load-bearing for repairing an initially wrong one.
 ## APPROVED — actor scope is part of the claim
 
 ### A1. Removing roles destroys functional division of labor. ALL THREE ACTORS.
-Primary evidence: blinded Opus-5 adjudication, Arm B "no division of labor"
-0.964 (n=56) vs Arm A 0.000 (n=42); per actor in Arm B, Llama 1.000,
-gpt-oss 1.000, gemma-4 0.857. Byte duplication is a LOWER BOUND only
-(precision 1.000, recall 0.262) and must never carry this claim alone.
+**PRIMARY EVIDENCE CHANGED 2026-09-30 (FINDING-25).** The adjudication is
+outcome-blind but **NOT condition-blind**: an `Agent-P/E/R` token is present
+in 42/42 Arm A items and 3/56 Arm B items (Fisher p=1.5e-24), and the arms are
+further separable by output format (Arm C carries a JSON `answer`/`verdict`
+field; A/B carry `\boxed` and `[Agree]`). A judge could identify the arm
+without reading content. **Do NOT write "blinded adjudication" for any
+arm-contrastive number.**
+
+Primary evidence is therefore the MECHANICAL measures, which involve no judge:
+functional collapse 0.976 / 0.846 / 0.872 in Arm B vs 0.000 / 0.120 / 0.000 in
+Arm A; and content duplication as excess over a null pairing (+0.291 gemma-4,
++0.300 Llama; gpt-oss -0.093, uninstrumented per F13).
+
+The adjudication (Arm B 0.964 vs Arm A 0.000, Arm C 0.136) is reported as a
+stability-checked, outcome-blind second opinion, with the leak disclosed.
+Judge stability (0.895-0.959) and precision 1.000 / recall 0.262 are
+unaffected -- both are within-item.
+
+Byte duplication is a LOWER BOUND only and must never carry this claim alone.
 
 ### A2. Removing roles does not hurt first-pass accuracy. ALL THREE ACTORS.
 gemma-4 0.802 -> 0.802 (+0.0000 [-0.0150,+0.0156]); gpt-oss 0.713 -> 0.763
@@ -119,6 +134,7 @@ null. Say which is which.
 | "per-opportunity Arm B recovers better" | matched on a post-treatment variable | F17 |
 | "no accuracy claim is resolvable above scorer noise" | built on the wrong grading key | F21 |
 | "roles prevent premature stopping" | refuted by construction; budget is identical | F17 |
+| "BLINDED adjudication confirms the arm contrast" | outcome-blind but NOT condition-blind; role-token presence separates A from B at p=1.5e-24 and output format separates C | F25 |
 | "Arm C recovery is highest of any arm, above Arm A in all three actors (p<=1.6e-3)" | recovery denominator dropped 173 trajectories that had a first incorrect verdict then died in regeneration; corrected, two of three paired p-values are lost (0.298, 0.105) | STATISTICAL_AUDIT FATAL-1 |
 | Llama-3.3's null recovery is a "floor effect" | Arm C restores recovery in that same actor (0.096 vs 0.009, p=3.8e-06), so the channel exists; ~80% power at 0.04-0.05 against an effect of 0.171. It is a genuine null specific to the ROLE manipulation | STATISTICAL_AUDIT SERIOUS-2 |
 
