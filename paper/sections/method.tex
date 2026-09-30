@@ -1,104 +1,87 @@
 \section{Intervention}
 \label{sec:method}
 
-To ask whether organization is load-bearing we vary it in both directions
-from the same baseline: remove it, and enforce it. All arms share three
-agents, the same interaction order
-(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), message-passing
-graph, total call budget, verifier and verifier prompt, retry budget,
-decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
-stopping rule, and grading. This is what makes the comparison a test of
+To ask whether organization is load-bearing we vary it in both directions from
+the same baseline: remove it, and enforce it. All arms share three agents, the
+same interaction order (Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer),
+message-passing graph, total call budget, verifier and verifier prompt, retry
+budget, decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
+stopping rule, and grading. Every trajectory in the frozen snapshot carries
+the identical budget record. This is what makes the comparison a test of
 organization rather than of scale.
 
 \paragraph{Arm~A --- soft-role \PER{} (control).} Role prompts as ordinarily
 written. The organization as specified.
 
-\paragraph{Arm~B --- generic roles (organization removed).} Identical
-topology and budget; all three agents receive the same generic prompt
-(``You are one of three agents solving this problem collaboratively;
-continue the work''). Role names are retained for routing only, so the
-pipeline still runs and the budget is untouched. Arm~B is \emph{not} ``\PER{}
-minus role words'' but the same topology with no division of labor specified
-at all --- the ablation the load-bearing definition calls for.
+\paragraph{Arm~B --- generic roles (organization removed).} Identical topology
+and budget; all three agents receive the same generic prompt (``You are one of
+three agents solving this problem collaboratively; continue the work''). Role
+names are retained for routing only, so the pipeline still runs and the budget
+is untouched. Arm~B is \emph{not} ``\PER{} minus role words'' but the same
+topology with no division of labor specified at all.
 
-\paragraph{Arm~C --- architectural enforcement (organization made
-unavoidable).} Specialization is enforced by the interface rather than by
-wording:
+\paragraph{Arm~C --- architectural enforcement.} Specialization is enforced by
+the interface rather than by wording. The \textbf{Planner} emits JSON parsed
+against a schema with \emph{no answer field}, so a final answer is
+unrepresentable and free text is rejected and regenerated. The
+\textbf{Executor} receives the parsed plan object and the problem --- never
+the Planner's raw text --- and emits \texttt{\{derivation, answer\}}. The
+\textbf{Reviewer} emits \texttt{\{verdict, target\_span, critique\}}, and
+\texttt{accept} promotes the Executor's answer verbatim \emph{by reference},
+having no field in which to \emph{author} one --- deleting that field outright
+would change \emph{who submits} as well as who may \emph{author}. Arm~C
+removes no capability: planning, computing, answering and critiquing are all
+still performed, each by one agent, under the same call budget. Its cost is
+that a rejected emission can exhaust the regeneration budget, the source of
+the attrition in \S\ref{subsec:enforce}.
 
-\begin{itemize}\itemsep1pt
-\item \textbf{Planner.} Emits JSON parsed against a schema with \emph{no
-  answer field}: \texttt{\{givens[], target\_form, lemmas[], steps[]\}}. A
-  final answer is \emph{unrepresentable}; free text is rejected and
-  regenerated.
-\item \textbf{Executor.} Receives the parsed plan object and the problem ---
-  never the Planner's raw text --- and emits \texttt{\{derivation, answer\}}.
-\item \textbf{Reviewer.} Emits \texttt{\{verdict, target\_span, critique\}}.
-  \texttt{accept} promotes the Executor's answer verbatim \emph{by
-  reference}; the Reviewer has no field in which to \emph{author} one.
-\end{itemize}
+\paragraph{Arm~C$'$ --- partial context control.} Arm~C with shared history
+restored in all three role templates; schema, routing and budgets unchanged.
+Matching C and A exactly would require feeding raw prose back in, dissolving
+the constraint that defines the arm.
 
-Contract violation is therefore unrepresentable rather than discouraged.
-Submit-by-reference exists because deleting the Reviewer's answer field
-outright would change \emph{who submits} as well as who may \emph{author}.
-Arm~C removes no capability: planning, computing, answering and critiquing
-are all still performed, each by one agent, under the same call budget.
+\paragraph{Single-agent reference.} A budget-matched single-agent protocol on
+the same problems, drawn from a previously released corpus rather than this
+campaign (\S\ref{sec:experiments}). Without it, ``collapse costs nothing''
+cannot be distinguished from ``the system was one agent all
+along''~\cite{zhang2026rethinking}.
 
-\paragraph{Arm~C$'$ --- context control.} Arm~C with shared history restored
-in all three role templates; schema, routing and budgets unchanged. Since
-Arm~C necessarily carries less context than Arm~A, C$'$ licenses the
-identified contrast ``the effect of adding context at fixed enforcement.'' It
-is a \emph{partial} control: matching C and A exactly would require feeding
-raw prose back in, dissolving the constraint that defines the arm.
-
-\paragraph{Single-agent reference.} A budget-matched single-agent protocol
-runs on the same problems. Without it, ``collapse costs nothing'' cannot be
-distinguished from ``the system was one agent all along''
-\cite{zhang2026rethinking}. It is a required control, not an extra.
-
-\subsection{Instrumentation}
-
-An intervention that never engaged cannot explain an outcome, so engagement
-is measured rather than assumed. Every rejected-and-regenerated emission is
-logged with its reason, and the enforcement rate is computed from
-\textbf{role-boundary violations only} --- formatting coercions are logged
-separately and excluded, a definition fixed in advance. Answer-bearing calls
-are counted per arm, so an arm cannot win or lose by producing fewer answers.
-Evaluator calls and the pinned serving backend are logged per trajectory,
-because the same cell has shown a $9.6\times$ throughput difference and a
-large accuracy difference across backends. One instrumentation gap escaped
-this discipline and is reported in \S\ref{subsec:logging}.
-
-\subsection{Pre-registered analyses, and what became of them}
+\subsection{Instrumentation and pre-registered analyses}
 \label{subsec:prereg}
 
-All endpoints were fixed in writing and committed before any intervention
-data existed. Units are (problem, actor) pairs; all arms run on the same
-problems, so every test is paired with bootstrap clustering by problem, and
-P1--P5 carry a Holm correction.
+An intervention that never engaged cannot explain an outcome, so engagement is
+measured rather than assumed. Every rejected-and-regenerated emission is
+logged with its reason; the enforcement rate counts \textbf{role-boundary
+violations only}, formatting coercions excluded by a definition fixed in
+advance. Answer-bearing calls are counted per arm, so an arm cannot win or
+lose by producing fewer answers. One instrumentation gap escaped this
+discipline (\S\ref{subsec:logging}).
 
-\begin{description}\itemsep1pt
-\item[P1] Intervention $\rightarrow$ fidelity, per actor. Also the
-  manipulation check.
-\item[P2] Actor $\times$ intervention on fidelity.
-\item[P3] Intervention $\rightarrow$ accuracy, per actor.
-\item[P4] Actor $\times$ intervention on accuracy. \textbf{The primary test
-  of the study's original thesis.}
-\item[P5] $\Delta$fidelity versus $\Delta$outcome; association only, and
-  explicitly not causal, since both are consequences of one intervention.
-\end{description}
+All endpoints were fixed in writing and committed before any intervention data
+existed. Units are (problem, actor) pairs; all arms run on the same problems,
+so every test is paired with bootstrap clustering by problem, and P1--P5 carry
+a Holm correction. \textbf{P1} intervention $\rightarrow$ fidelity (also the
+manipulation check); \textbf{P2} actor $\times$ intervention on fidelity;
+\textbf{P3} intervention $\rightarrow$ accuracy; \textbf{P4} actor $\times$
+intervention on accuracy, \emph{the primary test of the original thesis};
+\textbf{P5} $\Delta$fidelity versus $\Delta$outcome, association only.
 
 Two things belong here rather than in Results, because they concern
 provenance. \textbf{First, P4 is null} and we report it as the failure of the
 thesis it was written to test. \textbf{Second, the A-versus-B contrast this
 paper is organized around was pre-registered as secondary and exploratory},
-and is labeled post-hoc everywhere it appears. The pre-registered P1
-manipulation objective --- that enforcement would drive Planner
-computation-abstention to ${\approx}1.0$ --- also \textbf{failed}, because
-the check named a clause the intervention does not enforce; it was
-re-designated to answer authorship and the failure reported in
-\S\ref{subsec:structnotcog}.
+and is labeled post-hoc everywhere. The pre-registered P1 manipulation
+objective --- that enforcement would drive Planner
+\emph{computation}-abstention to ${\approx}1.0$ --- also \textbf{failed},
+because it named a clause the intervention does not enforce: the schema
+forbids emitting an \emph{answer}, and nothing stops a Planner writing
+$=1/27$. It was re-designated to answer authorship
+(\S\ref{subsec:enforce}).
 
-Exclusions were fixed in advance: unparseable trajectories count as incorrect
-rather than dropped; in Arm~C the regenerated message is analyzed and the
-rejection count reported; no arm is dropped after results are seen, and an
-arm failing its manipulation check is reported as having failed it.
+Exclusions were fixed in advance: \textbf{unparseable trajectories count as
+incorrect rather than dropped} --- the rule that decides
+\S\ref{subsec:enforce} --- in Arm~C the regenerated message is analyzed and
+the rejection count reported, and an arm failing its manipulation check is
+reported as having failed it. A not-submit condition was also pre-declared;
+\S\ref{subsec:p4null} reports that it was evaluated against the final data and
+not met.

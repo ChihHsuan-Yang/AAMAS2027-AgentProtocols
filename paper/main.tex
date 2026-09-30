@@ -1,27 +1,38 @@
 %==============================================================================
 % AAMAS 2027 submission -- main document
 %
-% TEMPLATE SUBSTITUTION NOTE FOR THE MASTER AGENT:
-%   The official AAMAS class file (aamas.cls / the IFAAMAS formatting bundle)
-%   could NOT be fetched from this build host on 2026-09-28. Every candidate
-%   URL returned 403 or 404 (aamas2025.org, aamas2026.org, ifaamas.org) and
-%   web search was unavailable. As instructed, this document therefore uses
-%   ACM `acmart' in sigconf mode with the anonymous+review options, which is
-%   the class AAMAS derives its own template from.
+% CLASS: the OFFICIAL IFAAMAS class, aamas.cls, obtained 2026-09-30 from the
+% AAMAS-2026 author kit (see ../paper_support/aamas_official/PROVENANCE.md for
+% the exact URL, the sha256, and the fetch command -- the server needs a
+% browser User-Agent and a same-site Referer, and returns a 401KB HTML "404"
+% without them, which is what made an earlier attempt conclude wrongly that
+% the class was unobtainable).
 %
-%   TO SWAP IN THE OFFICIAL CLASS: replace the \documentclass line below with
-%   the AAMAS one and drop the \acmConference/\copyrightyear block. AAMAS
-%   templates normally use:
-%       \documentclass[sigconf,review,anonymous]{aamas}
-%       \acmSubmissionID{...}
-%   Nothing else in this file or in sections/ depends on the class.
+% The class file must NOT be modified: "Please do not modify the style files
+% or any of the layout parameters." Nor may the page budget be met by
+% typesetting tricks: "Excessive use of typesetting tricks to make everything
+% fit into 8 pages is not admissible."
+%
+% Venue metadata below is the AAMAS-2026 block from the official sample with
+% the year advanced; AAMAS 2027 had not published its own kit at the time of
+% writing. VERIFY BEFORE CAMERA-READY.
 %==============================================================================
-\documentclass[sigconf,anonymous,review,nonacm]{acmart}
+\documentclass[sigconf,anonymous]{aamas}
 
 % -- Anonymity: no author block, no acknowledgements, no repo URLs. ----------
-\settopmatter{printacmref=false}
-\renewcommand\footnotetextcopyrightpermission[1]{}
-\pagestyle{plain}
+% The aamas class handles anonymisation via the [anonymous] option.
+
+% -- IFAAMAS copyright block, verbatim from the official sample ("do not
+% -- change"), year advanced to 2027. Re-verify against the 2027 author kit.
+\setcopyright{ifaamas}
+\acmConference[AAMAS '27]{Proc.\@ of the 26th International Conference
+on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{May 2027}
+{Paphos, Cyprus}{Anonymous (eds.)}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{}
+\acmPrice{}
+\acmISBN{}
 
 \usepackage{booktabs}
 \usepackage{amsmath}
@@ -53,34 +64,32 @@
 }
 
 \begin{abstract}
-Multi-agent LLM systems are specified as role diagrams -- Planner, Executor,
-Reviewer -- and those diagrams are read as mechanism: an account of where the
-system's competence comes from. We ask when that organization is actually
-\emph{load-bearing}, defining the term operationally: a component is
-load-bearing if removing or altering it causes a reproducible performance
-degradation under matched compute and information budgets. Holding agents, call
-budget, context policy, verifier and grading fixed, we delete all role
-instructions (Arm~B) and, separately, make the division of labor structurally
-unrepresentable (Arm~C), across three actor models on 9{,}079 matched
-trajectories.
+Multi-agent LLM systems are specified as role diagrams --- Planner, Executor,
+Reviewer --- and the diagram is read as a mechanism. We ask which phase of the
+work that organization actually carries. Holding agents, call budget, context
+policy, verifier and grading fixed, we delete every role instruction (Arm~B)
+and, separately, make the division of labor structurally unrepresentable
+(Arm~C), across three actor models on $11{,}600$ trajectories from one frozen
+snapshot.
 
-Deleting role instructions destroys the functional division of labor in
-\emph{every} actor tested: the rate at which all three agents independently
-assert their own final answer rises to $0.846$--$0.975$, and a blinded,
-rubric-frozen adjudication agrees -- including on a cell where an
-exact-duplication metric reports zero. What differs is what it costs. One actor
-loses accuracy ($-0.030$ $[-0.046,-0.014]$) and another does not ($+0.008$
-$[-0.011,+0.026]$). \textbf{How much organization an actor loses does not
-predict whether losing it is costly.} This is not degeneration to a single
-agent: a collapsed team still beats its budget-matched single agent
-($+0.025$ $[+0.007,+0.042]$). Architectural enforcement completes the picture
-from the other side, driving answer-authorship compliance to $1.000$ while
-moving accuracy for neither actor -- our pre-registered primary test is null and
-we report it as such. A mechanism analysis locates the difference: role removal
-leaves the vulnerable actor's first-pass solve rate unchanged and destroys its
-\emph{recovery}, because without roles the team reaches near-total unanimity and
-cannot escape a wrong consensus. Visible organization is not evidence about the
-mechanism carrying performance.
+Removing roles destroys the division of labor in all three actors: the rate at
+which every agent independently asserts its own final answer rises from
+$0.000$--$0.120$ to $0.846$--$0.976$, with the planner carrying the entire
+signal. A blinded, rubric-frozen adjudication --- model adjudication, not human
+annotation --- reproduces this, judging the division of labor intact in
+$100\%$ of Arm~A trajectories and absent in $86$--$100\%$ of Arm~B. First-pass
+accuracy does not follow: it is unchanged for gemma-4 and improves for gpt-oss
+($+0.050$), a parity consistent with prior role ablations and reported here as
+our control condition. The cost appears only \emph{after} a wrong first
+answer, where recovery collapses ($0.222 \rightarrow 0.051$ gemma-4,
+$0.324 \rightarrow 0.249$ gpt-oss; Llama-3.3 recovers at $0.015$ in both arms,
+a floor effect that does not replicate the result). The role-free team is not
+stopped early --- it holds the same six cycles and spends $5.80$ of $5.83$ on
+resubmission rather than revision. Architectural enforcement restores both
+organization and recovery but not final accuracy, and costs $8$--$17\%$
+attrition; our preregistered primary test is null. Role structure is
+load-bearing for recovering from a wrong answer, not for producing the first
+one.
 \end{abstract}
 
 \begin{CCSXML}

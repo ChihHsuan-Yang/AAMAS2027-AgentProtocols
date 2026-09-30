@@ -9,94 +9,85 @@ explanation of where the system's competence comes from, and a justification
 for paying for three agents instead of one. But the diagram is not what runs.
 What runs is three prompts handed to a language model, which may honor the
 division of labor, ignore it, or satisfy its surface while doing the whole
-task in every box. Which of these happened is almost never measured, because
-a system evaluated on accuracy alone returns the same score either way.
+task in every box. Which of these happened is almost never measured: a system
+evaluated on accuracy alone returns the same score either way.
 
 \paragraph{The question.}
-We therefore ask what a diagram cannot answer: \textbf{when is multi-agent
-organization load-bearing?} A component is \textbf{load-bearing} if removing
-or altering it causes a reproducible degradation in task performance
-\emph{under matched compute and information budgets}. The budget clause
-carries the weight: removing role instructions while also removing agents,
-calls, or context tests scale, not organization. Our interventions hold the
-whole compute and information budget fixed and vary only what each agent is
-told it is, or what its interface will let it emit.
+We ask what a diagram cannot answer: \textbf{which phase of the work is
+multi-agent organization load-bearing for?} A component is
+\textbf{load-bearing} if removing or altering it causes a reproducible
+degradation in task performance \emph{under matched compute and information
+budgets}. The budget clause carries the weight: removing role instructions
+while also removing agents, calls, or context tests scale, not organization.
+Our interventions hold the whole compute and information budget fixed and vary
+only what each agent is told it is, or what its interface will let it emit.
 
-\paragraph{Every actor loses the organization; only some pay for it.}
-Under generic prompts that delete every role instruction while changing
-nothing else (Arm~B), the division of labor disappears for \emph{every} actor
-we tested. We measure it functionally, on the first pipeline pass so that the
-measure is not confounded with trajectory length: the rate at which all three
-agents independently assert their own final answer --- three solvers rather
-than a pipeline. That rate runs $0.000$--$0.121$ under soft roles across
-gemma-4-31B, gpt-oss-120b and Llama-3.3-70B, and $0.846$--$0.975$ once the
-role instructions are removed. A blinded, rubric-frozen adjudication agrees,
-including on the cell where exact output duplication reports zero
-(\S\ref{subsec:collapse}).
+\paragraph{The answer, in one sentence.}
+\textbf{Role structure is not load-bearing for producing the first answer; it
+is load-bearing for recovering from a wrong one.} Deleting every role
+instruction (Arm~B) destroys the division of labor in all three actors we
+tested --- the rate at which every agent independently asserts its own final
+answer goes from $0.000$--$0.120$ to $0.846$--$0.976$, with the planner
+carrying the whole signal, and a blinded rubric-frozen adjudication agrees.
+First-pass accuracy does not follow: it is unchanged for gemma-4 and
+\emph{improves} for gpt-oss. That parity is not our finding; it replicates a
+published null~\cite{dylan2026equal,orogat2026architectural} and we report it
+as our control condition. The cost appears only after a wrong first answer,
+where recovery falls $0.222 \rightarrow 0.051$ for gemma-4 and
+$0.324 \rightarrow 0.249$ for gpt-oss. Llama-3.3 recovers at $0.015$ in both
+arms --- a floor effect at $0.307$ first-pass accuracy, reported as such,
+which does not replicate the recovery result.
 
-Their accuracy does not follow. On matched problems gemma-4 loses $-0.0296$
-$[-0.0455,-0.0137]$ when roles are removed, while gpt-oss does not move
-($+0.0076$ $[-0.0107,+0.0259]$). \textbf{The actors lose the same amount of
-organization and only one pays for it}, so how much visible differentiation
-an intervention destroys does not tell you whether destroying it is costly.
-That is sharper than a contrast between actors that lost \emph{different}
-amounts would be, because the amount lost is held roughly fixed and only the
-consequence varies.
+\paragraph{It is not premature stopping.}
+The standing explanation for a team that fails to fix its own error is that it
+converges too early. We test that explanation and reject it. Every arm holds
+the same six deliberation cycles and no trajectory in any cell is cut short;
+what changes is their use. The role-free team converts $5.80$ of its $5.83$
+cycles into resubmissions of the same answer while the role-labeled team
+submits $1.54$ times and spends $3.98$ revising, and in $98.1\%$ of role-free
+gemma-4 trajectories that started wrong the Reviewer never once declines to
+submit. The answer is then never revised at all in $0.845$ of those against
+$0.288$ under roles. This is
+Degeneration-of-Thought~\cite{liang2024divergent}; what is new is the
+\textbf{inversion}, since multi-agency is the standard prescription against
+it and multi-agency without role differentiation does not escape it.
 
-Neither half licenses the conclusion that the agents were redundant. A
-collapsed gpt-oss team still beats its own budget-matched single agent by
-$+0.0247$ $[+0.0062,+0.0425]$: three agents emitting the same answer under a
-shared evaluator loop is not the same system as one agent, even when nothing
-distinguishes what they say.
+\paragraph{Neither easy reading of multi-agent computation survives.}
+A collapsed gpt-oss team still beats its own budget-matched single agent
+($+0.0294$ $[+0.0131,+0.0462]$), while gemma-4's team is significantly
+\emph{worse} than its own single agent in both arms ($-0.0225$, $-0.0563$) ---
+and gemma-4 is the actor the recovery result rests on. So multi-agent
+computation is not uniformly valuable, and neither ``multi-agent systems are
+just single agents'' nor ``more agents help'' survives our own data.
 
-\paragraph{Restoring the structure does not restore the performance.}
+\paragraph{Restoring the structure restores recovery, not accuracy.}
 The symmetric intervention makes the division of labor unrepresentable rather
 than merely requested: the Planner emits an object parsed against a schema
-with no answer field, so a final answer cannot be expressed and is rejected
-and regenerated (Arm~C). This works as an organizational manipulation and
-fails as a performance one. Answer-authorship compliance goes to $1.000$ in
-every cell and hundreds of boundary rejections per cell confirm the
-constraint bound, while accuracy moves for neither actor and the
-pre-registered primary test of the actor~$\times$~intervention interaction is
-null. Enforcement buys back the organization in the diagram and nothing the
-diagram was invoked to explain --- it governs who may \emph{speak}, not
-whether the agents \emph{differ}, and disagreement is what the recovering
-actor needed.
+with no answer field (Arm~C). It works as an organizational manipulation ---
+answer authorship goes to $1.000$, with hundreds of boundary rejections per
+cell --- and it restores recovery ($0.412$/$0.461$/$0.150$, above Arm~A in all
+three actors). It does \emph{not} restore final accuracy, it costs
+$8$--$17\%$ attrition from rejected output, and \textbf{our pre-registered
+primary test of the actor~$\times$~intervention interaction is null.} We keep
+that null visible.
 
 \paragraph{Contribution.}
-The two halves together say something narrower and more useful than either
-alone: \textbf{multi-agent computation and differentiated organization are
-separable, and measuring the organization does not tell you which one is
-carrying the load.} For gpt-oss, the redundant computation is load-bearing and
-the differentiation is not. For gemma-4, the differentiation is load-bearing
-and does its work somewhere a snapshot of the organization cannot see. A
-mechanism analysis locates that work: gemma-4's first-pass solve rate is
-essentially unchanged when roles are removed ($0.804 \rightarrow 0.804$) and
-its loss is concentrated in recovery after a failed submission. Role
-differentiation is load-bearing for \emph{error recovery}, not for
-\emph{first-pass solving}, and only for the actor that cannot otherwise escape
-a wrong consensus.
-
-This is not the ordering capability-dependence accounts
-predict~\cite{canedo2026architecture,orogat2026architectural}: our actors lose
-essentially the same amount of organization, and the one that pays is neither
-the strongest nor the weakest. Specifically, we contribute:
-
 \begin{enumerate}\itemsep1pt
 \item An operational definition of \textbf{load-bearing} and a budget-matched
-  design that tests it, including the single-agent control without which
-  ``collapse is harmless'' cannot be told apart from ``the system was always
+  two-directional design that tests it, with the single-agent control without
+  which ``collapse is harmless'' cannot be told from ``the system was always
   one agent''.
-\item The \textbf{dissociation between how much organization is lost and what
-  losing it costs}, robust to difficulty, decoding determinism, normalization
-  and trajectory length.
-\item A \textbf{measurement result we had to absorb ourselves}: an
-  exact-duplication metric reports $0.000$ collapse for an actor a blinded
-  adjudication judges collapsed in $94\%$ of sampled trajectories, so we
-  report it as a lower bound and rebuild the claim on a functional measure.
+\item The \textbf{phase dissociation}: role structure is dispensable for
+  first-pass solving and load-bearing for recovery, shown in two actors with
+  the third's floor effect reported rather than smoothed.
+\item A \textbf{refutation of premature stopping} as the mechanism, on matched
+  realized budget rather than on submission counts.
 \item A \textbf{structural--functional dissociation from the other side}:
-  architectural enforcement restores measured organization completely and task
-  performance not at all, with a pre-registered primary null reported as such.
-\item A \textbf{mechanism}: roles sustain disagreement, disagreement sustains
-  recovery, and only the actor that cannot escape a wrong consensus needs them.
+  architectural enforcement restores organization and recovery completely,
+  final accuracy not at all, with a pre-registered primary null and the
+  attrition that a survivorship reading of it would hide.
+\item A \textbf{measurement result we had to absorb ourselves}: an
+  exact-duplication metric reports $0.000$ collapse for actors a blinded
+  adjudication judges collapsed, and a logging defect leaves one actor's
+  planner uninstrumented --- both reported as bounds on what we may say.
 \end{enumerate}
