@@ -31,6 +31,35 @@ def actor(r): return r["actor_model"].split("/")[-1]
 def ev(r):    return r.get("evaluator_history") or []
 def graded(r):return bool(ev(r)) and r.get("correct") is not None
 def fp(r):    return int(ev(r)[0].get("correctness") or 0) if ev(r) else None
+
+def judged(r):
+    """Did this trajectory receive a first evaluator verdict at all?
+
+    DEFECT FIXED 2026-09-30 (STATISTICAL_AUDIT, FATAL-1). The recovery
+    denominator is defined as "trajectories whose FIRST evaluator verdict was
+    incorrect". It was implemented as `is_fpw(r)`, which also
+    requires `correct is not None` -- i.e. it silently dropped every
+    trajectory that got a first verdict and then died in regeneration.
+
+    That is 173 Arm C/Cp trajectories, and 173 of 173 have fp==0 (structural:
+    a PASS on the first verdict ends the loop, so a trajectory that survives
+    to exhaust regeneration necessarily failed its first verdict). They meet
+    the definition exactly and score 0 under the pre-registered
+    ungraded-as-incorrect rule. Dropping them inflated Arm C recovery by
+    0.011-0.098 and was an internal inconsistency between the recovery
+    definition and the pre-registered scoring rule -- not a judgement call.
+
+    Use judged() for the recovery denominator; use graded() only where the
+    question really is "did we obtain a final grade".
+    """
+    return bool(ev(r))
+
+def is_fpw(r):
+    """The recovery denominator: first evaluator verdict incorrect.
+    NAME: deliberately not `fpw` -- several functions bind a local list named
+    `fpw`, and a module-level function with that name is shadowed silently.
+    """
+    return judged(r) and fp(r) == 0
 def fin_prereg(r):   return int(r.get("correct") or 0)          # ungraded -> 0
 def fin_asgraded(r): return r.get("correct")                     # may be None
 
@@ -129,7 +158,10 @@ for a in ACTORS:
         g = [r for r in s if graded(r)]
         f1 = np.mean([fp(r) for r in g]) if g else np.nan
         fin = np.mean([fin_prereg(r) for r in s])
-        fpw = [r for r in g if fp(r) == 0]
+        # Denominator drawn from ALL trajectories in the cell, not from the
+        # graded subset: a trajectory can receive a first verdict and then die
+        # in regeneration. See is_fpw().
+        fpw = [r for r in s if is_fpw(r)]
         rec = np.mean([fin_prereg(r) for r in fpw]) if fpw else np.nan
         fc = [func_collapse(r) for r in s]; fc = [x for x in fc if x is not None]
         un = [unanimous(r) for r in s];     un = [x for x in un if x is not None]
@@ -164,7 +196,8 @@ for a in ACTORS:
     FA = {r["problem_uid"]: fp(r) for r in gA}; FB = {r["problem_uid"]: fp(r) for r in gB}
     cm = sorted(set(FA) & set(FB))
     d = np.array([FB[p]-FA[p] for p in cm], float); lo,hi = boot(d)
-    wA = [r for r in gA if fp(r)==0]; wB = [r for r in gB if fp(r)==0]
+    wA = [r for r in rows if actor(r)==a and r["arm"]=="A" and is_fpw(r)]
+    wB = [r for r in rows if actor(r)==a and r["arm"]=="B" and is_fpw(r)]
     rA = [fin_prereg(r) for r in wA]; rB = [fin_prereg(r) for r in wB]
     dr = np.mean(rB)-np.mean(rA)
     bs = [RNG.choice(rB,len(rB)).mean()-RNG.choice(rA,len(rA)).mean() for _ in range(4000)]
@@ -180,9 +213,9 @@ from math import comb
 for a in ACTORS:
     for x, y in (("A","B"), ("A","C")):
         P = {r["problem_uid"]:(fp(r), fin_prereg(r)) for r in rows
-             if actor(r)==a and r["arm"]==x and graded(r)}
+             if actor(r)==a and r["arm"]==x and judged(r)}
         Q = {r["problem_uid"]:(fp(r), fin_prereg(r)) for r in rows
-             if actor(r)==a and r["arm"]==y and graded(r)}
+             if actor(r)==a and r["arm"]==y and judged(r)}
         both = sorted(p for p in set(P)&set(Q) if P[p][0]==0 and Q[p][0]==0)
         if len(both) < 20: continue
         t = collections.Counter((P[p][1], Q[p][1]) for p in both)
@@ -198,7 +231,7 @@ print(f"{'actor':<24}{'arm':<5}{'n_fpw':>7}{'cycles':>8}{'submits':>9}{'revising
       f"{'acc_t1':>8}{'neverrefuse':>13}{'frozen':>8}{'recovery':>10}")
 for a in ACTORS:
     for arm in ("A","B","C"):
-        g = [r for r in rows if actor(r)==a and r["arm"]==arm and graded(r) and fp(r)==0]
+        g = [r for r in rows if actor(r)==a and r["arm"]==arm and is_fpw(r)]
         if len(g) < 20: continue
         cy = np.array([r.get("inner_used") or 0 for r in g], float)
         su = np.array([len(ev(r)) for r in g], float)
@@ -411,7 +444,7 @@ print(f"{'actor':<24}{'arm':<5}{'n_fpw':>7}{'unanim':>9}{'recov|unan':>12}"
       f"{'moves|unan':>12}{'n_unan':>8}")
 for a in ACTORS:
     for arm in ("A","B"):
-        g = [r for r in rows if actor(r)==a and r["arm"]==arm and graded(r) and fp(r)==0]
+        g = [r for r in rows if actor(r)==a and r["arm"]==arm and is_fpw(r)]
         if len(g) < 20: continue
         un = [r for r in g if unanimous(r) is True]
         ua = [unanimous(r) for r in g]; ua = [x for x in ua if x is not None]
@@ -514,7 +547,7 @@ print(f"{'actor':<24}{'arm':<5}{'n_fpw':>7}{'mismatch rate':>15}{'held==gold & g
 TOTMM = TOTUC = 0
 for a in ACTORS:
     for arm in ("A","B","C"):
-        g = [r for r in rows if actor(r)==a and r["arm"]==arm and graded(r) and fp(r)==0]
+        g = [r for r in rows if actor(r)==a and r["arm"]==arm and is_fpw(r)]
         if len(g) < 20: continue
         mm = uc = 0
         for r in g:
@@ -586,7 +619,7 @@ def ctx(r):
     return sum(len(m.get("text") or "") for m in (r.get("messages") or [])
                if m.get("role") in ("planner","executor","reviewer"))
 for a in ACTORS:
-    g = [r for r in rows if actor(r)==a and r["arm"] in ("A","B") and graded(r) and fp(r)==0]
+    g = [r for r in rows if actor(r)==a and r["arm"] in ("A","B") and is_fpw(r)]
     if len(g) < 40: continue
     q = np.percentile([ctx(r) for r in g], [25, 50, 75])
     for k, lab in enumerate(("Q1 (low)","Q2","Q3","Q4 (high)")):
@@ -663,7 +696,7 @@ print("\n[T25] IS ANY RECOVERY PRE-ORACLE? (answer changes before the first eval
 print(f"{'actor':<24}{'arm':<5}{'n_fpw':>7}{'recovered before 1st verdict':>30}")
 for a in ACTORS:
     for arm in ("A","B","C"):
-        g = [r for r in rows if actor(r)==a and r["arm"]==arm and graded(r) and fp(r)==0]
+        g = [r for r in rows if actor(r)==a and r["arm"]==arm and is_fpw(r)]
         if len(g) < 20: continue
         # the first evaluator verdict is by construction the first submission; a
         # "pre-oracle recovery" would be a trajectory graded correct with exactly
@@ -709,4 +742,168 @@ for a in ACTORS:
     print(f"  {a:<24}|B-A|={abs(m):.4f}  floor={floor:.4f}  ratio={abs(m)/floor:.1f}x"
           f"  {'clears' if abs(m)/floor >= 2 and not (lo<0<hi) else 'NOT resolvable above noise'}")
 
+print("\n" + "=" * 96)
+
+# =====================================================================================
+# [T28] FIGURE DATA EXPORT  (added 2026-09-30 by the FIGURE AGENT)
+#
+# Purpose: the figure scripts (analysis/scripts/mk_fig*.py) must never hand-type a
+# number.  This section recomputes every quantity the figures draw -- from the SAME
+# frozen rows this file already loaded -- and writes them to analysis/out/FIGDATA.json
+# together with the frozen manifest sha256s.  Plot scripts read that file and nothing
+# else.  Appended at the END so no table above it changes: the RNG draws below cannot
+# reach T0-T27.
+#
+# Two quantities here are NOT in the tables above and are defined for the first time:
+#
+#   (a) per-cell bootstrap CIs on first-pass accuracy and on recovery.  T3 gives the
+#       B-A differences; the panels need the levels' own intervals.
+#
+#   (b) the OUTCOME DECOMPOSITION over all n trajectories in a cell:
+#            held        = first pass graded correct  (and therefore final correct)
+#            lost        = first pass graded correct but final PREREG-incorrect
+#            recovered   = first pass graded wrong, final PREREG-correct
+#            unrecovered = first pass graded wrong, final PREREG-incorrect
+#            ungraded    = never produced a graded answer; PREREG-scored 0
+#       These five are mutually exclusive and sum to n by construction, and
+#            final_prereg = (held + recovered) / n
+#       is an ARITHMETIC IDENTITY, not a causal model.  `lost` is expected to be 0
+#       because the loop halts on a correct first verdict; it is computed rather than
+#       assumed, and asserted below, so that a future change to the runner cannot make
+#       the stacked figure silently wrong.
+# =====================================================================================
+print("\n[T28] FIGURE DATA EXPORT")
+
+def _mean_ci(v, n=4000):
+    v = np.asarray(v, float)
+    if len(v) == 0: return (float("nan"),) * 3
+    if len(v) < 5:  return (float(v.mean()), float("nan"), float("nan"))
+    b = np.percentile([RNG.choice(v, len(v)).mean() for _ in range(n)], [2.5, 97.5])
+    return float(v.mean()), float(b[0]), float(b[1])
+
+FIG = {
+    "provenance": {
+        "frozen_at": man["frozen_at"],
+        "total_rows": man["total_rows"],
+        "files": {k: {"sha256": v["sha256"], "rows": v["rows"]} for k, v in man["files"].items()},
+        "generated_by": "analysis/scripts/FINAL_TABLES.py [T28]",
+        "source_dir": FROZEN,
+    },
+    "budget": rows[0].get("budget") or {},
+    "noise_floor_group_level": NOISE_FLOOR,
+    "actors": ACTORS,
+    "cells": {},
+}
+# max deliberation cycles is fixed BY CONSTRUCTION and identical in every arm (A4)
+_b = FIG["budget"]
+FIG["max_cycles"] = int(_b.get("max_outer_rounds", 0)) * int(_b.get("inner_rounds", 0))
+
+_LOST = 0
+for a in ACTORS:
+    for arm in ("A", "B", "C", "Cp"):
+        s = [r for r in rows if actor(r) == a and r["arm"] == arm]
+        if not s: continue
+        # Partition the cell into four disjoint, exhaustive classes.
+        # `unjudged` = never received a first evaluator verdict at all. It is
+        # NOT the same as `attrition` (= no final grade): a trajectory can be
+        # judged once and then die in regeneration, and those belong in the
+        # recovery denominator. See is_fpw().
+        g           = [r for r in s if graded(r)]
+        fpw         = [r for r in s if is_fpw(r)]
+        fpr         = [r for r in s if judged(r) and fp(r) == 1]
+        unjudged    = [r for r in s if not judged(r)]
+        held        = sum(1 for r in fpr if fin_prereg(r) == 1)
+        lost        = sum(1 for r in fpr if fin_prereg(r) == 0)
+        recovered   = sum(1 for r in fpw if fin_prereg(r) == 1)
+        unrecovered = sum(1 for r in fpw if fin_prereg(r) == 0)
+        ungraded    = len(s) - len(g)
+        assert len(fpr) + len(fpw) + len(unjudged) == len(s), (a, arm)
+        assert held + lost + recovered + unrecovered + len(unjudged) == len(s), (a, arm)
+        _LOST += lost
+
+        fpm, fplo, fphi = _mean_ci([fp(r) for r in g])
+        rcm, rclo, rchi = _mean_ci([fin_prereg(r) for r in fpw])
+
+        d = dict(actor=a, arm=arm, n=len(s), n_graded=len(g), n_ungraded=ungraded,
+                 attrition=ungraded / len(s), n_unjudged=len(unjudged),
+                 firstpass=fpm, firstpass_lo=fplo, firstpass_hi=fphi,
+                 recovery=rcm, recovery_lo=rclo, recovery_hi=rchi, n_fpw=len(fpw),
+                 final_prereg=float(np.mean([fin_prereg(r) for r in s])),
+                 decomp=dict(held=held, lost=lost, recovered=recovered,
+                             unrecovered=unrecovered, ungraded=ungraded))
+        if len(fpw) >= 20:   # T5 mechanism columns, first-pass-wrong only
+            cy = np.array([r.get("inner_used") or 0 for r in fpw], float)
+            su = np.array([len(ev(r)) for r in fpw], float)
+            rr = [routes(r) for r in fpw]
+            d["cycles"]      = float(cy.mean())
+            d["submissions"] = float(su.mean())
+            d["revising"]    = float((cy - su).mean())
+            d["neverrefuse"] = float(np.mean([not any(z != "agree" for z in v) for v in rr]))
+            d["frozen_ans"]  = float(np.mean([len(set(ansseq(r))) <= 1 for r in fpw]))
+        FIG["cells"][f"{a}|{arm}"] = d
+
+# `lost` must be 0: the loop halts on a correct first verdict.  If this ever fires,
+# the stacked decomposition figure needs a fifth visible band, not a silent fix.
+assert _LOST == 0, f"first-pass-correct -> final-wrong occurred {_LOST}x; Fig.S1 must show it"
+print(f"  outcome decomposition: 5 categories sum to n in every cell; "
+      f"first-pass-correct-then-lost = {_LOST} (structural: loop halts on a correct verdict)")
+
+# paired A-vs-X recovery transitions (T4), for the Fig.1 panel-B annotation
+FIG["paired_recovery"] = {}
+for a in ACTORS:
+    for x, y in (("A", "B"), ("A", "C")):
+        P = {r["problem_uid"]: (fp(r), fin_prereg(r)) for r in rows
+             if actor(r) == a and r["arm"] == x and judged(r)}
+        Q = {r["problem_uid"]: (fp(r), fin_prereg(r)) for r in rows
+             if actor(r) == a and r["arm"] == y and judged(r)}
+        both = sorted(p for p in set(P) & set(Q) if P[p][0] == 0 and Q[p][0] == 0)
+        if len(both) < 20: continue
+        t = collections.Counter((P[p][1], Q[p][1]) for p in both)
+        b_, c_ = t[(1, 0)], t[(0, 1)]; m_ = b_ + c_
+        pv = min(1.0, 2 * sum(comb(m_, i) for i in range(min(b_, c_) + 1)) / 2 ** m_) if m_ else 1.0
+        FIG["paired_recovery"][f"{a}|{x}{y}"] = dict(
+            n=len(both), x_only=b_, y_only=c_, both_rec=t[(1, 1)], both_fail=t[(0, 0)], p=pv)
+
+# pooled blinded-adjudication "no division of labour" by arm (A1 / A6), for Fig.3
+FIG["adjudication_by_arm"] = {}
+try:
+    _cells = collections.defaultdict(list)
+    for t, m_ in maj.items():
+        if t in KEY: _cells[KEY[t]["arm"]].append(m_["Q5"] == "NO")
+    for arm, v in _cells.items():
+        FIG["adjudication_by_arm"][arm] = dict(rate=float(np.mean(v)), n=len(v))
+    print("  adjudication pooled by arm: " + "  ".join(
+        f"{k}={v['rate']:.3f} (n={v['n']})" for k, v in sorted(FIG["adjudication_by_arm"].items())))
+except Exception as e:
+    print(f"  adjudication pooling UNAVAILABLE: {e}")
+
+# STRICTLY NESTED OPPORTUNITY FUNNEL over first-pass-wrong trajectories (Fig.2 option C).
+# Each stage is a subset of the one above it by construction, so the bars can only
+# shrink.  Stage 3 asks whether the team ever HELD a second distinct candidate, which
+# is the complement of the frozen-answer rate in T5 restricted to stage-2 survivors.
+FIG["funnel"] = {}
+for a in ACTORS:
+    for arm in ("A", "B", "C"):
+        g = [r for r in rows if actor(r) == a and r["arm"] == arm and is_fpw(r)]
+        if len(g) < 20: continue
+        s2 = [r for r in g  if len(ev(r)) >= 2]              # asked the oracle again
+        s3 = [r for r in s2 if len(set(ansseq(r))) >= 2]      # ever held a 2nd distinct answer
+        s4 = [r for r in s3 if fin_prereg(r) == 1]            # ended correct
+        # recovery can in principle occur outside s3 (bookkeeping check, not a stage)
+        off = sum(1 for r in g if fin_prereg(r) == 1) - len(s4)
+        FIG["funnel"][f"{a}|{arm}"] = dict(
+            stage1_first_pass_wrong=len(g), stage2_resubmitted=len(s2),
+            stage3_distinct_second_candidate=len(s3), stage4_recovered=len(s4),
+            recovered_outside_funnel=off)
+print("  funnel (first-pass-wrong -> resubmitted -> distinct 2nd candidate -> recovered):")
+for k, v in sorted(FIG["funnel"].items()):
+    print(f"    {k:<30} {v['stage1_first_pass_wrong']:>4} -> {v['stage2_resubmitted']:>4}"
+          f" -> {v['stage3_distinct_second_candidate']:>4} -> {v['stage4_recovered']:>4}"
+          f"   (recovered outside funnel: {v['recovered_outside_funnel']})")
+
+_OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out", "FIGDATA.json")
+with open(_OUT, "w") as _f:
+    json.dump(FIG, _f, indent=1, sort_keys=True)
+print(f"  wrote {_OUT}")
+print(f"  sha256(FIGDATA.json)[:16] {hashlib.sha256(open(_OUT,'rb').read()).hexdigest()[:16]}")
 print("\n" + "=" * 96)

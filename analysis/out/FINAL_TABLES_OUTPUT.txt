@@ -24,15 +24,15 @@ Llama-3.3-70B-Instruct  C         400    400     332        68        64        
 actor                   arm       n  firstpass    final  recovery  n_fpw  collapse   unanim  frozen_ans
 gemma-4-31B-it          A      1600      0.802    0.846     0.222    316     0.000      nan       0.288
 gemma-4-31B-it          B      1600      0.802    0.812     0.051    316     0.976    0.955       0.845
-gemma-4-31B-it          C      1600      0.822    0.824     0.412    262       n/a      nan       0.122
-gemma-4-31B-it          Cp      400      0.825    0.858     0.418     67       n/a      nan       0.179
+gemma-4-31B-it          C      1600      0.822    0.824     0.314    344       n/a      nan       0.119
+gemma-4-31B-it          Cp      400      0.825    0.858     0.378     74       n/a      nan       0.203
 gpt-oss-120b            A      1600      0.710    0.803     0.324    463     0.120    0.167       0.052
-gpt-oss-120b            B      1600      0.763    0.819     0.249    377     0.846    0.780       0.202
-gpt-oss-120b            C      1600      0.788    0.798     0.461    306       n/a      nan       0.069
-gpt-oss-120b            Cp      400      0.773    0.775     0.378     82       n/a      nan       0.073
-Llama-3.3-70B-Instruct  A       400      0.307    0.315     0.015    275     0.000      nan       0.749
-Llama-3.3-70B-Instruct  B       400      0.315    0.318     0.015    267     0.872    0.896       0.805
-Llama-3.3-70B-Instruct  C       400      0.295    0.333     0.150    234       n/a      nan       0.064
+gpt-oss-120b            B      1600      0.763    0.819     0.247    380     0.846    0.780       0.208
+gpt-oss-120b            C      1600      0.788    0.798     0.395    357       n/a      nan       0.092
+gpt-oss-120b            Cp      400      0.773    0.775     0.316     98       n/a      nan       0.173
+Llama-3.3-70B-Instruct  A       400      0.307    0.315     0.014    276     0.000      nan       0.750
+Llama-3.3-70B-Instruct  B       400      0.315    0.318     0.015    268     0.872    0.896       0.806
+Llama-3.3-70B-Instruct  C       400      0.295    0.333     0.139    251       n/a      nan       0.072
 
 [T2] PAIRED CONTRASTS, BOTH SCORINGS
 
@@ -59,28 +59,28 @@ Llama-3.3-70B-Instruct  C       400      0.295    0.333     0.150    234       n
 [T3] FIRST-PASS vs RECOVERY DECOMPOSITION  (the central claim)
 actor                       fpA    fpB   B-A fp  CI                   recA   recB  B-A rec  CI                    nA    nB
 gemma-4-31B-it            0.802  0.802  +0.0000  [-0.0156,+0.0150]  0.222  0.051  -0.1709  [-0.2247,-0.1171]   316   316
-gpt-oss-120b              0.713  0.763  +0.0503  [+0.0339,+0.0666]  0.324  0.249  -0.0746  [-0.1342,-0.0138]   463   377
-Llama-3.3-70B-Instruct    0.308  0.316  +0.0077  [-0.0283,+0.0437]  0.015  0.015  +0.0004  [-0.0182,+0.0192]   275   267
+gpt-oss-120b              0.713  0.763  +0.0503  [+0.0339,+0.0666]  0.324  0.247  -0.0766  [-0.1361,-0.0153]   463   380
+Llama-3.3-70B-Instruct    0.308  0.316  +0.0077  [-0.0283,+0.0437]  0.014  0.015  +0.0004  [-0.0214,+0.0192]   276   268
 
 [T4] PAIRED RECOVERY TRANSITIONS (first-pass wrong under BOTH arms)
   gemma-4-31B-it          A vs B  n=237   both_rec=1    Aonly=37   Bonly=3    both_fail=196   rec_A=0.160 rec_B=0.017 p=1.95e-08
-  gemma-4-31B-it          A vs C  n=171   both_rec=12   Aonly=12   Conly=34   both_fail=113   rec_A=0.140 rec_C=0.269 p=1.64e-03
-  gpt-oss-120b            A vs B  n=324   both_rec=27   Aonly=51   Bonly=39   both_fail=207   rec_A=0.241 rec_B=0.204 p=2.46e-01
-  gpt-oss-120b            A vs C  n=245   both_rec=50   Aonly=19   Conly=45   both_fail=131   rec_A=0.282 rec_C=0.388 p=1.56e-03
-  Llama-3.3-70B-Instruct  A vs B  n=243   both_rec=0    Aonly=1    Bonly=4    both_fail=238   rec_A=0.004 rec_B=0.016 p=3.75e-01
-  Llama-3.3-70B-Instruct  A vs C  n=202   both_rec=2    Aonly=0    Conly=19   both_fail=181   rec_A=0.010 rec_C=0.104 p=3.81e-06
+  gemma-4-31B-it          A vs C  n=226   both_rec=12   Aonly=25   Conly=34   both_fail=155   rec_A=0.164 rec_C=0.204 p=2.98e-01
+  gpt-oss-120b            A vs B  n=327   both_rec=27   Aonly=52   Bonly=39   both_fail=209   rec_A=0.242 rec_B=0.202 p=2.08e-01
+  gpt-oss-120b            A vs C  n=291   both_rec=50   Aonly=30   Conly=45   both_fail=166   rec_A=0.275 rec_C=0.326 p=1.05e-01
+  Llama-3.3-70B-Instruct  A vs B  n=245   both_rec=0    Aonly=1    Bonly=4    both_fail=240   rec_A=0.004 rec_B=0.016 p=3.75e-01
+  Llama-3.3-70B-Instruct  A vs C  n=218   both_rec=2    Aonly=0    Conly=19   both_fail=197   rec_A=0.009 rec_C=0.096 p=3.81e-06
 
 [T5] MECHANISM: opportunity vs use
 actor                   arm    n_fpw  cycles  submits  revising  acc_t1  neverrefuse  frozen  recovery
 gemma-4-31B-it          A        316    5.52     1.54      3.98   0.449        0.051   0.288     0.222
 gemma-4-31B-it          B        316    5.83     5.80      0.03   0.981        0.981   0.845     0.051
-gemma-4-31B-it          C        262    4.92     2.29      2.63   0.924        0.145   0.122     0.412
+gemma-4-31B-it          C        344    4.50     2.06      2.44   0.933        0.227   0.119     0.314
 gpt-oss-120b            A        463    5.31     2.21      3.10   0.482        0.043   0.052     0.324
-gpt-oss-120b            B        377    5.36     4.61      0.74   0.838        0.618   0.202     0.249
-gpt-oss-120b            C        306    4.69     2.55      2.14   0.761        0.239   0.069     0.461
-Llama-3.3-70B-Instruct  A        275    5.95     1.06      4.89   0.240        0.011   0.749     0.015
-Llama-3.3-70B-Instruct  B        267    5.97     5.26      0.70   0.768        0.727   0.805     0.015
-Llama-3.3-70B-Instruct  C        234    5.59     1.94      3.65   0.906        0.056   0.064     0.150
+gpt-oss-120b            B        380    5.35     4.60      0.75   0.837        0.616   0.208     0.247
+gpt-oss-120b            C        357    4.52     2.39      2.12   0.770        0.255   0.092     0.395
+Llama-3.3-70B-Instruct  A        276    5.93     1.06      4.88   0.243        0.011   0.750     0.014
+Llama-3.3-70B-Instruct  B        268    5.96     5.25      0.71   0.769        0.724   0.806     0.015
+Llama-3.3-70B-Instruct  C        251    5.46     1.89      3.57   0.908        0.064   0.072     0.139
 
 [T6] GRADER NOISE FLOOR (identical evaluator prompts, temp 0)
   group-level (conservative) : 24/2791 = 0.0086
@@ -129,13 +129,13 @@ Llama-3.3-70B-Instruct  B      1774       1892       20.3     93.15       0.034 
 
 [T10] PLANNER-EXECUTOR NUMERIC-TOKEN OVERLAP vs A SHUFFLED NULL (first pass)
 actor                   arm       n   real J   null J   excess
-gemma-4-31B-it          A      1600    0.554    0.397   +0.157
-gemma-4-31B-it          B      1600    0.719    0.272   +0.448
-gpt-oss-120b            A      1582    0.465    0.300   +0.165
-gpt-oss-120b            B      1470    0.721    0.047   +0.675
-Llama-3.3-70B-Instruct  A       400    0.555    0.417   +0.138
-Llama-3.3-70B-Instruct  B       395    0.657    0.220   +0.437
-  excess-over-null B-A:  gemma=+0.291  gpt=+0.510  Llama=+0.300
+gemma-4-31B-it          A      1600    0.554    0.395   +0.159
+gemma-4-31B-it          B      1600    0.719    0.271   +0.449
+gpt-oss-120b            A      1582    0.465    0.297   +0.167
+gpt-oss-120b            B      1470    0.721    0.041   +0.680
+Llama-3.3-70B-Instruct  A       400    0.555    0.410   +0.145
+Llama-3.3-70B-Instruct  B       395    0.657    0.225   +0.432
+  excess-over-null B-A:  gemma=+0.290  gpt=+0.513  Llama=+0.287
 
 [T11] ARM C MANIPULATION CHECK — answer authorship, TWO definitions
   authored  = planner emits a schema answer field / a boxed answer as its OWN output
@@ -174,15 +174,15 @@ gemma-4-31B-it          B      1600      0.802    0.812  +0.0100  [+0.0056,+0.01
 gemma-4-31B-it          C      1472      0.822    0.895  +0.0734  [+0.0605,+0.0870]
 gpt-oss-120b            A      1598      0.710    0.804  +0.0939  [+0.0795,+0.1083]
 gpt-oss-120b            B      1594      0.763    0.822  +0.0590  [+0.0477,+0.0709]
-gpt-oss-120b            C      1442      0.788    0.886  +0.0978  [+0.0832,+0.1130]
+gpt-oss-120b            C      1442      0.788    0.886  +0.0978  [+0.0825,+0.1137]
 Llama-3.3-70B-Instruct  A       397      0.307    0.317  +0.0101  [+0.0025,+0.0202]
 Llama-3.3-70B-Instruct  B       390      0.315    0.326  +0.0103  [+0.0026,+0.0205]
-Llama-3.3-70B-Instruct  C       332      0.295    0.401  +0.1054  [+0.0753,+0.1386]
+Llama-3.3-70B-Instruct  C       332      0.295    0.401  +0.1054  [+0.0723,+0.1386]
 
 [T14] P4 — ACTOR x INTERVENTION INTERACTION ON ACCURACY (C-A), PREREG scoring
-  gpt-oss-120b             minus gemma-4-31B-it           +0.0175 [-0.0056,+0.0412]  null
-  Llama-3.3-70B-Instruct   minus gemma-4-31B-it           +0.0400 [-0.0006,+0.0806]  null
-  Llama-3.3-70B-Instruct   minus gpt-oss-120b             +0.0225 [-0.0194,+0.0638]  null
+  gpt-oss-120b             minus gemma-4-31B-it           +0.0175 [-0.0050,+0.0412]  null
+  Llama-3.3-70B-Instruct   minus gemma-4-31B-it           +0.0400 [+0.0000,+0.0794]  SIG
+  Llama-3.3-70B-Instruct   minus gpt-oss-120b             +0.0225 [-0.0188,+0.0631]  null
 
 [T15] C' MINUS C (context control at fixed enforcement), both scorings
   PREREG    gemma-4-31B-it          +0.0450 [+0.0125,+0.0775] n=400  SIG
@@ -195,9 +195,9 @@ actor                   arm    n_fpw   unanim  recov|unan  moves|unan  n_unan
 gemma-4-31B-it          A        316      nan         nan         nan       0
 gemma-4-31B-it          B        316    0.889       0.055       0.047     255
 gpt-oss-120b            A        463    0.188       0.467       1.000      15
-gpt-oss-120b            B        377    0.481       0.160       0.488     125
-Llama-3.3-70B-Instruct  A        275      nan         nan         nan       0
-Llama-3.3-70B-Instruct  B        267    0.864       0.015       0.069     204
+gpt-oss-120b            B        380    0.481       0.160       0.488     125
+Llama-3.3-70B-Instruct  A        276      nan         nan         nan       0
+Llama-3.3-70B-Instruct  B        268    0.865       0.015       0.068     205
 
 [T17] BUDGET-MATCHED SINGLE-AGENT CONTROL
   *** NOT IN THE FROZEN SNAPSHOT.  Source: historical released trace corpus,
@@ -205,10 +205,10 @@ Llama-3.3-70B-Instruct  B        267    0.864       0.015       0.069     204
   source rows 9195  sha256(file)[:16] d56dc5bdab0134fd
 
   actor                   arm       n  arm acc   SA acc   arm-SA  CI                  
-  gemma-4-31B-it          A      1600   0.8462   0.8688  -0.0225  [-0.0394,-0.0056]  SIG
+  gemma-4-31B-it          A      1600   0.8462   0.8688  -0.0225  [-0.0394,-0.0050]  SIG
   gemma-4-31B-it          B      1600   0.8125   0.8688  -0.0563  [-0.0731,-0.0394]  SIG
   gpt-oss-120b            A      1600   0.8031   0.7900  +0.0131  [-0.0037,+0.0300]
-  gpt-oss-120b            B      1600   0.8194   0.7900  +0.0294  [+0.0131,+0.0462]  SIG
+  gpt-oss-120b            B      1600   0.8194   0.7900  +0.0294  [+0.0131,+0.0456]  SIG
 
   actor                   arm/protocol      evalcalls  actorcalls
   gemma-4-31B-it          single_agent           1.66        3.16
@@ -242,14 +242,14 @@ Llama-3.3-70B-Instruct  C       398     0.000     0.000                         
 actor                   arm    n_fpw  mismatch rate  held==gold & graded 0
 gemma-4-31B-it          A        316          0.171                     17
 gemma-4-31B-it          B        316          0.000                      0
-gemma-4-31B-it          C        262          0.244                     12
+gemma-4-31B-it          C        344          0.363                     18
 gpt-oss-120b            A        463          0.164                      8
-gpt-oss-120b            B        377          0.066                      2
-gpt-oss-120b            C        306          0.216                      5
-Llama-3.3-70B-Instruct  A        275          0.058                      4
-Llama-3.3-70B-Instruct  B        267          0.004                      0
-Llama-3.3-70B-Instruct  C        234          0.457                      6
-  totals over first-pass-wrong: 409 mismatched, 54 demonstrably under-credited
+gpt-oss-120b            B        380          0.066                      2
+gpt-oss-120b            C        357          0.258                      7
+Llama-3.3-70B-Instruct  A        276          0.058                      4
+Llama-3.3-70B-Instruct  B        268          0.004                      0
+Llama-3.3-70B-Instruct  C        251          0.478                      6
+  totals over first-pass-wrong: 509 mismatched, 62 demonstrably under-credited
   positive control on 10734 non-mismatched graded rows: exact-match-gold AND graded wrong = 0 (0.0000)
 
 [T20] FUNCTIONAL COLLAPSE UNDER THREE ANSWER-MARKER DEFINITIONS (first pass)
@@ -280,14 +280,14 @@ gemma-4-31B-it          Q1 (low)        0.662 (n=65)      0.151 (n=93)
 gemma-4-31B-it          Q2              0.280 (n=50)     0.009 (n=108)
 gemma-4-31B-it          Q3              0.047 (n=85)      0.014 (n=73)
 gemma-4-31B-it          Q4 (high)      0.078 (n=116)      0.000 (n=42)
-gpt-oss-120b            Q1 (low)        1.000 (n=12)     0.258 (n=198)
+gpt-oss-120b            Q1 (low)        0.923 (n=13)     0.258 (n=198)
 gpt-oss-120b            Q2             0.656 (n=128)      0.293 (n=82)
-gpt-oss-120b            Q3             0.261 (n=165)      0.200 (n=45)
-gpt-oss-120b            Q4 (high)      0.070 (n=158)      0.192 (n=52)
+gpt-oss-120b            Q3             0.262 (n=164)      0.191 (n=47)
+gpt-oss-120b            Q4 (high)      0.070 (n=158)      0.189 (n=53)
 Llama-3.3-70B-Instruct  Q1 (low)        0.100 (n=40)      0.031 (n=96)
-Llama-3.3-70B-Instruct  Q2              0.000 (n=86)      0.000 (n=49)
-Llama-3.3-70B-Instruct  Q3             0.000 (n=101)      0.029 (n=34)
-Llama-3.3-70B-Instruct  Q4 (high)       0.000 (n=48)      0.000 (n=88)
+Llama-3.3-70B-Instruct  Q2              0.000 (n=86)      0.000 (n=50)
+Llama-3.3-70B-Instruct  Q3             0.000 (n=103)      0.030 (n=33)
+Llama-3.3-70B-Instruct  Q4 (high)       0.000 (n=47)      0.000 (n=89)
 
 [T23] BLINDED ADJUDICATION
   *** NOT IN THE FROZEN SNAPSHOT. Source: adjudication/VERDICTS.jsonl + KEY.jsonl,
@@ -336,13 +336,13 @@ Llama-3.3-70B-Instruct  Q4 (high)       0.000 (n=48)      0.000 (n=88)
 actor                   arm    n_fpw  recovered before 1st verdict
 gemma-4-31B-it          A        316                             0
 gemma-4-31B-it          B        316                             0
-gemma-4-31B-it          C        262                             0
+gemma-4-31B-it          C        344                             0
 gpt-oss-120b            A        463                             0
-gpt-oss-120b            B        377                             0
-gpt-oss-120b            C        306                             0
-Llama-3.3-70B-Instruct  A        275                             0
-Llama-3.3-70B-Instruct  B        267                             0
-Llama-3.3-70B-Instruct  C        234                             0
+gpt-oss-120b            B        380                             0
+gpt-oss-120b            C        357                             0
+Llama-3.3-70B-Instruct  A        276                             0
+Llama-3.3-70B-Instruct  B        268                             0
+Llama-3.3-70B-Instruct  C        251                             0
 
 ================================================================================================
 
@@ -360,5 +360,23 @@ Llama-3.3-70B-Instruct  B       5314           0.005      0.000                 
   gemma-4-31B-it          |B-A|=0.0338  floor=0.0086  ratio=3.9x  clears
   gpt-oss-120b            |B-A|=0.0163  floor=0.0086  ratio=1.9x  NOT resolvable above noise
   Llama-3.3-70B-Instruct  |B-A|=0.0025  floor=0.0086  ratio=0.3x  NOT resolvable above noise
+
+================================================================================================
+
+[T28] FIGURE DATA EXPORT
+  outcome decomposition: 5 categories sum to n in every cell; first-pass-correct-then-lost = 0 (structural: loop halts on a correct verdict)
+  adjudication pooled by arm: A=0.000 (n=42)  B=0.964 (n=56)  C=0.136 (n=44)  Cp=0.172 (n=29)
+  funnel (first-pass-wrong -> resubmitted -> distinct 2nd candidate -> recovered):
+    Llama-3.3-70B-Instruct|A        276 ->   10 ->    9 ->    4   (recovered outside funnel: 0)
+    Llama-3.3-70B-Instruct|B        268 ->  249 ->   49 ->    3   (recovered outside funnel: 1)
+    Llama-3.3-70B-Instruct|C        251 ->  158 ->  150 ->   35   (recovered outside funnel: 0)
+    gemma-4-31B-it|A                316 ->  133 ->  128 ->   70   (recovered outside funnel: 0)
+    gemma-4-31B-it|B                316 ->  316 ->   49 ->   10   (recovered outside funnel: 6)
+    gemma-4-31B-it|C                344 ->  231 ->  208 ->  106   (recovered outside funnel: 2)
+    gpt-oss-120b|A                  463 ->  351 ->  332 ->  150   (recovered outside funnel: 0)
+    gpt-oss-120b|B                  380 ->  371 ->  292 ->   93   (recovered outside funnel: 1)
+    gpt-oss-120b|C                  357 ->  280 ->  262 ->  141   (recovered outside funnel: 0)
+  wrote /Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/analysis/out/FIGDATA.json
+  sha256(FIGDATA.json)[:16] 1e57aa4d3be243c8
 
 ================================================================================================

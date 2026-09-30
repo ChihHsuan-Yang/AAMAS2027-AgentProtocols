@@ -16,8 +16,9 @@ written. The organization as specified.
 \paragraph{Arm~B --- generic roles (organization removed).} Identical topology
 and budget; all three agents receive the same generic prompt (``You are one of
 three agents solving this problem collaboratively; continue the work''). Role
-names are retained for routing only. Arm~B is \emph{not} ``\PER{} minus role
-words'' but the same topology with no division of labor specified at all.
+names are retained for routing only, so the pipeline still runs and the budget
+is untouched. Arm~B is \emph{not} ``\PER{} minus role words'' but the same
+topology with no division of labor specified at all.
 
 \paragraph{Arm~C --- architectural enforcement.} Specialization is enforced by
 the interface rather than by wording. The \textbf{Planner} emits JSON parsed
@@ -56,10 +57,10 @@ advance. Answer-bearing calls are counted per arm, so an arm cannot win or
 lose by producing fewer answers. One instrumentation gap escaped this
 discipline (\S\ref{subsec:logging}).
 
-All endpoints were fixed in writing before any intervention data existed.
-Units are (problem, actor) pairs; all arms run on the same problems, so every
-test is paired with bootstrap clustering by problem, and P1--P5 carry a Holm
-correction. \textbf{P1} intervention $\rightarrow$ fidelity (also the
+All endpoints were fixed in writing and committed before any intervention
+data existed. Units are (problem, actor) pairs; all arms run on the same
+problems, so every test is paired with bootstrap clustering by problem, and
+P1--P5 carry a Holm correction. \textbf{P1} intervention $\rightarrow$ fidelity (also the
 manipulation check); \textbf{P2} actor $\times$ intervention on fidelity;
 \textbf{P3} intervention $\rightarrow$ accuracy; \textbf{P4} actor $\times$
 intervention on accuracy, \emph{the primary test of the original thesis};

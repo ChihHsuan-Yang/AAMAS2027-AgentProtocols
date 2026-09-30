@@ -14,21 +14,22 @@ endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
 snapshot: \textbf{11{,}600 trajectories over 83{,}320 role messages and
 17{,}486 gradings}, on 1{,}600 distinct problems. Arms~A, B and C run
 $n=1{,}600$ per cell for the first two actors and $n=400$ for Llama-3.3, plus
-$n=400$ per actor in Arm~C$'$. Every cell carries the same budget record (3
-outer $\times$ 2 inner deliberation cycles, temperature $0$, identical
-\texttt{max\_tokens}); the snapshot contains exactly one distinct budget. Two
+$n=400$ per actor in Arm~C$'$. Every trajectory in every cell carries the same
+budget record (3 outer $\times$ 2 inner deliberation cycles, temperature $0$,
+identical \texttt{max\_tokens}); the snapshot contains exactly one distinct
+budget. Two
 further actor candidates were probed and rejected as unavailable rather than
 assumed available. The evaluator is gpt-oss-120b in every cell, itself one of
 the actors under study --- see \S\ref{sec:limitations}.
 
-\paragraph{Provenance of the single-agent control.} The comparator in
-\S\ref{subsec:notsingle} is \textbf{not} part of this campaign or its frozen
-snapshot. It is the \texttt{single\_agent} protocol from a previously
+\paragraph{Provenance of the single-agent control.} The budget-matched
+comparator in \S\ref{subsec:notsingle} is \textbf{not} part of this campaign
+or its frozen snapshot. It is the \texttt{single\_agent} protocol from a previously
 released trace corpus of the same benchmark, joined to our trajectories by
-problem identifier, covering the two actors with $n=1{,}600$. We state this
-because a control a reader cannot locate is not a control. It also makes the
-comparison conservative in one direction and generous in another: that
-protocol consumed \emph{more} oracle feedback than our Arm~A ($1.66$--$1.69$
+problem identifier, and it covers the two actors with $n=1{,}600$. We state
+this because a control a reader cannot locate is not a control. It is also the
+reason the comparison is conservative in one direction and generous in
+another: that protocol consumed \emph{more} oracle feedback than our Arm~A ($1.66$--$1.69$
 evaluator calls against $1.11$--$1.35$) and roughly half the actor calls.
 
 \paragraph{Power.} Computed by simulation (4{,}000 replicates, two-sided

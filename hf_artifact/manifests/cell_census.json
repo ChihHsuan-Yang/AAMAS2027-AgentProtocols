@@ -1,0 +1,90 @@
+[
+ {
+  "actor_model": "Llama-3.3-70B-Instruct",
+  "arm": "A",
+  "n": 400,
+  "graded": 397,
+  "ungraded": 3,
+  "hard_failure": 0
+ },
+ {
+  "actor_model": "Llama-3.3-70B-Instruct",
+  "arm": "B",
+  "n": 400,
+  "graded": 390,
+  "ungraded": 10,
+  "hard_failure": 0
+ },
+ {
+  "actor_model": "Llama-3.3-70B-Instruct",
+  "arm": "C",
+  "n": 400,
+  "graded": 332,
+  "ungraded": 68,
+  "hard_failure": 64
+ },
+ {
+  "actor_model": "gemma-4-31B-it",
+  "arm": "A",
+  "n": 1600,
+  "graded": 1600,
+  "ungraded": 0,
+  "hard_failure": 0
+ },
+ {
+  "actor_model": "gemma-4-31B-it",
+  "arm": "B",
+  "n": 1600,
+  "graded": 1600,
+  "ungraded": 0,
+  "hard_failure": 0
+ },
+ {
+  "actor_model": "gemma-4-31B-it",
+  "arm": "C",
+  "n": 1600,
+  "graded": 1472,
+  "ungraded": 128,
+  "hard_failure": 128
+ },
+ {
+  "actor_model": "gemma-4-31B-it",
+  "arm": "Cp",
+  "n": 400,
+  "graded": 382,
+  "ungraded": 18,
+  "hard_failure": 17
+ },
+ {
+  "actor_model": "gpt-oss-120b",
+  "arm": "A",
+  "n": 1600,
+  "graded": 1598,
+  "ungraded": 2,
+  "hard_failure": 0
+ },
+ {
+  "actor_model": "gpt-oss-120b",
+  "arm": "B",
+  "n": 1600,
+  "graded": 1594,
+  "ungraded": 6,
+  "hard_failure": 0
+ },
+ {
+  "actor_model": "gpt-oss-120b",
+  "arm": "C",
+  "n": 1600,
+  "graded": 1442,
+  "ungraded": 158,
+  "hard_failure": 95
+ },
+ {
+  "actor_model": "gpt-oss-120b",
+  "arm": "Cp",
+  "n": 400,
+  "graded": 361,
+  "ungraded": 39,
+  "hard_failure": 16
+ }
+]

@@ -35,16 +35,17 @@ corpus under two outcome definitions.
 Conditioning on first-pass-wrong, on cycles used, on accumulated context and
 on whether a trajectory collapsed all condition on outcomes of the
 intervention. The recovery decomposition is a decomposition, not a causal
-mediation; the unconditional arm contrasts, randomized by problem, are the
-weaker but cleaner statement and are reported alongside.
+mediation; the unconditional arm contrasts, randomized by problem, are
+reported alongside as the weaker but cleaner statement.
 
 \paragraph{Grader noise bounds two of three accuracy contrasts.} Repeated
 identical evaluator prompts at temperature $0$ contradict themselves on $24$
 of $2{,}791$ distinct graded strings ($0.0086$ group-level;
 $0.0020$--$0.0086$ across estimators). Only gemma-4's B$-$A clears that
 floor, by $3.9\times$; \textbf{gpt-oss's and Llama-3.3's do not}, so those
-nulls are ones the instrument could not have resolved either way. The
-recovery and lock-in contrasts are far above any version of the floor.
+preregistered nulls are nulls the instrument could not have resolved either
+way. The recovery and lock-in contrasts are far above any version of the
+floor.
 
 \paragraph{The collapse validation is model adjudication, not human
 annotation.} It used a frontier language model against a rubric frozen before
@@ -54,8 +55,8 @@ inter-annotator agreement, with stability estimated from repeated independent
 calls ($0.953$ on the headline question). Blinding is partial, since role
 labels must remain in the transcripts for the question to be answerable.
 Precision for the byte metric is estimable only where it fires (gpt-oss 14
-positives, gemma-4 3, Llama-3.3 none), so it is reported per actor and never
-pooled. The Arm~C reading is partly mechanical: its validator forbids an
+positives, gemma-4 3, Llama-3.3 none), so we report it per actor and never
+pool it. The Arm~C reading is partly mechanical: its validator forbids an
 answer field, so some restored ``division of labor'' is the constraint by
 construction.
 
@@ -66,7 +67,9 @@ significant negative and two nulls into three significant positives ordered
 by actor weakness --- the published capability-equalizer pattern, and the
 exact pattern the preregistration told us not to submit on. Both scorings are
 in \S\ref{subsec:enforce} with the attrition beside them; the pre-registered
-one is primary. Arm~C$'$ is likewise only a \emph{partial} context control.
+one is primary. Arm~C$'$ is likewise only a \emph{partial} context control:
+matching C to A exactly would require feeding raw prose back in, dissolving
+the constraint that defines the arm.
 
 \paragraph{Provenance of the headline, and of the single-agent control.} The
 pre-registered primary endpoint (P4) is null, and the A-versus-B contrast
@@ -90,7 +93,8 @@ near-identical outputs and says nothing about semantic redundancy, which we
 do not claim to have measured. The functional measure replacing it detects
 that every agent asserted its own answer, not that their reasoning was the
 same, and is inapplicable to Arms~C/C$'$. Its Arm~A level is marker-dependent
-($0.000$--$0.892$ across three definitions) though the A-vs-B ordering is
-not, so the Arm~A column is ``low,'' not a point estimate. \Pone{} is blind
-to symbolic results carrying no digits and is mechanically anti-correlated
-with message length, which is why every computation claim cites density.
+($0.000$--$0.892$ across three definitions) even though the A-vs-B ordering
+is not, so the Arm~A column is ``low,'' not a point estimate. \Pone{} is
+blind to symbolic results carrying no digits and is mechanically
+anti-correlated with message length, which is why every computation claim
+cites density instead.

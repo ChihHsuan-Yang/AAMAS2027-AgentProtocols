@@ -5,36 +5,36 @@
 realized organization dramatically and final accuracy barely at all, in
 opposite directions. A diagram is therefore a hypothesis about a system, and
 task-outcome evaluation --- the only evaluation most multi-agent systems
-receive --- cannot test it. The phase decomposition is what separates ``the
-roles are working'' from ``the system is accurate'': an aggregate score
-averages a stage where the organization is idle with one where it does all of
-its work.
+receive --- cannot test it. The phase decomposition is what makes ``the roles
+are working'' and ``the system is accurate'' separable: an aggregate score
+averages over a stage where the organization is idle and a stage where it is
+doing all of its work.
 
-\paragraph{Why the monotone expectation fails.} Capability-dependence accounts
-predict one ordering: structure helps weaker models and matters less as models
-improve~\cite{canedo2026architecture,yu2026bottleneck,dochkina2026drop}. Our
-panel does not order that way, and the mechanism says why: what roles supply
-is not scaffolding for a weak solver but a second distinct candidate after a
-failure. Our weakest actor needs it least, being too weak for the recovery
-channel to exist at all. Testing this properly needs actors selected by
-consensus behavior rather than size.
+\paragraph{Why the monotone expectation fails.} Capability-dependence
+accounts predict one ordering: structure helps weaker models and matters less
+as models improve~\cite{canedo2026architecture,yu2026bottleneck}, with the
+self-organization literature drawing the same line from the other
+end~\cite{dochkina2026drop}. Our panel does not order that way, and the
+mechanism says why: what roles supply is not scaffolding for a weak solver
+but a second distinct candidate after a failure. Our weakest actor needs it
+least, being too weak for the recovery channel to exist at all.
 
 \paragraph{The confound we tested rather than argued.} A reader can object
 that the role-free team recovers less because its context is dirtier --- it
-accumulates $5.8$ failed submissions against $1.5$ --- and contamination is an
-established degradation path~\cite{yang2026contamination}. The effect is real
-and large within every arm, and does not account for the arm gap at matched
-context in the lower quartiles. But in gpt-oss's top quartile the ordering
-\emph{reverses}: where context is longest, the role-labeled arm's own
-contamination costs more than the roles return. The mechanism claim is
-bounded, not clean.
+accumulates $5.8$ failed submissions against $1.5$ --- and that context
+contamination is an independently established degradation
+path~\cite{yang2026contamination}. The effect is real and large within every
+arm, and it does not account for the arm gap at matched context in the lower
+quartiles. But in gpt-oss's top quartile the ordering \emph{reverses}: where
+context is longest, the role-labeled arm's own contamination costs it more
+than the roles return. The mechanism claim is therefore bounded, not clean.
 
-\paragraph{What our own measurement errors imply.} Two instruments here
-reported confidently on what they could not see. An exact-duplication metric
-returned $0.000$ for actors a blinded judge found collapsed, because their
-agents paraphrase rather than copy. A logging defect reduced one actor's
-planner to $37$ visible characters, which we nearly reported as a behavior
-before its $2.85$ characters per second showed the work had been done and
-discarded. Both modes are general: any claim that a multi-agent system's
+\paragraph{What our own measurement errors imply.} Two instruments in this
+study reported confidently on things they could not see. An
+exact-duplication metric returned $0.000$ for actors a blinded judge found
+collapsed, because their agents paraphrase rather than copy; a logging defect
+reduced one actor's planner to $37$ visible characters, which we nearly
+reported as a behavior before its $2.85$ characters per second showed the
+work had been done and discarded. Any claim that a multi-agent system's
 structure is intact should state what the instrument would have to see to
 report otherwise, and show that it can.

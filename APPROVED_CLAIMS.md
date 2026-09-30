@@ -30,7 +30,12 @@ gemma-4 0.802 -> 0.802 (+0.0000 [-0.0150,+0.0156]); gpt-oss 0.713 -> 0.763
   in the paper.**
 - gpt-oss: marginal 0.324 -> 0.249, but the PAIRED contrast is p = 0.246.
   **Must be described as weaker and not significant when paired.**
-- Llama-3.3: 0.015 -> 0.015. **FLOOR EFFECT. Does NOT replicate. Say so.**
+- Llama-3.3: 0.014 -> 0.015. **Does NOT replicate.** Call it a genuine null
+  specific to the role manipulation, NOT a floor effect: Arm C restores
+  recovery in this same actor (0.096 vs 0.009, p=3.8e-06), so the repair
+  channel exists and role labels simply do not open it here. The study has
+  ~80% power at 0.04-0.05 in this cell against a gemma-sized effect of 0.171,
+  so this is an informative null, not an underpowered one.
 
 ### A4. It is not premature stopping, and not less feedback.
 Every arm holds the same 6 deliberation cycles by construction
@@ -45,13 +50,31 @@ Reviewer never declines in 98.1% of gemma-4 Arm B vs 5.1% of Arm A.
 root cause.** All of this is post-treatment conditioning: descriptive,
 associational, never causal.
 
-### A6. Enforcement restores organization AND recovery.
-Arm C adjudicated no-division 0.136; frozen-answer 0.122/0.069/0.064 (lowest
-of any arm); recovery 0.412/0.461/0.150 — highest of any arm, above Arm A in
-all three actors (paired p <= 1.6e-3). Llama's Arm C is the only cell where a
-manipulation restores its recovery (0.150 vs 0.015, p=4e-06).
+### A6. Enforcement restores organization. It restores RECOVERY only for Llama-3.3.
+**CORRECTED 2026-09-30 after STATISTICAL_AUDIT found a FATAL denominator bug.**
+The recovery denominator was implemented as `graded(r) and fp==0`, which
+silently dropped 173 trajectories that received a first (incorrect) verdict
+and then died in regeneration. 173 of 173 have fp==0 — structural, since a
+PASS on the first verdict ends the loop. They meet the definition and score 0
+under pre-registered scoring.
 
-### A7. But enforcement does not improve final accuracy, because it is brittle.
+Corrected recovery: gemma-4 **0.314** (was 0.412), gpt-oss **0.395** (was
+0.461), Llama **0.139** (was 0.150). Arms A and B move by <= 0.002.
+
+Paired A-vs-C after correction:
+- gemma-4  p = 0.298  (was 1.6e-03) — **no longer resolvable**
+- gpt-oss  p = 0.105  (was 1.6e-03) — **no longer resolvable**
+- Llama-3.3 p = **3.81e-06** — survives intact, 0.096 vs 0.009
+
+**MAY CLAIM:** Arm C restores organization (adjudicated no-division 0.136) and
+un-freezes answers (0.119/0.092/0.072, lowest of any arm). Arm C restores
+recovery **for Llama-3.3**; for gemma-4 and gpt-oss the direction is
+consistent but not resolvable against Arm C's attrition.
+
+**MAY NOT CLAIM:** "recovery highest of any arm, above Arm A in all three
+actors." Dead.
+
+### A7. Enforcement does not improve final accuracy, because it is brittle.
 Preregistered scoring: C-A = -0.0225 (gemma-4, SIG NEGATIVE), -0.0050
 (gpt-oss, null), +0.0175 (Llama, null). Attrition 8.0% / 9.9% / 17.0% vs
 0.0-2.5% in A/B. **The paper's claim is NOT "hard roles are better." It is
@@ -60,8 +83,11 @@ Preregistered scoring: C-A = -0.0225 (gemma-4, SIG NEGATIVE), -0.0050
 ### A8. Grader noise floor.
 0.0086 group-level (24/2791 distinct graded strings receive contradictory
 verdicts across identical prompts at temp 0); range 0.0020-0.0086 across
-estimators. gemma-4's B-A clears it 3.9x. **gpt-oss's and Llama's accuracy
-contrasts do NOT clear it and must be reported as not resolvable.**
+estimators. **Do NOT report "effect / floor = 3.9x"** — dividing an effect size by a
+disagreement rate is not a valid operation, and grader noise largely cancels
+in a paired contrast. Instead propagate the per-call disagreement rate into
+the bootstrap; that gives the same three verdicts: gemma-4
+[-0.0488,-0.0175] SIG, gpt-oss null, Llama null.
 
 ### A9. Single-agent control — BOTH DIRECTIONS, ALWAYS TOGETHER.
 gpt-oss A +0.0131, B +0.0294 (collapsed team beats its single agent);
@@ -69,8 +95,16 @@ gemma-4 A -0.0225, B -0.0563 (team is WORSE than its single agent).
 Never quote gpt-oss alone. Provenance: NOT in the frozen snapshot — it comes
 from the historical corpus and that must be stated wherever it is used.
 
-### A10. The preregistered primary (P4) is null.
-All three pairwise difference-in-differences contain zero. Keep visible.
+### A10. The preregistered primary (P4) is null — and the Holm correction must be RUN.
+All three pairwise difference-in-differences contain zero. But the claim that
+P1-P5 carry a Holm correction was **false of the reported analysis**: `holm`
+appears nowhere in FINAL_TABLES.py or its output, and a reviewer verifies that
+with one grep. Applying it changes nothing (gemma C-A Holm p=0.042; P4 still
+null), so the fix is to run it, not to reword.
+
+Two of three P4 DiDs have MDE 0.069 and 0.075 at n=400 against plausible
+effects <= 0.040, so only the gpt-oss-gemma DiD (MDE 0.033) is an informative
+null. Say which is which.
 
 ## DEAD — retracted or falsified. Must NOT reappear in any artifact.
 
@@ -85,6 +119,8 @@ All three pairwise difference-in-differences contain zero. Keep visible.
 | "per-opportunity Arm B recovers better" | matched on a post-treatment variable | F17 |
 | "no accuracy claim is resolvable above scorer noise" | built on the wrong grading key | F21 |
 | "roles prevent premature stopping" | refuted by construction; budget is identical | F17 |
+| "Arm C recovery is highest of any arm, above Arm A in all three actors (p<=1.6e-3)" | recovery denominator dropped 173 trajectories that had a first incorrect verdict then died in regeneration; corrected, two of three paired p-values are lost (0.298, 0.105) | STATISTICAL_AUDIT FATAL-1 |
+| Llama-3.3's null recovery is a "floor effect" | Arm C restores recovery in that same actor (0.096 vs 0.009, p=3.8e-06), so the channel exists; ~80% power at 0.04-0.05 against an effect of 0.171. It is a genuine null specific to the ROLE manipulation | STATISTICAL_AUDIT SERIOUS-2 |
 
 **No worker may reintroduce a dead claim because it makes the prose cleaner.**
 
