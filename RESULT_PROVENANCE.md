@@ -153,3 +153,59 @@ reword it.
 - **Llama-3.3 accuracy is 0.307** vs ~0.80 for the other two: reported as a third collapse profile, **never** used for a collapse-vs-role-value relationship. Its null recovery is a **genuine null, not a floor** — Arm C moves it (0.096 vs 0.009, p=3.8e-06).
 - **The evaluator is also an actor** (`openai/gpt-oss-120b`). R-10 evaluator independence remains **UNTESTED**.
 - **One benchmark, one domain** (omnimath2, math).
+
+---
+
+## Sample definitions and denominators (audited 2026-09-30)
+
+Full audit: `analysis/out/SAMPLING_AUDIT.md`
+Reproducible by: `python3 analysis/scripts/audit_sampling.py`
+Figure: `figures/audit_sampling_representativeness.png`
+
+### OmniMath2 — 4,181 available, 1,600 run
+
+| | |
+|---|---|
+| full matched pool | **4,181** |
+| scientific run | **1,600** (38.3%) |
+| seed | **20270101** |
+| drawn by | `runner.load_problems(n=1600, seed=20270101)` |
+| manifest | `experiments/manifest_omnimath2_n1600.json` |
+
+**Uniform random sample of the whole pool.** Not tier-specific, not
+difficulty-stratified, not purposive. Verified: all 1,600 distinct problems
+in the frozen campaign match the seed-20270101 draw exactly, 1600/1600.
+
+**Representativeness — the sample is not distinguishable from the pool:**
+
+| test | result |
+|---|---|
+| difficulty_score, two-sample KS | **D=0.0251, p=0.449** |
+| subset (competition source), chi-square | **chi2=58.3, dof=46, p=0.106** |
+| mean difficulty_score | 4.9444 full vs 4.9524 selected (+0.008) |
+| median / quartiles | identical (4 / 5 / 6) |
+
+`difficulty_tier` and `question_type` are **entirely null** for this
+benchmark (0/4,181), so no tier table exists; `difficulty_score` (27 distinct
+values, 100% populated) is the difficulty axis.
+
+### SciBench — 692 upstream, 580 released, 574 matched, **all 574 run**
+
+| | |
+|---|---|
+| upstream published benchmark | 692 |
+| present in the SciAgentTrace release | 580 |
+| carrying the `text_only` slice | **574** |
+| **run in this campaign** | **574 x 2 actors x 2 arms = 2,296** |
+
+**`574 matched` is NOT `574 total benchmark`.** No sub-sampling was applied:
+the entire matched slice was run.
+
+- **692 -> 580**: **not recoverable from this release.** Excluded rows are
+  absent from the table and carry no reason code. An earlier draft of this
+  audit asserted a reason; that was an inference presented as a measurement
+  and was removed. Tracked as P2; it affects no denominator the paper reports.
+- **580 -> 574**: six rows carry only the `full` slice, not `text_only`,
+  listed individually in the audit. They are a **disjoint set** from the six
+  `conflicting_source_id_disambiguated` rows — two independent subtractions,
+  not the same six counted twice.

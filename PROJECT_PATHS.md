@@ -316,3 +316,14 @@ PY
 
 A second copy belongs on ALCF `/lus/eagle` before submission; iCloud is one
 provider, not two.
+
+
+## Sampling / denominator audit (added 2026-09-30)
+
+| path | contains | authoritative? |
+|---|---|---|
+| `analysis/scripts/audit_sampling.py` | regenerates the whole audit from the problems parquet | yes, the generator |
+| `analysis/out/SAMPLING_AUDIT.md` | OmniMath2 4,181->1,600 representativeness; SciBench 692->580->574 denominators | derived, regenerate rather than edit |
+| `figures/audit_sampling_representativeness.png` | difficulty histogram + empirical CDF, full pool vs selected | derived |
+| `experiments/manifest_omnimath2_n1600.json` | the seeded 1,600-problem sample | yes |
+| `experiments/results/xdomain/FROZEN_SCIBENCH/` | SciBench frozen traces, 2,296 rows, sha256 `10068f72cfd936d3` | yes |
