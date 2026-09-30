@@ -1,0 +1,32 @@
+{
+  "frozen_at": "2026-09-30T23:26:47.198588+00:00",
+  "benchmark_id": "scibench",
+  "slice_id": "text_only",
+  "domain": "science",
+  "git_commit": "c8c48ada000604a0e156075c482f5edc5133e2aa",
+  "git_dirty": false,
+  "files": {
+    "scibench_AB.jsonl": {
+      "rows": 2296,
+      "sha256": "10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58",
+      "bytes": 26961648
+    }
+  },
+  "cells": {
+    "gemma-4-31B-it|A": 574,
+    "gemma-4-31B-it|B": 574,
+    "gpt-oss-120b|A": 574,
+    "gpt-oss-120b|B": 574
+  },
+  "total_rows": 2296,
+  "config_versions": {
+    "aed89f28ab338bdb": 2296
+  },
+  "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 1915,
+    "max_rounds_exhausted_after_fail": 374,
+    "max_rounds_exhausted": 4,
+    "max_rounds_then_evaluator_pass": 3
+  },
+  "problem_uids": 574
+}
