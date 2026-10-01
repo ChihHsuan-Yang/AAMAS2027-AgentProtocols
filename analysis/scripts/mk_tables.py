@@ -241,7 +241,10 @@ def sci(pstr: str) -> str:
     mm = re.match(r"^([0-9.]+)e([-+]?\d+)$", s)
     if mm:
         mant, ex = mm.group(1), int(mm.group(2))
-        if ex in (-1, -2):
+        # 0, -1 and -2: the decimal spelling is exact and far more readable.
+        # '1.00\\times 10^{0}' is a correct rendering of p=1 that no reader
+        # parses as "the test could not separate these at all".
+        if ex in (0, -1, -2):
             return f"${float(mant) * 10 ** ex:g}$"
         return f"${mant}\\times 10^{{{ex}}}$"
     return f"${s}$"

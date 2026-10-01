@@ -185,3 +185,30 @@ writing. A violation is a hard failure, not a warning.
 | B | role-free |
 | C | structurally enforced |
 | C' | context-restored |
+
+---
+
+## INTEGRATION NOTE — label collision, pending (added by Master Agent 2026-10-01)
+
+These generated tables are verified and ready, but **not yet wired into the
+manuscript**. `sections/results.tex` still carries three inline `table`
+environments that collide with them:
+
+| inline in `results.tex` | generated replacement | action |
+|---|---|---|
+| `tab:collapse` (line ~46) | `tables/main_role_collapse.tex` | delete inline, `\input` |
+| `tab:main` (line ~321) | split: `tables/main_recovery.tex` + `tables/single_agent_comparison.tex` | delete inline, `\input` both, remap refs |
+| `tab:armc` (line ~467) | `tables/structural_enforcement.tex` | delete inline, `\input`, remap refs |
+
+Two labels are defined twice right now (`tab:collapse`), which LaTeX reports
+as a warning rather than an error — so **a build can pass while one of the
+two tables is silently unreferenced**. This is why the swap is tracked here
+rather than left to be noticed.
+
+**Not done yet because the writing agent holds `results.tex` exclusively**
+for the compression pass. Doing it concurrently would have produced a
+conflict in the one file whose prose is being rewritten. It is the first
+item after compression lands.
+
+`tables/prereg_endpoints.tex` is destined for the supplement, not the main
+paper.
