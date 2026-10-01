@@ -88,9 +88,11 @@ def ac_resolvable(a):
 def nbr_text(a):
     ac = PR[f"{a}|AC"]
     short = S.ACTOR_1LINE[a].split("-3.3")[0]
-    return (f"{short}: A {S.cell(a,'A')['recovery']:.3f} ≈ B {S.cell(a,'B')['recovery']:.3f},\n"
-            f"but C {S.cell(a,'C')['recovery']:.3f}, paired p={ac['p']:.0e}.\n"
-            f"The repair channel exists; roles\ndo not open it here — not a floor.")
+    return (f"{short}: roles change nothing\n"
+            f"({S.cell(a,'A')['recovery']:.3f} vs {S.cell(a,'B')['recovery']:.3f});\n"
+            f"enforcement does ({S.cell(a,'C')['recovery']:.3f},\n"
+            f"paired p={ac['p']:.0e}). The repair\n"
+            f"channel exists — not a floor.")
 
 
 # =====================================================================
@@ -146,10 +148,10 @@ def v1():
     _res = [S.ACTOR_SHORT[a].split("\n")[0] for a in ACTORS if ac_resolvable(a)]
     _tail = " is" if len(_res) == 1 else "s are"
     fig.text(0.010, 0.017,
-             f"grey digits = cell n, A / B / C.   "
-             f"arm C hatched: {ATTR_TXT} attrition.\n"
-             f"Only {_joinnames(_res)} A–C recovery gap{_tail} resolvable "
-             f"(paired); see caption.",
+             f"grey digits = cell n, in legend order.   hatched = "
+             f"{ATTR_TXT} attrition.\n"
+             f"Only {_joinnames(_res)} structurally-enforced recovery "
+             f"gap{_tail} resolvable\n(paired, vs role-structured); see caption.",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig1_v1_grouped", S.COLWIDTH_IN)
 
@@ -179,7 +181,8 @@ def v2():
             A.set_ylim(0, 1.0)
             A.set_yticks(np.arange(0, 1.01, 0.25))
             A.set_xlim(-0.48, len(ARMS) - 0.52)
-            A.set_xticks(xs); A.set_xticklabels(ARMS)
+            A.set_xticks(xs); A.set_xticklabels([S.ARM_TICK[k] for k in ARMS],
+                                                rotation=38, ha="right")
             if pi == 0:
                 A.set_title(S.ACTOR_1LINE[a], fontsize=S.FS_ANNOT, pad=2)
             # label only arms A and B -- the contrast the claim is about.
@@ -198,18 +201,18 @@ def v2():
                    ha="center", va="top")
     ax[0][0].set_ylabel("first-pass\naccuracy")
     ax[1][0].set_ylabel("recovery |\nfirst pass wrong")
-    fig.text(0.5, 0.993, "First pass: flat across arms.   Recovery: not.",
+    fig.text(0.5, 0.993, "First pass: flat across conditions.   Recovery: not.",
              fontsize=S.FS_TITLE, ha="center", va="top", color=S.INK)
     for a in NBR:
         j = ACTORS.index(a)
         ax[1][j].text(0.96, 0.97,
-                      f"A≈B null,\nbut C={S.cell(a,'C')['recovery']:.2f}\n"
+                      f"roles: null,\nenforced {S.cell(a,'C')['recovery']:.2f}\n"
                       f"p={PR[f'{a}|AC']['p']:.0e}\nnot a floor",
                       transform=ax[1][j].transAxes, fontsize=S.FS_ANNOT,
                       color=S.INK, ha="right", va="top", linespacing=1.15)
-    fig.text(0.5, 0.058, "arm", fontsize=S.FS_LABEL, ha="center", color=S.INK)
-    fig.text(0.010, 0.015, f"A soft roles / B no roles / C enforced (◆, "
-                           f"{ATTR_TXT} attrition).",
+    fig.text(0.5, 0.058, "condition", fontsize=S.FS_LABEL, ha="center", color=S.INK)
+    fig.text(0.010, 0.015, f"role-structured / role-free / structurally "
+                           f"enforced (◆, {ATTR_TXT} attrition).",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig1_v2_slopes", S.COLWIDTH_IN)
 
@@ -222,8 +225,8 @@ def v3():
                                         "right": 0.984, "top": 0.855, "bottom": 0.285})
     ys = np.arange(len(ACTORS), dtype=float)[::-1]
     for pi, (key, nkey, ttl) in enumerate((
-            ("firstpass", "n_judged", "First-pass accuracy  —  the arms coincide"),
-            ("recovery", "n_fpw", "Recovery | first pass wrong  —  the arms diverge"))):
+            ("firstpass", "n_judged", "First-pass accuracy  —  the conditions coincide"),
+            ("recovery", "n_fpw", "Recovery | first pass wrong  —  the conditions diverge"))):
         A = ax[pi]
         for yi, a in zip(ys, ACTORS):
             cells = [S.cell(a, arm) for arm in ARMS]
@@ -247,8 +250,8 @@ def v3():
     ax[0].set_yticklabels([S.ACTOR_1LINE[a] for a in ACTORS])
     for a in NBR:
         yi = ys[ACTORS.index(a)]
-        ax[1].annotate(f"A {S.cell(a,'A')['recovery']:.3f} ≈ B {S.cell(a,'B')['recovery']:.3f}, "
-                       f"but C {S.cell(a,'C')['recovery']:.3f}\n"
+        ax[1].annotate(f"roles make no difference ({S.cell(a,'A')['recovery']:.3f} vs "
+                       f"{S.cell(a,'B')['recovery']:.3f}); enforced {S.cell(a,'C')['recovery']:.3f}\n"
                        f"(p={PR[f'{a}|AC']['p']:.0e}) — not a floor",
                        xy=(S.cell(a, "C")["recovery"], yi - 0.10),
                        xytext=(0.97, yi - 0.42),
@@ -260,7 +263,8 @@ def v3():
                 mfc=S.ARMC[a], mec=S.SURFACE, mew=1.0, label=S.ARM_LONG[a]) for a in ARMS]
     fig.legend(handles=h, ncol=3, loc="lower center", bbox_to_anchor=(0.60, 0.010),
                fontsize=S.FS_LEGEND)
-    fig.text(0.008, 0.020, f"n = A / B / C.   arm C (◆): {ATTR_TXT} attrition.",
+    fig.text(0.008, 0.020, f"n in legend order.   structurally enforced (◆): "
+                           f"{ATTR_TXT} attrition.",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig1_v3_dumbbell", S.TEXTWIDTH_IN)
 

@@ -8,62 +8,101 @@ what to whom. The diagram is read as a \emph{mechanism} --- where the
 system's competence comes from, and why one pays for three agents instead of
 one. But what runs is three prompts handed to a language model, which may
 honor the division of labor, ignore it, or satisfy its surface while doing
-the whole task in every box. Which happened is almost never measured: a
-system evaluated on accuracy alone returns the same score either way.
+the whole task in every box. Which of those happened is almost never
+measured, and an accuracy score cannot tell them apart: a pipeline whose
+three agents have quietly become three copies of the same solver returns the
+same number as one whose organization is doing exactly what the diagram says.
+The experiment meant to support the diagram never puts it at risk.
 
 \paragraph{The question.}
 We ask what a diagram cannot answer: \textbf{which phase of the work is
-multi-agent organization load-bearing for?} A component is
-\textbf{load-bearing} if removing or altering it reproducibly degrades task
-performance \emph{under matched compute and information budgets}
-(\S\ref{sec:framework}). Our interventions hold the budget fixed and vary
-only what each agent is told it is, or what its interface lets it emit.
+multi-agent organization load-bearing for?} There is a phase in the question
+because a team solving a problem does two different things. First it produces
+an answer. Then, if that answer comes back wrong, it has to produce a
+\emph{different} one. Those are not the same task --- the first rewards
+getting to a candidate, the second requires abandoning one --- and nothing
+guarantees that an organizational structure contributes equally to both. A
+component is \textbf{load-bearing} if removing or altering it reproducibly
+degrades task performance \emph{under matched compute and information
+budgets} (\S\ref{sec:framework}); the budget clause is what keeps the test
+from measuring scale instead of organization. Our interventions hold that
+budget fixed and vary only what each agent is told it is, or what its
+interface lets it emit.
 
 \paragraph{The manipulation works.} Deleting every role instruction --- with
 topology, actor model, context policy, retry budget and evaluator held fixed
 --- destroys the division of labor in \textbf{all three} actors: the rate at
 which every agent independently asserts its own final answer goes from
 $0.000$--$0.120$ to $0.846$--$0.976$, the planner supplying almost all of
-the swing. That is the manipulation check, not the headline.
+the swing. That is the manipulation check, not the headline, but it is the
+precondition for everything after it. An ablation that left the organization
+partly standing could not price the organization; this one removes it,
+measurably, in every actor we ran. The question is then what the removal
+cost.
 
-\paragraph{Roles do not buy the first answer.} First-pass accuracy does not
-follow the organization down: unchanged for gemma-4, \emph{improving} for
-gpt-oss, flat for Llama-3.3 --- a parity prior role ablations already
+\paragraph{Roles do not buy the first answer.} At the first answer it costs
+nothing we can detect. First-pass accuracy does not follow the organization
+down: unchanged for gemma-4, \emph{improving} for gpt-oss, flat for Llama-3.3
+--- a parity prior role ablations already
 report~\cite{dylan2026equal,orogat2026architectural}, and our control
-condition rather than a finding.
+condition rather than a finding. Read alone, this is the familiar negative
+result: the organization was decorative, and three agents were a more
+expensive way to be one. The rest of this paper is about where to look before
+drawing that conclusion.
 
-\paragraph{The difference appears after external feedback.} Both teams are
-told, by the same oracle-gated evaluator, that their answer is wrong. Both
-hold the same six deliberation cycles by construction, no trajectory is cut
-short, and the role-free team draws \emph{more} oracle verdicts than the
-role-labeled one. So the gap is not fewer chances, not early stopping, and
-not less information. What differs is \textbf{use}: in gemma-4 the
-role-structured team spends $5.52$ realized cycles as $1.54$ submissions and
-$3.98$ revisions, the role-free team $5.83$ as $5.80$ submissions and $0.03$
-revisions.
+\paragraph{The difference appears after external feedback.} Consider the
+position both teams are in once the evaluator tells them their answer is
+wrong. Nothing about the problem has changed. What has changed is that one
+specific candidate has been ruled out, which makes the useful move putting
+forward a \emph{different} candidate and the useless move putting forward the
+same one again. Both teams are equipped identically for that move: the same
+six deliberation cycles by construction, no trajectory cut short, and the
+role-free team in fact draws \emph{more} oracle verdicts than the
+role-labeled one, so it is told it is wrong more often rather than less.
+Whatever separates them is not fewer chances, not early stopping, and not
+less information.
+
+What separates them is what a cycle is spent on. The role-structured team
+mostly reworks the answer and submits occasionally; the role-free team
+submits almost every cycle and reworks almost nothing. In gemma-4 that is
+$5.52$ realized cycles split $1.54$ submissions to $3.98$ revisions, against
+$5.83$ split $5.80$ to $0.03$ --- and the end state is an answer that never
+moves: the role-free team finishes holding the answer it started with in
+$0.845$ of these trajectories, against $0.288$ with roles.
 \textbf{Told they are wrong, one team revises and the other resubmits.}
-This is
-Degeneration-of-Thought~\cite{liang2024divergent}, and what is new is the
-\textbf{inversion}: multi-agency is the standard prescription against it,
+This is Degeneration-of-Thought~\cite{liang2024divergent}, and what is new is
+the \textbf{inversion}: multi-agency is the standard prescription against it,
 and multi-agency without role differentiation does not escape it.
 
-\paragraph{That behavioral difference becomes an outcome difference.}
-Recovery from a wrong first answer falls $0.222 \rightarrow 0.051$ for
-gemma-4 --- paired on problems wrong under both conditions, $37$ recovered
-only with roles against $3$ only without, exact McNemar
-$p=2\times10^{-8}$. Its first-pass rates are equal to four decimals, so the
-role-free team does not enter recovery already behind, and the contrast is
-an exact reparameterization of the randomized intent-to-treat effect rather
-than a post-treatment conditional. The result is \textbf{clean in that
-actor, directional but unresolved in gpt-oss} ($0.324 \rightarrow 0.247$,
-paired $p=0.208$) and \textbf{absent in Llama-3.3} ($0.014$ versus $0.015$
---- a genuine null of the role manipulation, not a floor: enforcement moves
-that same actor to $0.139$).
+\paragraph{That behavioral difference becomes an outcome difference.} A
+difference in how feedback is used matters only if something depends on it,
+and something does. Recovery from a wrong first answer falls $0.222
+\rightarrow 0.051$ for gemma-4 --- paired on problems wrong under both
+conditions, $37$ recovered only with roles against $3$ only without, exact
+McNemar $p=2\times10^{-8}$. Its first-pass rates are equal to four decimals,
+so the role-free team does not enter recovery already behind, and the
+contrast is an exact reparameterization of the randomized intent-to-treat
+effect rather than a post-treatment conditional. The result is \textbf{clean
+in that actor, directional but unresolved in gpt-oss} ($0.324 \rightarrow
+0.247$, paired $p=0.208$) and \textbf{absent in Llama-3.3} ($0.014$ versus
+$0.015$ --- a genuine null of the role manipulation, not a floor: enforcement
+moves that same actor to $0.139$).
 
-\paragraph{It holds in a second domain.} On $574$ free-response
-college-science problems the same split returns: first-pass accuracy differs
-by $0.000$ and recovery falls $0.212 \rightarrow 0.020$ ($n=99$,
-$p=6.6\times10^{-5}$), for the one actor that cell is powered to resolve.
+\paragraph{It holds in a second domain.} The split is not a property of
+competition mathematics. On $574$ free-response college-science problems the
+same two halves return: first-pass accuracy differs by $0.000$ and recovery
+falls $0.212 \rightarrow 0.020$ ($n=99$, $p=6.6\times10^{-5}$), for the one
+actor that cell is powered to resolve.
+
+\paragraph{And it runs in the other direction too.} If what roles supply is
+the capacity to put forward a second distinct candidate, then making the
+division of labor unavoidable at the interface --- rather than requesting it
+in prose --- should return that capacity. It does: structural enforcement
+un-freezes the answer in all three actors. It does not become end-to-end
+accuracy, because enforcing a schema makes the pipeline brittle and
+$8$--$17\%$ of its trajectories never finish. We report both halves of that,
+because the result is a mechanism that transfers and a deployment recipe that
+does not.
 
 \paragraph{Contribution.} An operational definition of \textbf{load-bearing}
 and a budget-matched, two-directional design testing it; the \textbf{phase

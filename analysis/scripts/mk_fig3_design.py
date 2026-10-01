@@ -124,8 +124,8 @@ def v1():
     for i, arm in enumerate(ARMS):
         x0 = i * (colw + gap)
         col = S.ARMC[arm]
-        ax.text(x0 + colw / 2, 0.992, f"Arm {arm}", ha="center", va="top",
-                fontsize=S.FS_LABEL, color=col)
+        ax.text(x0 + colw / 2, 0.992, S.ARM_LONG[arm], ha="center", va="top",
+                fontsize=S.FS_ANNOT, color=col)
         ax.text(x0 + colw / 2, 0.943, MECH[arm], ha="center", va="top",
                 fontsize=S.FS_ANNOT, color=S.INK, linespacing=1.1)
 
@@ -155,7 +155,7 @@ def v1():
                 fontsize=S.FS_ANNOT, color=col, linespacing=1.15)
 
     ax.text(0.5, 0.155,
-            f"Identical in all arms: topology, routing and budget\n"
+            f"Identical in all conditions: topology, routing and budget\n"
             f"({BUD['max_outer_rounds']}×{BUD['inner_rounds']}={MAXCYC} cycles, "
             f"max_evaluator_calls={BUD['max_evaluator_calls']}, "
             f"temperature={BUD['temperature']:g}).\n"
@@ -175,7 +175,7 @@ def v2():
     fig.subplots_adjust(left=0.004, right=0.996, top=0.996, bottom=0.004)
 
     # --- shared pipeline across the top
-    ax.text(0.005, 0.965, "Shared by every arm", ha="left", va="top",
+    ax.text(0.005, 0.965, "Shared by every condition", ha="left", va="top",
             fontsize=S.FS_LABEL, color=S.INK)
     bw, bh, y = 0.118, 0.115, 0.775
     xs = [0.075, 0.245, 0.415]
@@ -191,7 +191,7 @@ def v2():
                 arrowprops=dict(arrowstyle="-|>", lw=0.7, color=S.INK2,
                                 mutation_scale=4.5,
                                 connectionstyle="angle,angleA=0,angleB=90,rad=0"))
-    ax.text(0.352, y - 0.098, f"up to {MAXCYC} cycles, identical budget in every arm",
+    ax.text(0.352, y - 0.098, f"up to {MAXCYC} cycles, identical budget in every condition",
             ha="center", va="top", fontsize=S.FS_ANNOT, color=S.INK3)
     ax.text(0.755, y + bh / 2, "same topology,\nrouting and budget",
             ha="left", va="center", fontsize=S.FS_ANNOT, color=S.INK3,
@@ -208,11 +208,16 @@ def v2():
     for i, arm in enumerate(ARMS):
         yy = 0.400 - i * (rh + 0.020)
         col = S.ARMC[arm]
-        _box(ax, 0.075, yy, 0.052, rh, arm, fc=col, ec=col, fs=S.FS_LABEL,
+        # A 0.052-wide box fits a letter but not "structurally enforced".
+        # TERMINOLOGY.md forbids the letter, so the swatch carries colour only
+        # and the condition NAME moves into the row, which has the width.
+        _box(ax, 0.075, yy, 0.022, rh, "", fc=col, ec=col, fs=S.FS_ANNOT,
              tc=S.SURFACE)
-        ax.text(0.142, yy + rh / 2, MECH[arm].replace("\n", " "), ha="left",
+        ax.text(0.107, yy + rh / 2, S.ARM_LONG[arm], ha="left",
                 va="center", fontsize=S.FS_ANNOT, color=S.INK)
-        ax.text(0.350, yy + rh / 2, MANIP[arm].replace("\n", " "), ha="left",
+        ax.text(0.330, yy + rh / 2, MECH[arm].replace("\n", " "), ha="left",
+                va="center", fontsize=S.FS_ANNOT, color=S.INK)
+        ax.text(0.560, yy + rh / 2, MANIP[arm].replace("\n", " "), ha="left",
                 va="center", fontsize=S.FS_ANNOT, color=S.INK, style="italic")
         ol = outcome_lines(arm)
         ax.text(0.545, yy + rh / 2, ol[0] + "\n" + " · ".join(ol[1:]), ha="left",

@@ -80,7 +80,18 @@ def assert_no_arm_codes(*strings):
     check is known to discriminate rather than merely passing on good input.
     """
     import re as _re
-    bad = _re.compile(r"\b[Aa]rm\s*~?\s*[ABC]\b|(?<![A-Za-z])[ABC]\s+(?:soft roles|no roles|enforced)\b")
+    # Kept in sync with scripts/check_terminology_pdfs.py, which is the
+    # pre-freeze gate over shipped PDFs.  The comparison forms below were
+    # added after a real miss: fig1_v1_grouped's LEGEND was fixed while its
+    # annotation still read "A 0.014 = B 0.015, but C 0.139", and the
+    # first version of this pattern saw neither.
+    bad = _re.compile(
+        r"\b[Aa]rm\s*~?\s*[ABC]\b"
+        r"|(?<![A-Za-z])[ABC]\s+(?:soft roles|no roles|enforced)\b"
+        r"|(?<![A-Za-z])[ABC]\s+[\d.]+\s*(?:[=\u2248<>]|vs\.?\s)"
+        r"|(?<![A-Za-z])[ABC]\s*(?:[=\u2248]|vs\.?\s)\s*[ABC]?\s*\d"
+        r"|(?<![A-Za-z])but\s+[ABC]\s+\d"
+        r"|(?<![A-Za-z])[ABC]\s*/\s*[ABC]\s*/\s*[ABC](?![A-Za-z])")
     hits = [t for t in strings if t and bad.search(str(t))]
     if hits:
         raise AssertionError(f"arm code in rendered text (TERMINOLOGY.md): {hits}")

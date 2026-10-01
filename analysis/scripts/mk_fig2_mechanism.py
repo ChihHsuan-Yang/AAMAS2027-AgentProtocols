@@ -58,7 +58,7 @@ def v1():
     """One budget, spent two ways.  Stacked horizontal bars of the SAME length
     (cycles used), split into submitting vs revising."""
     fig, ax = plt.subplots(2, 1, figsize=(S.COLWIDTH_IN, 2.95),
-                           gridspec_kw={"hspace": 0.95, "left": 0.135, "right": 0.985,
+                           gridspec_kw={"hspace": 0.95, "left": 0.300, "right": 0.985,
                                         "top": 0.800, "bottom": 0.215,
                                         "height_ratios": [1.0, 0.80]})
     # --- panel 1: how the cycles were spent
@@ -79,8 +79,8 @@ def v1():
         else:
             A.text(sub + rev - 0.08, yi - 0.30, f"\u2191 {rev:.2f} revising",
                    ha="right", va="top", fontsize=S.FS_ANNOT, color=S.INK, zorder=5)
-        A.text(-0.10, yi, f"arm {arm}", ha="right", va="center",
-               fontsize=S.FS_LABEL, color=S.INK)
+        A.text(-0.012, yi, S.ARM_LONG[arm], transform=A.get_yaxis_transform(),
+               ha="right", va="center", fontsize=S.FS_ANNOT, color=S.INK)
         A.text(d["cycles"], yi + 0.33, f"{d['cycles']:.2f} cycles used",
                ha="right", va="bottom", fontsize=S.FS_ANNOT, color=S.INK3)
     A.axvline(MAXCYC, color=S.INK2, lw=0.7, ls="-", zorder=2)
@@ -93,8 +93,8 @@ def v1():
     S.clean(A, grid_axis="x")
     A.spines["left"].set_visible(False)
     A.set_title("Same budget, opposite spending", fontsize=S.FS_TITLE, pad=2, loc="left")
-    h = [Patch(facecolor=S.ARMC["A"], label="arm A  soft roles"),
-         Patch(facecolor=S.ARMC["B"], label="arm B  no roles"),
+    h = [Patch(facecolor=S.ARMC["A"], label=S.ARM_LONG["A"]),
+         Patch(facecolor=S.ARMC["B"], label=S.ARM_LONG["B"]),
          Patch(facecolor=S.INK3, label="submitting"),
          Patch(facecolor=S.INK3, alpha=0.30, label="revising")]
     fig.legend(handles=h, ncol=4, loc="upper center", bbox_to_anchor=(0.52, 1.005),
@@ -120,8 +120,9 @@ def v1():
     B.set_ylabel("proportion", labelpad=1.5)
 
     fig.text(0.008, 0.006,
-             f"gemma-4-31B, first-pass-wrong only (n={c('A')['n_fpw']} A / "
-             f"{c('B')['n_fpw']} B).\nDescriptive; the panels are not a causal chain.",
+             f"gemma-4-31B, first-pass-wrong only (n={c('A')['n_fpw']} "
+             f"role-structured / {c('B')['n_fpw']} role-free).\n"
+             f"Descriptive; the panels are not a causal chain.",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig2_v1_budget", S.COLWIDTH_IN)
 
@@ -164,7 +165,8 @@ def v2():
                    fontsize=S.FS_ANNOT, color=S.INK)
         A.set_ylim(0, cap * 1.13)
         A.set_xlim(-0.95, 1.95)
-        A.set_xticks(xs); A.set_xticklabels(["A", "B"])
+        A.set_xticks(xs); A.set_xticklabels([S.ARM_TICK["A"], S.ARM_TICK["B"]],
+                                            rotation=38, ha="right")
         A.set_yticks([])
         S.clean(A, grid_axis=None)
         A.spines["left"].set_visible(False)
@@ -180,7 +182,7 @@ def v2():
              "cycles and proportions never share a scale.",
              fontsize=S.FS_ANNOT, ha="left", va="top", color=S.INK3)
     fig.text(0.008, 0.006,
-             f"A = soft roles, B = no roles; n={c('A')['n_fpw']} / {c('B')['n_fpw']}.\n"
+             f"role-structured / role-free; n={c('A')['n_fpw']} / {c('B')['n_fpw']}.\n"
              f"Five marginal views of the same trajectories \u2014 not a causal chain.",
              fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom")
     return S.save(fig, "fig2_v2_panels", S.COLWIDTH_IN)
@@ -206,7 +208,7 @@ def v3():
         off = (0.5 - k) * h
         vals = [f[key] for key, _ in stages]
         ax.barh(ys + off, vals, h * 0.86, color=S.ARMC[arm], zorder=3,
-                label=f"arm {arm}  {S.ARM_LONG[arm].split('  ')[1]}")
+                label=S.ARM_LONG[arm])
         for yi, v in zip(ys + off, vals):
             ax.text(v + base * 0.015, yi, f"{v}", ha="left", va="center",
                     fontsize=S.FS_ANNOT, color=S.INK)
@@ -221,7 +223,7 @@ def v3():
     ax.legend(ncol=1, loc="lower right", fontsize=S.FS_LEGEND, handlelength=1.0,
               borderaxespad=0.25)
     fig.text(0.008, 0.988,
-             "Arm B asks again far more often, and\nrarely has a new answer to give",
+             "The role-free team asks again far more often,\nand rarely has a new answer to give",
              fontsize=S.FS_TITLE, ha="left", va="top", color=S.INK, linespacing=1.2)
     off_ = [F[f"{ACTOR}|{a}"]["recovered_outside_funnel"] for a in ARMS]
     fig.text(0.008, 0.006,

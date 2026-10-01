@@ -606,11 +606,51 @@
    "campaign_v2.jsonl": {
     "rows": 9600,
     "sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130"
+   },
+   "scibench_AB.jsonl": {
+    "domain": "scibench",
+    "rows": 2296,
+    "sha256": "10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58"
    }
   },
   "frozen_at": "2026-09-30T10:09:30.201557",
   "generated_by": "analysis/scripts/FINAL_TABLES.py [T28]",
   "source_dir": "/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/experiments/results/FROZEN",
   "total_rows": 11600
- }
+ },
+ "scibench": {
+  "gemma-4-31B-it": {
+   "discordant_A_only": 21,
+   "discordant_B_only": 2,
+   "firstpass_marginal_A": 0.794425087108014,
+   "firstpass_marginal_B": 0.794425087108014,
+   "mcnemar_p": 6.604194641113281e-05,
+   "n_firstpass_A": 574,
+   "n_firstpass_B": 574,
+   "n_fpw_marginal_A": 118,
+   "n_fpw_marginal_B": 118,
+   "n_paired": 99,
+   "recovery_marginal_A": 0.2542372881355932,
+   "recovery_marginal_B": 0.05084745762711865,
+   "recovery_paired_A": 0.21212121212121213,
+   "recovery_paired_B": 0.020202020202020204
+  },
+  "gpt-oss-120b": {
+   "discordant_A_only": 17,
+   "discordant_B_only": 9,
+   "firstpass_marginal_A": 0.7839721254355401,
+   "firstpass_marginal_B": 0.789198606271777,
+   "mcnemar_p": 0.16863754391670227,
+   "n_firstpass_A": 574,
+   "n_firstpass_B": 574,
+   "n_fpw_marginal_A": 124,
+   "n_fpw_marginal_B": 121,
+   "n_paired": 96,
+   "recovery_marginal_A": 0.31451612903225806,
+   "recovery_marginal_B": 0.23140495867768596,
+   "recovery_paired_A": 0.21875,
+   "recovery_paired_B": 0.13541666666666666
+  }
+ },
+ "scibench_note": "PAIRED and MARGINAL are different populations and different numbers. A figure must state which it draws."
 }

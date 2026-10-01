@@ -405,7 +405,11 @@ Llama-3.3-70B-Instruct    +0.0025  [-0.0325,+0.0375]    [-0.0350,+0.0400]    NOT
     gpt-oss-120b|B                  380 ->  371 ->  292 ->   93   (recovered outside funnel: 1)
     gpt-oss-120b|C                  357 ->  280 ->  262 ->  141   (recovered outside funnel: 0)
   mechanical (functional collapse, first pass): Llama-3.3-70B-Instruct|A=0.000  Llama-3.3-70B-Instruct|B=0.872  gemma-4-31B-it|A=0.000  gemma-4-31B-it|B=0.976  gpt-oss-120b|A=0.120  gpt-oss-120b|B=0.846
+
+[T28b] SciBench exported for 2 actors (paired AND marginal)
+  gemma-4-31B-it           fp 0.794/0.794   rec paired 0.212/0.020 n=99 p=6.6e-05
+  gpt-oss-120b             fp 0.784/0.789   rec paired 0.219/0.135 n=96 p=0.17
   wrote /Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/analysis/out/FIGDATA.json
-  sha256(FIGDATA.json)[:16] 671ba20ea833d438
+  sha256(FIGDATA.json)[:16] e267255da317b4fe
 
 ================================================================================================

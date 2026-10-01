@@ -29,13 +29,14 @@ ROOT = "/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols"
 FIGDIR = os.path.join(ROOT, "figures")
 DATA = os.path.join(ROOT, "analysis", "out", "FIGDATA.json")
 
-FIGURES = ["fig1_v1_story", "fig1_v2_story", "figS1_conditions"]
+FIGURES = ["fig1_v1_story", "fig1_v2_story",
+           "fig2_v1_xdomain", "fig2_v2_xdomain", "figS1_conditions"]
 
 # Axis ticks, proportion bounds and model-name digits. Deliberately small and
 # printed by the runner: an allow-list that absorbs a real number is the
 # failure mode this check exists to prevent.
 STRUCTURAL = {"0", "1", "2", "3", "4", "5", "6", "0.0", "0.5", "1.0",
-              "31", "120", "3.3", "70", "4", "2"}
+              "0.2", "0.4", "31", "120", "3.3", "70", "4", "2"}
 
 ARMCODE = re.compile(r"\b[Aa]rm\s*~?\s*[ABC]\b"
                      r"|(?<![A-Za-z])[ABC]\s+(?:soft roles|no roles|enforced)\b")
@@ -56,7 +57,21 @@ def traceable():
             if fld in c: add(c[fld])
         for fld in ("n", "n_judged", "n_fpw", "n_graded"): add(c[fld])
     for p in D["paired_recovery"].values():
-        for fld in ("p", "n", "x_only", "y_only"): add(p[fld])
+        for fld in ("p", "n", "x_only", "y_only", "both_rec"): add(p[fld])
+        # PAIRED recovery rates and their difference are derived from the
+        # transition table at render time (Figure 2 draws paired, not
+        # marginal), so the tracer must admit the same derivation.
+        ra = (p["both_rec"] + p["x_only"]) / p["n"]
+        rb = (p["both_rec"] + p["y_only"]) / p["n"]
+        for v in (ra, rb, rb - ra, abs(rb - ra)): add(v)
+    # SciBench, exported by [T28b] with the population named in every key.
+    for sb in D.get("scibench", {}).values():
+        for v in sb.values(): add(v)
+        for pair in (("recovery_paired_B", "recovery_paired_A"),
+                     ("firstpass_marginal_B", "firstpass_marginal_A"),
+                     ("recovery_marginal_B", "recovery_marginal_A")):
+            d_ = sb[pair[0]] - sb[pair[1]]
+            add(d_); add(abs(d_))
     for m in D["mechanical"].values(): add(m["functional_collapse"])
     add(D["max_cycles"])
     for k in ("max_outer_rounds", "inner_rounds"): add(D["budget"][k])

@@ -152,26 +152,83 @@ enforcement gap only for Llama-3.3
 \end{figure}
 
 Both teams reach the evaluator and are told the same thing: this answer is
-wrong. The standing explanation for what follows is premature consensus ---
-the team stops early. \textbf{We test and reject it.} Every condition runs
-the same six cycles by construction and the role-free team draws \emph{more}
-oracle feedback (\S\ref{sec:method}); realized spend is near-identical
-($5.52$ versus $5.83$ cycles, gemma-4, first-pass-wrong) and \textbf{no
-trajectory was cut short}. So it is not fewer chances, not early stopping,
-and not less information.
+wrong. What they do next is this section's subject, so it is worth being
+exact about the units it is measured in.
+
+\paragraph{What a cycle is, and what a team can spend one on.} The pipeline
+runs a fixed grid of \textbf{six deliberation cycles} --- three outer rounds
+of two inner rounds --- and a cycle is one pass of
+Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer. At the end of each
+cycle the Reviewer either approves or it does not. If it approves, the
+current answer is \textbf{submitted}: it goes to the oracle-gated evaluator,
+which returns PASS (the trajectory ends) or FAIL with a non-leaking repair
+hint that becomes the next cycle's advice. If it does not approve, nothing
+is submitted and the Reviewer routes the work back to the Planner or the
+Executor, so the next cycle is a \textbf{revision}: the team reworks the
+answer internally without spending a verdict on it. Every trajectory
+therefore partitions its realized cycles into submissions and revisions, and
+\emph{that partition is the one thing the two conditions are free to
+differ in} --- the grid, the routing machinery, the evaluator and the hint
+text are identical by construction.
+
+\paragraph{Premature stopping, tested and rejected.} The standing explanation
+for a team that fails to recover is premature consensus: it agrees with
+itself, stops early, and never uses the budget it was given.
+\textbf{We test that and reject it}, on three observations that point the
+same way. Both conditions \emph{hold} six cycles by construction. Both
+\emph{realize} nearly all of them --- $5.52$ versus $5.83$, gemma-4,
+first-pass-wrong --- and \textbf{no trajectory was cut short}. And the
+role-free team draws \emph{more} oracle verdicts, not fewer: $1.95$
+evaluator calls per trajectory against $1.11$ (\S\ref{sec:method}).
+
+That last observation is the decisive one, and it is worth saying why. Every
+rival explanation of the form ``the role-free team had less to work with''
+predicts fewer verdicts, because a verdict is precisely how a team learns its
+answer is wrong. A team that stopped early would have drawn fewer. A team
+that was cut off would have drawn fewer. A team given a weaker signal would
+have had fewer chances to act on it. The role-free team draws roughly twice
+as many and still recovers less. There is no budget, no stopping rule and no
+information asymmetry left to attribute the gap to; what remains is what the
+team does with the cycle.
 
 \textbf{What differs is use.} The role-structured team submits $1.54$ times
-and spends $3.98$ cycles revising; the role-free team converts $5.80$ of its
-$5.83$ cycles into resubmissions. What stops is refusal --- in $98.1\%$ of
-gemma-4's role-free first-pass-wrong trajectories the Reviewer never
-declines, against $5.1\%$ with roles ($61.6\%$ versus $4.3\%$ for gpt-oss)
---- and the consequence is a frozen answer, unchanged in $0.845$ of those
-trajectories against $0.288$. \textbf{Told they are wrong, one team revises
-and the other resubmits.} This is
+and spends $3.98$ of its cycles revising. The role-free team converts $5.80$
+of its $5.83$ cycles into resubmissions and revises $0.03$ --- it does not
+rework the answer once. The behavioral hinge is the Reviewer's decline: in
+$98.1\%$ of gemma-4's role-free first-pass-wrong trajectories the Reviewer
+never declines at all, against $5.1\%$ with roles ($61.6\%$ versus $4.3\%$
+for gpt-oss). Without a decline there is no route back to the Planner or the
+Executor, so there is no cycle in which the answer could change.
+
+\paragraph{What the frozen-answer rate measures.} The consequence is an
+answer that does not move. We count a trajectory as \textbf{frozen} if the
+entire transcript --- every role message across all six cycles --- contains
+exactly one distinct answer string. Not that the team re-derived the same
+value: that the team never at any point wrote down a second candidate to
+compare against the first. On gemma-4's first-pass-wrong trajectories that is
+$0.845$ of the role-free condition against $0.288$ with roles. Read
+behaviorally, the role-free team spends five further cycles and ends holding
+the answer the evaluator already rejected, having never produced an
+alternative for the Reviewer to prefer or reject.
+
+The funnel separates the two failure shapes. Of gemma-4's $316$
+role-structured first-pass-wrong trajectories, $133$ submit a second time,
+$128$ of those $133$ at some point hold a second distinct answer, and $70$
+end correct --- every recovery that condition has. Of the $316$
+role-free ones, \emph{all} $316$ submit again, yet only $49$ ever hold a
+second distinct answer string; $10$ of those end correct, with $6$ further
+recoveries on trajectories that never held a second answer string at all ---
+the same candidate receiving a different verdict, at a rate consistent with
+the grader noise floor and the scoring defect below. \textbf{The
+role-free team is not failing to get another turn. It is using every turn to
+send back what it already sent.} \textbf{Told they are wrong, one team
+revises and the other resubmits.} This is
 Degeneration-of-Thought~\cite{liang2024divergent}, and the point is the
 \textbf{inversion}: multi-agency is the prescribed cure that role-free
 multi-agency does not deliver. Rubber-stamping is a symptom of answer
-lock-in, not established as its cause.
+lock-in, not established as its cause --- we observe the Reviewer approving
+and the answer not moving, and cannot separate a Reviewer that fails to
+object from one whose objection has no differentiated Planner to act on it.
 
 \paragraph{A competing driver we do not dismiss.} Accumulated context is a
 real cause of recovery failure~\cite{yang2026contamination}: within the

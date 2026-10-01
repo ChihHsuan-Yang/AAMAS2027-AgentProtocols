@@ -50,7 +50,9 @@ python3 analysis/scripts/mk_fig4_decomposition.py
 
 Intermediate: `analysis/out/FIGDATA.json`, sha256
 `671ba20ea833d4387e88cefd539396c9d46794173e1a7cc31f0e8902bd26f918`
-(regenerate and the hash changes only if the frozen data or [T28] changes).
+**as of Part 2; superseded — see Part 3**, where `[T28b]` appended the
+SciBench export and moved it to `e267255d…`. The Omni-MATH values are
+byte-identical across that change.
 
 **CORRECTED 2026-10-01.** This line read `a4be829b…`, which no longer matched
 the file or the committed blob. Re-running `FINAL_TABLES.py` reproduces
@@ -233,14 +235,21 @@ Intended manuscript number: **Figure 1**.
 
 | option | file | sha256 | design |
 |---|---|---|---|
-| v1 | `fig1_v1_story.{pdf,png}` | `207543dd244503cd…` | panel C = stacked retry budget |
-| v2 | `fig1_v2_story.{pdf,png}` | `c2f985e124493c0a…` | panel C = two-track feedback flow |
+| v1 | `fig1_v1_story.{pdf,png}` | `6ddf8e28d34439a3…` | panel C = stacked retry budget |
+| v2 | `fig1_v2_story.{pdf,png}` | `7777f93c6888b3fd…` | panel C = two-track feedback flow |
 
 **Recommended: v1.** Both carry the same numbers; v1 makes "same budget" a
 *visible equality* — two bars of nearly equal length whose internal split
 differs — which is the comparison the panel is about. v2's tracks encode the
 same split as thickness, which reads well but makes the equal totals a label
 rather than a shape.
+
+
+**Hashes in this section were refreshed 2026-10-01.** These figures were
+rebuilt when the shared style module gained the strengthened terminology
+pattern (Part 3), so their bytes changed; their DATA and appearance did
+not. A provenance hash that disagrees with its artifact is worse than
+none — it invites the reader to conclude the figure changed.
 
 Scientific purpose per panel, and the FIGDATA field each label reads:
 
@@ -275,7 +284,7 @@ Run the script for the exact list of FIGDATA keys needed to unblock it.
 ## Figure S1 — the three conditions
 
 Script: `analysis/scripts/mk_figS1_conditions.py`
-File: `figS1_conditions.{pdf,png}`, sha256 `610671d88e98c977…`
+File: `figS1_conditions.{pdf,png}`, sha256 `64a6ee0610923b16…`
 Intended manuscript number: **Figure S1** (supplement unless it earns main-text space).
 
 Topology is **design**, verified in `experiments/prompts.py` and
@@ -367,3 +376,135 @@ therefore marks each contrast's paired verdict, and `n.s.` is computed from
 `paired_recovery[*|AB].p`, not asserted — so the annotation cannot outlive the
 claim. The bars are **marginal** rates and the p-values are **paired** on a
 smaller population; both are labelled with their own n.
+
+---
+
+# PART 3 — Figure 2 unblocked, and the terminology gate (2026-10-01)
+
+## FIGDATA has moved
+
+`analysis/out/FIGDATA.json` is now sha256 `e267255da317b4fe68522c82c6c9bd35e0f09e95ca1396a12e4fd2f9b35c5c7c`
+(was `671ba20e…` in Part 2). The change is **additive**: `[T28b]` of
+`FINAL_TABLES.py` appended `scibench` and `scibench_note`. The Omni-MATH
+values are byte-identical, so every Part 1 / Part 2 figure is unaffected.
+
+## Figure 2 — cross-domain replication, now drawn
+
+Script: `analysis/scripts/mk_fig2_xdomain.py`
+Intended manuscript number: **Figure 2**.
+
+| option | file | sha256 | design |
+|---|---|---|---|
+| v1 | `fig2_v1_xdomain.{pdf,png}` | `03c4d1e8903e698e…` | grouped bars, 2x2 |
+| v2 | `fig2_v2_xdomain.{pdf,png}` | `57337cc48f5c93c5…` | paired slopes, 2x2 |
+
+**Recommended: v2.** The message is *flat, then steep — twice*. A slope states
+"this moved" as a single visual gesture, so the top row reads as two flat
+lines and the bottom as two parallel dives. v1's bars force the reader to
+difference two heights by eye, which is the comparison the figure is making.
+v1 remains the safer choice if a reviewer prefers bars for proportions.
+
+**Populations, stated on the figure.** First-pass row is **marginal**;
+recovery row is **paired**. `FIG["scibench_note"]` requires a figure to say
+which it draws, and the script prints that note at build time so the
+requirement travels with the artifact.
+
+| what | FIGDATA field |
+|---|---|
+| Omni first-pass | `cells[gemma-4-31B-it|{A,B}].firstpass`, `.n_judged` |
+| SciBench first-pass | `scibench[gemma-4-31B-it].firstpass_marginal_{A,B}`, `.n_firstpass_A` |
+| Omni recovery (paired) | derived from `paired_recovery[gemma-4-31B-it|AB]` |
+| SciBench recovery (paired) | `scibench[…].recovery_paired_{A,B}`, `.n_paired`, `.discordant_*`, `.mcnemar_p` |
+
+**A cross-figure hazard, handled rather than hidden.** Figure 1 panel B draws
+gemma-4's Omni-MATH recovery as **marginal** (0.222 → 0.051); Figure 2 draws
+the same actor and domain as **paired** (0.160 → 0.017). Both are correct for
+their own population and they are different numbers for the same cell. Each
+row is labelled with its population and its own n so the two figures cannot
+be read as contradicting each other.
+
+**No error bars, deliberately.** Neither the SciBench export nor the Omni
+paired contrast carries bootstrap CI fields. Drawing an interval on one
+column and not the other would read as "SciBench is exact". Paired evidence
+is the discordant split and the exact McNemar p — both present for both
+domains, both seed-free.
+
+**Effect sizes are not implied to be equal.** Omni Δ = −0.143, SciBench
+Δ = −0.192, each shown with its own discordant split. The two-proportion test
+(z=1.06, p=0.289) *fails to distinguish* them, which is not evidence that
+they match; the footnote says so.
+
+gemma-4 only. gpt-oss's SciBench cell is underpowered (paired n=96; power
+0.06 exact McNemar / 0.12 two-proportion z — the **0.42 that circulated
+earlier is superseded**, per the 2026-10-01 correction in
+`XDOMAIN-INTEGRATION-DECISION.md`; the manuscript says "0.06–0.45 by test").
+This script's own docstring quoted the stale 0.42 until that note was fixed
+underneath it — the same stale-derived-artifact trap the note describes.
+
+## A provenance gap, reported not patched
+
+`provenance["files"]` lists only the three Omni-MATH files, so
+`provenance_line()` does not name the SciBench snapshot this figure draws
+(`scibench_AB.jsonl`, sha256 `10068f72cfd936d3…`, 2,296 rows — verified
+unchanged on disk). The script **prints a warning** rather than writing the
+hash itself: provenance belongs in the export, not in a plotting script.
+**Suggested fix for the coordinator:** add that file to `provenance["files"]`
+in `[T28b]`.
+
+## The terminology gate — `scripts/check_terminology_pdfs.py`
+
+```sh
+python3 scripts/check_terminology_pdfs.py            # gate, exits non-zero on a hit
+python3 scripts/check_terminology_pdfs.py --selftest # proves it can fail first
+```
+
+Scans every `figures/*.pdf` with `pdftotext`. **Current state: 15/15 clean.**
+
+It cannot pass vacuously: a missing `pdftotext`, a PDF with no extractable
+text, or an empty sweep each **abort or fail** rather than report success —
+because outlined or rasterized text would hide a violation from any
+text-based scan, and "nothing found" in an empty directory is not a pass.
+
+**The pattern is tested in both directions**, and this mattered. The first
+version caught `Arm B` and the old long labels but **missed**
+`A 0.014 ≈ B 0.015, but C 0.139` — which is exactly what survived in
+`fig1_v1_grouped` after its legend was fixed. A letter labelling a *number*
+is an arm code just as much as one labelling a prose phrase. The pattern now
+covers five forms (10 positive cases) and is checked against 12 strings it
+must NOT flag — panel tags `A`/`B`/`C`, `37 vs 3 of n=237`, `gemma-4 31B` —
+because a gate with false positives gets switched off. `mk_figstyle.save()`
+carries the same pattern so new violations are blocked at write time.
+
+## Legacy figures regenerated — all four scripts
+
+| script | outputs | what changed |
+|---|---|---|
+| `mk_fig1_dissociation.py` | `fig1_v1_grouped`, `fig1_v2_slopes`, `fig1_v3_dumbbell` | legend, footnotes, tick labels, Llama annotation, axis title `arm`→`condition` |
+| `mk_fig2_mechanism.py` | `fig2_v1_budget`, `fig2_v2_panels`, `fig2_v3_funnel` | row labels, legend, slope ticks, funnel title, footnote |
+| `mk_fig3_design.py` | `fig3_v1_columns`, `fig3_v2_rows` | column headings; the row swatch now carries colour only |
+| `mk_fig4_decomposition.py` | `fig4_v1_stacked`, `fig4_v2_rows` | already compliant; regenerated unchanged |
+
+Two defects surfaced **only by looking at the regenerated output**, after the
+automated gates passed:
+
+1. **A clipped label.** `fig2_v1_budget` rendered `tructured` — the long
+   condition name overflowed a left margin sized for `arm A`. Both the
+   terminology gate and `pdftotext` saw the *string*; neither sees that the
+   glyphs fall outside the axes.
+2. **A collided annotation.** `fig1_v1_grouped`'s Llama note grew when it
+   stopped using letters and ran into the legend. Shortened.
+
+Generic prose (`across arms`, `every arm`, the axis title `arm`) was also
+changed to *condition*. Those were never arm *codes* — no reader has to hold
+a mapping — but `TERMINOLOGY.md` asks that figures not read like an internal
+experiment log. **Zero occurrences of "arm" now appear in any shipped PDF.**
+
+## Defect class worth naming: a guard that cannot fire
+
+The S1 structural zero (Part 2) and the void self-test share one shape: **a
+guard written for a value that never occurs.** `if v is None` cannot fire on
+`0.0`; an audit that reads a nonexistent file finds no violations in it. Both
+*passed*, and both were empty. The rule that catches this class is to ask not
+"did the check pass?" but **"what input would make it fail, and have I fed it
+one?"** — which is why every check in this directory now ships a
+`--selftest` that plants the defect it claims to detect.

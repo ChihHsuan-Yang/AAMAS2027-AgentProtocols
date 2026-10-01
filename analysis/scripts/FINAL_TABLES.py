@@ -1126,6 +1126,66 @@ for k, v in FIG["mechanical"].items():
         v["dup_interpretable"] = not (k.startswith("gpt-oss-120b") and k.endswith("|B"))
 
 _OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "out", "FIGDATA.json")
+# ---------------------------------------------------------------- SciBench
+# The figure agent correctly REFUSED to compute these itself: the same frozen
+# file yields 0.212->0.020 (paired, n=99) and 0.254->0.051 (marginal, n=118),
+# and choosing between them is a denominator decision, not a plotting one.
+# Both are exported here with the population named in the key, so a figure
+# cannot silently pick the flattering one.
+_SB = os.path.join(os.path.dirname(FROZEN), "xdomain", "FROZEN_SCIBENCH")
+if os.path.isdir(_SB):
+    _sb = []
+    for _f2 in sorted(glob.glob(_SB + "/*.jsonl")):
+        for _l in open(_f2):
+            try: _sb.append(json.loads(_l))
+            except Exception: pass
+    _m = {}
+    for _a in sorted({actor(r) for r in _sb}):
+        _A = {r["problem_uid"]: r for r in _sb if actor(r) == _a and r["arm"] == "A"}
+        _B = {r["problem_uid"]: r for r in _sb if actor(r) == _a and r["arm"] == "B"}
+        if not _A or not _B: continue
+        _both = sorted(k for k in set(_A) & set(_B) if is_fpw(_A[k]) and is_fpw(_B[k]))
+        _t = collections.Counter((fin_prereg(_A[k]), fin_prereg(_B[k])) for k in _both)
+        _b, _c = _t[(1, 0)], _t[(0, 1)]
+        _mm = _b + _c
+        from math import comb as _cb2
+        _p = (min(1.0, 2 * sum(_cb2(_mm, i) for i in range(min(_b, _c) + 1)) / 2 ** _mm)
+              if _mm else 1.0)
+        _m[_a] = {
+            # FIRST PASS: marginal, every judged trajectory in the cell
+            "firstpass_marginal_A": float(np.mean([fp(r) for r in _A.values() if judged(r)])),
+            "firstpass_marginal_B": float(np.mean([fp(r) for r in _B.values() if judged(r)])),
+            "n_firstpass_A": sum(1 for r in _A.values() if judged(r)),
+            "n_firstpass_B": sum(1 for r in _B.values() if judged(r)),
+            # RECOVERY, PAIRED: problems first-pass-wrong under BOTH conditions
+            "recovery_paired_A": (_t[(1,1)] + _b) / len(_both) if _both else float("nan"),
+            "recovery_paired_B": (_t[(1,1)] + _c) / len(_both) if _both else float("nan"),
+            "n_paired": len(_both), "discordant_A_only": _b, "discordant_B_only": _c,
+            "mcnemar_p": _p,
+            # RECOVERY, MARGINAL: each condition over its OWN first-pass-wrong set
+            "recovery_marginal_A": float(np.mean([fin_prereg(r) for r in _A.values() if is_fpw(r)])),
+            "recovery_marginal_B": float(np.mean([fin_prereg(r) for r in _B.values() if is_fpw(r)])),
+            "n_fpw_marginal_A": sum(1 for r in _A.values() if is_fpw(r)),
+            "n_fpw_marginal_B": sum(1 for r in _B.values() if is_fpw(r)),
+        }
+    # Provenance for the SECOND snapshot, so a figure drawing SciBench can
+    # name the file it came from. Flagged by the figure agent: provenance
+    # belongs in the export, not reconstructed by the plotting script.
+    for _f3 in sorted(glob.glob(_SB + "/*.jsonl")):
+        FIG["provenance"]["files"][os.path.basename(_f3)] = {
+            "sha256": hashlib.sha256(open(_f3, "rb").read()).hexdigest(),
+            "rows": sum(1 for _ in open(_f3)),
+            "domain": "scibench",
+        }
+    FIG["scibench"] = _m
+    FIG["scibench_note"] = ("PAIRED and MARGINAL are different populations and "
+                            "different numbers. A figure must state which it draws.")
+    print(f"\n[T28b] SciBench exported for {len(_m)} actors (paired AND marginal)")
+    for _a, _v in sorted(_m.items()):
+        print(f"  {_a:<24} fp {_v['firstpass_marginal_A']:.3f}/{_v['firstpass_marginal_B']:.3f}"
+              f"   rec paired {_v['recovery_paired_A']:.3f}/{_v['recovery_paired_B']:.3f}"
+              f" n={_v['n_paired']} p={_v['mcnemar_p']:.2g}")
+
 with open(_OUT, "w") as _f:
     json.dump(FIG, _f, indent=1, sort_keys=True)
 print(f"  wrote {_OUT}")
