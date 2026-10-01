@@ -1,0 +1,133 @@
+{
+ "A_CRITIC_APPEND": "Routing rules:\n- Review the current submission and decide whether the current candidate is ready to submit.\n- Approve only if the derivation supports the exact answer shape and unit requested by the problem.\n- Do NOT preserve the same candidate after FAIL unless you can point to a specific formatting-only issue.\n- After FAIL, prefer routing to Planner or Executor with a concrete repair target instead of only rewriting your own boxed answer.\n- If the setup, the governing relation, or the interpretation is wrong, route to Planner.\n- If the setup is sound but the derivation, arithmetic, unit conversion, or boxing is flawed, route to Executor.\n- Only on `[Agree]`, include the final answer block immediately before the route tag.\n- On `[Route:Planner]` or `[Route:Executor]`, do NOT include any final answer block.\n\nOutput format (STRICT):\nDiagnosis:\n- bullet 1\n- bullet 2\nFix Instruction:\n- bullet 1\nIf and only if you are submitting now, add:\nFinal Answer For Evaluator:\n\\boxed{<current best answer>}\nEnd with EXACTLY ONE tag on the last line:\n  [Route:Planner] OR [Route:Executor] OR [Agree]",
+ "A_CRITIC_PREPEND": "You are the Reviewer in a Planner\u2192Executor\u2192Reviewer pipeline for college-level science problems.\n\nFINAL ANSWER OWNERSHIP:\n- You are responsible for deciding whether the current MAS candidate is ready for evaluator submission.\n- The system keeps track of the current candidate answer separately from your review text.\n- Only when you are actually submitting the current candidate for evaluation should you include:\n  Final Answer For Evaluator:\n  \\boxed{<current best answer>}\n- If you route to Planner or Executor, do NOT include a `Final Answer For Evaluator:` section.\n- Infer the required answer shape and units from the problem statement before judging correctness.\n- For this benchmark, the boxed answer is normally a numeric value carrying physical units; it may also be a dimensionless number or a short symbolic expression.\n- Check the unit, the magnitude, the sign, and the number of significant figures, not only the digits.\n- An answer with the right number in the wrong unit, or off by a power of ten, is incorrect.\n- For `numeric-verifier`, `exact`, and `omni-rule`, the evaluator judges the current candidate's boxed final answer. If the current candidate has no boxed final answer, the evaluator will reject it and ask for a proper submission.\n- For `omni-judge` and `omni-verifier`, the evaluator may read more context, but the current candidate still needs a clear final answer.\n- The final line of your response must still be exactly one route tag.\n- If ${advice} contains a failure indicator such as `FAIL` or `Score: False`, you MUST end with ONLY `[Route:Planner]` or `[Route:Executor]`. You MUST NOT output `[Agree]`.\n- After a FAIL, treat the current candidate as probably wrong or incomplete unless the issue is clearly only formatting.\n- When ${advice} reports a FAIL, include at least one concrete revision instruction for the next agent.\n- After a FAIL, prefer pipeline repair: send concrete instructions to Planner or Executor so the next MAS attempt changes the actual solution, not only the review text.\n- Do NOT approve an answer only because the derivation sounds coherent; check the physical or chemical setup, the equation used, unit consistency, and the arithmetic.\n- Do not repeat your previous reviewer message verbatim after a FAIL.\n- Keep the review concise. Do NOT restate the full derivation.\n- Use at most 2 short bullets under Diagnosis and at most 2 short bullets under Fix Instruction.\n- Keep the total reviewer text before the final boxed answer brief.\n\nInputs you see:\n- Problem\n- Previous Planner plan\n- Executor output\n- System/Evaluator feedback in ${advice}\n\nProblem:\n${task_description}\n\nPrevious Planner plan:\n${previous_plan}\n\nCurrent submission to review:\n${preliminary_solution}\n\nSystem/Evaluator feedback:\n${advice}",
+ "A_EXECUTOR_APPEND": "Show the derivation clearly.\nEnd with EXACTLY one final line: \\boxed{<answer>}",
+ "A_EXECUTOR_PREPEND": "You are the Executor.\nYou must execute the Planner's plan and perform all calculations / derivations.\n\nProblem:\n${task_description}\n\nPlanner plan:\n${solution}\n\nReviewer feedback for Executor (may be empty):\n${advice}\n\nREQUIREMENTS:\n- Carry out the needed derivations and numerical work.\n- Keep the reasoning readable and concise.\n- Infer the required answer shape and units from the problem statement before finishing.\n- The final answer is normally a numeric value with units; it may also be a dimensionless number or a short symbolic expression.\n- Include units whenever the quantity has them, and use the unit the problem asks for.\n- Carry enough precision through intermediate steps, and report the final value to a sensible number of significant figures.\n- Preserve the sign of the quantity where the sign is physically meaningful.\n- Your LAST line must be EXACTLY: \\boxed{<answer>}\n- The boxed answer may be a number with units, a plain number, or a concise symbolic form.\n- No punctuation after the final box.",
+ "A_SOLVER_APPEND": "You are ${role_description}.\nUse the chat history and avoid repeating the same plan.\nDo NOT provide the final answer.",
+ "A_SOLVER_PREPEND": "You are the Planner in a Planner\u2192Executor\u2192Reviewer loop for college-level science problems (chemistry and physics).\n\nProblem:\n${task_description}\n\nPrevious plan you wrote (may be empty):\n${previous_plan}\n\nReviewer / System feedback (may be empty):\n${advice}\n\nHARD ROLE SEPARATION (critical):\n- You MUST NOT carry out algebraic manipulation or numerical calculation yourself.\n- You MUST NOT write computed intermediate values.\n- You MAY restate givens from the problem.\n- Any computation or algebraic simplification must be delegated to the Executor as explicit operations.\n\nREQUIRED STRUCTURE:\n1) Givens / quantities / physical or chemical context\n2) Target quantity, its units, and answer form\n3) Key laws, relations, or equations to use\n4) Ordered execution steps for the Executor\n\nIn \"Target quantity and answer form\", explicitly identify what the final answer should look like:\n- a numeric value carrying physical units\n- a dimensionless number or ratio\n- a value in a specific unit requested by the problem\n- a short symbolic expression\n- a sign-bearing quantity (state the sign convention)\n\nDELTA REQUIREMENT:\n- Begin with \"DELTA:\" and list 2-4 concrete updates vs the previous plan.\n- If reviewer feedback exists, address it explicitly.",
+ "B_GENERIC_APPEND": "Continue the work.\nGive your current best final answer on its own line as: \\boxed{<answer>}\nEnd your response with EXACTLY ONE tag on the last line:\n  [Agree] if the current best answer is ready to submit, otherwise [Continue]",
+ "B_GENERIC_PREPEND": "You are one of three agents collaboratively solving this problem. Continue the work.\n\nProblem:\n${task_description}\n\nShared history (may be empty):\n${shared_history}\n\nYou are Agent ${slot_index} of 3 in this turn cycle. Continue the collaborative work on the problem.",
+ "C_EXECUTOR_APPEND": "Output the JSON object only.",
+ "C_EXECUTOR_PREPEND": "Problem:\n${task_description}\n\nPlan (structured):\n${plan_json}\n\nFeedback (may be empty):\n${advice}\n\nReturn a single JSON object and nothing else, with exactly these keys:\n{\"derivation\": string, \"answer\": string}\n\"answer\" must contain the final answer only.",
+ "C_PLANNER_APPEND": "Output the JSON object only.",
+ "C_PLANNER_PREPEND": "Problem:\n${task_description}\n\nPrevious plan (may be empty):\n${previous_plan}\n\nFeedback (may be empty):\n${advice}\n\nReturn a single JSON object and nothing else, with exactly these keys:\n{\"subproblems\": [string], \"strategy\": [string], \"dependencies\": [string], \"required_quantities\": [string]}\nNo other keys are permitted.",
+ "C_REVIEWER_APPEND": "Output the JSON object only.",
+ "C_REVIEWER_PREPEND": "Problem:\n${task_description}\n\nPlan (structured):\n${plan_json}\n\nExecution (structured):\n${execution_json}\n\nFeedback (may be empty):\n${advice}\n\nReturn a single JSON object and nothing else, with exactly these keys:\n{\"verdict\": one of \"accept\" | \"revise_plan\" | \"revise_execution\", \"target\": string, \"critique\": string}\nNo other keys are permitted. If you choose \"accept\", the execution's current answer is submitted unchanged.",
+ "EVALUATOR_APPEND": "Output format:\nVerdict: PASS or FAIL\nCorrectness: 0 or 1\nResponse: <brief non-leaking repair hint; mention answer-shape/generality if relevant, without revealing the gold answer>",
+ "EVALUATOR_PREPEND": "You are the Evaluator in a Planner\u2192Executor\u2192Reviewer loop for college-level science problems.\n\nProblem:\n${task_description}\n\nSubmitted candidate:\n${solution}\n\nGround truth / evaluator-only reference material:\n${result}\n\nRequirements:\n  - Decide whether the submitted candidate final answer is scientifically equivalent to the ground truth.\n  - Focus on the final answer, not stylistic wording.\n  - The reference material is the final answer for this problem. It is normally a numeric value with units.\n  - Treat the following as EQUIVALENT (correct):\n      * the same value written in a different but compatible unit (for example 1.0 dm^3 and 1.0e-3 m^3, or 1 atm and 101.325 kPa)\n      * the same value in scientific, decimal, or engineering notation (for example 2.26e-5, 0.0000226, 22.6e-6)\n      * LaTeX and plain-text renderings of the same unit (for example \\mathrm{atm}, \\text{atm}, atm)\n      * a value agreeing with the reference to the precision the reference itself carries; judge agreement at the reference's number of significant figures, and allow a relative difference of about 1% to absorb rounding and constant choices\n      * a value that differs only by including or omitting a unit that the problem clearly fixes\n  - Treat the following as NOT equivalent (incorrect):\n      * a different physical quantity, or the right number in an incompatible unit\n      * a value off by a power of ten\n      * a wrong sign where the sign is physically meaningful\n      * a missing, placeholder, or non-numeric answer where a number is required\n  - Do not reveal, quote, restate, or hint at the ground truth in your response.\n  - Output a clear verdict label: `Verdict: PASS` or `Verdict: FAIL`.\n  - If the answer is equivalent, output `Correctness: 1`.\n  - Otherwise output `Correctness: 0` and give a short non-leaking repair hint that names the kind of mismatch without revealing the ground truth, for example: wrong unit, off by a power of ten, wrong sign, wrong quantity computed, insufficient precision, or formatting/boxing issue.",
+ "_COMPARISON_TO_OMNIMATH": {
+  "A_CRITIC_APPEND": {
+   "identical_to_omnimath": false,
+   "omnimath_chars": 1133,
+   "omnimath_sha256_12": "aaf7130ca417",
+   "scibench_chars": 1098,
+   "scibench_sha256_12": "75d4401c8a67"
+  },
+  "A_CRITIC_PREPEND": {
+   "identical_to_omnimath": false,
+   "omnimath_chars": 2905,
+   "omnimath_sha256_12": "ec65d03ce57f",
+   "scibench_chars": 2772,
+   "scibench_sha256_12": "63d33ba82e6b"
+  },
+  "A_EXECUTOR_APPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 78,
+   "omnimath_sha256_12": "cb9e7101215c",
+   "scibench_chars": 78,
+   "scibench_sha256_12": "cb9e7101215c"
+  },
+  "A_EXECUTOR_PREPEND": {
+   "identical_to_omnimath": false,
+   "omnimath_chars": 996,
+   "omnimath_sha256_12": "4aa60790cbac",
+   "scibench_chars": 1016,
+   "scibench_sha256_12": "67169f2e1011"
+  },
+  "A_SOLVER_APPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 117,
+   "omnimath_sha256_12": "15fe5a243f3a",
+   "scibench_chars": 117,
+   "scibench_sha256_12": "15fe5a243f3a"
+  },
+  "A_SOLVER_PREPEND": {
+   "identical_to_omnimath": false,
+   "omnimath_chars": 1179,
+   "omnimath_sha256_12": "e34d40e46556",
+   "scibench_chars": 1243,
+   "scibench_sha256_12": "9a99d0f4afe8"
+  },
+  "B_GENERIC_APPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 226,
+   "omnimath_sha256_12": "1e3436300416",
+   "scibench_chars": 226,
+   "scibench_sha256_12": "1e3436300416"
+  },
+  "B_GENERIC_PREPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 266,
+   "omnimath_sha256_12": "ea1ab14a3397",
+   "scibench_chars": 266,
+   "scibench_sha256_12": "ea1ab14a3397"
+  },
+  "C_EXECUTOR_APPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 28,
+   "omnimath_sha256_12": "b3b0af40316a",
+   "scibench_chars": 28,
+   "scibench_sha256_12": "b3b0af40316a"
+  },
+  "C_EXECUTOR_PREPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 255,
+   "omnimath_sha256_12": "6fb878312bac",
+   "scibench_chars": 255,
+   "scibench_sha256_12": "6fb878312bac"
+  },
+  "C_PLANNER_APPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 28,
+   "omnimath_sha256_12": "b3b0af40316a",
+   "scibench_chars": 28,
+   "scibench_sha256_12": "b3b0af40316a"
+  },
+  "C_PLANNER_PREPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 320,
+   "omnimath_sha256_12": "4cfc49fcacbd",
+   "scibench_chars": 320,
+   "scibench_sha256_12": "4cfc49fcacbd"
+  },
+  "C_REVIEWER_APPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 28,
+   "omnimath_sha256_12": "b3b0af40316a",
+   "scibench_chars": 28,
+   "scibench_sha256_12": "b3b0af40316a"
+  },
+  "C_REVIEWER_PREPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 424,
+   "omnimath_sha256_12": "463137eb5a2f",
+   "scibench_chars": 424,
+   "scibench_sha256_12": "463137eb5a2f"
+  },
+  "EVALUATOR_APPEND": {
+   "identical_to_omnimath": true,
+   "omnimath_chars": 178,
+   "omnimath_sha256_12": "ea6d7ab7c211",
+   "scibench_chars": 178,
+   "scibench_sha256_12": "ea6d7ab7c211"
+  },
+  "EVALUATOR_PREPEND": {
+   "identical_to_omnimath": false,
+   "omnimath_chars": 2321,
+   "omnimath_sha256_12": "7c96c466b11b",
+   "scibench_chars": 2043,
+   "scibench_sha256_12": "36727765a7fd"
+  }
+ },
+ "_README": "The EXACT prompt strings used by the SciBench (v1.1.0) campaign, read from experiments/runner_xdomain.py at build time. ARM A IS NOT THE SAME CONTRACT AS config/prompts.json -- it was domain-adapted. ARM B IS BYTE-IDENTICAL across the two domains. See _COMPARISON_TO_OMNIMATH and the card's cross-domain section. CP_* prompts are absent: Arm C' was not run in this domain."
+}

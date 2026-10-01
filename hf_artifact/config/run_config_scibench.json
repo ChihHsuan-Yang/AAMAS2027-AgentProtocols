@@ -1,0 +1,116 @@
+{
+ "_note": "Held-constant configuration for the v1.1.0 SciBench campaign, read from experiments/runner_xdomain.py module constants at build time. Every budget and decoding knob is IDENTICAL to v1.0.0's run_config.json; what differs is the benchmark/slice/domain and the domain-adapted Arm A + evaluator prompts.",
+ "actor_models": [
+  "openai/gpt-oss-120b",
+  "google/gemma-4-31B-it"
+ ],
+ "arm_contract_differs_by_domain": {
+  "WARNING": "ARM A IS NOT THE SAME CONTRACT IN THE TWO DOMAINS. Do not assume one contract across the release.",
+  "arm_A": "DOMAIN-ADAPTED (option b). 4 of 6 Arm A strings differ from v1.0.0.",
+  "arm_B": "BYTE-IDENTICAL to v1.0.0 (asserted in code at build time).",
+  "consequence": "P1a and every clause-specific role-fidelity metric are NOT transported across domains and were deliberately not computed: scoring SciBench agents against Omni-MATH clauses would score them against instructions they never received.",
+  "evaluator": "DOMAIN-ADAPTED for units / significant figures / scientific notation. COMMON MODE: byte-identical across arms A and B within this domain, so it cannot manufacture an A-vs-B difference; it sets the difficulty floor only.",
+  "why_adapt_rather_than_reuse": "Arm B's generic prompt contains no domain language, so leaving Arm A's math-specific wording in place would make the two arms differ in TWO ways -- role structure AND domain fit -- and the domain-fit difference runs against Arm A. Adapting A restores a single-variable manipulation. Every structural clause of A is preserved (role separation, DELTA, required structure, Diagnosis/Fix Instruction, answer ownership, routing tags); only domain nouns and the answer-form enumeration change."
+ },
+ "arms_not_run": {
+  "C": "not run in this domain -- no enforcement_events table exists for SciBench",
+  "Cp": "not run in this domain"
+ },
+ "arms_run": [
+  "A",
+  "B"
+ ],
+ "backend": {
+  "base_url": "<REDACTED: institutional inference endpoint -- identifies the operating institution; withheld for double-blind review>",
+  "kind": "self-hosted vLLM OpenAI-compatible endpoint on an HPC cluster",
+  "name": "sophia_vllm"
+ },
+ "call_budgets": {
+  "max_actor_calls": 30,
+  "max_evaluator_calls": 6,
+  "max_regenerations_per_turn": 3,
+  "max_transport_retries": 4,
+  "request_timeout_s": 300.0
+ },
+ "config_version": {
+  "KNOWN LIMITATION -- config_version does NOT cover the logger": "Same limitation as v1.0.0: config_version_hash() does not hash the logging code, so it cannot distinguish instrumented from uninstrumented rows. Use chars_per_sec, not config_version, to detect F13.",
+  "actors": [
+   "gemma-4-31B-it",
+   "gpt-oss-120b"
+  ],
+  "arms": [
+   "A",
+   "B"
+  ],
+  "file": "raw/scibench_AB.jsonl",
+  "rows": 2296,
+  "source_commit": "c8c48ada000604a0e156075c482f5edc5133e2aa",
+  "value": "aed89f28ab338bdb",
+  "verification": "Recomputed config_version_hash() from experiments/runner_xdomain.py and reproduced aed89f28ab338bdb exactly, matching the value stamped on all 2,296 frozen rows.",
+  "why_it_differs_from_the_omnimath_hashes": "The hash covers every prompt string plus benchmark_id and slice_id. Arm A and the evaluator were domain-adapted and the benchmark changed, so the hash necessarily differs. It is NOT poolable with the Omni-MATH hashes, and that is the point of the field."
+ },
+ "corpus": {
+  "benchmark_id": "scibench",
+  "denominators": "692 upstream -> 580 in the release registry -> 574 carrying the text_only slice -> ALL 574 run. No sub-sampling, no seed, no random draw.",
+  "domain": "science",
+  "license": "MIT (NOT Apache-2.0) -- see LICENSES/",
+  "n_problems": 574,
+  "problem_manifest": "manifests/problem_sample_scibench.json (problem_uid list only)",
+  "problems_source": "<REDACTED local path>: the SciBench text_only slice of the upstream SciAgentTrace release registry",
+  "slice_id": "text_only"
+ },
+ "decoding": {
+  "max_tokens": 8192,
+  "temperature": 0.0
+ },
+ "deliberation_budget": {
+  "identical_across_arms": true,
+  "identical_to_v1_0_0": true,
+  "inner_rounds": 2,
+  "max_outer_rounds": 3,
+  "total_cycles": 6
+ },
+ "evaluator_model": "openai/gpt-oss-120b",
+ "role_order": [
+  "planner",
+  "executor",
+  "reviewer"
+ ],
+ "visibility_note": "A and B are byte-identical in visibility, exactly as in v1.0.0. Only prompt text differs. This is unchanged by the domain adaptation.",
+ "visibility_policy_per_arm": {
+  "A": {
+   "executor": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "planner": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "reviewer": [
+    "problem",
+    "shared_history",
+    "advice"
+   ]
+  },
+  "B": {
+   "executor": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "planner": [
+    "problem",
+    "shared_history",
+    "advice"
+   ],
+   "reviewer": [
+    "problem",
+    "shared_history",
+    "advice"
+   ]
+  }
+ }
+}

@@ -1,7 +1,10 @@
 # Release procedure — how to flip this dataset public after acceptance
 
-**Current status: PUBLISHED, PRIVATE.**
-`AgentsSci/AAMAS2027-Roles` — private, verified two ways (see below).
+**Current status: PUBLISHED, PRIVATE — now at v1.1.0 (two domains).**
+`AgentsSci/AAMAS2027-Roles` — private, verified three ways before and after
+every upload: the authenticated API reports `private=True`, an anonymous fetch
+of a raw file returns **401**, and a positive control on a known-public dataset
+returns **200 in the same run** (so a 401 cannot be a network artifact).
 
 Nothing here should be run before the paper is accepted.
 
@@ -54,8 +57,29 @@ not. It is enforced by a gate, not by memory — see step 1.
 python3 scripts/preflight_public.py          # must exit 0
 ```
 
-It currently **FAILS**, listing the 14 affected rows. Do not flip public on a
-FAIL, and do not delete the check to get past it. To clear it:
+It currently **FAILS**, listing **15** matching rows. Do not flip public on a
+FAIL, and do not delete the check to get past it.
+
+**Read the 15 before acting — they are not all the same thing.**
+
+- **14 are genuine** (v1.0.0 Omni traces): an upstream HTTP error body in the
+  `error` field naming the operating institution. These are the reason this
+  repository cannot be public.
+- **1 is a FALSE POSITIVE** (v1.1.0, `scibench_AB.jsonl` line 1482, row uid
+  `scibench:matter:40.3`, `messages` field): a **navigational star**, named in
+  a physics problem about photon flux, whose name is also an HPC hostname —
+  the same collision class as "crux". **SciBench introduces no new genuine
+  instance.** Run the gate to see the literal; it is deliberately not written
+  in this file, because a document that prints a hostname next to the phrase
+  "operating institution" is a worse disclosure than the trace row it
+  describes.
+
+It is deliberately **not** allowlisted. An allowlist keyed on the word would
+also exempt a real hostname, and this hit sits in `messages` rather than
+`error`, so `--fix` correctly refuses to touch it. When clearing the gate for
+release, handle this one **by hand** and record the decision.
+
+To clear the genuine 14:
 
 ```bash
 python3 scripts/preflight_public.py --fix    # redacts ONLY the `error` field
@@ -65,7 +89,16 @@ python3 scripts/preflight_public.py          # re-verify: must now PASS
 
 `--fix` replaces the captured upstream response body with a marker and leaves
 every other byte untouched (the failure *class* is preserved). It then rewrites
-`raw/MANIFEST.json` for the new hashes. **The pre-redaction hashes stay in
+each trace's manifest (`raw/MANIFEST.json`, `raw/MANIFEST_SCIBENCH.json`) for
+the new hashes.
+
+**`--fix` will refuse while the SciBench false positive is present**, because
+that hit is outside the `error` field. It refuses **having written nothing** —
+v1.1.0 made the redaction two-phase (plan every trace, then write only if all
+are safe). The previous single-phase version would rewrite earlier traces and
+*then* abort, leaving manifests that no longer described the bytes on disk. It
+could not fire while every known hit was in an `error` field; the SciBench row
+made it reachable, and it was fixed rather than worked around. **The pre-redaction hashes stay in
 `VERSION.release_history`**, so anything published against v1.0.0 remains
 checkable, and the card must then say the raw traces are byte-exact *except for
 a documented redaction of 14 `error` fields*.
@@ -138,9 +171,27 @@ evidence that the bytes on the hub are the bytes you built.
 4. Do not delete the repo and re-create it under a new name as a cover — the
    deletion does not retract mirrors and the new repo is trivially linked.
 
-## Adding the second domain
+## The second domain — DONE (v1.1.0)
 
-The SciBench campaign lands as **v1.1.0**, additively. v1.0.0's files keep
-their bytes and hashes. See `config/SECOND_DOMAIN_SLOT.md`, and note SciBench
-is **MIT**, a different licence from the Apache-2.0 material here — it gets its
-own entry in `LICENSES/registry.json` rather than being absorbed.
+The SciBench campaign landed **additively** as v1.1.0. Every v1.0.0 file keeps
+its bytes and sha256; both `scripts/build_scibench.py` and
+`scripts/emit_release_metadata.py` **assert** this and refuse to proceed
+otherwise. SciBench is **MIT** — a different licence from the Apache-2.0
+material — and has its own `LICENSES/registry.json` entry plus the verbatim
+`LICENSES/MIT-SciBench.txt`, rather than being absorbed. See
+`config/SECOND_DOMAIN_SLOT.md` for promise-by-promise outcomes.
+
+### If a THIRD domain is ever added, these are the two things that bit us
+
+1. **The public-release gate does not scan what it is not told about.**
+   `TRACES` in `scripts/preflight_public.py` is an explicit tuple. A trace
+   absent from it is **unchecked**, not clean — and it would have reported PASS
+   while saying nothing. The gate now prints which traces it scanned, and
+   `emit_release_metadata.py` refuses if `raw/` holds a `.jsonl` it has no
+   provenance entry for. Add the new trace to **both**.
+2. **Benchmark-specific vocabulary trips the deanonymization patterns.** HPC
+   hostnames collide with ordinary nouns and proper names: `crux` (already
+   known), and now a **star name** in a physics corpus. Expect a chemistry or
+   astronomy corpus to produce more. Triage each hit by reading its context;
+   never allowlist the bare word — and when you write the triage up, do not
+   reproduce the literal in a file the scanner also reads.

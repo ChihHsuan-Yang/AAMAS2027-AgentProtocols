@@ -1,4 +1,7 @@
 ---
+# NOTE: this field carries ONE value and covers THIS PROJECT'S OWN derived
+# material only. v1.1.0 is MIXED-LICENCE: Omni-MATH-2 content is Apache-2.0
+# and SciBench content is MIT. See LICENSES/README.md, which is the authority.
 license: apache-2.0
 task_categories:
   - question-answering
@@ -23,6 +26,12 @@ configs:
     data_files: data/enforcement_events.parquet
   - config_name: adjudication
     data_files: data/adjudication.parquet
+  - config_name: scibench_trajectories
+    data_files: data/scibench/trajectories.parquet
+  - config_name: scibench_evaluator_calls
+    data_files: data/scibench/evaluator_calls.parquet
+  - config_name: scibench_role_messages
+    data_files: data/scibench/role_messages.parquet
 ---
 
 # Role structure in multi-agent LLM problem solving — trajectory dataset
@@ -33,11 +42,18 @@ configs:
      See RELEASE_PROCEDURE.md. -->
 
 A controlled study of whether **role structure** in a multi-agent LLM pipeline
-is load-bearing. 11,600 trajectories, 3 actor models, 4 conditions, 1,600
-competition-math problems, with an external oracle grader in the loop.
+is load-bearing. **13,896 trajectories across two domains** — 11,600 on
+competition mathematics (Omni-MATH-2, 1,600 problems, 3 actors, 4 conditions)
+and **2,296 on college chemistry and physics (SciBench, 574 problems, 2 actors,
+2 conditions, added in v1.1.0)** — with an external oracle grader in the loop.
 
 This release ships **both layers**: the raw frozen traces as exact bytes, and a
 normalized analysis-ready parquet layer derived from them.
+
+> **Two domains, two licences, two Arm A contracts.** Omni-MATH-2 content is
+> **Apache-2.0**; SciBench content is **MIT**. And **Arm A's prompt is NOT the
+> same in both domains** — it was deliberately adapted. Arm B *is* byte-identical.
+> Read *Cross-domain (v1.1.0)* before pooling anything.
 
 **Anonymous during review.** Author, institution, and code repository are
 withheld and will be added on acceptance.
@@ -74,10 +90,21 @@ released intact.
 | `openai/gpt-oss-120b` | 1,600 | 1,600 | 1,600 | 400 |
 | `meta-llama/Llama-3.3-70B-Instruct` | 400 | 400 | 400 | — |
 
+**Second domain — SciBench (v1.1.0), Arms A and B only:**
+
+| actor model | A | B | C | C′ |
+|---|---|---|---|---|
+| `google/gemma-4-31B-it` | 574 | 574 | — | — |
+| `openai/gpt-oss-120b` | 574 | 574 | — | — |
+
+There is **no Arm C in SciBench**, so there is **no `enforcement_events` table
+and no adjudication study for that domain**. Those remain Omni-MATH-only.
+
 Grader: `openai/gpt-oss-120b`, temperature 0 — **the same checkpoint as one of
-the three actors**. Budget identical across arms (3 outer × 2 inner = 6 cycles),
-temperature 0, `max_tokens` 8192. Corpus: 1,600 Omni-MATH-2 problems, one
-domain (competition math).
+the three actors** — in both domains. Budget identical across arms *and across
+domains* (3 outer × 2 inner = 6 cycles), temperature 0, `max_tokens` 8192.
+Corpora: 1,600 Omni-MATH-2 competition-math problems, and 574 SciBench
+college chemistry/physics problems.
 
 `config/` holds the **exact** prompts, JSON schemas and every knob. The paper is
 about role manipulation, so the data is not interpretable without them.
@@ -86,20 +113,33 @@ about role manipulation, so the data is not interpretable without them.
 
 | path | what |
 |---|---|
-| `raw/` | **the frozen traces, exact bytes** — `campaign_v2.jsonl` (9,600), `actor3.jsonl` (1,200), `armCp.jsonl` (800) + `MANIFEST.json` |
+| `raw/` | **the frozen traces, exact bytes** — `campaign_v2.jsonl` (9,600), `actor3.jsonl` (1,200), `armCp.jsonl` (800) + `MANIFEST.json`; **`scibench_AB.jsonl` (2,296) + `MANIFEST_SCIBENCH.json`** |
 | `data/trajectories.parquet` | 11,600 rows — one per trajectory; the main results tables |
 | `data/role_messages.parquet` | 83,320 rows — one per role message; collapse, duplication, frozen-answer analyses |
 | `data/evaluator_calls.parquet` | 17,486 rows — one per oracle grading; the noise-floor analysis |
 | `data/enforcement_events.parquet` | 29,796 rows — Arm C/C′ validation attempts, **3,489** rejections, regenerations |
 | `data/adjudication.parquet` | 513 rows — 171 items × up to 3 reps of model adjudication |
-| `config/` | all 22 prompts, 3 JSON schemas, budgets, visibility policy |
+| **`data/scibench/trajectories.parquet`** | **2,296 rows** — SciBench, same 41 columns as the Omni table |
+| **`data/scibench/role_messages.parquet`** | **13,500 rows** — SciBench role messages |
+| **`data/scibench/evaluator_calls.parquet`** | **3,699 rows** — SciBench oracle gradings |
+| `config/` | all 22 Omni prompts, 3 JSON schemas, budgets, visibility policy |
+| **`config/prompts_scibench.json`** | **the 16 SciBench prompts + a per-prompt identical/differs table vs Omni** |
+| **`config/run_config_scibench.json`** | **the SciBench config: budgets, visibility, denominators, licence** |
 | `adjudication/` | the study's protocol, rubric, blinded items, key, verdicts |
-| `manifests/`, `LICENSES/` | frozen-snapshot manifest, per-cell census, problem ids; per-source licensing |
+| `manifests/`, `LICENSES/` | frozen-snapshot manifest, per-cell census, problem ids; per-source licensing (incl. **`MIT-SciBench.txt`**) |
+| **`analysis/SAMPLING_AUDIT.md`** | **the full sampling + denominator audit for both domains** |
 | `SCHEMA.md` | every column, and the defects in full |
 | `VERSION`, `CHECKSUMS.txt`, `MANIFEST.json` | integrity and provenance |
 
-Total ~352 MB. Raw and derived layers are consistent by construction: the build
-verifies the snapshot sha256 before deriving anything and refuses on mismatch.
+Total ~382 MB (v1.1.0 adds ~30 MB). Raw and derived layers are consistent by
+construction: each build verifies its snapshot sha256 before deriving anything
+and refuses on mismatch. The v1.1.0 build additionally **asserts that every
+v1.0.0 file is byte-unchanged**, so "additive" is verified rather than promised.
+
+**Separating the domains is always a filter**, never a guess: every row carries
+`benchmark_id` (`omnimath2` / `scibench`) and `domain` (`math` / `science`),
+one distinct value per table, and the two domains live in separate parquet
+files as well.
 
 ## Quick start
 
@@ -117,6 +157,143 @@ for arm in ["A", "B"]:
 # A first-pass 0.802 recovery 0.222 frozen 0.288
 # B first-pass 0.802 recovery 0.051 frozen 0.845
 ```
+
+## Cross-domain (v1.1.0) — SciBench, and what does **not** transfer
+
+### The Arm A contract is NOT the same in both domains. Read this first.
+
+| prompt | Omni-MATH-2 vs SciBench |
+|---|---|
+| `A_SOLVER_PREPEND` (planner) | **DIFFERS** — domain-adapted |
+| `A_EXECUTOR_PREPEND` | **DIFFERS** — domain-adapted |
+| `A_CRITIC_PREPEND` / `A_CRITIC_APPEND` (reviewer) | **DIFFERS** — domain-adapted |
+| `A_SOLVER_APPEND`, `A_EXECUTOR_APPEND` | identical |
+| **`B_GENERIC_PREPEND` / `B_GENERIC_APPEND`** | **BYTE-IDENTICAL** (asserted in code at build time) |
+| `EVALUATOR_PREPEND` | **DIFFERS** — adapted for units / sig-figs / scientific notation |
+| `EVALUATOR_APPEND`, all `C_*` | identical |
+
+**5 of 16 prompts differ.** Both prompt sets ship in full
+(`config/prompts.json`, `config/prompts_scibench.json`), and
+`prompts_scibench.json._COMPARISON_TO_OMNIMATH` gives a per-prompt
+identical/differs flag with sha256 prefixes so you can check this yourself.
+
+**Why adapt rather than reuse.** Arm B's generic prompt contains no domain
+language at all. Leaving Arm A's math-specific wording ("competition-level
+mathematics", "olympiad-style") in a chemistry benchmark would make the arms
+differ in **two** ways — role structure *and* domain fit — and the domain-fit
+difference runs **against** Arm A. Adapting A restores a single-variable
+manipulation. Every structural clause of A is preserved (role separation,
+DELTA, required structure, Diagnosis/Fix Instruction, answer ownership,
+routing tags); only domain nouns and the answer-form enumeration change.
+
+**Consequence — do not compute these across domains.** P1a and every
+clause-specific role-fidelity metric. Scoring SciBench agents against
+Omni-MATH's clauses would score them against instructions they never received.
+The evaluator adaptation is **common mode**: byte-identical across arms A and B
+*within* SciBench, so it cannot manufacture an A-vs-B difference — it only sets
+the difficulty floor.
+
+### What replicates
+
+Paired on problems first-pass-wrong under **both** arms — the same population
+the Omni-MATH headline uses:
+
+| domain | actor | n | A recovers only | B recovers only | B−A | exact McNemar p |
+|---|---|---|---|---|---|---|
+| Omni-MATH | gemma-4 | 237 | 37 | 3 | −0.1435 | 1.95e-08 |
+| **SciBench** | **gemma-4** | **99** | **21** | **2** | **−0.1919** | **6.60e-05** |
+| **SciBench** | gpt-oss | 96 | 17 | 9 | −0.0833 | 0.169 (**unresolved**) |
+
+The two gemma effects are **not distinguishable**: a two-proportion test on the
+discordant rates gives **z=1.04, p=0.300** (pooled variance) or **z=0.95,
+p=0.342** (unpooled) — re-derived here from the released tables. *The campaign
+notes record z=1.06, p=0.289; we could not reproduce that exact pair and quote
+ours. The conclusion is identical under all three — the effects are
+indistinguishable — and none of them is evidence that the effects are the
+**same**, only that this comparison cannot separate them.* First-pass accuracy moves by **exactly
+0.000** for gemma (0.794 vs 0.794), as in Omni-MATH. Functional collapse goes
+0.000 → 0.998. Arm B spends **0.00** cycles revising and never once declines.
+
+### What must NOT be claimed from this
+
+- ❌ "The result generalizes across domains." **One actor** replicated in **one**
+  further domain.
+- ❌ "Replicates across two benchmarks" / "two of three actors" — Llama-3.3 was
+  **never run** on SciBench.
+- ❌ Any **pooled** SciBench+Omni statistic. The two actors' effects differ by a
+  factor of two; pooling averages a detectable effect with an undetectable one.
+- ❌ Any cross-domain P1a or clause-specific fidelity comparison (see above).
+- ❌ Reading gpt-oss's SciBench null as **absence** of an effect. See below.
+
+### gpt-oss's SciBench cell resolves nothing — it is not a non-replication
+
+Its point estimate (−0.083) is in the same direction and almost exactly its own
+Omni-MATH effect (−0.077), but at n=96 the cell is **underpowered against an
+effect of that size**. This was pre-registered at 761/2,296 rows, *before* any
+recovery contrast existed, precisely so the reading could not be chosen
+afterwards.
+
+**Power, stated honestly.** The campaign notes record 0.42. We could not
+reproduce that figure and report the spread instead — against this cell's own
+observed effect at n=96:
+
+| method | power |
+|---|---|
+| **exact McNemar, two-sided — the test actually used for the p-value** | **0.26** |
+| bootstrap-CI rule (the project's own), two-sided | 0.36 |
+| McNemar normal approximation | 0.35 |
+| unpaired two-proportion z, two-sided | 0.33 |
+| exact McNemar, one-sided | 0.40 |
+| unpaired two-proportion z, one-sided | 0.45 |
+
+Every method lands **below** the 0.42 in the notes, and the test that produced
+the reported p=0.169 gives **0.26**. The qualitative conclusion is unchanged and
+in fact strengthened: this cell **cannot resolve its own effect** and a
+consumer must not read its null as absence. Against a *gemma-sized* effect the
+same cell has power ≈0.99, so it could have detected a large effect and did
+not. **Do not quote 0.42 from the notes; quote 0.26 with the test named, or the
+range.**
+
+### Denominators — both domains, in full
+
+| | Omni-MATH-2 | SciBench |
+|---|---|---|
+| upstream pool | 4,181 matched | **692 published** |
+| present in the release registry | — | **580** |
+| carrying the runnable slice | — | **574** (`text_only`) |
+| **actually run** | **1,600** (38.3%) | **574 — ALL of them** |
+| selection | uniform random, **seed 20270101** | **none — no sub-sampling, no seed** |
+
+**Omni-MATH's 1,600 is a uniform random draw of the whole 4,181 pool** — not
+tier-specific, not difficulty-stratified, not purposive. It is not
+distinguishable from the pool: two-sample **KS D=0.0251, p=0.449** on
+`difficulty_score`, and **chi-square p=0.106** on source subset. Drawn by
+`runner.load_problems(n=1600, seed=20270101)`; re-derivable with
+`analysis/scripts/audit_sampling.py` in the project repo; its output ships
+here as **`analysis/SAMPLING_AUDIT.md`**.
+
+**SciBench ran every problem it could run — 574 of 574, no sampling step.**
+Two subtractions get there, and they are **independent, not the same items
+counted twice**:
+
+- **580 → 574:** 6 released rows lack the `text_only` slice this protocol
+  requires. All six are listed by `problem_uid` in **`analysis/SAMPLING_AUDIT.md`, shipped in this artifact**.
+- **692 → 580: NOT RECOVERABLE FROM THIS RELEASE, and no reason is asserted.**
+  The released problems table contains only rows that survived the upstream
+  build, so the 112 excluded items are absent from it entirely and carry no
+  reason code. **An earlier draft of that audit asserted a reason — figure/table
+  items plus collisions — and it was retracted as an inference presented as a
+  measurement.** Establishing the 112 would require diffing the upstream
+  SciBench release against this table. It does not affect any denominator
+  reported here, because the denominator is the 574 actually run.
+
+Separately, 6 of the 580 rows carry `conflicting_source_id_disambiguated`;
+these are a **disjoint** set from the 6 missing the slice.
+
+**`574 matched` is not `574 total benchmark`.** Say which of 692 / 580 / 574
+you mean.
+
+---
 
 ## Which analyses are primary, exploratory, invalid, superseded
 
@@ -155,7 +332,9 @@ these should be reused.
 
 # Known instrumentation defects
 
-Five. A consumer who does not read this section will trip over them.
+A consumer who does not read this section will trip over them. **F13 and F18
+reproduce in the second domain**, and the grader noise floor is
+**domain-specific** — each has its own subsection below.
 
 ### F13 — visible text is truncated relative to hidden reasoning (gpt-oss, Arm B)
 
@@ -200,6 +379,74 @@ the paper's headline — correcting it would widen the gap. Primary analysis sta
 as recorded (it is the pre-registered outcome and the conservative direction).
 `f18_mismatch` and `f18_under_credited` are for **bounding**, not correcting:
 the rate is a function of revision behaviour, which is the treatment.
+
+### F18 in SciBench — it reproduces, and again runs **against** the headline
+
+The defect transfers to the second domain. Among first-pass-wrong trajectories:
+
+| actor | arm A | arm B |
+|---|---|---|
+| gemma-4 | **0.288** | 0.000 |
+| gpt-oss | 0.105 | 0.017 |
+
+**49 mismatched** first-pass-wrong trajectories, **2 demonstrably
+under-credited** (held answer exactly matches gold, graded 0). The positive
+control on the 2,247 non-mismatched graded rows finds **0** such cases, so 2 is
+a clean floor rather than a matching artifact — the same control, and the same
+result, as the Omni-MATH layer.
+
+**Same direction as Omni-MATH: it is concentrated in the arm that revises, so
+correcting it WIDENS the gap.** Re-scoring on the held answer moves gemma-4's
+paired recovery contrast from −0.1919 (p=6.6e-05) to **−0.2020 (p=3.6e-05)**,
+and leaves gpt-oss **exactly unchanged** at −0.0833 (p=0.169). **No verdict
+flips in either domain.** Primary analysis stays as recorded — the
+pre-registered outcome and the conservative direction.
+
+As in v1.0.0: `f18_mismatch` is for **bounding, not correcting**, and must
+never be used as a filter or covariate in an arm contrast — the mismatch rate
+is a function of revision behaviour, which *is* the treatment.
+
+### The grader noise floor is domain-specific — 2.80% here vs 0.72% on Omni-MATH
+
+Disagreement rate across **byte-identical** candidate strings graded at
+temperature 0, keyed on exact candidate bytes:
+
+| domain | discordant / multi-graded groups | floor |
+|---|---|---|
+| Omni-MATH-2 | 20 / 2,790 | **0.0072** |
+| **SciBench** | **19 / 678** | **0.0280** |
+
+**The SciBench grader is ~4× noisier**, which is unsurprising: it must judge
+unit equivalence, significant figures and scientific notation rather than
+symbolic equality. The gemma effect (−0.19) is far larger than this floor, but
+**do not compute "effect ÷ floor"** — that statistic is **withdrawn** project-wide
+in both domains; dividing an effect size by a disagreement rate is not a valid
+operation, and grader noise largely cancels in a paired contrast anyway.
+
+> **A note on a figure you may see elsewhere.** The campaign notes compare
+> SciBench's 2.80% against "9.35% on Omni-MATH". **That 9.35% is not an
+> Omni-MATH measurement from this project** — it traces to a finalizer-
+> nondeterminism figure recorded on a *different* project and was carried over
+> as a comparison. Measured on this release's own frozen data by the same
+> method, Omni-MATH's floor is **0.0072** (0.0086 under the superseded
+> whitespace-stripped key). So SciBench's grader is ~4× *noisier* than
+> Omni-MATH's, not 3× quieter. **Use 0.0072 vs 0.0280.**
+
+### F13 reproduces in SciBench, in the same cell
+
+`gpt-oss-120b` Arm B is uninstrumented here too: planner median **123 chars at
+20.0 chars/sec** and executor/reviewer at **8.6 / 7.7 chars/sec**, against
+**2,726 chars at 212 chars/sec** for its own Arm A planner. 34–64% of that
+cell's role messages fall below 10 chars/sec. gemma-4 is clean in both arms
+(≥127 chars/sec throughout).
+
+**Any text-length measure over `gpt-oss-120b` Arm B is invalid in this domain
+too.** Detect with `chars_per_sec`, never with `config_version`.
+
+Two things are *better* here: there are **no mangled LaTeX escapes** (0 of
+2,296 `final_answer_held`, 0 of 3,699 `candidate_raw`, versus ~1% in
+Omni-MATH), and **no attrition at all** — 0 hard failures, 0 unjudged, all four
+cells exactly 574.
 
 ### Arm C attrition — 8.0 / 9.9 / 17.0%, and it is one-sided
 
@@ -279,9 +526,12 @@ attrition-inclusive counts you used.
 
 ## Scope and limitations
 
-- **Single benchmark, single domain.** Competition math only. A SciBench
-  second-domain campaign is reserved as v1.1.0 (`config/SECOND_DOMAIN_SLOT.md`)
-  and is **not** in this release.
+- **Two benchmarks, two domains — but the second is a partial replication.**
+  Competition math (Omni-MATH-2, 3 actors, 4 arms) and college
+  chemistry/physics (SciBench, **2 actors, 2 arms only**). SciBench has no
+  Arm C, no Arm C′, no Llama-3.3 and no adjudication study. **One actor
+  (gemma-4) replicated in the second domain; the other cell cannot resolve its
+  own effect (power ≈0.26).** This is not "the finding generalizes".
 - **Three actors, and the effect does not replicate in all three.** gemma-4 is
   clean (recovery 0.222 → 0.051, paired McNemar p=1.95e-08). gpt-oss is weaker
   and **not significant when paired** (0.324 → 0.247, p=0.208). Llama-3.3 does
@@ -307,23 +557,41 @@ material.** See `LICENSES/README.md` and `LICENSES/registry.json`.
 
 - **Our derived material** (parquet structure, scripts, docs, manifests):
   **Apache-2.0**.
-- **Upstream problems: Omni-MATH-2, Apache-2.0** — verified against the upstream
-  Hugging Face API license tag and cross-checked against two files in the
-  release registry.
-- **Model-generated trajectory text** is governed by the respective model
-  providers' terms.
+> **MIXED LICENCE as of v1.1.0 — do not blanket-apply one licence.**
+> Filter by `benchmark_id` to know which terms govern which rows.
 
-**What upstream text is actually redistributed.** No gold answers — no
-gold/reference field exists in any released row. The parquet layer ships no
-`problem_text` column. **But problem text is incidentally redistributed inside
-transcripts**: agents restate the problem, so a 60-character problem prefix
-appears verbatim in `role_messages.text` for 16 of 606 checked problems (2.6%),
-and the **raw traces carry the full prompts**. Apache-2.0 permits this with
-attribution; it is stated rather than denied, because "only `problem_uid` is
-redistributed" is not accurate for the trace layer.
+| content | licence | verified |
+|---|---|---|
+| **Omni-MATH-2 problems** (`benchmark_id='omnimath2'`) | **Apache-2.0** | upstream HF API tag `license:apache-2.0` + `cardData.license`, anonymous fetch, cross-checked against two registry files |
+| **SciBench problems** (`benchmark_id='scibench'`) | **MIT**, © 2023 Xiaoxuan Wang | upstream `LICENSE` file fetched anonymously + GitHub API `spdx_id: MIT` + two registry files — **three independent sources, all agreeing** |
+| **This project's derived material** (parquet structure, scripts, docs) | Apache-2.0 | authored by us |
+| **Model-generated trajectory text** | the model providers' terms | — |
 
-Omni-MATH-2 is marked `evaluation_only_recommended` upstream: we recommend
-evaluation and analysis use rather than training.
+SciBench's MIT is **not** absorbed into the Apache-2.0 material; its verbatim
+notice ships at `LICENSES/MIT-SciBench.txt` as the MIT terms require. The HF
+`license:` metadata field carries one value and describes **our own** material
+only. `LICENSES/README.md` and `LICENSES/registry.json` are the authority.
+
+**What upstream text is actually redistributed.** The parquet layer ships no
+`problem_text` column and no gold-answer column, in either domain.
+
+- **Problem text is incidentally redistributed inside transcripts.** Agents
+  restate the problem: a 60-character problem prefix appears verbatim in
+  `role_messages.text` for **16 of 606** Omni-MATH problems (2.6%) and **0 of
+  574** SciBench problems (0.0% — short numeric items get paraphrased into
+  tables of givens). The **raw traces carry more** in both domains.
+- **Gold answers: no column, but a small measured leak in grader free text.**
+  The evaluator was instructed never to reveal ground truth and occasionally
+  names the expected value in its repair hint anyway: **Omni-MATH 23 of 17,486
+  `evaluator_raw` rows (14 of 1,600 problems, 0.9%)**; **SciBench 19 of 3,699
+  rows (4 of 574 problems, 0.7%)**. v1.0.0 stated "no gold/reference field
+  exists in any released row" — true at the **column** level, which is what was
+  checked, but it did not cover free text the grader wrote. **Corrected here
+  for both domains rather than left standing.** Far too sparse to reconstruct a
+  gold set, and permitted under both licences with attribution.
+
+Both upstreams are marked `evaluation_only_recommended`: we recommend
+evaluation and analysis use rather than training, in **both** domains.
 
 ## Provenance and integrity
 

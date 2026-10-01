@@ -6,74 +6,67 @@ decomposes without solving, an Executor that carries out the plan, a Reviewer
 that critiques rather than re-derives (\PER{}), and arrows saying who hands
 what to whom. The diagram is read as a \emph{mechanism} --- where the
 system's competence comes from, and why one pays for three agents instead of
-one. But the diagram is not what runs. What runs is three prompts handed to a
-language model, which may honor the division of labor, ignore it, or satisfy
-its surface while doing the whole task in every box. Which happened is almost
-never measured: a system evaluated on accuracy alone returns the same score
-either way.
+one. But what runs is three prompts handed to a language model, which may
+honor the division of labor, ignore it, or satisfy its surface while doing
+the whole task in every box. Which happened is almost never measured: a
+system evaluated on accuracy alone returns the same score either way.
 
 \paragraph{The question.}
 We ask what a diagram cannot answer: \textbf{which phase of the work is
 multi-agent organization load-bearing for?} A component is
 \textbf{load-bearing} if removing or altering it reproducibly degrades task
 performance \emph{under matched compute and information budgets}
-(\S\ref{sec:framework}). Our interventions hold the whole budget fixed and
-vary only what each agent is told it is, or what its interface will let it
-emit.
+(\S\ref{sec:framework}). Our interventions hold the budget fixed and vary
+only what each agent is told it is, or what its interface lets it emit.
 
 \paragraph{The answer, in one sentence.}
-\textbf{Role structure is not load-bearing for producing the first answer; it
-is load-bearing for recovering from a wrong one.} Deleting every role
-instruction (Arm~B) destroys the division of labor in all three actors we
-tested --- the rate at which every agent independently asserts its own final
-answer goes from $0.000$--$0.120$ to $0.846$--$0.976$, the planner supplying
-almost all of the swing; a rubric-frozen adjudication concurs as a second
-opinion whose blinding, we report below, is partial. First-pass accuracy does
-not follow: it is unchanged for gemma-4 and \emph{improves} for gpt-oss ---
-not our finding, but our control condition, consistent with a published
-null~\cite{dylan2026equal,orogat2026architectural}. The cost appears only
-after a wrong first answer, where recovery falls $0.222 \rightarrow 0.051$
-for gemma-4 and $0.324 \rightarrow 0.247$ for gpt-oss. For gemma-4 the arms'
-first-pass rates are equal to four decimals, making that recovery contrast an
-exact reparameterization of the randomized intent-to-treat effect rather than
-a post-treatment conditional. Llama-3.3 recovers at $0.014$ and $0.015$ and
-does not replicate --- \textbf{a genuine null specific to the role
-manipulation, not a floor}: enforcement moves the same actor's recovery to
-$0.139$, so the repair channel exists.
+\textbf{Role structure \emph{can} be load-bearing for recovering from a wrong
+answer where it is not load-bearing for producing the first one} --- and the
+two halves do not have the same scope. Deleting every role instruction
+(Arm~B) destroys the division of labor in \textbf{all three} actors: the rate
+at which every agent independently asserts its own final answer goes from
+$0.000$--$0.120$ to $0.846$--$0.976$, the planner supplying almost all of the
+swing. First-pass accuracy does not follow --- unchanged for gemma-4,
+\emph{improving} for gpt-oss --- not our finding but our control
+condition~\cite{dylan2026equal,orogat2026architectural}. \textbf{Recovery
+after a wrong first answer then falls cleanly in one actor} (gemma-4, $0.222
+\rightarrow 0.051$, paired $p=2\times10^{-8}$; its first-pass rates are equal
+to four decimals, so this contrast is an exact reparameterization of the
+randomized intent-to-treat effect, not a post-treatment conditional),
+\textbf{directionally in a second} (gpt-oss, $0.324 \rightarrow 0.247$,
+paired $p=0.208$), and \textbf{not at all in a third} (Llama-3.3, $0.014$
+versus $0.015$ --- \textbf{a genuine null of the role manipulation, not a
+floor}: enforcement moves that actor to $0.139$).
 
 \paragraph{It is not premature stopping, and not less feedback.}
 The standing explanation for a team that fails to fix its own error is early
-convergence. We test it and reject it: every arm holds the same six
+convergence. We test and reject it: every arm holds the same six
 deliberation cycles, no trajectory is cut short, and the role-free team draws
-\emph{more} oracle verdicts, not fewer. What changes is their use --- it
-converts $5.80$ of its $5.83$ cycles into resubmissions of the same answer
-while the role-labeled team submits $1.54$ times and spends $3.98$ revising.
-This is Degeneration-of-Thought~\cite{liang2024divergent}; new is the
+\emph{more} oracle verdicts. What changes is their use --- it converts $5.80$
+of its $5.83$ cycles into resubmissions of the same answer while the
+role-labeled team submits $1.54$ times and spends $3.98$ revising. This is
+Degeneration-of-Thought~\cite{liang2024divergent}; new is the
 \textbf{inversion}, multi-agency being the standard prescription against it
 which multi-agency without role differentiation does not escape. Against a
-budget-matched single agent, meanwhile, a collapsed gpt-oss team still wins
-while gemma-4's team \emph{loses} in both arms --- and gemma-4 is the actor
-the recovery result rests on (\S\ref{subsec:notsingle}). Neither
-``multi-agent systems are just single agents'' nor ``more agents help''
-survives our own data.
+budget-matched single agent a collapsed gpt-oss team still wins while
+gemma-4's team \emph{loses} in both arms --- and gemma-4 carries the
+recovery result, a tension we state rather than resolve
+(\S\ref{subsec:notsingle}).
 
 \paragraph{Restoring the structure restores recovery, not accuracy.} The
 symmetric intervention makes the division of labor unrepresentable rather
-than merely requested (Arm~C). It works, and un-freezes the answer in every
+than merely requested (Arm~C). It works and un-freezes the answer in every
 actor; its recovery exceeds Arm~A's in all three, though \textbf{only
 Llama-3.3's contrast is resolvable} against the arm's attrition. It does
 \emph{not} restore final accuracy, costs $8$--$17\%$ attrition, and
-\textbf{our pre-registered primary test of the
-actor~$\times$~intervention interaction is null.}
+\textbf{our pre-registered primary test of the actor~$\times$~intervention
+interaction is null.}
 
 \paragraph{Contribution.} An operational definition of \textbf{load-bearing}
 and a budget-matched two-directional design testing it, with the
 single-agent control without which ``collapse is harmless'' cannot be told
 from ``the system was always one agent''; the \textbf{phase dissociation}
-above, with the third actor's informative null reported rather than smoothed;
-a \textbf{refutation of premature stopping} on matched realized budget; and a
-\textbf{measurement result we had to absorb ourselves} --- an
-exact-duplication metric reports $0.000$ collapse for actors the
-adjudication judges collapsed, a logging defect leaves one actor's planner
-uninstrumented, and that adjudication itself leaks the condition it was meant
-to be blind to.
+above, scoped per actor rather than smoothed; a \textbf{refutation of
+premature stopping} on matched realized budget; and \textbf{three
+measurement results we had to absorb ourselves}
+(\S\ref{sec:discussion}).

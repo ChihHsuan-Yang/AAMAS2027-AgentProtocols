@@ -26,7 +26,22 @@ import argparse, hashlib, json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ART = os.path.dirname(HERE)
 RAW = os.path.join(ART, "raw")
-TRACES = ("campaign_v2.jsonl", "actor3.jsonl", "armCp.jsonl")
+
+# EVERY released raw trace must be scanned. A trace missing from this tuple is
+# not "clean" -- it is UNCHECKED, and the gate's guarantee is void for it. The
+# v1.1.0 SciBench trace was added here when it was added to raw/; if a further
+# domain lands, it goes here in the same commit.
+TRACES = ("campaign_v2.jsonl", "actor3.jsonl", "armCp.jsonl",
+          "scibench_AB.jsonl")
+
+# Each trace's manifest, so --fix restamps the right file. v1.0.0's three
+# traces share raw/MANIFEST.json; the SciBench trace has its own.
+TRACE_MANIFEST = {
+    "campaign_v2.jsonl": "MANIFEST.json",
+    "actor3.jsonl": "MANIFEST.json",
+    "armCp.jsonl": "MANIFEST.json",
+    "scibench_AB.jsonl": "MANIFEST_SCIBENCH.json",
+}
 
 # Built from fragments so that THIS FILE does not itself contain the strings it
 # hunts for (the secret scanner reads every shipped file, this one included).
@@ -81,41 +96,76 @@ def scan():
 
 
 def fix():
-    changed = {}
+    """Redact in TWO PHASES: plan every trace first, write only if ALL are safe.
+
+    The single-phase version rewrote traces one at a time and sys.exit()ed on
+    the first out-of-`error` leak -- leaving earlier traces REWRITTEN on disk
+    with their manifests NOT restamped, i.e. a tree whose recorded hashes no
+    longer describe its bytes, produced by the very tool meant to keep that
+    chain valid. It could not fire while all known hits were in `error`
+    fields; the v1.1.0 SciBench trace has a hit in `messages`, which makes it
+    reachable. Plan-then-write: an unfixable leak now aborts with NOTHING
+    written.
+    """
+    planned, refuse = {}, []
     for fn in TRACES:
         p = os.path.join(RAW, fn)
         if not os.path.exists(p):
             continue
         out, n = [], 0
         with open(p) as f:
-            for line in f:
+            for i, line in enumerate(f):
                 if _hits(line):
                     r = json.loads(line)
                     for k, v in list(r.items()):
                         s = v if isinstance(v, str) else json.dumps(v)
                         if _hits(s):
                             if k != "error":
-                                sys.exit(f"{fn}: leak outside `error` (field {k!r}) "
-                                         "-- refusing to auto-fix; inspect by hand")
+                                refuse.append(f"{fn} line {i}: leak in field {k!r} "
+                                              f"(uid={r.get('problem_uid')})")
+                                continue
                             r[k] = MARK
                             n += 1
                     line = json.dumps(r, ensure_ascii=False) + "\n"
                 out.append(line)
         if n:
-            with open(p, "w") as f:
-                f.writelines(out)
-            changed[fn] = n
+            planned[fn] = (out, n)
+
+    if refuse:
+        sys.exit("refusing to auto-fix -- leak(s) outside the `error` field; "
+                 "inspect by hand. NOTHING WAS WRITTEN:\n  " + "\n  ".join(refuse))
+
+    changed = {}
+    for fn, (out, n) in planned.items():
+        with open(os.path.join(RAW, fn), "w") as f:
+            f.writelines(out)
+        changed[fn] = n
     return changed
 
 
 def restamp():
-    """Rewrite MANIFEST.json / CHECKSUMS.txt / VERSION for the redacted bytes."""
-    mp = os.path.join(RAW, "MANIFEST.json")
-    man = json.load(open(mp))
-    for fn in TRACES:
-        p = os.path.join(RAW, fn)
-        man["files"][fn]["sha256"] = sha256_file(p)
-        man["files"][fn]["bytes"] = os.path.getsize(p)
+    """Rewrite each trace's manifest / CHECKSUMS.txt / VERSION for redacted bytes."""
+    for mfn in sorted(set(TRACE_MANIFEST.values())):
+        mp = os.path.join(RAW, mfn)
+        if not os.path.exists(mp):
+            continue
+        man = json.load(open(mp))
+        for fn in TRACES:
+            if TRACE_MANIFEST.get(fn) != mfn:
+                continue
+            p = os.path.join(RAW, fn)
+            if not os.path.exists(p) or fn not in man.get("files", {}):
+                continue
+            man["files"][fn]["sha256"] = sha256_file(p)
+            man["files"][fn]["bytes"] = os.path.getsize(p)
+        _stamp(man)
+        json.dump(man, open(mp, "w"), indent=2)
+        print(f"  rewrote raw/{mfn}")
+    print("  NOW REGENERATE: CHECKSUMS.txt and VERSION "
+          "(python3 scripts/emit_release_metadata.py)")
+
+
+def _stamp(man):
     man["redaction"] = {
         "applied_utc": __import__("datetime").datetime.now(
             __import__("datetime").timezone.utc).isoformat(),
@@ -125,10 +175,6 @@ def restamp():
         "note": ("hashes below describe the REDACTED bytes. The pre-redaction "
                  "hashes remain in VERSION.release_history for provenance."),
     }
-    json.dump(man, open(mp, "w"), indent=2)
-    print("  rewrote raw/MANIFEST.json")
-    print("  NOW REGENERATE: CHECKSUMS.txt and VERSION "
-          "(python3 scripts/emit_release_metadata.py)")
 
 
 def main():
@@ -143,6 +189,17 @@ def main():
             restamp()
 
     bad = scan()
+    print("=" * 66)
+    present = [fn for fn in TRACES if os.path.exists(os.path.join(RAW, fn))]
+    absent = [fn for fn in TRACES if fn not in present]
+    print(f"scanned {len(present)} raw traces: {', '.join(present)}")
+    if absent:
+        print(f"NOT PRESENT (not scanned): {', '.join(absent)}")
+    byfile = {}
+    for fn, *_ in bad:
+        byfile[fn] = byfile.get(fn, 0) + 1
+    for fn in present:
+        print(f"  {fn:22s} {byfile.get(fn, 0)} hit(s)")
     print("=" * 66)
     if not bad:
         print("PASS — no institution-identifying string in raw/. Safe to flip public\n"

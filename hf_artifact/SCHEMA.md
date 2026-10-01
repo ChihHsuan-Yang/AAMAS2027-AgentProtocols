@@ -33,6 +33,16 @@ behaviour, not budget.
 
 ## 1. `data/trajectories.parquet` — 11,600 rows, one per trajectory
 
+> **v1.1.0.** `data/scibench/trajectories.parquet` (2,296 rows),
+> `data/scibench/role_messages.parquet` (13,500) and
+> `data/scibench/evaluator_calls.parquet` (3,699) use **exactly these same
+> columns** — the build imports the v1.0.0 column definitions rather than
+> re-implementing them, and asserts column-name parity against the Omni tables
+> at build time. Everything in this document applies to both domains unless a
+> section says otherwise. Differences that matter: **no Arm C** in SciBench (so
+> no `enforcement_events`, no adjudication), **Arm A's prompt differs by
+> domain**, and the **grader noise floor is domain-specific**. See the card.
+
 The table that reproduces the paper's main tables. Key `trajectory_key` is
 unique (verified 11,600/11,600).
 
@@ -40,7 +50,7 @@ unique (verified 11,600/11,600).
 | column | type | definition |
 |---|---|---|
 | `trajectory_key` | string | `{problem_uid}\|{arm}\|{actor_model}`. Primary key; join key for the other two tables. |
-| `problem_uid` | string | Problem id in the upstream registry (`omni2_NNNN`). **Problem text and gold answers are not redistributed here** — see *Licensing*. |
+| `problem_uid` | string | Problem id in the upstream registry — `omni2_NNNN` (Omni-MATH) or `scibench:<book>:<item>` (SciBench). **No problem-text or gold-answer column is redistributed here**; see *Licensing* for what transcripts incidentally contain. |
 | `arm` | string | `A`, `B`, `C`, `Cp`. |
 | `actor_model` | string | Short name: `gemma-4-31B-it`, `gpt-oss-120b`, `Llama-3.3-70B-Instruct`. |
 | `actor_model_full` | string | Vendor-qualified id, e.g. `google/gemma-4-31B-it`. |
@@ -278,7 +288,7 @@ so verdicts can be audited rather than trusted.
 
 | excluded | why | consequence |
 |---|---|---|
-| **Gold answers** | Not redistributed anywhere in this release — no gold/reference field exists in any released row. | Any re-grading analysis needs a join to the upstream corpus. |
+| **Gold answers** | **No gold/reference COLUMN exists in any released row, in either domain.** But the grader sometimes names the expected value in its free-text repair hint despite being told not to: Omni-MATH 23 of 17,486 `evaluator_raw` rows (14 of 1,600 problems, 0.9%); SciBench 19 of 3,699 (4 of 574, 0.7%). Corrected in v1.1.0 — the v1.0.0 wording checked columns, not free text. | Any re-grading analysis still needs a join to the upstream corpus; the leak is far too sparse to serve as a gold set. |
 | **A `problem_text` column** | The parquet layer references problems by `problem_uid` only. **Note this is not the same as "no upstream text is redistributed"**: agents restate the problem, so problem text appears verbatim inside `role_messages.text` (16 of 606 checked problems) and, at much higher rate, inside the full prompts in `raw/`. See `LICENSES/README.md`. | Join `problem_uid` to the upstream corpus for the canonical text. |
 | ~~`regeneration_events[].raw_output_truncated_2000chars`~~ **NOW INCLUDED** | v1.0.0 ships these in `data/enforcement_events.parquet` and in `raw/`. | Rejected Arm C/C′ drafts *can* be inspected, truncated at 2,000 chars mid-string. |
 | **`budget`, `visibility_policy` per row** | Constant across the snapshot (1 distinct budget over all 11,600 rows). | Recorded once here and in full in `config/run_config.json`, rather than 11,600 times. |

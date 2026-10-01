@@ -1,4 +1,30 @@
-# Reserved slot — second domain (SciBench)
+# Second domain (SciBench) — **SLOT FILLED in v1.1.0**
+
+> **STATUS: FILLED.** As of **v1.1.0** this release contains SciBench data:
+> 2,296 trajectories, 574 problems, 2 actors, Arms A and B only.
+> This file is kept as the record of what was promised, so the promises can be
+> checked against what was actually done. Each numbered step below is marked
+> with its outcome.
+>
+> | promised | done? |
+> |---|---|
+> | arrives as v1.1.0, never an edit to v1.0.0 | **yes** — build and emitter both assert every v1.0.0 file is byte-unchanged |
+> | new rows carry `benchmark_id='scibench'`, `domain='science'`, own `config_version` | **yes** — `aed89f28ab338bdb`, asserted single-valued over all 2,296 rows |
+> | new trace gets its own sha256/rows/bytes; existing three keep theirs | **yes** — `raw/MANIFEST_SCIBENCH.json`; the v1.0.0 digests are re-listed in `VERSION.release_history` |
+> | `CHECKSUMS.txt` / `VERSION` regenerated, history gains an entry, v1.0.0 hashes stay listed | **yes** |
+> | per-domain results split in the card | **yes** — *Cross-domain (v1.1.0)* |
+> | SciBench gets its own MIT entry; NOT absorbed into Apache-2.0 | **yes** — plus `LICENSES/MIT-SciBench.txt` verbatim, verified three ways |
+>
+> **One thing this file did not anticipate:** the Arm A prompt had to be
+> **domain-adapted**, so Arm A is *not* the same contract in the two domains
+> (Arm B is byte-identical). That is stated in the card, in
+> `config/run_config_scibench.json`, and in a per-prompt diff table in
+> `config/prompts_scibench.json`. It is why no cross-domain P1a or
+> clause-specific fidelity metric is computed.
+
+---
+
+## The original text, as written before the slot was filled
 
 **Status in v1.0.0: NOT PRESENT. Nothing in this release is SciBench data.**
 

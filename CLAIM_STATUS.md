@@ -87,7 +87,7 @@ control condition. Note: **F19**.
 - gemma-4: recovery 0.222 → 0.051. Paired on problems wrong under both arms:
   A-only recovers 37, B-only 3, McNemar exact **p = 2e-08**. Strongest result
   in the paper.
-- gpt-oss: marginal 0.324 → 0.249, but the **paired** contrast is **p = 0.246**
+- gpt-oss: marginal 0.324 → 0.247, but the **paired** contrast is **p = 0.208**
   — must be described as weaker and not significant when paired.
 - Llama-3.3: 0.014 → 0.015. **A genuine null, NOT a floor effect.** Its
   recovery channel exists and is movable — architectural enforcement raises it

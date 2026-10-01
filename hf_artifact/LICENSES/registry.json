@@ -1,10 +1,10 @@
 {
- "_schema": "Machine-readable licence registry for this release. One entry per UPSTREAM source. This release does NOT apply a single blanket licence over source-derived material.",
- "release": "AAMAS2027-Roles v1.0.0",
+ "_schema": "Machine-readable licence registry for this release. One entry per UPSTREAM source. This release does NOT apply a single blanket licence over source-derived material. AS OF v1.1.0 THIS RELEASE IS MIXED-LICENCE: Omni-MATH-2 material is Apache-2.0 and SciBench material is MIT. Neither licence is applied over the other, and the project's own Apache-2.0 statement does NOT extend to either upstream's content.",
+ "release": "AAMAS2027-Roles v1.1.0",
  "derived_artifact_license": {
   "license_id": "Apache-2.0",
   "covers": "material authored by us: the normalized parquet layer's structure, the derivation/validation scripts, SCHEMA.md, the dataset card, the manifests, and the adjudication protocol/rubric.",
-  "does_not_cover": "upstream benchmark content, and model-generated text (see below)."
+  "does_not_cover": "upstream benchmark content under EITHER upstream licence (Omni-MATH-2 Apache-2.0; SciBench MIT), and model-generated text (see below)."
  },
  "upstream_sources": [
   {
@@ -17,9 +17,9 @@
    "used_in_this_release": true,
    "n_problems_used": 1600,
    "what_is_redistributed_here": "problem_uid identifiers, AND incidental verbatim problem text quoted inside agent/prompt transcripts (measured, see redistribution_measurement).",
-   "redistribution_measurement": "The parquet layer ships no problem_text column and no gold-answer column. However role_messages.text contains agent turns that quote the problem, so upstream problem text IS incidentally redistributed: a 60-character problem prefix appears verbatim for 16 of 606 checked problems (2.6%) in role_messages, and 0 of 606 in evaluator_calls. In the raw FROZEN traces the full prompts are present, so upstream problem text is redistributed there at a much higher rate. GOLD ANSWERS: no gold/reference field exists in any released row (checked across all released trace rows and every parquet column).",
+   "redistribution_measurement": "The parquet layer ships no problem_text column and no gold-answer column. However role_messages.text contains agent turns that quote the problem, so upstream problem text IS incidentally redistributed: a 60-character problem prefix appears verbatim for 16 of 606 checked problems (2.6%) in role_messages, and 0 of 606 in evaluator_calls. In the raw FROZEN traces the full prompts are present, so upstream problem text is redistributed there at a much higher rate. GOLD ANSWERS: no gold/reference field exists in any released row (checked across all released trace rows and every parquet column). ADDED IN v1.1.0 (previously undisclosed): 23 of 17,486 evaluator_calls.evaluator_raw rows (14 of 1,600 distinct problems, 0.9%) quote the gold answer verbatim inside the grader's free-text repair hint. The earlier statement 'no gold/reference FIELD exists' remains true at the COLUMN level and was the claim actually checked; it did not cover free text written by the grader. Apache-2.0 permits this with attribution; it is corrected here rather than left standing.",
    "obligation": "Apache-2.0 permits redistribution of the source text and of derivatives, with attribution and licence notice preserved. Attribution is given in LICENSES/README.md, README.md and VERSION. Because Apache-2.0 is permissive about redistributing the text itself, the incidental quoting above is permitted \u2014 but it is stated rather than denied, because the earlier claim 'only problem_uid is redistributed' was not accurate for the trace layer.",
-   "verification": "Upstream HF API license tag 'license:apache-2.0' and cardData.license 'apache-2.0', fetched anonymously 2026-09-30; cross-checked against registry/licenses.parquet and registry/benchmarks.parquet in the SciAgentTrace release registry, which agree."
+   "verification": "Upstream HF API license tag 'license:apache-2.0' and cardData.license 'apache-2.0', fetched anonymously 2026-09-30; cross-checked against registry/licenses.parquet and registry/benchmarks.parquet in the SciAgentTrace release registry, which agree. Re-verified 2026-09-30 for v1.1.0: HF API license tag 'license:apache-2.0' and cardData.license 'apache-2.0', fetched anonymously; unchanged."
   },
   {
    "benchmark_id": "scibench",
@@ -28,10 +28,14 @@
    "license_id": "MIT",
    "training_use_policy": "evaluation_only_recommended",
    "commercial_use_policy": "allowed_with_upstream_terms",
-   "used_in_this_release": false,
-   "what_is_redistributed_here": "nothing \u2014 no SciBench row is present in v1.0.0",
-   "obligation": "If the reserved second-domain slot is filled (see config/SECOND_DOMAIN_SLOT.md), the upstream MIT notice and citation must be preserved and a SciBench entry added here. MIT is NOT the same licence as this release's Apache-2.0 material and must not be absorbed into it.",
-   "verification": "registry/licenses.parquet + registry/benchmarks.parquet, SciAgentTrace release registry."
+   "used_in_this_release": true,
+   "what_is_redistributed_here": "problem_uid identifiers, and model-generated transcripts. MEASURED, not assumed -- see redistribution_measurement.",
+   "obligation": "MIT. Preserve the upstream MIT notice and copyright line (Copyright (c) 2023 Xiaoxuan Wang) and the citation. MIT is NOT this release's Apache-2.0 and NOT Omni-MATH-2's Apache-2.0; it must not be absorbed into either. Upstream marks SciBench evaluation_only_recommended, which this release restates rather than overrides.",
+   "verification": "Verified THREE independent ways on 2026-09-30: (1) the upstream LICENSE file fetched anonymously from https://raw.githubusercontent.com/mandyyyyii/scibench/main/LICENSE reads 'MIT License, Copyright (c) 2023 Xiaoxuan Wang'; (2) the GitHub API reports spdx_id 'MIT'; (3) registry/licenses.parquet and registry/benchmarks.parquet in the SciAgentTrace release registry both record license_id 'MIT' and training_use_policy 'evaluation_only_recommended'. All three agree.",
+   "added_in_version": "1.1.0",
+   "n_problems_used": 574,
+   "denominators": "692 upstream -> 580 present in the release registry -> 574 carrying the text_only slice -> ALL 574 run. No sub-sampling. The 692->580 exclusions are NOT recoverable from this release and no reason is asserted for them.",
+   "redistribution_measurement": "The SciBench parquet layer ships no problem_text column and no gold-answer column. Measured with the same 60-character-prefix method used for Omni-MATH-2: a verbatim problem prefix appears for 0 of 574 problems in role_messages.text and 0 of 574 in evaluator_calls -- a LOWER rate than Omni-MATH-2's 16/606 (2.6%), because SciBench problems are short numeric physics/chemistry items that agents paraphrase into tables of givens rather than restate verbatim. In the raw FROZEN trace the agent turns still restate problem content, so upstream text is redistributed there at a higher rate. GOLD ANSWERS: no gold/reference COLUMN exists in any released SciBench row. However 19 of 3,699 evaluator_calls.evaluator_raw rows (4 of 574 distinct problems, 0.7%) quote the gold answer inside the grader's free-text repair hint, despite the evaluator prompt instructing it not to reveal ground truth. The same leak exists in v1.0.0 (23 of 17,486 rows, 14 of 1,600 problems, 0.9%) and was NOT disclosed there; it is disclosed here for both domains. It is a small, measured, incidental disclosure, not a gold-answer column, and under both MIT and Apache-2.0 redistributing the answer text is permitted with attribution -- it is stated rather than denied."
   },
   {
    "benchmark_id": "jeebench",
@@ -71,7 +75,7 @@
   }
  ],
  "model_generated_text": {
-  "note": "Trajectory text is generated by google/gemma-4-31B-it, openai/gpt-oss-120b and meta-llama/Llama-3.3-70B-Instruct. The respective model providers' terms govern the generated text; it is not covered by the Apache-2.0 statement above.",
+  "note": "Trajectory text is generated by google/gemma-4-31B-it, openai/gpt-oss-120b and meta-llama/Llama-3.3-70B-Instruct. The respective model providers' terms govern the generated text; it is not covered by the Apache-2.0 statement above. The SciBench (v1.1.0) trajectories were generated by gemma-4-31B-it and gpt-oss-120b only; Llama-3.3 was not run in that domain.",
   "models": [
    "google/gemma-4-31B-it",
    "openai/gpt-oss-120b",
@@ -79,7 +83,8 @@
   ]
  },
  "do_not_train": {
-  "this_release": "No do-not-train canary applies to v1.0.0, because no LAB-Bench material is included. The Omni-MATH-2 upstream is marked evaluation_only_recommended: we recommend evaluation use rather than training on these trajectories.",
+  "this_release": "No do-not-train canary applies to v1.1.0: no LAB-Bench material is included. BOTH upstreams actually used -- Omni-MATH-2 (Apache-2.0) and SciBench (MIT) -- are marked evaluation_only_recommended. We recommend evaluation use rather than training on these trajectories, for both domains.",
   "if_labbench_added": "the upstream canary must be preserved and the request honoured."
- }
+ },
+ "mixed_licence_warning": "v1.1.0 ships TWO upstreams under TWO DIFFERENT licences. Do not apply one blanket licence over the release. Filter by benchmark_id/domain to know which terms apply: benchmark_id='omnimath2' (domain='math') is Apache-2.0 upstream; benchmark_id='scibench' (domain='science') is MIT upstream. The repository's HF `license:` metadata field can carry only ONE value and is set to 'apache-2.0' for the project's own derived material; that field is NOT a statement about SciBench content. This file is the authority."
 }

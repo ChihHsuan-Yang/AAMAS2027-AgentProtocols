@@ -3,12 +3,47 @@
 The paper is *about* role manipulation. The manipulation lives in these files,
 so the data is not interpretable without them.
 
-| file | what it is |
-|---|---|
-| `prompts.json` | all 22 prompt strings, verbatim, keyed by name |
-| `schemas.json` | the three Arm C / C′ JSON schemas (planner, executor, reviewer) |
-| `run_config.json` | decoding, budgets, visibility policy, model ids, config versions |
-| `SECOND_DOMAIN_SLOT.md` | the reserved slot for the SciBench campaign |
+| file | what it is | domain |
+|---|---|---|
+| `prompts.json` | all 22 prompt strings, verbatim, keyed by name | Omni-MATH-2 |
+| `schemas.json` | the three Arm C / C′ JSON schemas (planner, executor, reviewer) | Omni-MATH-2 |
+| `run_config.json` | decoding, budgets, visibility policy, model ids, config versions | Omni-MATH-2 |
+| **`prompts_scibench.json`** | **the 16 SciBench prompts + `_COMPARISON_TO_OMNIMATH`, a per-prompt identical/differs table** | **SciBench (v1.1.0)** |
+| **`run_config_scibench.json`** | **SciBench budgets, visibility, denominators, licence** | **SciBench (v1.1.0)** |
+| `SECOND_DOMAIN_SLOT.md` | the second-domain slot — **now FILLED**; kept as a promise-vs-outcome record | — |
+
+> ## ⚠ ARM A IS NOT THE SAME CONTRACT IN BOTH DOMAINS
+>
+> **Arm A was domain-adapted for SciBench; Arm B was NOT.** 5 of 16 prompts
+> differ: the three Arm A role prompts (planner / executor / reviewer prepends
+> and the critic append) and the evaluator. `B_GENERIC_PREPEND` and
+> `B_GENERIC_APPEND` are **byte-identical** across domains — asserted in code
+> at build time, so the A-vs-B manipulation is demonstrably the same one.
+>
+> Both prompt sets ship in full. `prompts_scibench.json._COMPARISON_TO_OMNIMATH`
+> gives a per-prompt `identical_to_omnimath` flag with sha256 prefixes and
+> character counts, so you can verify this rather than take it on trust.
+>
+> **Consequence:** do **not** compute P1a or any clause-specific role-fidelity
+> metric across domains — it would score agents against instructions they never
+> received. The evaluator adaptation is **common mode** (identical across A and
+> B within SciBench), so it cannot manufacture an A-vs-B difference.
+>
+> **Why adapt at all?** Arm B's prompt has no domain language. Leaving Arm A's
+> "competition-level mathematics" wording in a chemistry benchmark would make
+> the arms differ in *two* ways — role structure and domain fit — with the
+> domain-fit difference running **against** Arm A. Adapting A keeps it a
+> single-variable manipulation.
+
+### One stale-looking line that is deliberately left alone
+
+`run_config.json` still contains `second_domain_slot.status = "NOT PRESENT IN
+v1.0.0"`. That sentence is **scoped to v1.0.0 and remains true**, and the file
+is a v1.0.0 artifact whose sha256 is published in `VERSION.release_history` —
+editing it would break the hash chain that lets anything published against
+v1.0.0 stay checkable. The SciBench configuration lives in its own file,
+`run_config_scibench.json`. **Read the two files per domain; do not expect the
+v1.0.0 file to describe v1.1.0.**
 
 ## Which prompt is which arm
 
@@ -38,7 +73,15 @@ per turn (Arm C/C′ only), ≤4 transport retries, 300 s request timeout.
 The identical cycle budget is what rules out "the role-free arm just stopped
 earlier" — it could not have.
 
-## Two config versions, and what actually differs
+## Config versions
+
+**SciBench has its own:** `aed89f28ab338bdb`, single-valued over all 2,296 rows
+and **not poolable** with the Omni-MATH hashes — the hash covers every prompt
+plus `benchmark_id` and `slice_id`, all of which changed. That is the field
+doing its job. Recomputed from `runner_xdomain.py` at build time and asserted
+equal to the value stamped on the rows.
+
+### The two Omni-MATH config versions, and what actually differs
 
 `data/trajectories.parquet.config_version` takes two values. They differ
 **only** by the addition of the Arm C′ entry; every A/B/C prompt, schema and

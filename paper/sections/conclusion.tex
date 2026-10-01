@@ -1,23 +1,30 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Role structure is not load-bearing for producing the first answer; it is
-load-bearing for recovering from a wrong one. Deleting every role
-instruction destroys the functional division of labor in all three actors
-while first-pass accuracy is unchanged or improves --- a parity consistent
-with prior role ablations~\cite{dylan2026equal,orogat2026architectural} and
-reported as our control condition. The cost appears only after a wrong
-answer, and not because the role-free team stops early or gets less
-feedback: it holds the same six-cycle budget, draws \emph{more} oracle
-verdicts, and never revises its answer at all in $0.845$ of
-first-pass-wrong trajectories against $0.288$ under roles. What roles
-preserve is the production of a second distinct candidate --- the
-prescribed remedy for
+\textbf{Role structure \emph{can} be load-bearing for recovering from a
+wrong answer where it is not load-bearing for producing the first one} ---
+and the two halves do not have the same scope. Deleting every role instruction destroys the functional division of labor in
+\textbf{all three} actors while first-pass accuracy is unchanged or improves
+(\S\ref{subsec:firstpass}). \textbf{The recovery half holds cleanly in one actor}
+(gemma-4, paired $p=2\times10^{-8}$, intent-to-treat-equivalent),
+\textbf{directionally in a second} (gpt-oss, $p=0.208$) and \textbf{not at
+all in a third} (Llama-3.3, a genuine null of the role manipulation, not a
+floor). Where it holds, the cost is not that the role-free team stops early or gets
+less feedback: it holds the same six-cycle budget, draws \emph{more} oracle
+verdicts, and never revises its answer in $0.845$ of first-pass-wrong
+trajectories against $0.288$ under roles. What roles preserve is a second
+distinct candidate --- the prescribed remedy for
 Degeneration-of-Thought~\cite{liang2024divergent} inverted. Making the
 division of labor structurally unavoidable (Arm~C) restores the organization
-and un-freezes the answer, yet still does not restore accuracy: enforcement
-governs who may \emph{speak}, not whether the agents \emph{differ}. Three guards keep this from overreaching: our
-pre-registered primary test was null, the recovery loop is oracle-gated, and
-multi-agent computation is not uniformly valuable in our own data. \textbf{Whether an organization is load-bearing cannot
-be read off how much differentiation an intervention destroys}: it must be
-measured at the phase where it acts.
+and un-freezes the answer but not accuracy: enforcement governs who may
+\emph{speak}, not whether the agents \emph{differ}. Four guards hold it
+down. The pre-registered primary test was null; the recovery
+loop is oracle-gated, so none of this is unaided self-correction; one
+\PER{} topology was tested; and \textbf{gemma-4, the actor the recovery
+result rests on, is the actor whose team loses to its own budget-matched
+single agent in both arms} ($-0.0225$, $-0.0563$;
+\S\ref{subsec:notsingle}): roles buying back recovery inside a team is not
+the team being worth its budget. \textbf{How much differentiation an
+intervention destroys does not say whether the organization was
+load-bearing}: measure it at the phase where it acts.%
+

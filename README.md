@@ -73,8 +73,8 @@ All numbers from `analysis/out/FINAL_TABLES_OUTPUT.txt`, frozen
 | **functional collapse**, Arm A → B (T8) | 0.000 → 0.976 | 0.120 → 0.846 | 0.000 → 0.872 |
 | **adjudicated** "no division of labor", A / B / C (T23) | 0.000 / 0.857 / 0.188 | 0.000 / 1.000 / 0.143 | 0.000 / 1.000 / 0.071 |
 | **first pass**, A → B (T3) | 0.802 → 0.802 (+0.000) | 0.713 → 0.763 (**+0.050**) | 0.308 → 0.316 (+0.008) |
-| **recovery**, A → B (T3) | **0.222 → 0.051** | 0.324 → 0.249 | 0.014 → 0.015 (a genuine null, **not** a floor) |
-| paired recovery McNemar, A vs B (T4) | **p=1.95e-08** | p=0.246 (**n.s.**) | p=0.375 (**n.s.**) |
+| **recovery**, A → B (T3) | **0.222 → 0.051** | 0.324 → 0.247 | 0.014 → 0.015 (a genuine null, **not** a floor) |
+| paired recovery McNemar, A vs B (T4) | **p=1.95e-08** | p=0.208 (**n.s.**) | p=0.375 (**n.s.**) |
 | paired recovery A vs C (post-correction) | p=0.298 (**n.s.**) | p=0.105 (**n.s.**) | **p=3.81e-06** |
 | **final accuracy** B−A, prereg (T2) | −0.0338 [−0.0488,−0.0187] | +0.0163 [+0.0000,+0.0331] | +0.0025 [−0.0325,+0.0375] |
 | **final accuracy** C−A, prereg (T2) | −0.0225 [−0.0387,−0.0063] | −0.0050 (null) | +0.0175 (null) |

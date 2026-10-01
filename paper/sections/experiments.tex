@@ -3,43 +3,42 @@
 
 \paragraph{Task and problems.} Competition mathematics (Omni-MATH), sampled
 by a deterministic seeded manifest so every prefix of the run is a valid
-random sample. All arms run the same problems, so every comparison is paired.
-A second domain was designed and dropped: its Planner contract carries no
-computation clause, so its components would not be comparable.
+random sample; all arms run the same problems, so every comparison is
+paired. A second domain was designed and dropped: its Planner contract
+carries no computation clause, so its components would not be comparable.
 
 \paragraph{Actors and scale.} Three actor models served from one pinned vLLM
 endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
 \textbf{Llama-3.3-70B}. The primary analysis reads a single frozen,
 sha256-manifested snapshot: \textbf{11{,}600 trajectories over 83{,}320 role
 messages and 17{,}486 gradings}, on $1{,}600$ problems sampled uniformly at
-random from the $4{,}181$ available. Arms~A, B and C run
-$n=1{,}600$ per cell for the first two actors and $n=400$ for Llama-3.3;
-\textbf{Arm~C$'$ covers only the first two actors} at $n=400$ each, giving
+random from the $4{,}181$ available. Arms~A, B and C run $n=1{,}600$ per
+cell for the first two actors and $n=400$ for Llama-3.3; \textbf{Arm~C$'$
+covers only the first two} at $n=400$ each, giving
 $3\times(1{,}600\cdot2+400) + 2\times400 = 11{,}600$. Every trajectory
 carries the same budget record (3 outer $\times$ 2 inner cycles, temperature
-$0$, identical \texttt{max\_tokens}); the snapshot contains exactly one
+$0$, identical \texttt{max\_tokens}) and the snapshot contains exactly one
 distinct budget. The evaluator is gpt-oss-120b in every cell, itself one of
 the actors under study (\S\ref{sec:limitations}).
 
 \paragraph{Provenance of the single-agent control.} The budget-matched
 comparator in \S\ref{subsec:notsingle} is \textbf{not} part of this campaign
-or its frozen snapshot. It is the \texttt{single\_agent} protocol from a
+or its frozen snapshot: it is the \texttt{single\_agent} protocol from a
 previously released trace corpus of the same benchmark, joined by problem
 identifier, covering the two actors at $n=1{,}600$. \textbf{Its two actor
 arms were built under different source commits}, so it is a directional
 guard and cannot support a statement about how the gap differs between
-actors. It is also conservative in one direction and generous in another:
-that protocol consumed \emph{more} oracle feedback than our Arm~A
+actors. It consumed \emph{more} oracle feedback than our Arm~A
 ($1.66$--$1.69$ evaluator calls against $1.11$--$1.35$) and roughly half the
 actor calls.
 
-\paragraph{Power.} Computed by simulation (4{,}000 replicates, two-sided
+\paragraph{Power.} By simulation (4{,}000 replicates, two-sided
 $\alpha=0.05$) from discordance rates in the pre-existing corpus. The paired
-per-actor main effect is well powered at this scale; the
+per-actor main effect is well powered here; the
 actor~$\times$~intervention interaction needs roughly twice the sample, so
 \textbf{a null on P4 means ``no large interaction detected,'' not ``no
-interaction''} --- and for the two Llama pairs (MDE $0.069$ and $0.075$) not
-even the former (\S\ref{subsec:p4null}).
+interaction''} --- and for the two Llama pairs (MDE $0.069$, $0.075$) not
+even that (\S\ref{subsec:p4null}).
 
 \paragraph{A confound caught before it became a result.} The main run was
 gated on a smoke test requiring non-zero Arm~C boundary rejections with
@@ -47,7 +46,7 @@ reasons logged, answer-bearing calls equal across arms, and a pinned
 backend. An early campaign was stopped after 121 trajectories when $74\%$ of
 Arm~C rejections proved to be the model cut off at the token limit mid-JSON
 rather than violating a role boundary. Truncation was not arm-specific but
-its \emph{cost} was: Arms~A and B tolerate a truncated prose message where
-Arm~C rejects unparseable JSON, so left alone this would have produced a
-convincing ``enforcement lowers accuracy'' artifact. The limit was doubled, a
-salvage path added, and the pre-fix rows never pooled.
+its \emph{cost} was --- Arms~A and B tolerate a truncated prose message
+where Arm~C rejects unparseable JSON --- so left alone it would have
+produced a convincing ``enforcement lowers accuracy'' artifact. The limit
+was doubled, a salvage path added, the pre-fix rows never pooled.

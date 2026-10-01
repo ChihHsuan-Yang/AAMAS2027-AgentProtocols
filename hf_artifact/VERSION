@@ -1,21 +1,23 @@
 {
+ "arm_a_differs_by_domain": "Arm A was DOMAIN-ADAPTED for SciBench (5 of 16 prompts differ, including the evaluator). Arm B is BYTE-IDENTICAL across domains. Do not assume one Arm A contract across the release, and do not compute P1a or any clause-specific fidelity metric across domains.",
  "artifact": "AAMAS2027-Roles",
- "artifact_version": "1.0.0",
+ "artifact_version": "1.1.0",
  "canonical_analysis": {
   "note": "FINAL_TABLES.py is the project's sole authority for every manuscript number. This artifact emits the ROWS those numbers are computed over.",
   "output": "analysis/out/FINAL_TABLES_OUTPUT.txt",
   "script": "analysis/scripts/FINAL_TABLES.py",
   "validation": "scripts/validate_artifact.py -- 181/181 PASS, re-run against the canonical output regenerated 2026-09-30 14:49Z"
  },
- "emitted_utc": "2026-09-30T22:02:26.208337+00:00",
- "freeze_commit": "52fec9d68b5c3a2be544389cc36e7b4b99970d7a",
+ "emitted_utc": "2026-10-01T00:33:55.119622+00:00",
+ "freeze_commit": "a64b36be0307d1846e793cd530a3fe9708f64973",
  "frozen_at": "2026-09-30T10:09:30.201557",
  "held_reason": "AAMAS 2027 reviewing is double-blind and the hosting org identifies the research group. A public dataset matching the paper's numbers is a deanonymization path even with no pointer from the paper. The repository is PRIVATE. See RELEASE_PROCEDURE.md.",
- "licensing": "per-source; see LICENSES/README.md and LICENSES/registry.json",
- "public_release_gate": "scripts/preflight_public.py MUST exit 0 before flipping public. It currently FAILS: 14 raw trace rows carry an upstream HTTP error body naming the operating institution.",
+ "licensing": "per-source and MIXED; see LICENSES/README.md and LICENSES/registry.json",
+ "mixed_licence": "v1.1.0 ships TWO upstreams under TWO licences: omnimath2 = Apache-2.0, scibench = MIT. Neither is applied over the other and the project's own Apache-2.0 covers neither. Filter by benchmark_id. LICENSES/ is the authority; the HF `license:` field can hold only one value.",
+ "public_release_gate": "scripts/preflight_public.py MUST exit 0 before flipping public. It currently FAILS: 15 raw trace rows match an institution-identifying pattern. 14 are the v1.0.0 rows carrying an upstream HTTP error body that names the operating institution -- genuine, and the reason this repository cannot be flipped. The 15th is in the v1.1.0 SciBench trace and is a FALSE POSITIVE: a NAVIGATIONAL STAR named in a physics problem about photon flux (row uid scibench:matter:40.3) whose name also happens to be an HPC hostname. The literal is deliberately not written here -- this file is scanned by secret_scan.py, and a doc that juxtaposes a hostname with the phrase 'operating institution' is a worse disclosure than the row it documents. SciBench introduces NO new genuine instance. The gate was extended in v1.1.0 to scan the new trace -- it was not weakened, and the false positive is left to FAIL rather than allowlisted, because an allowlist keyed on a word would also exempt a real hostname.",
  "release_history": [
   {
-   "note": "first release; single domain (competition math, Omni-MATH-2)",
+   "note": "first release; single domain (competition math, Omni-MATH-2). These three digests are UNCHANGED in 1.1.0 -- anything published against 1.0.0 remains checkable.",
    "status": "private",
    "traces": {
     "actor3.jsonl": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
@@ -23,6 +25,14 @@
     "campaign_v2.jsonl": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130"
    },
    "version": "1.0.0"
+  },
+  {
+   "note": "ADDITIVE second domain (college chemistry/physics, SciBench): 2,296 trajectories, 574 problems, 2 actors, Arms A and B only. No v1.0.0 file changed bytes -- asserted by the build and by this emitter. SciBench is MIT, NOT the Apache-2.0 of the Omni-MATH material; see LICENSES/. ARM A's PROMPT DIFFERS BETWEEN DOMAINS (domain-adapted); Arm B is byte-identical.",
+   "status": "private",
+   "traces": {
+    "scibench_AB.jsonl": "10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58"
+   },
+   "version": "1.1.0"
   }
  ],
  "release_status": "PUBLISHED_PRIVATE_PENDING_ACCEPTANCE",
@@ -48,6 +58,7 @@
     "math"
    ],
    "first_started_at": "2026-09-29T15:47:04.182156+00:00",
+   "introduced_in_version": "1.0.0",
    "last_started_at": "2026-09-29T20:44:16.485658+00:00",
    "rows": 1200,
    "run_id": [
@@ -76,6 +87,7 @@
     "math"
    ],
    "first_started_at": "2026-09-28T23:57:50.201018+00:00",
+   "introduced_in_version": "1.0.0",
    "last_started_at": "2026-09-29T05:23:19.490039+00:00",
    "rows": 800,
    "run_id": [
@@ -106,6 +118,7 @@
     "math"
    ],
    "first_started_at": "2026-09-28T23:26:56.570114+00:00",
+   "introduced_in_version": "1.0.0",
    "last_started_at": "2026-09-29T22:29:37.082127+00:00",
    "rows": 9600,
    "run_id": [
@@ -113,9 +126,36 @@
    ],
    "semantic_version": "1.0.0",
    "sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130"
+  },
+  "scibench_AB.jsonl": {
+   "actor_models": {
+    "google/gemma-4-31B-it": 1148,
+    "openai/gpt-oss-120b": 1148
+   },
+   "arms": {
+    "A": 1148,
+    "B": 1148
+   },
+   "backend": [
+    "sophia_vllm"
+   ],
+   "benchmark_id": "scibench",
+   "bytes": 26961648,
+   "config_version": {
+    "aed89f28ab338bdb": 2296
+   },
+   "domain": [
+    "science"
+   ],
+   "first_started_at": "2026-09-30T21:38:50.509184+00:00",
+   "introduced_in_version": "1.1.0",
+   "last_started_at": "2026-09-30T23:21:41.275435+00:00",
+   "rows": 2296,
+   "run_id": [
+    "xdom-scibench-AB-full"
+   ],
+   "semantic_version": "1.1.0",
+   "sha256": "10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58"
   }
- },
- "reserved": {
-  "1.1.0": "second domain (SciBench) -- see config/SECOND_DOMAIN_SLOT.md; added as a new version, never an overwrite of 1.0.0"
  }
 }
