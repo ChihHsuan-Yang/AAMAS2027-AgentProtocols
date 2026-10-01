@@ -19,7 +19,7 @@ reimplemented).
 | unjudged (no first verdict) | 0 |
 | duplicate cell writes | 0 |
 | call-level transport retries | 76 / 17,199 = 0.44% (all succeeded) |
-| grader noise floor (byte-identical prompts) | **2.80%** (19/678), vs 9.35% on Omni-MATH |
+| grader noise floor (byte-identical prompts) | **2.80%** (19/678). Omni-MATH's own floor is **0.72%** (canonical T6) -- SciBench's grader is ~4x noisier, not quieter; see the correction in XDOMAIN-INTEGRATION-DECISION |
 
 No transport-excluded headline is needed.
 

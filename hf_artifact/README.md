@@ -1,8 +1,13 @@
 ---
-# NOTE: this field carries ONE value and covers THIS PROJECT'S OWN derived
-# material only. v1.1.0 is MIXED-LICENCE: Omni-MATH-2 content is Apache-2.0
-# and SciBench content is MIT. See LICENSES/README.md, which is the authority.
-license: apache-2.0
+# v1.1.0 IS MIXED-LICENCE and both licences are declared here, so the Hub's own
+# metadata does not assert a single one over content it does not cover:
+#   apache-2.0 -> this project's derived material AND the Omni-MATH-2 upstream
+#   mit        -> the SciBench upstream (c) 2023 Xiaoxuan Wang
+# This field cannot express WHICH rows carry WHICH licence. Filter by
+# benchmark_id. LICENSES/README.md + LICENSES/registry.json are the authority.
+license:
+  - apache-2.0
+  - mit
 task_categories:
   - question-answering
 language:
@@ -246,8 +251,10 @@ observed effect at n=96:
 | exact McNemar, one-sided | 0.40 |
 | unpaired two-proportion z, one-sided | 0.45 |
 
-Every method lands **below** the 0.42 in the notes, and the test that produced
-the reported p=0.169 gives **0.26**. The qualitative conclusion is unchanged and
+Five of the six land **below** the 0.42 in the notes; only the most permissive
+variant (unpaired *and* one-sided — neither of which matches the paired, two-
+sided test actually used) exceeds it, at 0.45. **The test that produced the
+reported p=0.169 gives 0.26.** The qualitative conclusion is unchanged and
 in fact strengthened: this cell **cannot resolve its own effect** and a
 consumer must not read its null as absence. Against a *gemma-sized* effect the
 same cell has power ≈0.99, so it could have detected a large effect and did

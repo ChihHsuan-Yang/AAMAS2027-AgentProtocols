@@ -68,8 +68,8 @@ FAIL, and do not delete the check to get past it.
 - **1 is a FALSE POSITIVE** (v1.1.0, `scibench_AB.jsonl` line 1482, row uid
   `scibench:matter:40.3`, `messages` field): a **navigational star**, named in
   a physics problem about photon flux, whose name is also an HPC hostname —
-  the same collision class as "crux". **SciBench introduces no new genuine
-  instance.** Run the gate to see the literal; it is deliberately not written
+  the same collision class as the ordinary English noun already allowlisted in
+  `secret_scan.py`. **SciBench introduces no new genuine instance.** Run the gate to see the literal; it is deliberately not written
   in this file, because a document that prints a hostname next to the phrase
   "operating institution" is a worse disclosure than the trace row it
   describes.
@@ -190,8 +190,8 @@ material — and has its own `LICENSES/registry.json` entry plus the verbatim
    `emit_release_metadata.py` refuses if `raw/` holds a `.jsonl` it has no
    provenance entry for. Add the new trace to **both**.
 2. **Benchmark-specific vocabulary trips the deanonymization patterns.** HPC
-   hostnames collide with ordinary nouns and proper names: `crux` (already
-   known), and now a **star name** in a physics corpus. Expect a chemistry or
-   astronomy corpus to produce more. Triage each hit by reading its context;
+   hostnames collide with ordinary nouns and proper names: one such noun is
+   already allowlisted in `secret_scan.py`, and v1.1.0 added a **star name** in
+   a physics corpus. Expect a chemistry or astronomy corpus to produce more. Triage each hit by reading its context;
    never allowlist the bare word — and when you write the triage up, do not
    reproduce the literal in a file the scanner also reads.

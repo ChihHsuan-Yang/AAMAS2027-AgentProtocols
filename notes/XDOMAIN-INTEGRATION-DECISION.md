@@ -81,8 +81,14 @@ result.
 - FINDING-18 reproduces in SciBench and again runs **against** the headline:
   correcting it moves gemma to $-0.202$ (p=3.6e-05) and leaves gpt-oss
   unchanged. No verdict flips.
-- The grader noise floor here is **2.80%** against 9.35% on Omni-MATH, so the
-  gemma effect is ~7x the floor.
+- The grader noise floor here is **2.80%**. **CORRECTED 2026-09-30:** an
+  earlier version of this line compared it to "9.35% on Omni-MATH". That
+  figure is **not ours** -- it comes from an unrelated project's 7B DPO
+  scorer (a memory file), and I imported it without checking. Omni-MATH's
+  own floor, canonical T6, is **0.0072**. So SciBench's grader is roughly
+  4x NOISIER than Omni-MATH's, not quieter. The gemma SciBench effect
+  (-0.192) still clears its own domain's floor by ~7x, which is the claim
+  that matters; the cross-domain floor comparison was backwards.
 
 ## A denominator note, recorded because it nearly became an error
 The worker reported marginal recovery 0.212 -> 0.020; I computed 0.254 ->

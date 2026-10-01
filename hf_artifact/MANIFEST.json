@@ -13,12 +13,12 @@
    "sha256": "b"
   },
   "README.md": {
-   "bytes": 31686,
-   "sha256": "d"
+   "bytes": 32061,
+   "sha256": "c"
   },
   "RELEASE_PROCEDURE.md": {
-   "bytes": 9361,
-   "sha256": "4"
+   "bytes": 9463,
+   "sha256": "3"
   },
   "SCHEMA.md": {
    "bytes": 32073,
@@ -210,8 +210,8 @@
   }
  },
  "artifact": "AAMAS2027-Roles",
- "emitted_utc": "2026-10-01T00:33:55.119622+00:00",
- "freeze_commit": "a64b36be0307d1846e793cd530a3fe9708f64973",
+ "emitted_utc": "2026-10-01T00:38:47.757802+00:00",
+ "freeze_commit": "e313dc30c5ecabe107ebdba8b68edf50e87831db",
  "frozen_at": "2026-09-30T10:09:30.201557",
  "frozen_at_scibench": "2026-09-30T23:26:47.198588+00:00",
  "released_traces": {
