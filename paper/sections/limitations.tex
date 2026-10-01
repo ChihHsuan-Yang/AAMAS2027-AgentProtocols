@@ -13,59 +13,56 @@ point estimate of gpt-oss's duplication rate is recoverable, \emph{and} its
 37-character planner cannot be read as a behavior, so we report it
 uninstrumented rather than abstaining. The \textbf{scoring defect}: the
 runner grades the last answer \emph{submitted} but records the last answer
-\emph{held}, and these disagree on $17\%$ of Arm~A and $0\%$ of Arm~B
-first-pass-wrong trajectories --- an error proportional to how much an arm
-revises, the behavior our headline is about. It runs \emph{against} us:
-recoding the $62$ trajectories whose held answer matches gold while recorded
-wrong (positive control: $0$ of $10{,}734$ non-mismatched rows) widens every
-recovery gap. We keep the pre-registered outcome as primary; changing it
-after seeing which way it moves is what preregistration prevents.%
-
+\emph{held}, and these disagree on $17\%$ of role-structured and $0\%$ of
+role-free first-pass-wrong trajectories --- an error proportional to how
+much a team revises, the behavior our headline is about. It runs
+\emph{against} us: recoding the $62$ trajectories whose held answer matches
+gold while recorded wrong (positive control: $0$ of $10{,}734$
+non-mismatched rows) widens every recovery gap. We keep the pre-registered
+outcome as primary; changing it after seeing which way it moves is what
+preregistration prevents.
 
 \paragraph{Every conditional analysis carries a post-treatment label.}
 First-pass-wrong, cycles used, accumulated context and collapse are all
 outcomes of the intervention. The recovery decomposition is a decomposition,
-not a causal mediation, and unconditional arm contrasts are reported
-alongside --- except for gemma-4, whose recovery contrast is algebraically
-the intent-to-treat effect (\S\ref{subsec:recovery}). Grader noise bounds
-the other two accuracy contrasts: propagated into the bootstrap only
-gemma-4's B$-$A survives, so gpt-oss's and Llama-3.3's preregistered nulls
-are nulls the instrument could not resolve.
+not a causal mediation, and unconditional contrasts are reported alongside
+--- except for gemma-4, whose recovery contrast is algebraically the
+intent-to-treat effect (\S\ref{subsec:recovery}). Grader noise bounds the
+other two accuracy contrasts, which are nulls the instrument could not
+resolve rather than measured absences (\S\ref{subsec:recovery}).
 
 \paragraph{The collapse validation is model adjudication, not human
 annotation, and not condition-blind.} It is \textbf{not ground truth}: one
 annotator, no inter-annotator agreement, stability from repeated calls
 ($0.953$); \textbf{nor is it condition-blind} (\S\ref{subsec:collapse}),
-which is why the collapse claim's arm contrast rests on the mechanical
+which is why the collapse claim's contrast rests on the mechanical
 measures. Precision for the byte metric is estimable only where it fires
 (gpt-oss $14$ positives, gemma-4 $3$, Llama-3.3 none), so we never pool it.
-The Arm~C reading is partly mechanical: its validator forbids an answer
+The enforced reading is partly mechanical: its validator forbids an answer
 field, so some restored ``division of labor'' is the constraint.
 
-\paragraph{Arm~C's attrition is one-sided and its as-graded gain is
-survivorship.} Arm~C leaves $8.0\%$/$9.9\%$/$17.0\%$ of trajectories
-ungraded against $0.0\%$/$0.1\%$/$0.7\%$ in Arm~A; dropping them turns a
-significant negative and two nulls into three significant positives ordered
-by actor weakness --- the capability-equalizer pattern the preregistration
-told us not to submit on. Both scorings are in \S\ref{subsec:enforce}, the
-pre-registered one primary. That attrition is also why Arm~C's recovery gain
-is resolvable only for Llama-3.3 and why its first-pass and recovery columns
-do not compose into its accuracy row. Arm~C$'$ is only a \emph{partial}
-context control.
+\paragraph{Enforcement attrition is one-sided and its as-graded gain is
+survivorship.} Enforcement leaves $8.0\%$/$9.9\%$/$17.0\%$ of trajectories
+ungraded against $0.0\%$/$0.1\%$/$0.7\%$ in the baseline; dropping them
+turns a significant negative and two nulls into three significant positives
+ordered by actor weakness --- the capability-equalizer pattern the
+preregistration told us not to submit on. Both scorings are in
+\S\ref{subsec:enforce}, the pre-registered one primary. That attrition is
+also why the enforced recovery gain is resolvable only for Llama-3.3 and
+why its columns do not compose into its accuracy row. The context-restored
+condition is only a \emph{partial} control.
 
-\paragraph{Provenance, scope, and blind spots.} The pre-registered primary endpoint (P4) is null,
-and the A-versus-B contrast this paper is organized around was
+\paragraph{Provenance, scope, and blind spots.} The pre-registered primary
+endpoint (P4) is null and the \Pone{} manipulation objective failed
+(\S\ref{subsec:prereg}); the contrast this paper is organized around was
 pre-registered as secondary and exploratory --- an observation meriting
-replication, not a confirmed result. The \Pone{} manipulation objective also
-failed, and the single-agent comparator is a directional guard only
-(\S\ref{subsec:notsingle}). \textbf{All three actors lose the
-division of labor, but the recovery result is carried by gemma-4 alone}:
-gpt-oss's paired contrast does not resolve ($p=0.208$) and \textbf{Llama-3.3
-does not replicate} --- a genuine null specific to the role manipulation,
-\textbf{not} a floor (\S\ref{subsec:recovery}). The claim rests on one clean actor and one
-\PER{} organization, with the evaluator itself one of the actor models under
-study. \S\ref{subsec:xdomain} extends it to a second domain for gemma-4
-only, with an Arm~A prompt that is domain-adapted rather than
-byte-identical. Finally,
-the functional measure detects that every agent asserted an answer, not that
-their reasoning was the same (Table~1 note).
+replication, not a confirmed result --- and the single-agent comparator is a
+directional guard only, on a different question (\S\ref{subsec:notsingle}).
+\textbf{All three actors lose the division of labor, but the recovery
+result is carried by gemma-4 alone} (\S\ref{subsec:recovery}): the claim
+rests on one clean actor and one \PER{} organization, with the evaluator
+itself one of the actor models under study, and
+\S\ref{subsec:xdomain} extends it to a second domain for gemma-4 only, with
+a baseline prompt that is domain-adapted rather than byte-identical.
+Finally, the functional measure detects that every agent asserted an
+answer, not that their reasoning was the same (Table~1 note).

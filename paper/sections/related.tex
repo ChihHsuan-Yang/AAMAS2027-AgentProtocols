@@ -10,8 +10,8 @@ explicit social contract rather than an assumption~\cite{dignum2004opera}.
 Both treat \emph{when a role specification binds} as the design problem and
 answer it with enforcement outside the agent. An LLM role prompt is the
 degenerate case: a deontic clause in prose, no middleware to make it bind,
-no record of whether it did. Arm~A is that case measured; Arm~C returns the
-binding to the interface. Four further literatures bear on the result.
+no record of whether it did. Our baseline is that case measured; our
+enforced condition returns the binding to the interface. Four further literatures bear on the result.
 
 \paragraph{Role specialization and role drift.} That prompted roles are not
 reliably obeyed is established: Cemri et al.~\cite{cemri2025why} name
@@ -30,13 +30,14 @@ performance~\cite{cao2026modules,yang2026precise}.
 \paragraph{Redundancy, and the parity we do not claim.} Dylan et
 al.~\cite{dylan2026equal} hold total LLM calls fixed and find an evolved
 Planner--Executor--Critic team no better than an evolved single agent
-($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation.} Our
-R2 is a control condition, not a finding, and only a \emph{partial}
+($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation.} We
+report it as a control condition, not a finding, and only a \emph{partial}
 replication of their null: gemma-4 and Llama-3.3 are flat, but gpt-oss
 \emph{improves} by $+0.0503$ with an interval excluding zero. Zhang et
 al.~\cite{zhang2026rethinking} argue reported multi-agent gains are setup
-artifacts of structural collapse --- an objection aimed at our Arm~B, which
-is why \S\ref{subsec:notsingle} runs the single-agent control and reports
+artifacts of structural collapse --- an objection aimed at our role-free
+condition, which is why \S\ref{subsec:notsingle} runs that control and
+reports
 that it cuts \emph{both} ways; Chen et al.~\cite{chen2026agentslimming}
 prune redundant agents on the same premise.
 
@@ -59,9 +60,7 @@ matching. \emph{Owned:} the failure, the name, and recovery-after-error as a
 metric~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
 \textbf{inversion}: multi-agency is the prescribed cure for
 Degeneration-of-Thought, and a multi-agent system without role
-differentiation does not escape it --- the same oracle-gated loop is worth
-$+0.044$ to a role-labeled team and $+0.010$ to the identical team with the
-labels removed.
+differentiation does not escape it.
 
 \paragraph{Premature consensus, which we test rather than propose.} Early
 convergence is a widely proposed explanation for multi-agent failure and
@@ -77,8 +76,8 @@ not call diversity the active ingredient.
 Canedo~\cite{canedo2026architecture} frames structured specification as a
 \emph{capability equalizer} whose value falls with model strength;
 \cite{yu2026bottleneck} reaches the same prediction from theory and
-Dochkina~\cite{dochkina2026drop} the complementary case. Our Arm~C
-reproduces their monotone ordering exactly --- \emph{but only under a
+Dochkina~\cite{dochkina2026drop} the complementary case. Our enforced
+condition reproduces their monotone ordering exactly --- \emph{but only under a
 scoring rule that drops $8$--$17\%$ of trajectories}, and under our
 pre-registered rule it disappears (\S\ref{subsec:enforce}). We report both
 because a reader who re-derives either needs to find the other.
@@ -94,5 +93,5 @@ instruments~\cite{jiang2026confidence,yang2026protocol,yang2026precise}, and
 form; two are observational, the third runs within-\PER{} interventions
 varying how critique \emph{reaches} the solver~\cite{yang2026precise}.
 \textbf{None manipulates the role structure itself}, none measures whether
-the specified division of labor is realized, and the controlled arms of
-\S\ref{sec:method} do not exist in that corpus.
+the specified division of labor is realized, and the controlled conditions
+of \S\ref{sec:method} do not exist in that corpus.

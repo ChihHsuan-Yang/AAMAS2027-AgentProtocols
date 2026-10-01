@@ -27,8 +27,15 @@ MID = 306.0
 
 pages = int(subprocess.run(["pdfinfo", PDF], capture_output=True, text=True
             ).stdout.split("Pages:")[1].split()[0])
-RUNHEAD = {"When", "Is", "Multi-Agent", "Organization", "Load-Bearing?", "Anon.",
-           "AAMAS", "’27,", "May", "2027,", "Paphos,", "Cyprus"}
+# Running-head vocabulary. This is DERIVED FROM THE PDF's own /Title plus the
+# venue block, not hand-maintained: a hardcoded list silently goes stale the
+# moment the title or the venue changes, and a stale entry makes the check
+# count a running-head word as main text (which is exactly what a title change
+# and the Paphos->Hanoi venue fix had already done to the previous list).
+_title = subprocess.run(["pdfinfo", PDF], capture_output=True, text=True).stdout
+_title = _title.split("Title:")[1].split("\n")[0].strip() if "Title:" in _title else ""
+RUNHEAD = set(_title.split()) | {"Anon.", "AAMAS", "’27,", "May", "2027,",
+                                 "Hanoi,", "Vietnam"}
 
 ref_page = ref_col = ref_y = None
 for p in range(1, pages + 1):

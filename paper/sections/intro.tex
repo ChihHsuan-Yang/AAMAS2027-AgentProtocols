@@ -19,55 +19,55 @@ performance \emph{under matched compute and information budgets}
 (\S\ref{sec:framework}). Our interventions hold the budget fixed and vary
 only what each agent is told it is, or what its interface lets it emit.
 
-\paragraph{The answer, in one sentence.}
-\textbf{Role structure \emph{can} be load-bearing for recovering from a wrong
-answer where it is not load-bearing for producing the first one} --- and the
-two halves do not have the same scope. Deleting every role instruction
-(Arm~B) destroys the division of labor in \textbf{all three} actors: the rate
-at which every agent independently asserts its own final answer goes from
-$0.000$--$0.120$ to $0.846$--$0.976$, the planner supplying almost all of the
-swing. First-pass accuracy does not follow --- unchanged for gemma-4,
-\emph{improving} for gpt-oss --- not our finding but our control
-condition~\cite{dylan2026equal,orogat2026architectural}. \textbf{Recovery
-after a wrong first answer then falls cleanly in one actor} (gemma-4, $0.222
-\rightarrow 0.051$, paired $p=2\times10^{-8}$; its first-pass rates are equal
-to four decimals, so this contrast is an exact reparameterization of the
-randomized intent-to-treat effect, not a post-treatment conditional),
-\textbf{directionally in a second} (gpt-oss, $0.324 \rightarrow 0.247$,
-paired $p=0.208$), and \textbf{not at all in a third} (Llama-3.3, $0.014$
-versus $0.015$ --- \textbf{a genuine null of the role manipulation, not a
-floor}: enforcement moves that actor to $0.139$).
+\paragraph{The manipulation works.} Deleting every role instruction --- with
+topology, actor model, context policy, retry budget and evaluator held fixed
+--- destroys the division of labor in \textbf{all three} actors: the rate at
+which every agent independently asserts its own final answer goes from
+$0.000$--$0.120$ to $0.846$--$0.976$, the planner supplying almost all of
+the swing. That is the manipulation check, not the headline.
 
-\paragraph{It is not premature stopping, and not less feedback.}
-The standing explanation for a team that fails to fix its own error is early
-convergence. We test and reject it: every arm holds the same six
-deliberation cycles, no trajectory is cut short, and the role-free team draws
-\emph{more} oracle verdicts. What changes is their use --- it converts $5.80$
-of its $5.83$ cycles into resubmissions of the same answer while the
-role-labeled team submits $1.54$ times and spends $3.98$ revising. This is
-Degeneration-of-Thought~\cite{liang2024divergent}; new is the
-\textbf{inversion}, multi-agency being the standard prescription against it
-which multi-agency without role differentiation does not escape. Against a
-budget-matched single agent a collapsed gpt-oss team still wins while
-gemma-4's team \emph{loses} in both arms --- and gemma-4 carries the
-recovery result, a tension we state rather than resolve
-(\S\ref{subsec:notsingle}).
+\paragraph{Roles do not buy the first answer.} First-pass accuracy does not
+follow the organization down: unchanged for gemma-4, \emph{improving} for
+gpt-oss, flat for Llama-3.3 --- a parity prior role ablations already
+report~\cite{dylan2026equal,orogat2026architectural}, and our control
+condition rather than a finding.
 
-\paragraph{Restoring the structure restores recovery, not accuracy.} The
-symmetric intervention enforces the division of labor at the interface
-rather than merely requesting it, making a role violation unrepresentable
-(Arm~C). It works and un-freezes the answer in every
-actor; its recovery exceeds Arm~A's in all three, though \textbf{only
-Llama-3.3's contrast is resolvable} against the arm's attrition. It does
-\emph{not} restore final accuracy, costs $8$--$17\%$ attrition, and
-\textbf{our pre-registered primary test of the actor~$\times$~intervention
-interaction is null.}
+\paragraph{The difference appears after external feedback.} Both teams are
+told, by the same oracle-gated evaluator, that their answer is wrong. Both
+hold the same six deliberation cycles by construction, no trajectory is cut
+short, and the role-free team draws \emph{more} oracle verdicts than the
+role-labeled one. So the gap is not fewer chances, not early stopping, and
+not less information. What differs is \textbf{use}: in gemma-4 the
+role-structured team spends $5.52$ realized cycles as $1.54$ submissions and
+$3.98$ revisions, the role-free team $5.83$ as $5.80$ submissions and $0.03$
+revisions.
+\textbf{Told they are wrong, one team revises and the other resubmits.}
+This is
+Degeneration-of-Thought~\cite{liang2024divergent}, and what is new is the
+\textbf{inversion}: multi-agency is the standard prescription against it,
+and multi-agency without role differentiation does not escape it.
+
+\paragraph{That behavioral difference becomes an outcome difference.}
+Recovery from a wrong first answer falls $0.222 \rightarrow 0.051$ for
+gemma-4 --- paired on problems wrong under both conditions, $37$ recovered
+only with roles against $3$ only without, exact McNemar
+$p=2\times10^{-8}$. Its first-pass rates are equal to four decimals, so the
+role-free team does not enter recovery already behind, and the contrast is
+an exact reparameterization of the randomized intent-to-treat effect rather
+than a post-treatment conditional. The result is \textbf{clean in that
+actor, directional but unresolved in gpt-oss} ($0.324 \rightarrow 0.247$,
+paired $p=0.208$) and \textbf{absent in Llama-3.3} ($0.014$ versus $0.015$
+--- a genuine null of the role manipulation, not a floor: enforcement moves
+that same actor to $0.139$).
+
+\paragraph{It holds in a second domain.} On $574$ free-response
+college-science problems the same split returns: first-pass accuracy differs
+by $0.000$ and recovery falls $0.212 \rightarrow 0.020$ ($n=99$,
+$p=6.6\times10^{-5}$), for the one actor that cell is powered to resolve.
 
 \paragraph{Contribution.} An operational definition of \textbf{load-bearing}
-and a budget-matched two-directional design testing it, with the
-single-agent control without which ``collapse is harmless'' cannot be told
-from ``the system was always one agent''; the \textbf{phase dissociation}
-above, scoped per actor rather than smoothed; a \textbf{refutation of
-premature stopping} on matched realized budget; and \textbf{three
+and a budget-matched, two-directional design testing it; the \textbf{phase
+dissociation}, scoped per actor rather than smoothed; a \textbf{refutation
+of premature stopping} on matched realized budget; and \textbf{three
 measurement results we had to absorb ourselves}
 (\S\ref{sec:discussion}).

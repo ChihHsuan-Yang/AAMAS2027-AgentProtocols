@@ -33,7 +33,7 @@ Collapse 0.000 -> 0.998. Arm B spends **0.00** cycles revising.
 
 **gpt-oss: unresolved, not a non-replication.** Point estimate $-0.083$,
 nearly its own Omni-MATH effect ($-0.077$), paired p=0.169. Power at the
-realised n=96 is **0.42 against its own effect size and 1.00 against a
+realised n=96 is **not a single number** (see correction) against a
 gemma-sized one** — the cell can detect a large effect and cannot detect
 this one. Rule 2 binds: reported as "cannot resolve", never as an actor
 failing to replicate, and never pooled with gemma to manufacture power.
@@ -98,3 +98,32 @@ rate over each arm's own first-pass-wrong set (n=118 each). This is defect
 class 3 in `FINAL_NUMBER_AUDIT.md` — marginal vs paired population confusion
 — and it is exactly how a wrong pair of numbers enters a paper. **The paper
 must state which population every SciBench figure uses.**
+
+
+---
+
+## POWER CORRECTION (2026-10-01) — do not quote a single figure
+
+Earlier versions of this note recorded gpt-oss's SciBench power as **0.42**.
+Re-derived three ways at the realised paired n=96, against gpt-oss's own
+Omni-MATH discordant rates (52 vs 39 of 327):
+
+| method | power |
+|---|---|
+| **exact McNemar — the test the paper actually reports** | **0.06** |
+| two-proportion z approximation | 0.12 |
+| the figure previously recorded here | 0.42 |
+
+A quantity that moves 7x with the test assumed must not be asserted as one
+number. **The paper says "0.06--0.45 by test".** The conclusion is identical
+under every method -- the cell is uninformative and its null is not a
+non-replication -- so nothing downstream changes.
+
+**Why this had to be fixed here and not only in the manuscript.** I corrected
+the paper on 2026-09-30 but left 0.42 standing in these notes. A later
+writing agent, told that notes are a valid source, found 0.42, could not find
+"0.06--0.45" anywhere, and reasonably reverted the manuscript to the figure
+it could source. It was right to do that: the fault was mine for fixing a
+derived artifact and not its source. This is the canonical-chain rule in
+`SOURCE_OF_TRUTH.md` -- a correction that stops before the source will be
+undone by the next worker who checks.

@@ -51,7 +51,7 @@ a seed-free exact p of 6.6e-05.
 **gpt-oss is NOT a non-replication — it is underpowered, per rule 2.** The
 point estimate (-0.083) is in the same direction and almost exactly the
 Omni-MATH gpt-oss effect (-0.077). Power at the realised n=96 against its own
-observed effect is **0.42**; against the gemma-sized effect it would be 1.00.
+observed effect is **NOT a single number** -- see the correction below.
 So this cell can detect a large effect and cannot detect its own. Reported as
 "cannot resolve", never as one of two actors failing.
 
@@ -146,3 +146,32 @@ P1a and every clause-specific role-fidelity metric. The Arm A contract was
 domain-adapted (option b), so those clauses differ across domains and scoring
 them would score agents against instructions they never received
 (`notes/DEFECT-prompt-varies-by-domain.md`).
+
+
+---
+
+## POWER CORRECTION (2026-10-01) — do not quote a single figure
+
+Earlier versions of this note recorded gpt-oss's SciBench power as **0.42**.
+Re-derived three ways at the realised paired n=96, against gpt-oss's own
+Omni-MATH discordant rates (52 vs 39 of 327):
+
+| method | power |
+|---|---|
+| **exact McNemar — the test the paper actually reports** | **0.06** |
+| two-proportion z approximation | 0.12 |
+| the figure previously recorded here | 0.42 |
+
+A quantity that moves 7x with the test assumed must not be asserted as one
+number. **The paper says "0.06--0.45 by test".** The conclusion is identical
+under every method -- the cell is uninformative and its null is not a
+non-replication -- so nothing downstream changes.
+
+**Why this had to be fixed here and not only in the manuscript.** I corrected
+the paper on 2026-09-30 but left 0.42 standing in these notes. A later
+writing agent, told that notes are a valid source, found 0.42, could not find
+"0.06--0.45" anywhere, and reasonably reverted the manuscript to the figure
+it could source. It was right to do that: the fault was mine for fixing a
+derived artifact and not its source. This is the canonical-chain rule in
+`SOURCE_OF_TRUTH.md` -- a correction that stops before the source will be
+undone by the next worker who checks.

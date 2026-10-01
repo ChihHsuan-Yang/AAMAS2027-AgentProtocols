@@ -14,11 +14,12 @@ nothing records which clauses were honored.
 
 \textbf{Definition.} A component of an organization is \textbf{load-bearing}
 if removing or altering it reproducibly degrades task performance
-\emph{under matched compute and information budgets}. The budget clause makes the definition usable: removing role instructions
-\emph{and} agents, calls or context tests scale, not organization. Because
-performance itself decomposes --- producing a first answer, repairing a
-wrong one --- the definition is applied \emph{per phase}, and the two phases
-answer differently.
+\emph{under matched compute and information budgets}. The budget clause
+makes it usable: removing role instructions \emph{and} agents, calls or
+context tests scale, not organization. Because performance itself
+decomposes --- producing a first answer, repairing a wrong one --- the
+definition is applied \emph{per phase}, and the two phases answer
+differently.
 
 \subsection{Measuring the realized organization}
 
@@ -27,8 +28,8 @@ answer differently.
 final answer, making the pipeline three solvers rather than a division of
 labor. It targets the property the diagram asserts rather than what a hash
 can see, is measured on the first pass so it is not confounded with
-trajectory length, and is \textbf{not applicable to Arms~C/C$'$}, whose
-schema forbids an answer field.
+trajectory length, and is \textbf{not applicable to the structurally
+enforced conditions}, whose schema forbids an answer field.
 
 \paragraph{Exact output duplication (secondary, a lower bound).} Two or more
 role messages byte-identical, as \texttt{sha256} of the raw completion before
@@ -39,15 +40,16 @@ collapse occurred and, its recall differing by actor, is \textbf{never used
 to compare how much organization two actors lost}.
 
 \paragraph{Answer authorship.} Whether a Planner authors a final answer ---
-the clause Arm~C structurally enforces, and the manipulation check.
+the clause structural enforcement makes unrepresentable, and the
+manipulation check.
 
 \paragraph{Computation (\Pone{} and density).} Whether a Planner abstains
 from computing, scored as containing no evaluated numeric equality
 (\textbf{\Pone{}}, a pre-registered fidelity measure). Being the absence of
 a pattern it is anti-correlated with length, so every computation claim
-cites \textbf{evaluated equations per 1{,}000 characters} instead: Arm~B's
-gpt-oss Planner scores $0.722$ on the binary rate --- apparently the study's
-most compliant --- on a 37-character message. A metric that rewards silence
+cites \textbf{evaluated equations per 1{,}000 characters} instead: the
+role-free gpt-oss Planner scores $0.722$ on the binary rate --- apparently
+the study's most compliant --- on a 37-character message. A metric that rewards silence
 cannot measure a division of labor.
 
 \paragraph{Recovery.} The fraction of trajectories whose first submitted

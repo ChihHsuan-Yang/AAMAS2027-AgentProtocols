@@ -55,7 +55,36 @@ INK3     = "#767676"
 GRID     = "#d9d9d9"
 SURFACE  = "#ffffff"
 
-ARM_LONG = {"A": "A  soft roles", "B": "B  no roles", "C": "C  enforced"}
+# ---------------------------------------------------------------- terminology
+# BINDING: paper/TERMINOLOGY.md.  No figure may print "Arm A/B/C" -- a reader
+# who meets "Arm B" carries an arbitrary mapping for eight pages.  The internal
+# letters stay as DICT KEYS (stable identifiers that match the data columns and
+# FIGDATA keys); only these strings are ever rendered.
+#
+# A pre-existing violation this replaced: every figure built before 2026-10-01
+# printed "A soft roles / B no roles / C enforced", and `pdftotext` finds the
+# bare letters in 7 of 10 shipped PDFs, including the one the manuscript
+# includes.  Checked with the tool rather than by reading the source, because
+# the source spells the label across a dict and an f-string.
+ARM_LONG = {"A": "role-structured", "B": "role-free", "C": "structurally enforced"}
+# Short forms for tick labels, where the long name will not fit.  Still never a
+# bare letter -- a truncation that reads as a code defeats the point.
+ARM_SHORT = {"A": "role-\nstructured", "B": "role-\nfree", "C": "structurally\nenforced"}
+ARM_TICK  = {"A": "role-structured", "B": "role-free", "C": "enforced"}
+
+
+def assert_no_arm_codes(*strings):
+    """Fail the build if a rendered string carries a bare arm code.
+
+    Written to FAIL on the old labels first (`A  soft roles`, `arm B`), so the
+    check is known to discriminate rather than merely passing on good input.
+    """
+    import re as _re
+    bad = _re.compile(r"\b[Aa]rm\s*~?\s*[ABC]\b|(?<![A-Za-z])[ABC]\s+(?:soft roles|no roles|enforced)\b")
+    hits = [t for t in strings if t and bad.search(str(t))]
+    if hits:
+        raise AssertionError(f"arm code in rendered text (TERMINOLOGY.md): {hits}")
+    return True
 
 # Short actor labels. The full model ids live in the caption and the README.
 ACTOR_SHORT = {"gemma-4-31B-it": "gemma-4\n31B",
@@ -155,6 +184,24 @@ def save(fig, stem, width_in):
                 if t.get_size() < FS_MIN - 1e-9:
                     small.append((t.get_text()[:28], t.get_size()))
     assert not small, f"{stem}: text below {FS_MIN}pt: {small}"
+
+    # TERMINOLOGY GATE (paper/TERMINOLOGY.md).  Collect every string this
+    # figure actually renders and refuse to write a file that prints an arm
+    # code.  Gathered from the artist objects rather than from the source, so
+    # a label assembled inside an f-string is still caught.
+    rendered = []
+    for ax in fig.get_axes():
+        rendered += [ax.get_title(), ax.get_xlabel(), ax.get_ylabel()]
+        rendered += [t.get_text() for t in ax.get_xticklabels()]
+        rendered += [t.get_text() for t in ax.get_yticklabels()]
+        rendered += [t.get_text() for t in ax.texts]
+        lg = ax.get_legend()
+        if lg:
+            rendered += [t.get_text() for t in lg.get_texts()]
+    rendered += [t.get_text() for t in fig.texts]
+    for lg in getattr(fig, "legends", []):
+        rendered += [t.get_text() for t in lg.get_texts()]
+    assert_no_arm_codes(*rendered)
 
     os.makedirs(FIGDIR, exist_ok=True)
     pdf = os.path.join(FIGDIR, stem + ".pdf")

@@ -77,13 +77,15 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{May 2027}
 
 \begin{document}
 
-% CANONICAL TITLE. The two-line form "Roles Buy Recovery, Not First-Pass
-% Accuracy: When Is Multi-Agent Organization Load-Bearing?" was tried on
-% 2026-09-30 and REVERTED: the extra title line pushed main text onto
-% page 9 (pagecheck EXIT 1). The page budget has a one-sentence margin,
-% and a subtitle is not worth a limit violation. The short form is the
-% canonical title everywhere -- README and SUBMISSION_PACKAGE match it.
-\title{When Is Multi-Agent Organization Load-Bearing?}
+% CANONICAL TITLE, set 2026-10-01 with the narrative rewrite.
+% The earlier short form "When Is Multi-Agent Organization Load-Bearing?"
+% named the question; this one names the answer, which is what the Results
+% now march toward. A two-line title costs vertical space and the page
+% budget has roughly a one-sentence margin, so the rewrite paid for it with
+% prose cuts rather than with typesetting. scripts/pagecheck.py keys its
+% running-head word list on the title and was updated with it.
+\title{From Feedback to Revision: When Multi-Agent Roles Become
+Load-Bearing}
 
 % Anonymous mode suppresses this block; it is required for the class to build.
 \author{Anonymous Author(s)}
@@ -93,41 +95,42 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{May 2027}
 }
 
 \begin{abstract}
-Multi-agent LLM systems are specified as role diagrams --- Planner, Executor,
-Reviewer --- and the diagram is read as a mechanism. We ask which phase of the
-work that organization carries. Holding agents, call budget, context policy,
-verifier and grading fixed, we delete every role instruction (Arm~B) and,
-separately, enforce it structurally, making violations of it
-unrepresentable (Arm~C),
-across three actor models on $11{,}600$ trajectories from one frozen
-snapshot.
+Multi-agent LLM systems are specified as role diagrams --- Planner,
+Executor, Reviewer --- and the diagram is read as a mechanism. We ask which
+phase of the work that organization carries. Holding agents, topology, call
+budget, context policy, verifier and grading fixed, we delete every role
+instruction and, separately, enforce the same division of labor at the
+interface, across three actor models and $11{,}600$ trajectories from one
+frozen snapshot.
 
-Removing roles destroys the division of labor in all three actors: the rate at
-which every agent independently asserts its own final answer rises from
-$0.000$--$0.120$ to $0.846$--$0.976$, the planner supplying almost all of that
-swing. For gpt-oss a logging defect leaves what its planner \emph{computed}
-unreadable, so its collapse is established on answer assertion alone. A
-rubric-frozen adjudication --- model adjudication, not human annotation,
-outcome-blind but \emph{not} condition-blind --- concurs as a second opinion.
-First-pass accuracy does not follow: it is unchanged for gemma-4 and improves for gpt-oss
-($+0.050$), a parity consistent with prior role ablations and reported here as
-our control condition. \textbf{The cost appears only \emph{after} a wrong
-first answer --- and, unlike the collapse, not in all three actors.} gemma-4's
-recovery falls $0.222 \rightarrow 0.051$ (paired $p=2\times10^{-8}$), and
-since its first-pass rates are equal to four decimals that contrast is an
-exact reparameterization of the intent-to-treat effect rather than a
-post-treatment conditional. gpt-oss falls $0.324 \rightarrow 0.247$ but does
-not resolve when paired ($p=0.208$); Llama-3.3 recovers at $0.014$ and $0.015$
---- a genuine null specific to the role manipulation, since enforcement moves
-the same actor's recovery to $0.139$. The role-free team is not stopped
-early: it holds the same six cycles, spends $5.80$ of $5.83$ on resubmission
-rather than revision, and draws \emph{more} oracle verdicts than the
-role-labeled team. Architectural enforcement restores organization and
-un-freezes answers, restores recovery in Llama-3.3 and final accuracy in
-none, at $8$--$17\%$ attrition; our preregistered primary test is null. \textbf{Role structure
-\emph{can} be load-bearing for recovery where it is not load-bearing for
-first-pass solving} --- shown cleanly in one actor, directionally in a
-second, absent in a third, for one topology and an oracle-gated loop.
+Deleting the role instructions destroys the intended division of labor in
+all three actors: the rate at which every agent independently asserts its
+own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$, the
+planner supplying almost all of the swing. First-pass accuracy does not
+follow --- unchanged for gemma-4, \emph{improved} for gpt-oss ($+0.050$),
+flat for Llama-3.3 --- a parity consistent with prior role ablations and
+reported here as our control condition. \textbf{The difference appears only
+after a team is told its answer is wrong.} Both teams hold the same six
+deliberation cycles by construction and the role-free team draws
+\emph{more} oracle verdicts, so it is neither stopped early nor given less
+information; what differs is use. In gemma-4 the role-structured team
+spends $5.52$ realized cycles as $1.54$ submissions and $3.98$ revisions,
+the role-free team $5.83$ as $5.80$ submissions and $0.03$ revisions, leaving its answer
+unchanged in $0.845$ of first-pass-wrong trajectories against $0.288$.
+\textbf{Told they are wrong, one team revises and the other resubmits} ---
+and that split becomes an outcome split: recovery falls $0.222 \rightarrow
+0.051$ (gemma-4, paired $37$ versus $3$ discordant, exact McNemar
+$p=2\times10^{-8}$), with first-pass rates equal to four decimals, so the
+role-free team does not enter recovery already behind. The same returns for that actor on $574$
+free-response college-science problems: first-pass difference $0.000$,
+recovery $0.212 \rightarrow 0.020$ ($n=99$, $p=6.6\times10^{-5}$).
+Enforcing the division of labor at the interface un-freezes the answer and
+returns revisability, at $8$--$17\%$ attrition that keeps it from reaching
+end-to-end accuracy. \textbf{Role structure \emph{can} be load-bearing for
+feedback-driven recovery where it is not load-bearing for first-pass
+solving} --- cleanly in one actor, directionally in a second (gpt-oss,
+paired $p=0.208$), absent in a third (Llama-3.3, a genuine null of the role
+manipulation, since enforcement moves that actor's recovery to $0.139$).
 \end{abstract}
 
 \begin{CCSXML}

@@ -6,99 +6,110 @@ clustered by problem, under the pre-registered rule that trajectories never
 producing a graded answer count as incorrect; significance is exact McNemar
 on discordant pairs. Holm correction across the two testable pre-registered
 families changes no verdict (P3, gemma-4 Holm $p=0.0120$; P4, all retained).
-\textbf{The A-versus-B contrast supplying this paper's headline was
-pre-registered as secondary and exploratory}, and every conditional analysis
-below conditions on a post-treatment variable: descriptive, never causal.
+\textbf{The role-structured-versus-role-free contrast supplying this paper's
+headline was pre-registered as secondary and exploratory}, and every
+conditional analysis below conditions on a post-treatment variable:
+descriptive, never causal.
 
-\subsection{R1. Removing role instructions destroys the division of labor}
+\subsection{R1. Removing roles changes the organization, not the first
+answer}
 \label{subsec:collapse}
 
-Arm~B deletes every role instruction and changes nothing else. \textbf{This
-claim rests on the mechanical measures, which involve no judge.} We ask
-whether \emph{every} agent independently asserts its own final answer on the
-first pass, so the measure is not length-confounded
-(Table~\ref{tab:collapse}); it rises from $0.000$--$0.120$ to
-$0.846$--$0.976$. \textbf{Decomposed by role, the planner supplies almost
-all of the change}: the executor is at ceiling in both arms
-($0.907$--$1.000$); the reviewer, already high, moves
+Removing the role instructions changes nothing else: same three agents,
+same order, same budget, same evaluator. \textbf{This claim rests on the
+mechanical measures, which involve no judge.} We ask whether \emph{every}
+agent independently asserts its own final answer on the first pass, so the
+measure is not length-confounded (Table~\ref{tab:collapse}); it rises from
+$0.000$--$0.120$ to $0.846$--$0.976$. \textbf{Decomposed by role, the planner
+supplies almost all of the change}: the executor is at ceiling either way
+($0.907$--$1.000$) and the reviewer, already high, moves
 $0.781$/$0.492$/$0.823$ to $0.998$/$0.965$/$0.961$ (gemma-4 / Llama-3.3 /
-gpt-oss); the planner moves $0.000$/$0.000$/$0.183$ to
-$0.979$/$0.889$/$0.898$ --- a statement about the \emph{change}, not the
-level.
+gpt-oss), while the planner moves $0.000$/$0.000$/$0.183$ to
+$0.979$/$0.889$/$0.898$ --- a claim about the \emph{change}, not the level.
 
 \begin{table}[t]
 \centering
 \caption{\textbf{R1.} Functional collapse: first pipeline passes in which
 all three agents independently assert a final answer, with byte duplication
 (a lower bound) and the adjudication (outcome-blind but not condition-blind,
-see text) beside it. Not applicable to Arms~C/C$'$, whose schema forbids an
-answer field.}
+see text) beside it. Not applicable to the structurally enforced conditions,
+whose schema forbids an answer field.}
 \label{tab:collapse}
 \small
 \begin{tabular}{llccc}
 \toprule
  & & functional & exact byte & adjudicated \\
-arm & actor & collapse & duplication & no division \\
+organization & actor & collapse & duplication & no division \\
 \midrule
-A  & gemma-4-31B   & $0.000$ & $0.000$ & $0.000$ \\
-A  & gpt-oss-120b  & $0.120$ & $0.000$ & $0.000$ \\
-A  & Llama-3.3-70B & $0.000$ & $0.000$ & $0.000$ \\
-\textbf{B} & \textbf{gemma-4-31B}   & $\mathbf{0.976}$ & $0.000$
+role-structured & gemma-4-31B   & $0.000$ & $0.000$ & $0.000$ \\
+role-structured & gpt-oss-120b  & $0.120$ & $0.000$ & $0.000$ \\
+role-structured & Llama-3.3-70B & $0.000$ & $0.000$ & $0.000$ \\
+\textbf{role-free} & \textbf{gemma-4-31B}   & $\mathbf{0.976}$ & $0.000$
   & $\mathbf{0.857}$ \\
-\textbf{B} & \textbf{gpt-oss-120b}  & $\mathbf{0.846}$ & $0.680$
+\textbf{role-free} & \textbf{gpt-oss-120b}  & $\mathbf{0.846}$ & $0.680$
   & $\mathbf{1.000}$ \\
-\textbf{B} & \textbf{Llama-3.3-70B} & $\mathbf{0.872}$ & $0.008$
+\textbf{role-free} & \textbf{Llama-3.3-70B} & $\mathbf{0.872}$ & $0.008$
   & $\mathbf{1.000}$ \\
-C/C$'$ & all        & n/a & $\leq 0.003$ & $0.067$--$0.286$ \\
+enforced & all        & n/a & $\leq 0.003$ & $0.067$--$0.286$ \\
 \bottomrule
 \end{tabular}
 
 \vspace{2pt}
-\footnotesize\emph{Sensitivity.} Arm~B is stable across three answer-marker
-definitions ($0.846$--$0.999$, every actor); \textbf{Arm~A is not}
-($0.000$--$0.892$), so read its column as ``low,'' not a point estimate.
-The A-vs-B ordering holds in all nine actor$\times$marker cells.
+\footnotesize\emph{Sensitivity.} The role-free rate is stable across three
+answer-marker definitions ($0.846$--$0.999$, every actor); \textbf{the
+role-structured rate is not} ($0.000$--$0.892$), so read its column as
+``low,'' not a point estimate. The ordering holds in all nine
+actor$\times$marker cells.
 \end{table}
 
 \paragraph{Exact duplication is sound and far too narrow.} Byte-identical
-text between two agents fires on $0.680$ of gpt-oss Arm~B first passes and
-essentially never elsewhere ($\leq 0.008$) --- a property of the instrument
-(recall $0.262$), not the actors, and \textbf{never used to compare how much
-organization two actors lost}.
+text between two agents fires on $0.680$ of gpt-oss role-free first passes
+and essentially never elsewhere ($\leq 0.008$) --- a property of the
+instrument, not the actors (\S\ref{sec:framework}).
 
 \paragraph{A second opinion, and the leak that stops it being blind.} We put
-171 trajectories ($42$/$56$/$44$/$29$ across Arms~A/B/C/C$'$) to a frontier
-model against a rubric frozen before the first judgement, with actor, arm,
-correctness and the automated label withheld and role words neutralized. It
-finds the division of labor intact in $1.000$ of Arm~A and absent in
-$0.857$--$1.000$ of Arm~B, stable at $0.953$ across repetitions. This is
-\textbf{model adjudication, not human annotation}, and not ground truth.
+171 trajectories ($42$/$56$/$44$/$29$ across the four conditions) to a
+frontier model against a rubric frozen before the first judgement, with
+actor, condition, correctness and the automated label withheld and role
+words neutralized. It finds the division of labor intact in $1.000$ of
+role-structured trajectories and absent in $0.857$--$1.000$ of role-free
+ones, stable at $0.953$ across repetitions. This is \textbf{model
+adjudication, not human annotation}, and not ground truth.
 
 \textbf{It is also outcome-blind but \emph{not} condition-blind.}
 Neutralization renamed the role words without equalizing their
 \emph{presence}: a neutralized \texttt{Agent-P/E/R} token appears in all
-$42$ Arm~A items and $3$ of $56$ Arm~B items (Fisher exact
+$42$ role-structured items and $3$ of $56$ role-free ones (Fisher exact
 $p=1.5\times10^{-24}$), so a judge noticing only whether a transcript labels
-its speakers could separate the arms without reading content; output format
-separates Arm~C further. Normalizing to a common surface would destroy the
-differences being judged, so we disclose rather than re-run. \textbf{We
-therefore do not call the arm-contrastive adjudication blinded}, and the
-collapse claim does not rest on it; judge stability and the byte metric's
-precision/recall are within-item, so unaffected.
+its speakers could separate the conditions without reading content; output
+format separates the enforced condition further. Normalizing to a common
+surface would destroy the differences being judged, so we disclose rather
+than re-run: \textbf{we do not call the condition-contrastive adjudication
+blinded}, and the collapse claim does not rest on it. Judge stability and
+the byte metric's precision/recall are within-item, so unaffected.
 
 \paragraph{Two of three actors visibly duplicate; the third is
-uninstrumented.} gemma-4's and Llama-3.3's Arm~B planners write full
+uninstrumented.} gemma-4's and Llama-3.3's role-free planners write full
 independent solutions (median $1{,}876$ and $1{,}892$ characters) before
 boxing an answer. Numeric-token overlap confirms it, but only against the
 right null: pairing planners with executors from \emph{different} problems
-shows the baseline is itself arm-dependent, so the raw A$-$B difference is
-invalid. Against each arm's own null the excess is $+0.449$/$+0.432$ in
-Arm~B against $+0.159$/$+0.145$ in Arm~A --- a replicated shift of $+0.290$
-and $+0.287$. \textbf{gpt-oss cannot be read at all}: its Arm~B planner
-emits a median $37$ visible characters in $26.7$ seconds ($2.85$ per second
-against $195$ in its own Arm~A), with \texttt{used\_reasoning\_fallback}
+shows the baseline is itself condition-dependent, so the raw difference is
+invalid. Against each condition's own null the excess is $+0.449$/$+0.432$
+without roles against $+0.159$/$+0.145$ with them --- a shift of $+0.290$
+and $+0.287$. \textbf{gpt-oss cannot be read at all}: its role-free
+planner emits a median $37$ visible characters in $26.7$ seconds ($2.85$ per
+second against $195$ with roles), with \texttt{used\_reasoning\_fallback}
 false in all $2{,}302$ sub-100-character messages --- the logging defect
 below.
+
+\paragraph{First-pass accuracy does not follow --- the control condition.}
+\emph{Not a finding} but the control it is: the ablation removed the
+organization without crippling the
+solver~\cite{dylan2026equal,orogat2026architectural}. On matched problems
+the first-pass difference is \emph{identical} for gemma-4 ($+0.0000$, CI
+$[-0.0156,+0.0150]$) and flat for Llama-3.3 ($+0.0077$,
+$[-0.0283,+0.0437]$), while it \emph{improves} for gpt-oss ($+0.0503$,
+$[+0.0339,+0.0666]$). Whatever roles buy, they do not buy the first answer.
 
 \subsection{A logging defect, and its second consequence}
 \label{subsec:logging}
@@ -108,7 +119,7 @@ Our runner logged each response's \texttt{content}, falling back to
 short content string alongside a long hidden trace, so the derivation was
 discarded while the flag documenting the substitution stayed false. Below
 $10$ visible characters per second of latency, \textbf{$75.7\%$ of gpt-oss
-Arm~B role messages are affected and $93.4\%$ of its first passes contain
+role-free messages are affected and $93.4\%$ of its first passes contain
 one}; the flag reports $5.8\%$. gemma-4 and Llama-3.3 are unaffected
 ($0.1$--$0.5\%$).
 
@@ -118,100 +129,130 @@ collapse-\emph{mode} interpretation}: calling that 37-character planner a
 behavioral mode would attribute our defect to the model, and it is why byte
 duplication fires only here. \textbf{It does not manufacture the collapse},
 the one place it could reach a headline measure: restricted to first passes
-with \emph{no} affected message, Arm~B collapse is $0.821$ ($n=106$) against
-$0.846$ overall and Arm~A $0.118$ against $0.120$ --- the gap is intact on
-clean messages. Accuracy is graded from an always-present final answer, and
-the functional measure reads answer assertions, not derivations. The
-campaign was not re-run (\S\ref{sec:limitations}).
+with \emph{no} affected message, role-free collapse is $0.821$ ($n=106$)
+against $0.846$ overall and the role-structured rate $0.118$ against
+$0.120$ --- the gap is intact on clean messages. Accuracy is graded from an
+always-present final answer, and the functional measure reads answer
+assertions, not derivations. The campaign was not re-run.
 
-\subsection{R2. First-pass accuracy does not suffer --- our control
-condition}
-\label{subsec:firstpass}
-
-\emph{Not a finding} but the control condition it is: the ablation removed
-the organization without crippling the
-solver~\cite{dylan2026equal,orogat2026architectural}. On matched problems
-first-pass B$-$A is \emph{identical} for gemma-4 ($+0.0000$, CI
-$[-0.0156,+0.0150]$) and flat for Llama-3.3 ($+0.0077$,
-$[-0.0283,+0.0437]$), while it \emph{improves} for gpt-oss ($+0.0503$,
-$[+0.0339,+0.0666]$). Whatever roles buy, they do not buy the first
-answer.
+\subsection{R2. Roles change how a team responds to correctness feedback}
+\label{subsec:mechanism}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig1_v1_grouped.pdf}
-\caption{\textbf{The phase dissociation.} Removing roles (A$\to$B) leaves
-first-pass accuracy alone but collapses recovery from a wrong first answer;
-enforcement (Arm~C) restores recovery without restoring accuracy.
-Pre-registered scoring; error bars bootstrap. Recovery conditions on a
-post-treatment subset, and the A$-$B gap is paired-resolvable only for
-gemma-4, the A$-$C gap only for Llama-3.3
+\caption{\textbf{The phase dissociation.} Removing roles leaves first-pass
+accuracy alone but collapses recovery from a wrong first answer; structural
+enforcement restores recovery without restoring accuracy. Pre-registered
+scoring; error bars bootstrap. Recovery conditions on a post-treatment
+subset, and the role-free gap is paired-resolvable only for gemma-4, the
+enforcement gap only for Llama-3.3
 (\S\S\ref{subsec:recovery},~\ref{subsec:enforce}).}
 \label{fig:dissociation}
 \end{figure}
 
-\subsection{R3. Recovery after a wrong first answer collapses}
+Both teams reach the evaluator and are told the same thing: this answer is
+wrong. The standing explanation for what follows is premature consensus ---
+the team stops early. \textbf{We test and reject it.} Every condition runs
+the same six cycles by construction and the role-free team draws \emph{more}
+oracle feedback (\S\ref{sec:method}); realized spend is near-identical
+($5.52$ versus $5.83$ cycles, gemma-4, first-pass-wrong) and \textbf{no
+trajectory was cut short}. So it is not fewer chances, not early stopping,
+and not less information.
+
+\textbf{What differs is use.} The role-structured team submits $1.54$ times
+and spends $3.98$ cycles revising; the role-free team converts $5.80$ of its
+$5.83$ cycles into resubmissions. What stops is refusal --- in $98.1\%$ of
+gemma-4's role-free first-pass-wrong trajectories the Reviewer never
+declines, against $5.1\%$ with roles ($61.6\%$ versus $4.3\%$ for gpt-oss)
+--- and the consequence is a frozen answer, unchanged in $0.845$ of those
+trajectories against $0.288$. \textbf{Told they are wrong, one team revises
+and the other resubmits.} This is
+Degeneration-of-Thought~\cite{liang2024divergent}, and the point is the
+\textbf{inversion}: multi-agency is the prescribed cure that role-free
+multi-agency does not deliver. Rubber-stamping is a symptom of answer
+lock-in, not established as its cause.
+
+\paragraph{A competing driver we do not dismiss.} Accumulated context is a
+real cause of recovery failure~\cite{yang2026contamination}: within the
+role-structured condition alone gpt-oss recovery falls $0.923 \to 0.070$
+across pooled context quartiles. It does not \emph{account for} the gap,
+which survives context matching in the lower quartiles ($0.662$ versus
+$0.151$, gemma-4; $0.656$ versus $0.293$, gpt-oss) --- \textbf{but in
+gpt-oss's top quartile the ordering reverses} ($0.070$ versus $0.189$).
+\textbf{Directional only}: quartiles are cut on the pooled distribution and
+context is nearly a function of condition, so the strata are partly
+condition indicators (Q1 holds $198$ role-free trajectories against $13$
+role-structured).
+
+\subsection{R3. The difference in feedback use becomes a difference in
+outcome}
 \label{subsec:recovery}
+
 
 Conditional on the first submission being graded wrong, the role-free team
 recovers less often (Figure~\ref{fig:dissociation}): gemma-4 falls $0.222
 \rightarrow 0.051$ ($-0.1709$ $[-0.2247,-0.1171]$), gpt-oss $0.324
 \rightarrow 0.247$ ($-0.0766$ $[-0.1361,-0.0153]$). \textbf{Only gemma-4's
-survives pairing}: on problems first-pass-wrong under \emph{both} arms it
-recovers on $37$ problems Arm~B misses against $3$ the other way (exact
-McNemar $p=2.0\times10^{-8}$), where gpt-oss's paired contrast gives
-$p=0.208$ and is reported as directional only.
+survives pairing}: on problems first-pass-wrong under \emph{both} conditions
+it recovers on $37$ the role-free team misses against $3$ the other way
+(exact McNemar $p=2.0\times10^{-8}$).
 
 \textbf{For gemma-4 this is not a post-treatment conditional.} Its
-first-pass rates are equal to four decimals ($0.8025$ in both arms), so in
+first-pass rates are equal to four decimals ($0.8025$ either way), so the
+role-free team does not enter recovery already behind: in
 $\Delta_{\text{final}} = \Delta_{\text{fp}}(1-\text{rec}_A) +
 (1-\text{fp}_B)\,\Delta_{\text{rec}}$ the first term vanishes and the
 recovery contrast is an exact reparameterization of the intention-to-treat
-effect: $-0.1709 \times (1-0.8025) = -0.0338$, the observed B$-$A
-final-accuracy difference, residual zero --- a quantity algebraically equal
-to the randomized contrast is not a post-treatment artifact.
-\textbf{This does not extend to gpt-oss}, whose first-pass rates differ by
-$+0.050$.
+effect, $-0.1709 \times (1-0.8025) = -0.0338$, the observed final-accuracy
+difference, residual zero --- a quantity algebraically equal to the
+randomized contrast is not a post-treatment artifact.
 
-\textbf{Llama-3.3 does not replicate, and it is a genuine null rather than a
-floor.} Its rates are $0.014$ and $0.015$ --- four recoveries out of $276$
-Arm~A and four of $268$ Arm~B first-pass-wrong trajectories. Its recovery
-channel exists and is movable --- enforcement raises it to $0.139$, paired
-$0.009$ versus $0.096$, $p=3.8\times10^{-6}$ (\S\ref{subsec:enforce}) --- so
-what is absent is an effect of the \emph{role-instruction} manipulation, not
-the capacity to repair. The test has ${\approx}80\%$ power against an excess
-of $0.04$--$0.05$ where gemma-4's effect is $0.171$: informative against a
-gemma-sized effect, uninformative below it.
+\paragraph{Scope across actors, stated once.} The recovery result is
+\textbf{clean in gemma-4}, \textbf{directional but unresolved in gpt-oss}
+(paired $p=0.208$, reported as directional only; its first-pass rates also
+differ by $+0.050$, so the reparameterization above does not extend to it),
+and \textbf{absent in Llama-3.3} --- $0.014$ and $0.015$, four recoveries
+out of $276$ and four of $268$. That last is a genuine null of the
+\emph{role-instruction} manipulation rather than a floor: the same actor's
+repair channel exists and is movable, since enforcement raises it to
+$0.139$ (paired $0.009$ versus $0.096$, $p=3.8\times10^{-6}$,
+\S\ref{subsec:enforce}). The test has ${\approx}80\%$ power against an
+excess of $0.04$--$0.05$ where gemma-4's effect is $0.171$: informative
+against a gemma-sized effect, uninformative below it. The claim is therefore
+that role structure \textbf{can} be load-bearing for feedback-driven
+recovery where it is not load-bearing for first-pass solving, not that it
+always is.
 
 \begin{table}[t]
 \centering
-\caption{\textbf{R3.} Final accuracy B$-$A under the pre-registered
-ungraded-as-incorrect rule (post-hoc/exploratory), and the budget-matched
-single-agent reference. Significance is exact McNemar on discordant pairs,
-not the bootstrap. The single-agent panel is from an external corpus whose
-\textbf{two actor arms were built from different source commits}: read each
-direction on its own, never the gap (\S\ref{subsec:notsingle}). The
-decomposition these accuracies summarize is
+\caption{\textbf{R3.} Final accuracy, role-free minus role-structured, under
+the pre-registered ungraded-as-incorrect rule (post-hoc/exploratory), and
+the budget-matched single-agent reference. Significance is exact McNemar on
+discordant pairs, not the bootstrap. The single-agent panel is from an
+external corpus whose \textbf{two actor arms were built from different
+source commits}: read each direction on its own, never the gap
+(\S\ref{subsec:notsingle}). The decomposition these accuracies summarize is
 Figure~\ref{fig:dissociation}.}
 \label{tab:main}
 \small
 \begin{tabular}{@{}llc@{}}
 \toprule
-actor & arm & B$-$A final accuracy \\
+actor & organization & $\Delta$ final accuracy \\
 \midrule
-\textbf{gemma-4} & B & $\mathbf{-0.0338}$ $[-0.0488,-0.0187]$,
+\textbf{gemma-4} & role-free & $\mathbf{-0.0338}$ $[-0.0488,-0.0187]$,
   $p=1.6\times10^{-5}$ \\
-gpt-oss & B & $+0.0163$ $[+0.0000,+0.0331]$, $p=0.062$, n.s. \\
-Llama-3.3 & B & $+0.0025$ $[-0.0325,+0.0375]$, $p=1.00$ \\
+gpt-oss & role-free & $+0.0163$ $[+0.0000,+0.0331]$, $p=0.062$, n.s. \\
+Llama-3.3 & role-free & $+0.0025$ $[-0.0325,+0.0375]$, $p=1.00$ \\
 \midrule
 \multicolumn{3}{@{}l}{\emph{versus a budget-matched single agent}
-(arm $-$ SA)} \\
-gpt-oss & A & $+0.0131$ $[-0.0037,+0.0300]$ \\
-\textbf{gpt-oss} & \textbf{B}
+(team $-$ single)} \\
+gpt-oss & role-structured & $+0.0131$ $[-0.0037,+0.0300]$ \\
+\textbf{gpt-oss} & \textbf{role-free}
   & $\mathbf{+0.0294}$ $\mathbf{[+0.0131,+0.0456]}$ \\
-\textbf{gemma-4} & \textbf{A}
+\textbf{gemma-4} & \textbf{role-structured}
   & $\mathbf{-0.0225}$ $\mathbf{[-0.0394,-0.0050]}$ \\
-\textbf{gemma-4} & \textbf{B}
+\textbf{gemma-4} & \textbf{role-free}
   & $\mathbf{-0.0563}$ $\mathbf{[-0.0731,-0.0394]}$ \\
 \bottomrule
 \end{tabular}
@@ -221,118 +262,110 @@ gpt-oss & A & $+0.0131$ $[-0.0037,+0.0300]$ \\
 evaluator prompts at temperature $0$ disagree on $20$ of $2{,}790$ distinct
 graded strings, a group-level rate of $0.0072$ ($0.0017$--$0.0072$ across
 estimators), keyed on the exact candidate bytes. \textbf{We do not divide an
-effect size by a disagreement rate} --- different quantities, and the noise
-largely cancels in a paired contrast --- but propagate it into the interval,
-flipping each graded outcome independently at the per-call rate $0.0062$
-inside the bootstrap. gemma-4's B$-$A survives ($[-0.0494,-0.0175]$);
-\textbf{gpt-oss's ($[-0.0013,+0.0331]$) and Llama-3.3's
-($[-0.0350,+0.0400]$) do not}, so for those actors the contrast is not
+effect size by a disagreement rate} --- the noise largely cancels in a
+paired contrast --- but propagate it into the interval, flipping each graded
+outcome independently at the per-call rate $0.0062$ inside the bootstrap. gemma-4's survives ($[-0.0494,-0.0175]$); \textbf{gpt-oss's
+($[-0.0013,+0.0331]$) and Llama-3.3's ($[-0.0350,+0.0400]$) do not} --- not
 resolvable above grader noise rather than absent.
 
-\subsection{R3b. The dissociation replicates in a second domain}
+\subsection{A different question: is the team worth its budget?}
+\label{subsec:notsingle}
+
+A standing objection holds that a setup where collapse is free never
+required multi-agent structure~\cite{zhang2026rethinking}. That asks whether
+multi-agent \emph{execution} earns its budget --- a different question from
+which phase organization carries --- and a budget-matched single-agent
+protocol on the same problems answers it (Table~\ref{tab:main}, lower
+panel), \textbf{from a previously released trace corpus rather than our own
+campaign} (\S\ref{sec:experiments}). It refuses both easy readings: a
+collapsed gpt-oss team beats its own single agent ($+0.0294$), so three
+agents emitting the same answer is not functionally one agent, \textbf{while
+gemma-4's team is significantly worse than its own in both conditions}
+($-0.0225$, $-0.0563$). \emph{Neither} ``multi-agent systems are just single
+agents'' \emph{nor} ``more agents help'' survives our data. \textbf{The two
+single-agent arms were built from different source commits}, so each
+direction is a sound guard while \emph{the gap between actors is not}; the
+single agent also drew \emph{more} oracle feedback ($1.66$--$1.69$ against
+$1.11$--$1.35$) and half the actor calls, conservative on the decisive
+axis.
+
+\subsection{R4. The same dissociation in a second domain}
 \label{subsec:xdomain}
 
-Both halves reappear on \textbf{SciBench} --- the complete
-$574$-problem matched slice of free-response college science; Arms~A and B,
-two actors, $2{,}296$ trajectories, frozen separately. Arm~B is
-byte-identical to its Omni-MATH form and Arm~A keeps the same structural
-contract with domain wording adapted, so no clause-specific metric crosses domains. For \textbf{gemma-4} first-pass accuracy is
-$0.794$ in both arms and paired recovery falls $0.212 \rightarrow 0.020$
-($n=99$, $21$ vs $2$ discordant, $p=6.6\times10^{-5}$), not distinguishable
-in size from Omni-MATH. \textbf{gpt-oss}'s cell is underpowered (power
-$0.06$--$0.45$ at $n=96$) and resolves nothing; Llama-3.3 was not run.
-\textbf{The dissociation replicates across two domains for one actor}, not
-across actors.
+Both halves reappear on \textbf{SciBench} --- the complete $574$-problem
+matched slice of free-response college science; two actors, $2{,}296$
+trajectories, frozen separately. The role-free prompt is byte-identical to
+its Omni-MATH form and the role-structured one keeps the same structural
+contract with domain wording adapted, so no clause-specific metric crosses
+domains. For \textbf{gemma-4}
+first-pass accuracy is $0.794$ either way and paired recovery falls $0.212
+\rightarrow 0.020$ ($n=99$, $21$ versus $2$ discordant,
+$p=6.6\times10^{-5}$), not distinguishable in size from Omni-MATH.
+\textbf{gpt-oss}'s cell is underpowered (power $0.06$--$0.42$
+at the realized $n=96$, depending on the test assumed) and resolves nothing; Llama-3.3 was not run. \textbf{The story holds again for one actor in a second domain},
+not across actors.
 
-\subsection{R4. The mechanism is not premature stopping}
-\label{subsec:mechanism}
-
-The standing explanation is premature consensus --- the team stops
-early. \textbf{We test and reject it.} Every arm runs the same six cycles
-and Arm~B draws \emph{more} oracle feedback (\S\ref{sec:method}); realized
-spend is near-identical ($5.52$ vs $5.83$, gemma-4, first-pass-wrong). What
-differs is use: Arm~B converts $5.80$ of $5.83$ cycles into submissions
-while Arm~A submits $1.54$ times and spends $3.98$ revising. \textbf{No
-trajectory was cut short.} What stops is refusal --- in $98.1\%$ of gemma-4's
-Arm~B first-pass-wrong trajectories the Reviewer never declines, against
-$5.1\%$ in Arm~A ($61.6\%$ vs $4.3\%$ for gpt-oss) --- and the consequence is
-a frozen answer, unchanged in $0.845$ of those against $0.288$ of Arm~A's. This is Degeneration-of-Thought~\cite{liang2024divergent}, and the
-point is the \textbf{inversion}: multi-agency is the prescribed cure that
-role-free multi-agency does not deliver.
-
-\paragraph{A competing driver we do not dismiss.} Accumulated context is a
-real cause of recovery failure~\cite{yang2026contamination}: within Arm~A
-alone gpt-oss recovery falls $0.923 \to 0.070$ across pooled context
-quartiles. It does not \emph{account for} the arm gap, which survives
-context matching in the lower quartiles ($0.662$ vs $0.151$, gemma-4;
-$0.656$ vs $0.293$, gpt-oss) --- \textbf{but in gpt-oss's top quartile the
-ordering reverses} ($0.070$ vs $0.189$). \textbf{Directional only}:
-quartiles are cut on the pooled A$+$B distribution and context is nearly a
-function of arm, so the strata are partly arm indicators (Q1 holds $198$
-Arm~B trajectories against $13$ Arm~A).
-
-\subsection{R5. Enforcement restores organization and recovery, not
-accuracy}
+\subsection{R5. Structural enforcement is consistent with the
+interpretation, and
+introduces brittleness}
 \label{subsec:enforce}
 
-The manipulation check passes: the planner authors an answer in
-$0.000$ of Arm~C trajectories in all three actors against
+If what roles supply is a second distinct candidate after failure, making
+the division of labor unavoidable at the interface should return that
+capacity. It does. The manipulation check passes: the planner authors an
+answer in $0.000$ of enforced trajectories in all three actors against
 $0.986$/$0.916$/$0.958$ under generic prompts, with $838$/$1{,}183$/$395$
 role-boundary rejections per cell (formatting coercions excluded by a
-definition fixed in advance). Arm~C also \textbf{un-freezes the answer}:
-$0.119$/$0.092$/$0.072$ against Arm~B's $0.845$/$0.208$/$0.806$, and below
-Arm~A except for gpt-oss ($0.052$).
+definition fixed in advance).
+Enforcement \textbf{un-freezes the answer}: $0.119$/$0.092$/$0.072$ against
+the role-free $0.845$/$0.208$/$0.806$, and below the role-structured rate
+except for gpt-oss ($0.052$). Enforcement does not change what the planner
+\emph{computes} --- evaluated-equation density is $3.11$/$4.78$ per
+$1{,}000$ characters against $2.76$/$2.12$ --- so you can structurally stop
+an agent answering without stopping it doing the work.
 
-\textbf{It restores recovery for Llama-3.3; for the other two the direction
-is consistent but not resolvable against attrition.} Recovery is computed on
-every trajectory with a recorded incorrect first verdict, including the $150$
-Arm~C trajectories that received one then died in regeneration --- all
-necessarily first-pass wrong, since a passing verdict ends the loop, and
-scored $0$ by the preregistration. On that denominator Arm~C recovers at
-$0.314$/$0.395$/$0.139$ against Arm~A's $0.222$/$0.324$/$0.014$, but the
-paired contrast survives only for Llama-3.3 ($0.009$ vs $0.096$,
+\textbf{Recovery follows for Llama-3.3; for the other two the direction is
+consistent but not resolvable against attrition.} Recovery is computed on
+every trajectory with a recorded incorrect first verdict, including the
+$150$ enforced trajectories that received one then died in regeneration ---
+all necessarily first-pass wrong, since a passing verdict ends the loop, and
+scored $0$ by the preregistration. On that denominator enforcement recovers
+at $0.314$/$0.395$/$0.139$ against $0.222$/$0.324$/$0.014$, but the paired
+contrast survives only for Llama-3.3 ($0.009$ versus $0.096$,
 $p=3.8\times10^{-6}$); gemma-4 ($p=0.298$) and gpt-oss ($p=0.105$) do not.
-Llama's denominator is constructed, not asserted: $400$
-attempted, $349$ judged, $251$ wrong on that verdict ($17$ later dying in
-regeneration, scored $0$), $35$ recovered. Conditioning on successful
-grading would manufacture significance out of the same one-sided attrition
-we reject for accuracy below, and flatters Arm~C twice over --- raising this
-cell to $0.150$ and lifting Arm~C's first-pass column from
-$0.779$/$0.761$/$0.281$ to $0.822$/$0.788$/$0.295$.
+Llama's denominator is constructed, not asserted: $400$ attempted, $349$
+judged, $251$ wrong on that verdict ($17$ later dying in regeneration,
+scored $0$), $35$ recovered. Conditioning on successful grading would
+manufacture significance out of the same one-sided attrition we reject for
+accuracy below, and flatters enforcement twice over --- raising this cell
+to $0.150$ and the enforced first-pass column from $0.779$/$0.761$/$0.281$
+to $0.822$/$0.788$/$0.295$.
 
-\textbf{These Arm~C rates do not compose into Table~\ref{tab:armc}'s
-C$-$A, and the attrition is why.} The $(1-\text{fp})$ identity of
-\S\ref{subsec:recovery} is exact only when both columns share a denominator:
-here first pass and recovery are computed over trajectories receiving an
-evaluator verdict, final accuracy over all $1{,}600$/$1{,}600$/$400$ with
-the never-graded scored $0$. Composing them re-scores those as graded and
-returns a \emph{positive} value for all three actors against the table's one
-significant negative and two nulls. \textbf{The A-versus-B composition is
-valid because Arms~A and B have essentially no attrition}
-($0.0$--$2.5\%$).
-
-\textbf{It does not restore final accuracy, and the scoring rule decides the
-answer} (Table~\ref{tab:armc}). Under the pre-registered rule C$-$A is
-$-0.0225$ / $-0.0050$ / $+0.0175$: one significant negative, two nulls.
-Dropping ungraded trajectories gives $+0.0190$ / $+0.0361$ / $+0.0453$ ---
-all positive, all significant, ordered by actor weakness, exactly the
-published capability-equalizer
+\textbf{Improved revisability does not become end-to-end accuracy, because
+enforcement is brittle} (Table~\ref{tab:armc}). Under the pre-registered
+rule the accuracy difference is $-0.0225$ / $-0.0050$ / $+0.0175$: one
+significant negative, two nulls. Dropping ungraded trajectories gives
+$+0.0190$ / $+0.0361$ / $+0.0453$ --- all positive, all significant, ordered
+by actor weakness, exactly the published capability-equalizer
 direction~\cite{canedo2026architecture}. \textbf{That reading is
 survivorship}: the preregistration fixed in advance that such trajectories
 count incorrect, and \textbf{the benefit appears only after conditioning on
-successful parsing.}
+successful parsing.} Restoring shared history at fixed enforcement does not
+rescue it either ($+0.0450$ and $-0.0125$ pre-registered) --- attrition, not
+context.
 
 \begin{table}[t]
 \centering
-\caption{\textbf{R5.} Arm~C under both scoring rules, with the attrition
-separating them. The as-graded column is a \emph{sensitivity analysis}: its
-gains are conditional on parsing successfully, and Arm~C is the only arm
-where that removes a material fraction of the data.}
+\caption{\textbf{R5.} Structural enforcement minus role-structured under
+both scoring rules, with the attrition separating them. The as-graded column
+is a \emph{sensitivity analysis}: its gains are conditional on parsing
+successfully, and enforcement is the only condition where that removes a
+material fraction of the data.}
 \label{tab:armc}
 \small
 \begin{tabular}{lccc}
 \toprule
- & C$-$A, pre-registered & C$-$A, as-graded & Arm~C \\
+ & pre-registered & as-graded & \\
 actor & (primary) & (sensitivity) & attrition \\
 \midrule
 gemma-4 & $\mathbf{-0.0225}$ $[-.039,-.006]$
@@ -342,57 +375,19 @@ gpt-oss & $-0.0050$ $[-.022,+.011]$
 Llama-3.3 & $+0.0175$ $[-.020,+.055]$
   & $+0.0453$ $[+.003,+.088]$ & $17.0\%$ \\
 \midrule
-\multicolumn{4}{l}{Arm~A attrition: $0.0\%$ / $0.1\%$ / $0.7\%$.
-Arm~B: $0.0\%$ / $0.4\%$ / $2.5\%$.} \\
+\multicolumn{4}{l}{Role-structured attrition: $0.0\%$ / $0.1\%$ / $0.7\%$.
+Role-free: $0.0\%$ / $0.4\%$ / $2.5\%$.} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Enforcement does not change what the planner \emph{computes}:
-evaluated-equation density is $3.11$/$4.78$ per $1{,}000$ characters in
-Arm~C against $2.76$/$2.12$ in Arm~A. \textbf{You can structurally stop an
-agent answering without stopping it doing the work.}
-
-\subsection{R6. The pre-registered primary test is null}
-\label{subsec:p4null}
-
-\textbf{P4 --- the actor~$\times$~intervention interaction on accuracy, the
-pre-registered primary test of this paper's original thesis --- is null in
-all three pairwise difference-in-differences: $+0.0175$
-$[-0.0050,+0.0412]$, $+0.0400$ $[+0.0000,+0.0794]$, $+0.0225$
-$[-0.0188,+0.0631]$}, and we report it as the failure of the theory it was
-written to test. \textbf{Only one of the three is an informative null.} The
-largest per-actor C$-$A main effect is $|{-}0.0225|$, so a true interaction
-is plausibly ${\leq}0.040$; only the gpt-oss$-$gemma-4 contrast can see that
-(MDE $0.033$ at $80\%$ power, $n=1{,}600$). The two Llama contrasts (MDE
-$0.069$, $0.075$ at $n=400$) \textbf{cannot detect an interaction of any
-plausible size} and are uninformative rather than evidence of absence.
-
-Our pre-declared not-submit condition was a null P4 \emph{and} a
-main effect matching the published capability-equalizer direction; the
-pre-registered C$-$A effect matches no monotone direction, so the condition
-is met only under the as-graded scoring \S\ref{subsec:enforce} shows to be
-survivorship. Arm~C$'$ restores shared history at fixed enforcement and does
-not rescue the result (C$'-$C $+0.0450$ and $-0.0125$ pre-registered) ---
-attrition, not context.
-
-\subsection{Collapse is not ``the system was always a single agent''}
-\label{subsec:notsingle}
-
-We test the standing objection that a setup where collapse is
-free never required multi-agent structure~\cite{zhang2026rethinking}
-against a budget-matched single-agent protocol on the same problems
-(Table~\ref{tab:main}, lower panel), \textbf{from a previously released
-trace corpus rather than our own campaign} (\S\ref{sec:experiments}). It
-refuses both easy readings. A collapsed gpt-oss team beats its own single
-agent ($+0.0294$), so three agents emitting the same answer is not
-functionally one agent; \textbf{but gemma-4's team is significantly worse
-than its own in both arms} ($-0.0225$, $-0.0563$) --- and gemma-4 carries
-our recovery result, a tension we take into \S\ref{sec:conclusion} rather
-than resolve. \emph{Neither} ``multi-agent systems are just single agents''
-\emph{nor} ``more agents help'' survives our own data. \textbf{The two
-single-agent arms were built from different source commits}, so each
-direction is a sound guard while \emph{the gap between actors is not}; the
-comparison is conservative on the decisive axis, the single agent drawing
-\emph{more} oracle feedback ($1.66$--$1.69$ against Arm~A's $1.11$--$1.35$)
-and half the actor calls.
+\textbf{These enforced rates do not compose into
+Table~\ref{tab:armc}'s accuracy column, and the attrition is why.} The
+$(1-\text{fp})$ identity of \S\ref{subsec:recovery} is exact only when both
+columns share a denominator: here first pass and recovery are computed over
+trajectories receiving an evaluator verdict, final accuracy over all
+$1{,}600$/$1{,}600$/$400$ with the never-graded scored $0$. Composing them
+re-scores those as graded and returns a \emph{positive} value for all three
+actors against the table's one significant negative and two nulls. The
+role-structured-versus-role-free composition is valid because those two have
+essentially no attrition ($0.0$--$2.5\%$).
