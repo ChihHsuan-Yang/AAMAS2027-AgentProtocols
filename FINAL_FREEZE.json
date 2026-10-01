@@ -1,0 +1,46 @@
+{
+  "frozen_at": "2026-09-30T19:50:58",
+  "title": "When Is Multi-Agent Organization Load-Bearing?",
+  "github_head": "72eef9fe43844f26157bf3b6f128157abb157aed",
+  "overleaf_head": "c31475b349738223445aba841436c570ce1d739b",
+  "pdf_sha256": "4e9ca7f22697530b8c0656f96cda6a024009d4705a381498f848f6ccea17c189",
+  "pdf_bytes": 665627,
+  "figure_sha256": {
+    "fig1_v1_grouped.pdf": "695e7d973145c079a9c882d516b62a7f6b613e7aba8c6c7ef6c415d890efeaf8"
+  },
+  "abstract_sha256": "5170459c62d548d393eb87d0810ed36234e507124f14a1234e388c53a7c54452",
+  "data_omnimath": {
+    "actor3.jsonl": {
+      "sha256": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
+      "rows": 1200,
+      "bytes": 46037025
+    },
+    "armCp.jsonl": {
+      "sha256": "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4",
+      "rows": 800,
+      "bytes": 23627781
+    },
+    "campaign_v2.jsonl": {
+      "sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130",
+      "rows": 9600,
+      "bytes": 227526687
+    }
+  },
+  "data_scibench": {
+    "scibench_AB.jsonl": {
+      "sha256": "10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58",
+      "rows": 2296
+    }
+  },
+  "hf_dataset": "AgentsSci/AAMAS2027-Roles v1.1.0 (PRIVATE during review)",
+  "gates": {
+    "latexmk_exit": 0,
+    "pagecheck_exit": 0,
+    "undefined_citations": 0,
+    "pages": 9,
+    "anonymity_hits": 0,
+    "todo_markers": 1,
+    "aamas_cls_official": true
+  },
+  "ALL_GATES_PASS": true
+}

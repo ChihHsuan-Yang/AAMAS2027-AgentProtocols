@@ -65,3 +65,36 @@ error recovery; ablation study; agent organization
 - AAMAS 2027 may publish its own author kit; ours is the 2026 kit with the
   year advanced. Re-check page limit, anonymity rules, and the copyright
   block against the 2027 instructions if they exist.
+
+---
+
+# FINAL SUBMISSION FREEZE — 2026-09-30 19:50
+
+Machine-readable record: `FINAL_FREEZE.json`, regenerable by
+`python3 scripts/final_freeze.py` (exits non-zero if any gate fails).
+
+| | |
+|---|---|
+| title | When Is Multi-Agent Organization Load-Bearing? |
+| GitHub HEAD | `72eef9fe4384` |
+| Overleaf HEAD | `c31475b34973` |
+| **PDF sha256** | `4e9ca7f22697530b...ea17c189` (665,627 bytes) |
+| Figure 1 sha256 | `695e7d973145c079...90efeaf8` |
+| abstract sha256 | `5170459c62d548d3...a7c54452` |
+| Omni-MATH data | 11,600 rows, 3 files, sha256 in `FROZEN/MANIFEST.json` |
+| SciBench data | 2,296 rows, `10068f72cfd936d3...` |
+| HF artifact | `AgentsSci/AAMAS2027-Roles` v1.1.0, **PRIVATE** |
+
+**Gates, all passing:** latexmk 0 · pagecheck 0 (main text ends p8) ·
+undefined citations 0 · anonymity hits 0 · `aamas.cls` byte-identical to the
+official kit. The single `TODO{` hit is a comment in `main.tex` telling a
+future editor how to grep for TODOs, not a placeholder.
+
+**Overleaf equivalence verified, not assumed.** A fresh clone of the Overleaf
+remote builds to **text-identical output** (`pdftotext | shasum` matches the
+frozen PDF exactly). PDF bytes differ only by build timestamp.
+
+## After this freeze
+No scientific content changes without re-running the canonical chain in
+`SOURCE_OF_TRUTH.md` and regenerating this freeze. If you edit the paper,
+`python3 scripts/final_freeze.py` must pass again before submitting.
