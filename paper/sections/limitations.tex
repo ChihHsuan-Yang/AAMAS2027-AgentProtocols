@@ -64,11 +64,8 @@ gpt-oss's paired contrast does not resolve ($p=0.208$) and \textbf{Llama-3.3
 does not replicate} --- a genuine null specific to the role manipulation,
 \textbf{not} a floor (\S\ref{subsec:recovery}). The claim rests on one clean actor and one
 \PER{} organization, with the evaluator itself one of the actor models under
-study. It is not confined to one domain: on SciBench ($574$ free-response
-college science problems, the complete matched slice) gemma-4's first pass
-moves by $0.000$ while paired recovery falls $0.212 \rightarrow 0.020$
-($n=99$, $p=6.6\times10^{-5}$), indistinguishable in size from Omni-MATH;
-gpt-oss's cell there is underpowered (power
-$0.06$--$0.45$ by test) and uninformative. Finally,
+study. \S\ref{subsec:xdomain} extends it to a second domain for gemma-4
+only, with an Arm~A prompt that is domain-adapted rather than
+byte-identical. Finally,
 the functional measure detects that every agent asserted an answer, not that
 their reasoning was the same (Table~1 note).

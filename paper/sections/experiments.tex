@@ -4,8 +4,11 @@
 \paragraph{Task and problems.} Competition mathematics (Omni-MATH), sampled
 by a deterministic seeded manifest so every prefix of the run is a valid
 random sample; all arms run the same problems, so every comparison is
-paired. A second domain was designed and dropped: its Planner contract
-carries no computation clause, so its components would not be comparable.
+paired. A cross-domain replication followed the primary campaign
+(\S\ref{subsec:xdomain}); an earlier candidate, a multiple-choice biology
+benchmark, was rejected before launch because on a four-option item
+``produce a different candidate'' succeeds one time in three by chance,
+confounding the mechanism we measure with guessing.
 
 \paragraph{Actors and scale.} Three actor models served from one pinned vLLM
 endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
