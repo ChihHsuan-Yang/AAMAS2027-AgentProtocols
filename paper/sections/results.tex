@@ -11,6 +11,15 @@ headline was pre-registered as secondary and exploratory}, and every
 conditional analysis below conditions on a post-treatment variable:
 descriptive, never causal.
 
+The results run in five steps. \textbf{R1} establishes that the manipulation
+did what it claims --- the organization is gone --- and that the first answer
+does not notice. \textbf{R2} asks where it could possibly cost anything,
+finds the answer is ``after the team is told it is wrong,'' and rules out the
+standing explanation for what happens there. \textbf{R3} shows that
+behavioral split becoming an outcome split. \textbf{R4} repeats both halves
+in a second domain. \textbf{R5} runs the intervention backwards, enforcing
+the division of labor instead of deleting it.
+
 \subsection{R1. Removing roles changes the organization, not the first
 answer}
 \label{subsec:collapse}
@@ -111,6 +120,7 @@ $[-0.0156,+0.0150]$) and flat for Llama-3.3 ($+0.0077$,
 $[-0.0283,+0.0437]$), while it \emph{improves} for gpt-oss ($+0.0503$,
 $[+0.0339,+0.0666]$). Whatever roles buy, they do not buy the first answer.
 
+
 \subsection{A logging defect, and its second consequence}
 \label{subsec:logging}
 
@@ -151,25 +161,33 @@ enforcement gap only for Llama-3.3
 \label{fig:dissociation}
 \end{figure}
 
-Both teams reach the evaluator and are told the same thing: this answer is
-wrong. What they do next is this section's subject, so it is worth being
-exact about the units it is measured in.
+\textbf{The manipulation worked, and at the only place most evaluations
+look, it cost nothing.} Taken by itself that is a complete negative result,
+and it would be where this paper ended if performance were a single number.
+It is not: a team that answers also has to repair.
+
+So consider the other phase. Both teams reach the evaluator and are told
+the same thing: this answer is wrong. What they do next is this section's
+subject, and reading it correctly requires being exact about the units it is
+measured in.
 
 \paragraph{What a cycle is, and what a team can spend one on.} The pipeline
 runs a fixed grid of \textbf{six deliberation cycles} --- three outer rounds
 of two inner rounds --- and a cycle is one pass of
-Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer. At the end of each
-cycle the Reviewer either approves or it does not. If it approves, the
-current answer is \textbf{submitted}: it goes to the oracle-gated evaluator,
-which returns PASS (the trajectory ends) or FAIL with a non-leaking repair
-hint that becomes the next cycle's advice. If it does not approve, nothing
-is submitted and the Reviewer routes the work back to the Planner or the
-Executor, so the next cycle is a \textbf{revision}: the team reworks the
-answer internally without spending a verdict on it. Every trajectory
-therefore partitions its realized cycles into submissions and revisions, and
-\emph{that partition is the one thing the two conditions are free to
-differ in} --- the grid, the routing machinery, the evaluator and the hint
-text are identical by construction.
+Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer. The grid does not
+change: a further cycle runs whether or not the Reviewer approved. What the
+Reviewer's verdict decides is whether the cycle ends in a
+\textbf{submission} or a \textbf{revision}. On approval the current answer
+goes to the oracle-gated evaluator, which returns PASS --- the trajectory
+ends there --- or FAIL with a non-leaking repair hint that becomes the next
+cycle's advice. Without approval nothing is submitted, no verdict is
+consumed, and the next cycle instead carries the Reviewer's own critique
+forward as its advice. Every trajectory therefore splits its realized cycles
+into submissions and revisions, and \emph{that split is the one thing the
+two conditions are free to differ in}: the grid, the agents, the budget, the
+evaluator and the hint text are identical by construction. The two
+conditions have the same number of chances to change their answer. They
+differ in what each chance is spent on.
 
 \paragraph{Premature stopping, tested and rejected.} The standing explanation
 for a team that fails to recover is premature consensus: it agrees with
@@ -197,8 +215,10 @@ of its $5.83$ cycles into resubmissions and revises $0.03$ --- it does not
 rework the answer once. The behavioral hinge is the Reviewer's decline: in
 $98.1\%$ of gemma-4's role-free first-pass-wrong trajectories the Reviewer
 never declines at all, against $5.1\%$ with roles ($61.6\%$ versus $4.3\%$
-for gpt-oss). Without a decline there is no route back to the Planner or the
-Executor, so there is no cycle in which the answer could change.
+for gpt-oss). An approval ends the cycle in a verdict on the answer the team
+already has; a decline is the only way a cycle gets spent on producing a
+different one. A Reviewer that never declines therefore converts the entire
+budget into re-submissions of the incumbent.
 
 \paragraph{What the frozen-answer rate measures.} The consequence is an
 answer that does not move. We count a trajectory as \textbf{frozen} if the
@@ -207,9 +227,10 @@ exactly one distinct answer string. Not that the team re-derived the same
 value: that the team never at any point wrote down a second candidate to
 compare against the first. On gemma-4's first-pass-wrong trajectories that is
 $0.845$ of the role-free condition against $0.288$ with roles. Read
-behaviorally, the role-free team spends five further cycles and ends holding
-the answer the evaluator already rejected, having never produced an
-alternative for the Reviewer to prefer or reject.
+behaviorally: in five of every six such trajectories the team runs out its
+remaining budget and ends holding the answer the evaluator already rejected,
+having never once produced an alternative for the Reviewer to prefer or
+reject.
 
 The funnel separates the two failure shapes. Of gemma-4's $316$
 role-structured first-pass-wrong trajectories, $133$ submit a second time,
@@ -217,18 +238,19 @@ $128$ of those $133$ at some point hold a second distinct answer, and $70$
 end correct --- every recovery that condition has. Of the $316$
 role-free ones, \emph{all} $316$ submit again, yet only $49$ ever hold a
 second distinct answer string; $10$ of those end correct, with $6$ further
-recoveries on trajectories that never held a second answer string at all ---
-the same candidate receiving a different verdict, at a rate consistent with
-the grader noise floor and the scoring defect below. \textbf{The
+recoveries on trajectories that never held a second answer string at all,
+which by definition means the same candidate drew both verdicts (see the
+grader noise floor in \S\ref{subsec:recovery}). \textbf{The
 role-free team is not failing to get another turn. It is using every turn to
 send back what it already sent.} \textbf{Told they are wrong, one team
 revises and the other resubmits.} This is
 Degeneration-of-Thought~\cite{liang2024divergent}, and the point is the
 \textbf{inversion}: multi-agency is the prescribed cure that role-free
 multi-agency does not deliver. Rubber-stamping is a symptom of answer
-lock-in, not established as its cause --- we observe the Reviewer approving
-and the answer not moving, and cannot separate a Reviewer that fails to
-object from one whose objection has no differentiated Planner to act on it.
+lock-in, not established as its cause: we observe the Reviewer approving and
+the answer not moving, and cannot separate a Reviewer that has stopped
+objecting from one whose objection reaches a Planner no longer differentiated
+enough to act on it.
 
 \paragraph{A competing driver we do not dismiss.} Accumulated context is a
 real cause of recovery failure~\cite{yang2026contamination}: within the
@@ -246,6 +268,11 @@ role-structured).
 outcome}
 \label{subsec:recovery}
 
+Everything in R2 is a description of behavior, and a behavioral difference
+only matters if an outcome depends on it. It is entirely possible for a team
+to resubmit mechanically and still finish correct, if the grader happens to
+accept the second showing of the same answer, or if the problems on which
+teams resubmit are ones they would have failed either way. They do not.
 
 Conditional on the first submission being graded wrong, the role-free team
 recovers less often (Figure~\ref{fig:dissociation}): gemma-4 falls $0.222
@@ -328,8 +355,13 @@ resolvable above grader noise rather than absent.
 \subsection{A different question: is the team worth its budget?}
 \label{subsec:notsingle}
 
-A standing objection holds that a setup where collapse is free never
-required multi-agent structure~\cite{zhang2026rethinking}. That asks whether
+Before extending the result, one objection has to be cleared, because if it
+holds the whole contrast is about something else. A standing objection holds
+that a setup where collapse is free never required multi-agent structure in
+the first place~\cite{zhang2026rethinking} --- that our role-free condition
+is not a damaged team but an honest single agent wearing three hats, and
+that the comparison is therefore between a team and a solo solver rather
+than between two organizations. That asks whether
 multi-agent \emph{execution} earns its budget --- a different question from
 which phase organization carries --- and a budget-matched single-agent
 protocol on the same problems answers it (Table~\ref{tab:main}, lower
@@ -344,10 +376,19 @@ single-agent arms were built from different source commits}, so each
 direction is a sound guard while \emph{the gap between actors is not}; the
 single agent also drew \emph{more} oracle feedback ($1.66$--$1.69$ against
 $1.11$--$1.35$) and half the actor calls, conservative on the decisive
-axis.
+axis. The role-free condition is therefore not reducible to a single agent
+in either actor, and the phase dissociation stands as a contrast between two
+organizations rather than between an organization and a solo solver.
 
 \subsection{R4. The same dissociation in a second domain}
 \label{subsec:xdomain}
+
+Everything so far is competition mathematics, where a wrong answer is a
+discrete object a team can hold or discard and problems are hard enough that
+most teams get one wrong. Either could be doing the work. A domain with
+free-response answers, different subject matter and a much higher first-pass
+rate tests whether the split is a property of organization or of the
+benchmark.
 
 Both halves reappear on \textbf{SciBench} --- the complete $574$-problem
 matched slice of free-response college science; two actors, $2{,}296$
@@ -367,9 +408,14 @@ interpretation, and
 introduces brittleness}
 \label{subsec:enforce}
 
-If what roles supply is a second distinct candidate after failure, making
-the division of labor unavoidable at the interface should return that
-capacity. It does. The manipulation check passes: the planner authors an
+Every result so far comes from taking organization \emph{away}. That
+direction alone cannot distinguish ``role structure supplies revisability''
+from ``the role prompts happened to carry some other useful content we also
+deleted.'' So we run the intervention the other way, replacing the request
+with a constraint: if what roles supply is the capacity to produce a second
+distinct candidate after failure, making the division of labor unavoidable
+at the interface --- where no wording can talk its way around it --- should
+return that capacity. It does. The manipulation check passes: the planner authors an
 answer in $0.000$ of enforced trajectories in all three actors against
 $0.986$/$0.916$/$0.958$ under generic prompts, with $838$/$1{,}183$/$395$
 role-boundary rejections per cell (formatting coercions excluded by a

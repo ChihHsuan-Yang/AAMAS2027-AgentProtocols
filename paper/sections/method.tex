@@ -9,15 +9,18 @@ graph, total call budget, verifier and verifier prompt, retry budget,
 decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
 stopping rule and grading; every trajectory in the frozen snapshot carries
 the identical budget record --- a test of organization, not of scale. One
-asymmetry we state rather than smooth: the evaluator fires on Reviewer
-approval, so a team that submits more \emph{consumes} more oracle verdicts
-even under an identical cap: the role-free team draws $1.95$/$1.85$/$3.82$
-evaluator calls per trajectory against the role-structured team's
-$1.11$/$1.35$/$1.03$ (gemma-4 / gpt-oss / Llama-3.3), the enforced condition
-$1.20$/$1.24$/$1.43$. \textbf{This runs against our result}: the role-free
-team receives more ground-truth signal in every actor and still recovers
-less. Realized actor calls run the other way and are close ($6.76$ versus
-$5.87$, gemma-4).
+asymmetry we state rather than smooth, because it is the one place the
+conditions are not matched: the evaluator fires on Reviewer approval, so a
+team that submits more \emph{consumes} more oracle verdicts even under an
+identical cap. The role-free team draws $1.95$/$1.85$/$3.82$ evaluator calls
+per trajectory against the role-structured team's $1.11$/$1.35$/$1.03$
+(gemma-4 / gpt-oss / Llama-3.3), the enforced condition $1.20$/$1.24$/$1.43$.
+\textbf{This runs against our result} and we report it for that reason: a
+ground-truth verdict is the only external information in the loop, the
+role-free team receives more of it in every actor, and it still recovers
+less. An unmatched budget that favors the condition we find worse cannot
+explain why it is worse. Realized actor calls run the other way and are
+close ($6.76$ versus $5.87$, gemma-4).
 
 \paragraph{Role-structured \PER{} (baseline).} Role prompts as ordinarily
 written. The organization as specified.

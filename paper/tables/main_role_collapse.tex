@@ -1,0 +1,64 @@
+% ==========================================================================
+% Table 1 (manuscript) -- functional collapse per actor
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  sections T1, T18, T20, T23
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : 4f157fe9ff37c759844393e8af22c61e5b14875a98e4dee870a1a57c5451f036
+% generation date   : 2026-10-01  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% Byte duplication is a LOWER BOUND (precision 1.000, recall 0.262)
+% and never carries the collapse claim alone (APPROVED_CLAIMS A1).
+% The adjudication is outcome-blind but NOT condition-blind: do not
+% describe it as blinded (APPROVED_CLAIMS A1 / DEAD list).
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table}[t]
+\centering
+\caption{\textbf{Functional collapse.} First pipeline passes in which all
+three agents independently assert their own final answer, with exact byte
+duplication as a \emph{lower bound} and the model adjudication beside it.
+Byte duplication has precision $1.000$ but recall $0.262$, so it never
+carries this result alone. The adjudication is outcome-blind but
+\textbf{not} condition-blind and is a second opinion, not ground truth.
+Collapse is not applicable to the structurally enforced conditions, whose
+schema forbids an answer field.}
+\label{tab:collapse}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & functional & exact byte & adjudicated \\
+actor & collapse & duplication & no division \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{role-structured}} \\
+\quad gemma-4-31B & $0.000$ & $0.000$ & $0.000$ \\
+\quad gpt-oss-120b & $0.120$ & $0.000$ & $0.000$ \\
+\quad Llama-3.3-70B & $0.000$ & $0.000$ & $0.000$ \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{role-free}} \\
+\quad gemma-4-31B & $\mathbf{0.976}$ & $0.000$ & $\mathbf{0.857}$ \\
+\quad gpt-oss-120b & $\mathbf{0.846}$ & $0.680$ & $\mathbf{1.000}$ \\
+\quad Llama-3.3-70B & $\mathbf{0.872}$ & $0.008$ & $\mathbf{1.000}$ \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{structurally enforced}} \\
+\quad all actors & n/a & $\leq 0.003$ & $0.067$--$0.286$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\footnotesize\emph{Sensitivity.} The role-free rate is stable across three
+answer-marker definitions ($0.846$--$0.999$, every actor);
+\textbf{the role-structured rate is not} ($0.000$--$0.892$), so
+read that column as ``low,'' not a point estimate. The ordering holds in all
+9 of 9 actor$\times$marker cells.
+\end{table}

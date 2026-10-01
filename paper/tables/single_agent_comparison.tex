@@ -1,0 +1,74 @@
+% ==========================================================================
+% Table 5 (manuscript) -- budget-matched single-agent control
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  section T17
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : 4f157fe9ff37c759844393e8af22c61e5b14875a98e4dee870a1a57c5451f036
+% generation date   : 2026-10-01  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% PROVENANCE: NOT from the frozen snapshot. Source is the
+% historical released trace corpus (protocol_id='single_agent',
+% benchmark omnimath2), joined by problem_uid. This must be
+% stated wherever the four numbers appear (APPROVED_CLAIMS A9).
+% BOTH DIRECTIONS, ALWAYS TOGETHER. Never quote gpt-oss alone.
+% The two actor arms were built from DIFFERENT SOURCE COMMITS:
+% each direction is a sound guard; the GAP BETWEEN ACTORS is not.
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table}[t]
+\centering
+\caption{\textbf{Against a budget-matched single agent.} Both directions,
+which must be read together. A collapsed gpt-oss team beats its own single
+agent, so three agents emitting one answer is not functionally one agent;
+\textbf{but gemma-4's team is worse than its own single agent in both
+conditions} --- and gemma-4 carries the recovery result.
+\textbf{Provenance: this panel is not from the frozen snapshot}; it comes
+from a previously released trace corpus, joined by problem. \textbf{Its two
+actor arms were built from different source commits}, so each direction is a
+sound directional guard while \emph{the gap between actors is not} --- no
+statement about relative magnitude across actors is supported here. The
+comparison is conservative on the decisive axis: the single agent draws
+\emph{more} oracle feedback and about half the actor calls.}
+\label{tab:singleagent}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+organization & team & single agent & difference \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{gemma-4-31B}} \\
+\quad role-structured & $0.8462$ & $0.8688$ & ${-}0.0225$ \\
+ & \multicolumn{3}{r}{\footnotesize $[{-}0.0400,\,{-}0.0056]$, $p=0.0122$, $n=1600$} \\
+\quad role-free & $0.8125$ & $0.8688$ & ${-}0.0563$ \\
+ & \multicolumn{3}{r}{\footnotesize $[{-}0.0737,\,{-}0.0394]$, $p=1.22\times 10^{-10}$, $n=1600$} \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{gpt-oss-120b}} \\
+\quad role-structured & $0.8031$ & $0.7900$ & $+0.0131$ \\
+ & \multicolumn{3}{r}{\footnotesize $[{-}0.0044,\,+0.0300]$, $p=0.152$, $n=1600$} \\
+\quad role-free & $0.8194$ & $0.7900$ & $+0.0294$ \\
+ & \multicolumn{3}{r}{\footnotesize $[+0.0125,\,+0.0456]$, $p=0.000678$, $n=1600$} \\
+\addlinespace
+\midrule
+\multicolumn{4}{@{}l}{\emph{Realized call budget}} \\
+\midrule
+actor & protocol & evaluator & actor \\
+\midrule
+gemma-4-31B & single agent & $1.66$ & $3.16$ \\
+gemma-4-31B & role-structured team & $1.11$ & $6.76$ \\
+gemma-4-31B & role-free team & $1.95$ & $5.87$ \\
+gpt-oss-120b & single agent & $1.69$ & $3.40$ \\
+gpt-oss-120b & role-structured team & $1.35$ & $7.54$ \\
+gpt-oss-120b & role-free team & $1.85$ & $6.25$ \\
+\bottomrule
+\end{tabular}
+\end{table}

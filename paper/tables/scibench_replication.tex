@@ -1,0 +1,61 @@
+% ==========================================================================
+% Table 3 (manuscript) -- SciBench cross-domain replication
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/scripts/xdom_analyze.py (executed; stdout parsed)
+%                      which execs FINAL_TABLES.py and rebinds its definitions
+%                      -- judged / is_fpw / fp / fin_prereg are the SAME code
+%                      objects as the Omni-MATH tables, not a reimplementation
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : 4f157fe9ff37c759844393e8af22c61e5b14875a98e4dee870a1a57c5451f036
+% generation date   : 2026-10-01  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% SciBench frozen data: experiments/results/xdomain/FROZEN_SCIBENCH/
+%   frozen_at 2026-09-30T23:26:47.198588+00:00, 2296 trajectories
+%   sha256 10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58  scibench_AB.jsonl
+% gpt-oss's recovery cell is UNDERPOWERED, not a non-replication:
+% its point estimate matches Omni-MATH's. Llama-3.3 was not run.
+% No clause-specific role-fidelity metric crosses domains (the
+% contract was domain-adapted), so none is reported here.
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table*}[t]
+\centering
+\caption{\textbf{The dissociation replicates out of domain.} SciBench,
+the complete $574$-problem matched slice of free-response college science;
+two actors, 2296 trajectories, frozen separately from the
+Omni-MATH snapshot. \textbf{The two panels have different populations.}
+First pass is paired over all $574$ problems; paired recovery is over only
+those first-pass wrong under \emph{both} conditions
+($n_{\mathrm{both}}$), which is why its $n$ is roughly a sixth the size.
+Pre-registered scoring; $p$ is exact McNemar on discordant pairs. gpt-oss's
+recovery cell \textbf{cannot resolve its own effect} at the realized
+$n_{\mathrm{both}}$ --- its point estimate is in the same direction and
+nearly the same size as Omni-MATH's, so it is underpowered rather than a
+non-replication. Llama-3.3 was not run in this domain.}
+\label{tab:scibench}
+\small
+\begin{tabular}{lccccc@{\hspace{1.4em}}ccccccc}
+\toprule
+ & \multicolumn{5}{c}{first pass (paired, all problems)}
+ & \multicolumn{7}{c}{recovery (paired on first-pass wrong under both)} \\
+\cmidrule(lr){2-6}\cmidrule(lr){7-13}
+actor & $n$ & role-str. & role-free & diff. & exact $p$
+      & $n_{\mathrm{both}}$ & role-str. & role-free & diff.
+      & r-s.\ only & r-f.\ only & exact $p$ \\
+\midrule
+gemma-4-31B & $574$ & $0.794$ & $0.794$ & $+0.0000$ & $1.00\times 10^{0}$ & $99$ & $0.212$ & $0.020$ & ${-}0.1919$ & $21$ & $2$ & $6.60\times 10^{-5}$ \\
+gpt-oss-120b & $574$ & $0.784$ & $0.789$ & $+0.0052$ & $0.784$ & $96$ & $0.219$ & $0.135$ & ${-}0.0833$ & $17$ & $9$ & $0.169$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
