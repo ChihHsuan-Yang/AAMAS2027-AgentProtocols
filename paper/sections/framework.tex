@@ -5,21 +5,20 @@
 
 An organization is specified by a tuple: agents, an interaction order, a
 message-passing graph, a context-visibility policy, and a \emph{role
-contract} per agent. A contract asserts that an agent performs some function
-(\textsc{must} decompose the problem) or that it does not (\textsc{must not}
-state a final answer); clauses of the second kind make the specification a
-\emph{division} of labor. Because a clause is prose handed to a language
-model, the \emph{realized} organization is not guaranteed to match and
-nothing records which clauses were honored.
+contract} per agent. A contract asserts that an agent performs some
+function (\textsc{must} decompose the problem) or that it does not
+(\textsc{must not} state a final answer); clauses of the second kind make
+the specification a \emph{division} of labor. Because a clause is prose
+handed to a language model, the \emph{realized} organization is not
+guaranteed to match it, and nothing records which clauses were honored.
 
-\textbf{Definition.} A component of an organization is \textbf{load-bearing}
-if removing or altering it reproducibly degrades task performance
-\emph{under matched compute and information budgets}. The budget clause
-makes it usable: removing role instructions \emph{and} agents, calls or
-context tests scale, not organization. Because performance itself
-decomposes --- producing a first answer, repairing a wrong one --- the
-definition is applied \emph{per phase}, and the two phases answer
-differently.
+\textbf{Definition.} A component of an organization is
+\textbf{load-bearing} if removing or altering it reproducibly degrades
+task performance \emph{under matched compute and information budgets}. The
+budget clause is what makes it usable: removing role instructions
+\emph{and} agents, calls or context tests scale, not organization. Because
+performance itself decomposes --- producing a first answer, repairing a
+wrong one --- the definition is applied \emph{per phase}.
 
 \subsection{Measuring the realized organization}
 
@@ -31,24 +30,25 @@ can see, is measured on the first pass so it is not confounded with
 trajectory length, and is \textbf{not applicable to the structurally
 enforced conditions}, whose schema forbids an answer field.
 
-\paragraph{Exact output duplication (secondary, a lower bound).} Two or more
-role messages byte-identical, as \texttt{sha256} of the raw completion
-before parsing. Precision $1.000$, recall $0.262$ against the adjudication
-(a within-item comparison, so unaffected by that adjudication's condition
-leak, \S\ref{subsec:collapse}): it establishes that at least a given amount
-of collapse occurred and, its recall differing by actor, is \textbf{never
-used to compare how much organization two actors lost}.
+\paragraph{Exact output duplication (secondary, a lower bound).} Two or
+more role messages byte-identical, as \texttt{sha256} of the raw
+completion. Precision $1.000$, recall $0.262$ against the adjudication (a
+within-item comparison, so unaffected by that adjudication's condition
+leak, \S\ref{subsec:collapse}): it establishes that at least a given
+amount of collapse occurred and, its recall differing by actor, is
+\textbf{never used to compare how much organization two actors lost}.
 
-\paragraph{Answer authorship, and computation.} Whether a Planner authors a
-final answer --- the clause structural enforcement makes unrepresentable,
-and the manipulation check. Separately, whether a Planner abstains from
-\emph{computing}, scored as containing no evaluated numeric equality
-(\textbf{\Pone{}}, a pre-registered fidelity measure). Being the absence of
-a pattern, \Pone{} is anti-correlated with length, so every computation
-claim cites \textbf{evaluated equations per 1{,}000 characters} instead:
-the role-free gpt-oss Planner scores $0.722$ on the binary rate ---
-apparently the study's most compliant --- on a 37-character message. A
-metric that rewards silence cannot measure a division of labor.
+\paragraph{Answer authorship, and computation.} Whether a Planner authors
+a final answer --- the clause structural enforcement makes
+unrepresentable, and the manipulation check. Separately, whether a Planner
+abstains from \emph{computing}, scored as containing no evaluated numeric
+equality (\textbf{\Pone{}}, a pre-registered fidelity measure). Being the
+absence of a pattern, \Pone{} is anti-correlated with length, so every
+computation claim cites \textbf{evaluated equations per 1{,}000
+characters} instead: the role-free gpt-oss Planner scores $0.722$ on the
+binary rate --- apparently the study's most compliant --- on a
+37-character message. A metric that rewards silence cannot measure a
+division of labor.
 
 \paragraph{Recovery.} The fraction of trajectories whose first submitted
 answer was graded wrong that nonetheless finish correct --- not a new

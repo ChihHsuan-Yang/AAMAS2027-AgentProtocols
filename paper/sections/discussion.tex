@@ -1,51 +1,43 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{Why organization would be phase-specific.} One manipulation has
-two different prices depending on when it is charged, and each phase demands
-something different. Producing a first answer is a \emph{generation}
-problem: there is no incumbent candidate, every agent works from the same
-problem statement, and three agents arriving at the same place by three
-routes costs nothing but tokens --- the pipeline still emits one answer, as
-good as the best route that reached it. A division of labor has nothing to
-do here that redundancy does not already do. Repairing a wrong answer is a
-\emph{differentiation} problem: an incumbent candidate exists, it is in
-every agent's context, and the useful move is to produce something unlike
-it. The failure mode is not insufficient effort --- the role-free team
-spends its whole budget --- but insufficient difference, as six cycles of
-agents who are all now the same solver, all conditioned on the same rejected
-answer, reliably produce that answer again. What a role contract supplies is
-a reason for one agent's next output not to be a function of the previous
-agent's: worth nothing when there is nothing to differ from, and a great
-deal when there is.
-
-It also explains why the clause that matters is a \textsc{must not}: a
-prohibition on two agents occupying the same position has no effect on
-first-pass output and a large one on whether a second candidate can exist.
-Enforcement is that prohibition moved from prose to the interface, and it
-moves the same quantity (\S\ref{subsec:enforce}).
+\paragraph{Why organization would be phase-specific.} The two phases
+demand different things. Producing a first answer is a \emph{generation}
+problem: there is no incumbent candidate, and three agents arriving at the
+same place by three routes costs nothing but tokens, since the pipeline
+emits one answer and it is as good as the best route that reached it. A
+division of labor has nothing to do here that redundancy does not already
+do. Repairing a wrong answer is a \emph{differentiation} problem: an
+incumbent candidate exists, it is in every agent's context, and the useful
+move is to produce something unlike it. The failure mode is then not
+insufficient effort --- the role-free team spends its whole budget --- but
+insufficient difference, as six cycles of agents who are all now the same
+solver, all conditioned on the same rejected answer, reliably produce that
+answer again. What a role contract supplies is a reason for one agent's
+next output not to be a function of the previous agent's: worth nothing
+when there is nothing to differ from, a great deal when there is. It also
+explains why the clause that matters is a \textsc{must not}, and why
+enforcement --- the same prohibition moved to the interface --- moves the
+same quantity.
 
 \paragraph{What a role diagram is evidence of.} Both interventions changed
-the realized organization dramatically and final accuracy barely at all, in
-opposite directions. A diagram is a hypothesis about a system, and
+the realized organization dramatically and final accuracy barely at all,
+in opposite directions. A diagram is a hypothesis about a system, and
 task-outcome evaluation --- the only evaluation most multi-agent systems
 receive --- cannot test it: an aggregate score averages a stage where the
 organization is idle with one where it does all its work, dominated by
-whichever stage has more mass. In our two stronger actors most problems are
-answered on the first pass ($0.802$ and $0.710$), so most of each accuracy
-number is generation, precisely the stage where the organization
+whichever stage has more mass. In our two stronger actors most problems
+are answered on the first pass ($0.802$ and $0.710$), so most of each
+accuracy number is generation, precisely the stage where the organization
 contributes nothing. A system can therefore lose its entire organization
-and move the headline metric by $0.0338$. Ours did.
-
-An aggregate score is therefore the wrong instrument for an architectural
-claim, and two cheap additions fix most of it: report performance
-\emph{conditioned on the first attempt having failed} --- the split that
-separates our two phases, computable from logs any retry-capable system
-already writes --- and \emph{measure} the realized organization instead of
-assuming the specified one, which here is one answer-marker pattern applied
-to the first pipeline pass. A collapsed organization and a load-bearing one
-are indistinguishable by accuracy and trivially distinguishable by whether
-all three agents are writing down answers.
+and move the headline metric by $0.0338$. Ours did. Two cheap additions
+fix most of it: report performance \emph{conditioned on the first attempt
+having failed} --- the split that separates our two phases, computable
+from logs any retry-capable system already writes --- and \emph{measure}
+the realized organization instead of assuming the specified one. A
+collapsed organization and a load-bearing one are indistinguishable by
+accuracy and trivially distinguishable by whether all three agents are
+writing down answers.
 
 Capability-dependence accounts predict structure helping weaker models and
 mattering less as they
@@ -54,17 +46,18 @@ our panel does not order that way, and the mechanism says why. If roles
 supply differentiation after failure rather than scaffolding for a weak
 solver, the actors they help are those with a repair channel to open, not
 those with the lowest accuracy --- and our weakest actor is the one role
-labels do not reach, though enforcement opens that channel in the same
-actor. Capability is the wrong axis; whether the organization can produce a
+labels do not reach, though enforcement opens that channel in it.
+Capability is the wrong axis; whether the organization can produce a
 second distinct candidate is the right one.
 
 \paragraph{What our own measurement errors imply.} Three instruments here
-reported confidently on what they could not see: an exact-duplication metric
-returned $0.000$ for actors a model judge found collapsed; a logging defect
-reduced one actor's planner to $37$ visible characters, which we nearly
-reported as a behavior; and the adjudication built to check the first leaked
-the condition it was meant to be blind to. Each had a way of producing a
-clean, plausible reading while not measuring the thing. Any claim that a
-system's structure is intact should therefore state what the instrument
-would have to see to report otherwise --- and a blinding claim should be
-tested on the bytes the judge saw, not the substitution applied to them.
+reported confidently on what they could not see: an exact-duplication
+metric returned $0.000$ for actors a model judge found collapsed; a
+logging defect reduced one actor's planner to $37$ visible characters,
+which we nearly reported as a behavior; and the adjudication built to
+check the first leaked the condition it was meant to be blind to. Each
+produced a clean, plausible reading while not measuring the thing. A claim
+that a system's structure is intact should therefore state what the
+instrument would have to see to report otherwise --- and a blinding claim
+should be tested on the bytes the judge saw, not the substitution applied
+to them.

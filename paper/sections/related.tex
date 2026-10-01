@@ -2,29 +2,27 @@
 \label{sec:related}
 
 \textbf{The question predates the LLM literature that reopened it.}
-Organization-centred MAS gave roles a formal existence independent of their
-occupants: Moise$^+$ separates a \emph{deontic} specification --- what a
-role-filler is obliged and permitted to do --- from the structural and
-functional ones~\cite{hubner2002moise}, and OperA makes role adoption an
-explicit social contract~\cite{dignum2004opera}. Both treat \emph{when a
-role specification binds} as the design problem and answer it with
+Organization-centred MAS gave roles a formal existence independent of
+their occupants: Moise$^+$ separates a \emph{deontic} specification ---
+what a role-filler is obliged and permitted to do --- from the structural
+and functional ones~\cite{hubner2002moise}, and OperA makes role adoption
+an explicit social contract~\cite{dignum2004opera}. Both treat \emph{when
+a role specification binds} as the design problem and answer it with
 enforcement outside the agent. An LLM role prompt is the degenerate case: a
-deontic clause in prose, with no middleware to make it bind and no record of
-whether it did --- a case that tradition would not have called a
-specification at all. Our baseline is that case measured; our enforced
-condition returns the binding to the interface. Four further literatures
-bear on the result.
+deontic clause in prose, with no middleware to make it bind and no record
+of whether it did. Our baseline is that case measured; our enforced
+condition returns the binding to the interface.
 
 \paragraph{Role specialization and role drift.} That prompted roles are not
 reliably obeyed is established: Cemri et al.~\cite{cemri2025why} name
 disobeying the role specification a failure mode from 1{,}600+ annotated
-traces; Cao et al.~\cite{cao2026modules} give the training-time account of
-\emph{role drift}; Orogat et al.~\cite{orogat2026architectural} find
-prompt-level role conditioning does not induce the intended specialization;
-Patel~\cite{patel2026representational} measures collapse as near-identical
-rationales, Kandoussi~\cite{kandoussi2026whoami} reports differentiation
-arising \emph{without} assigned roles, and enforcement-side work makes role
-scope structural rather than
+traces, Cao et al.~\cite{cao2026modules} give the training-time account of
+\emph{role drift}, Orogat et al.~\cite{orogat2026architectural} find
+prompt-level role conditioning does not induce the intended
+specialization, Patel~\cite{patel2026representational} measures collapse
+as near-identical rationales, Kandoussi~\cite{kandoussi2026whoami} reports
+differentiation arising \emph{without} assigned roles, and
+enforcement-side work makes role scope structural rather than
 advisory~\cite{stettler2026progressive,ge2026roles}. \emph{Owned:} role
 collapse, and the decoupling of role quality from task
 performance~\cite{cao2026modules,yang2026precise}.
@@ -32,16 +30,15 @@ performance~\cite{cao2026modules,yang2026precise}.
 \paragraph{Redundancy, and the parity we do not claim.} Dylan et
 al.~\cite{dylan2026equal} hold total LLM calls fixed and find an evolved
 Planner--Executor--Critic team no better than an evolved single agent
-($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation.} We
-report it as a control condition, not a finding, and only a \emph{partial}
-replication of their null: gemma-4 and Llama-3.3 are flat, but gpt-oss
-\emph{improves} by $+0.0503$ with an interval excluding zero. Zhang et
-al.~\cite{zhang2026rethinking} argue reported multi-agent gains are setup
-artifacts of structural collapse --- an objection aimed at our role-free
-condition, which is why \S\ref{subsec:notsingle} runs that control and
-reports
-that it cuts \emph{both} ways; Chen et al.~\cite{chen2026agentslimming}
-prune redundant agents on the same premise.
+($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation},
+which we report as a control condition and only a \emph{partial}
+replication of their null, since gpt-oss \emph{improves} by $+0.0503$ with
+an interval excluding zero. Zhang et al.~\cite{zhang2026rethinking} argue
+reported multi-agent gains are setup artifacts of structural collapse ---
+an objection aimed at our role-free condition, which is why
+\S\ref{subsec:notsingle} runs that control and reports that it cuts
+\emph{both} ways; Chen et al.~\cite{chen2026agentslimming} prune redundant
+agents on the same premise.
 
 \paragraph{Failure to revise, and answer lock-in.} That models restate
 answers under external correction is established for complete verifier
@@ -69,28 +66,28 @@ differentiation does not escape it.
 convergence is a widely proposed explanation for multi-agent failure and
 sustaining diversity a widely proposed remedy~\cite{oh2026entrenchment};
 self-correction's limits are surveyed by~\cite{kamoi2024when}. \emph{We
-propose neither.} \S\ref{subsec:mechanism} treats premature stopping as a
-\textbf{standing hypothesis and rejects it} on matched realized budget. Our
-lever is the role \emph{label}, not a diversity intervention --- and one
-actor's content diversity runs opposite to its recovery, which is why we do
-not call diversity the active ingredient.
+propose neither:} \S\ref{subsec:mechanism} treats premature stopping as a
+\textbf{standing hypothesis and rejects it} on matched realized budget.
+Our lever is the role \emph{label}, not a diversity intervention --- and
+one actor's content diversity runs opposite to its recovery, which is why
+we do not call diversity the active ingredient.
 
 \paragraph{Coordination versus capability.}
 Canedo~\cite{canedo2026architecture} frames structured specification as a
 \emph{capability equalizer} whose value falls with model strength;
 \cite{yu2026bottleneck} reaches the same prediction from theory and
 Dochkina~\cite{dochkina2026drop} the complementary case. Our enforced
-condition reproduces their monotone ordering exactly --- \emph{but only under a
-scoring rule that drops $8$--$17\%$ of trajectories}, and under our
-pre-registered rule it disappears (\S\ref{subsec:enforce}). We report both
-because a reader who re-derives either needs to find the other.
+condition reproduces their monotone ordering exactly --- \emph{but only
+under a scoring rule that drops $8$--$17\%$ of trajectories}, and under
+our pre-registered rule it disappears (\S\ref{subsec:enforce}). We report
+both, because a reader who re-derives either needs to find the other.
 
 \paragraph{What is open, stated narrowly.} These literatures establish four
 things --- roles are often not obeyed; deleting them leaves first-pass
 accuracy intact; models fail to revise under external feedback; structure
 tends to help weaker models --- each about a \emph{different stage of the
-work}, and no study holds them in one frame. So the field has an implicit
-synthesis, that role prompts are decorative, which no single experiment has
+work}, and no study holds them in one frame, so the field has an implicit
+synthesis (role prompts are decorative) that no single experiment has
 tested. \textbf{It has not been tested because the two findings most
 responsible for it were measured in different places}: parity at the first
 answer, failure-to-revise after feedback and almost always single-agent,
@@ -104,6 +101,6 @@ it~\cite{jiang2026confidence,yang2026protocol,yang2026precise} and our
 single-agent control is drawn from its released form; two are
 observational, the third varies how critique \emph{reaches} the
 solver~\cite{yang2026precise}. \textbf{None manipulates the role structure
-itself}, none measures whether the specified division of labor is realized,
-and the controlled conditions of \S\ref{sec:method} do not exist in that
-corpus.
+itself}, none measures whether the specified division of labor is
+realized, and the controlled conditions of \S\ref{sec:method} do not
+exist there.

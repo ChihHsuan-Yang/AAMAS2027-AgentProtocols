@@ -4,32 +4,30 @@
 \paragraph{Task and problems.} Competition mathematics (Omni-MATH), sampled
 by a deterministic seeded manifest so every prefix of the run is a valid
 random sample; all conditions run the same problems, so every comparison is
-paired. A cross-domain replication followed the primary campaign
-(\S\ref{subsec:xdomain}); an earlier candidate, a multiple-choice biology
-benchmark, was rejected before launch because on a four-option item
-``produce a different candidate'' succeeds one time in three by chance,
-confounding the mechanism we measure with guessing.
+paired. An earlier candidate, a multiple-choice biology benchmark, was
+rejected before launch because on a four-option item ``produce a different
+candidate'' succeeds one time in three by chance, confounding the mechanism
+we measure with guessing.
 
-\paragraph{Actors and scale.} Three actor models served from one pinned vLLM
-endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
+\paragraph{Actors and scale.} Three actor models served from one pinned
+vLLM endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
 \textbf{Llama-3.3-70B}. The primary analysis reads a single frozen,
-sha256-manifested snapshot: \textbf{11{,}600 trajectories over 83{,}320 role
-messages and 17{,}486 gradings}, on $1{,}600$ problems sampled uniformly at
-random from the $4{,}181$ available. The three main conditions run
-$n=1{,}600$ per cell for the first two actors and $n=400$ for Llama-3.3;
-\textbf{the context-restored control covers only the first two} at $n=400$
-each. Every trajectory carries the same budget record (3 outer $\times$ 2
-inner cycles, temperature $0$, identical \texttt{max\_tokens}) and the
-snapshot contains exactly one distinct budget. The evaluator is gpt-oss-120b
-in every cell, itself one of the actors under study
+sha256-manifested snapshot: \textbf{11{,}600 trajectories over 83{,}320
+role messages and 17{,}486 gradings}, on $1{,}600$ problems sampled
+uniformly at random from the $4{,}181$ available. The three main conditions
+run $n=1{,}600$ per cell for the first two actors and $n=400$ for
+Llama-3.3; \textbf{the context-restored control covers only the first two}
+at $n=400$ each. Every trajectory carries the same budget record and the
+snapshot contains exactly one distinct budget. The evaluator is
+gpt-oss-120b in every cell, itself one of the actors under study
 (\S\ref{sec:limitations}). The single-agent comparator of
 \S\ref{subsec:notsingle} is \textbf{not} part of this campaign or its
 snapshot: it is a previously released trace corpus of the same benchmark
 joined by problem identifier, and \textbf{its two actor arms were built
-under different source commits}. Power was estimated by simulation
-($4{,}000$ replicates) from discordance rates in that corpus: the paired
-per-actor main effect is well powered, the actor~$\times$~intervention
-interaction needs roughly twice the sample (\S\ref{subsec:prereg}).
+under different source commits}. Power was estimated by simulation from
+discordance rates in that corpus: the paired per-actor main effect is well
+powered, the actor~$\times$~intervention interaction needs roughly twice
+the sample (\S\ref{subsec:prereg}).
 
 \paragraph{A confound caught before it became a result.} The main run was
 gated on a smoke test requiring non-zero boundary rejections with reasons
@@ -37,8 +35,8 @@ logged, answer-bearing calls equal across conditions, and a pinned backend.
 An early campaign was stopped after 121 trajectories when $74\%$ of
 enforcement rejections proved to be the model cut off at the token limit
 mid-JSON rather than violating a role boundary. Truncation was not
-condition-specific but its \emph{cost} was --- a prose condition tolerates a
-truncated message where the enforced one rejects unparseable JSON --- so
+condition-specific but its \emph{cost} was --- a prose condition tolerates
+a truncated message where the enforced one rejects unparseable JSON --- so
 left alone it would have produced a convincing ``enforcement lowers
-accuracy'' artifact. The limit was doubled, a salvage path added, the
-pre-fix rows never pooled.
+accuracy'' artifact. The limit was doubled and the pre-fix rows never
+pooled.

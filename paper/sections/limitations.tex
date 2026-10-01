@@ -7,58 +7,43 @@ oracle verdict}, so every recovery number is recovery \emph{given} a
 ground-truth-informed failure signal: not unaided self-correction, and
 stop-on-correct censors destructive revision.
 
-\paragraph{Two instrument defects, disclosed rather than repaired.} The
-\textbf{logging defect} of \S\ref{subsec:logging} bounds two things: no
-point estimate of gpt-oss's duplication rate is recoverable, \emph{and} its
-37-character planner cannot be read as a behavior. The \textbf{scoring
-defect}: the runner grades the last answer \emph{submitted} but records the
-last answer \emph{held}, and these disagree on $17\%$ of role-structured
-and $0\%$ of role-free first-pass-wrong trajectories --- an error
-proportional to how much a team revises, the behavior our headline is
-about. It runs \emph{against} us: recoding the $62$ affected trajectories
-(positive control: $0$ of $10{,}734$ non-mismatched rows) widens every
-recovery gap. We keep the pre-registered outcome as primary; changing it
-after seeing which way it moves is what preregistration prevents.
+\paragraph{A scoring defect that runs against us.} Beyond the logging
+defect of \S\ref{subsec:logging}, the runner grades the last answer
+\emph{submitted} but records the last answer \emph{held}; these disagree
+on $17\%$ of role-structured and $0\%$ of role-free first-pass-wrong
+trajectories --- an error proportional to how much a team revises, the
+behavior our headline is about. Recoding the $62$ affected trajectories
+(positive control: $0$ of $10{,}734$ non-mismatched rows) \emph{widens}
+every recovery gap; we keep the pre-registered outcome as primary, because
+changing it after seeing which way it moves is what preregistration
+prevents.
 
-\paragraph{Every conditional analysis carries a post-treatment label.}
-First-pass-wrong, cycles used, accumulated context and collapse are all
-outcomes of the intervention. The recovery decomposition is a decomposition,
-not a causal mediation --- except for gemma-4, whose recovery contrast is
-algebraically the intent-to-treat effect (\S\ref{subsec:recovery}). Grader
-noise bounds the other two accuracy contrasts, which are nulls the
-instrument could not resolve rather than measured absences.
+\paragraph{What the conditional analyses are, and are not.} First-pass-wrong,
+cycles used, accumulated context and collapse are all post-treatment
+outcomes of the intervention, so the recovery decomposition is a
+decomposition and not a causal mediation --- except for gemma-4, whose
+contrast is algebraically the intent-to-treat effect
+(\S\ref{subsec:recovery}). The other two accuracy contrasts are nulls the
+instrument could not resolve rather than measured absences. The collapse
+validation is \textbf{model adjudication, not human annotation, not ground
+truth and not condition-blind} (\S\ref{subsec:collapse}), which is why the
+collapse claim rests on the mechanical measures, and the enforced reading
+is partly mechanical since its validator forbids an answer field.
 
-\paragraph{The collapse validation is model adjudication, not human
-annotation, and not condition-blind.} It is \textbf{not ground truth}: one
-annotator, no inter-annotator agreement, stability from repeated calls
-($0.953$); \textbf{nor is it condition-blind} (\S\ref{subsec:collapse}),
-which is why the collapse claim rests on the mechanical measures. Precision
-for the byte metric is estimable only where it fires, so we never pool it.
-The enforced reading is partly mechanical: its validator forbids an answer
-field, so some restored ``division of labor'' is the constraint.
-
-\paragraph{Enforcement attrition is one-sided and its as-graded gain is
-survivorship.} Enforcement leaves $8.0\%$/$9.9\%$/$17.0\%$ of trajectories
-ungraded against $0.0\%$/$0.1\%$/$0.7\%$ in the baseline; dropping them
-turns a significant negative and two nulls into three significant positives
-ordered by actor weakness --- the capability-equalizer pattern the
-preregistration told us not to submit on. Both scorings are in
-\S\ref{subsec:enforce}, the pre-registered one primary. That attrition is
-also why the enforced recovery gain is resolvable only for Llama-3.3 and
-why its columns do not compose into its accuracy row. The context-restored
-condition is only a \emph{partial} control.
-
-\paragraph{Provenance, scope, and blind spots.} The pre-registered primary
-endpoint (P4) is null and the \Pone{} manipulation objective failed
-(\S\ref{subsec:prereg}); the contrast this paper is organized around was
-pre-registered as secondary and exploratory --- an observation meriting
-replication, not a confirmed result --- and the single-agent comparator is a
-directional guard only, on a different question
+\paragraph{Scope, provenance, and blind spots.} Enforcement's $8$--$17\%$
+one-sided attrition (\S\ref{subsec:enforce}) is why its as-graded gain is
+survivorship, why its recovery gain resolves only for Llama-3.3, and why
+the context-restored condition is only a \emph{partial} control. The
+pre-registered primary endpoint (P4) is null and the \Pone{} manipulation
+objective failed (\S\ref{subsec:prereg}); the contrast this paper is
+organized around was pre-registered as secondary and exploratory --- an
+observation meriting replication, not a confirmed result --- and the
+single-agent comparator is a directional guard only
 (\S\ref{subsec:notsingle}). \textbf{All three actors lose the division of
-labor, but the recovery result is carried by gemma-4 alone}: the claim rests
-on one clean actor and one \PER{} organization, with the evaluator itself
-one of the actor models under study, and \S\ref{subsec:xdomain} extends it
-to a second domain for gemma-4 only, with a baseline prompt that is
-domain-adapted rather than byte-identical. Finally, the functional measure
+labor, but the recovery result is carried by gemma-4 alone}: one clean
+actor, one \PER{} organization, an evaluator that is itself one of the
+actor models under study, and a second domain
+(\S\ref{subsec:xdomain}) covering gemma-4 only with a domain-adapted
+rather than byte-identical prompt. Finally, the functional measure
 detects that every agent asserted an answer, not that their reasoning was
 the same.
