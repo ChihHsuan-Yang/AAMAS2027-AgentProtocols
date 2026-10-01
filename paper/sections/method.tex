@@ -9,18 +9,16 @@ graph, total call budget, verifier and verifier prompt, retry budget,
 decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
 stopping rule and grading; every trajectory in the frozen snapshot carries
 the identical budget record --- a test of organization, not of scale. One
-asymmetry we state rather than smooth, because it is the one place the
-conditions are not matched: the evaluator fires on Reviewer approval, so a
-team that submits more \emph{consumes} more oracle verdicts even under an
-identical cap. The role-free team draws $1.95$/$1.85$/$3.82$ evaluator calls
-per trajectory against the role-structured team's $1.11$/$1.35$/$1.03$
-(gemma-4 / gpt-oss / Llama-3.3), the enforced condition $1.20$/$1.24$/$1.43$.
-\textbf{This runs against our result} and we report it for that reason: a
-ground-truth verdict is the only external information in the loop, the
-role-free team receives more of it in every actor, and it still recovers
-less. An unmatched budget that favors the condition we find worse cannot
-explain why it is worse. Realized actor calls run the other way and are
-close ($6.76$ versus $5.87$, gemma-4).
+asymmetry we state rather than smooth, the one place the conditions are not
+matched: the evaluator fires on Reviewer approval, so a team that submits
+more \emph{consumes} more oracle verdicts even under an identical cap. The
+role-free team draws $1.95$/$1.85$/$3.82$ evaluator calls per trajectory
+against the role-structured team's $1.11$/$1.35$/$1.03$ (gemma-4 / gpt-oss /
+Llama-3.3), the enforced condition $1.20$/$1.24$/$1.43$. \textbf{This runs
+against our result} and we report it for that reason: a ground-truth verdict
+is the only external information in the loop, and the condition we find
+worse receives more of it in every actor. Realized actor calls run the other
+way and are close ($6.76$ versus $5.87$, gemma-4).
 
 \paragraph{Role-structured \PER{} (baseline).} Role prompts as ordinarily
 written. The organization as specified.
@@ -40,22 +38,18 @@ parsed plan object and the problem --- never the Planner's raw text --- and
 emits \texttt{\{derivation, answer\}}. The \textbf{Reviewer} emits
 \texttt{\{verdict, target\_span, critique\}}, and \texttt{accept} promotes
 the Executor's answer verbatim \emph{by reference}, having no field in which
-to \emph{author} one. Enforcement removes no capability: planning,
-computing, answering and critiquing are each still performed by one agent
-under the same budget, at the cost that a rejected emission can exhaust the
-regeneration budget. A \textbf{context-restored
-control} repeats it with shared history restored in all three role
-templates, schema, routing and budgets unchanged; matching the baseline
-exactly would require feeding raw prose back in, dissolving the constraint
-that defines the condition.
+to \emph{author} one. Enforcement removes no capability: planning, computing, answering and
+critiquing are each still performed by one agent under the same budget, at
+the cost that a rejected emission can exhaust the regeneration budget. A
+\textbf{context-restored control} repeats it with shared history restored;
+matching the baseline exactly would require feeding raw prose back in,
+dissolving the constraint that defines the condition.
 
 \paragraph{Single-agent reference.} A budget-matched single-agent protocol
 on the same problems, from a previously released corpus rather than this
-campaign (\S\ref{sec:experiments}), consuming more oracle feedback than
-either team. It answers whether multi-agent execution earns its budget --- a
-different question from which phase organization carries --- and without it
-``collapse costs nothing'' cannot be told from ``the system was one agent
-all along''~\cite{zhang2026rethinking}.
+campaign (\S\ref{sec:experiments}). Without it, ``collapse costs nothing''
+cannot be told from ``the system was one agent all
+along''~\cite{zhang2026rethinking}.
 
 \subsection{Instrumentation and pre-registered analyses}
 \label{subsec:prereg}
@@ -67,41 +61,37 @@ violations only}, formatting coercions excluded by a definition fixed in
 advance; answer-bearing calls are counted per condition. One instrumentation
 gap escaped this discipline (\S\ref{subsec:logging}).
 
-All endpoints were fixed in writing and committed before any intervention
-data existed. Units are (problem, actor) pairs; all conditions run the same
-problems, so every test is paired with bootstrap clustering by problem. The
-endpoints are \textbf{P1} intervention $\rightarrow$ fidelity (also the
-manipulation check); \textbf{P2} actor $\times$ intervention on fidelity;
-\textbf{P3} intervention $\rightarrow$ accuracy; \textbf{P4} actor $\times$
-intervention on accuracy, \emph{the primary test of the original thesis};
-\textbf{P5} $\Delta$fidelity versus $\Delta$outcome, association only. The
+All five endpoints were fixed in writing and committed before any
+intervention data existed; the full table, with what happened to each, is in
+the supplement. Units are (problem, actor) pairs; all conditions run the
+same problems, so every test is paired with bootstrap clustering by
+problem. \textbf{P4 --- the actor~$\times$~intervention interaction on
+accuracy --- is \emph{the} primary test of the original thesis.} The
 pre-registered Holm correction is applied to the two families yielding
 p-values and alters no verdict (\S\ref{sec:results}).
 
 \paragraph{The pre-registered primary endpoint is null.}
 \label{subsec:p4null}
-\textbf{P4 --- the actor~$\times$~intervention interaction on accuracy --- is
-null in all three pairwise difference-in-differences: $+0.0175$
-$[-0.0050,+0.0412]$, $+0.0400$ $[+0.0000,+0.0794]$, $+0.0225$
-$[-0.0188,+0.0631]$}, before and after Holm, and we report it as the failure
-of the theory it was written to test. \textbf{Only one of the three is an
-informative null.} The largest per-actor enforcement main effect is
-$|{-}0.0225|$, so a true interaction is plausibly ${\leq}0.040$; only the
-gpt-oss$-$gemma-4 contrast can see that (MDE $0.033$ at $80\%$ power,
-$n=1{,}600$). The two Llama contrasts (MDE $0.069$, $0.075$ at $n=400$)
+\textbf{P4 is null in all three pairwise difference-in-differences, before
+and after Holm --- every interval contains zero} --- and we report it as the
+failure of the theory it was written to test. \textbf{Only one of the three
+is an informative null.} The largest per-actor enforcement main effect is
+$|{-}0.0225|$, so a true interaction is plausibly ${\leq}0.040$, and only
+the gpt-oss$-$gemma-4 contrast can see that (MDE $0.033$ at $80\%$ power,
+$n=1{,}600$); the two Llama-3.3 contrasts (MDE $0.069$, $0.075$ at $n=400$)
 \textbf{cannot detect an interaction of any plausible size} and are
 uninformative rather than evidence of absence. Our pre-declared not-submit
 condition was a null P4 \emph{and} a main effect matching the published
 capability-equalizer direction; the pre-registered effect matches no
-monotone direction, so the condition is met only under the as-graded scoring
-\S\ref{subsec:enforce} shows to be survivorship. \textbf{The
+monotone direction, so that condition is met only under the as-graded
+scoring \S\ref{subsec:enforce} shows to be survivorship. \textbf{The
 role-structured-versus-role-free contrast this paper is organized around was
 pre-registered as secondary and exploratory}, and is labeled post-hoc
-everywhere. The pre-registered \Pone{} manipulation objective --- that
-enforcement would drive Planner \emph{computation}-abstention to
-${\approx}1.0$ --- also \textbf{failed}, naming a clause the intervention
-does not enforce: the schema forbids emitting an \emph{answer}, and nothing
-stops a Planner writing $=1/27$. It was re-designated to answer authorship
+everywhere. The \Pone{} manipulation objective --- that enforcement would
+drive Planner \emph{computation}-abstention to ${\approx}1.0$ --- also
+\textbf{failed}, naming a clause the intervention does not enforce: the
+schema forbids emitting an \emph{answer}, and nothing stops a Planner
+writing $=1/27$. It was re-designated to answer authorship
 (\S\ref{subsec:enforce}).
 
 Exclusions were fixed in advance: \textbf{unparseable trajectories count as

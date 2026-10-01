@@ -6,16 +6,14 @@ Organization-centred MAS gave roles a formal existence independent of their
 occupants: Moise$^+$ separates a \emph{deontic} specification --- what a
 role-filler is obliged and permitted to do --- from the structural and
 functional ones~\cite{hubner2002moise}, and OperA makes role adoption an
-explicit social contract rather than an assumption~\cite{dignum2004opera}.
-Both treat \emph{when a role specification binds} as the design problem and
-answer it with enforcement outside the agent --- a norm the agent cannot
-simply decline to notice. An LLM role prompt is the degenerate case of that
-design: a deontic clause stated in prose, with no middleware to make it
-bind and no record of whether it did. The organizational-MAS tradition would
-not have called that a specification at all. Our baseline is that case
-measured; our enforced condition returns the binding to the interface, which
-is what makes the pair of interventions a test of the old question in the
-new setting. Four further literatures bear on the result.
+explicit social contract~\cite{dignum2004opera}. Both treat \emph{when a
+role specification binds} as the design problem and answer it with
+enforcement outside the agent. An LLM role prompt is the degenerate case: a
+deontic clause in prose, with no middleware to make it bind and no record of
+whether it did --- a case that tradition would not have called a
+specification at all. Our baseline is that case measured; our enforced
+condition returns the binding to the interface. Four further literatures
+bear on the result.
 
 \paragraph{Role specialization and role drift.} That prompted roles are not
 reliably obeyed is established: Cemri et al.~\cite{cemri2025why} name
@@ -45,22 +43,23 @@ reports
 that it cuts \emph{both} ways; Chen et al.~\cite{chen2026agentslimming}
 prune redundant agents on the same premise.
 
-\paragraph{Failure to revise, and answer lock-in.} That models restate answers
-under external correction is established for complete verifier
+\paragraph{Failure to revise, and answer lock-in.} That models restate
+answers under external correction is established for complete verifier
 feedback~\cite{jiang2026exactfeedback} and binary
-backprompts~\cite{stechly2024selfverification}; the phenomenon already has a
-name, \textbf{Degeneration-of-Thought}~\cite{liang2024divergent}, and belief
+backprompts~\cite{stechly2024selfverification}; the phenomenon has a name,
+\textbf{Degeneration-of-Thought}~\cite{liang2024divergent}, and belief
 entrenchment is studied directly~\cite{oh2026entrenchment}. Huang et
 al.~\cite{huang2024selfcorrect} are frequently misread here: their
 \emph{oracle} condition, which uses the correct label as a stopping rule,
 \textbf{improves} accuracy ($75.9 \to 84.3$ on GSM8K) and only the
-\emph{intrinsic} condition degrades. Our loop is oracle-gated like theirs. Closest to our lever is Chen et
-al.~\cite{chen2026relabeling}, who hold an erroneous claim byte-identical and
-vary only the \emph{role label} it carries, moving explicit-correction rate
-$23$--$93$pp --- the strongest published evidence that a role label is causal
-for error correction, but \textbf{single-agent}, with chat-template message
-roles rather than agent personas, and no recovery conditional or budget
-matching. \emph{Owned:} the failure, the name, and recovery-after-error as a
+\emph{intrinsic} condition degrades. Our loop is oracle-gated like theirs.
+Closest to our lever is Chen et al.~\cite{chen2026relabeling}, who hold an
+erroneous claim byte-identical and vary only the \emph{role label} it
+carries, moving explicit-correction rate $23$--$93$pp --- the strongest
+published evidence that a role label is causal for error correction, but
+\textbf{single-agent}, with chat-template message roles rather than agent
+personas, and no recovery conditional or budget matching. \emph{Owned:} the
+failure, the name, and recovery-after-error as a
 metric~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
 \textbf{inversion}: multi-agency is the prescribed cure for
 Degeneration-of-Thought, and a multi-agent system without role
@@ -86,34 +85,25 @@ scoring rule that drops $8$--$17\%$ of trajectories}, and under our
 pre-registered rule it disappears (\S\ref{subsec:enforce}). We report both
 because a reader who re-derives either needs to find the other.
 
-\paragraph{What is open, stated narrowly.} Read together, these literatures
-establish four things and leave one question standing. Roles are often not
-obeyed. Deleting them leaves first-pass accuracy intact. Models fail to
-revise under external feedback. Structure tends to help weaker models. Each
-of those is a result about a different stage of the work, and no study holds
-them in the same frame, so the field has an implicit synthesis --- role
-prompts are decorative --- that no single experiment has tested.
-
-\textbf{The reason it has not been tested is that the two findings most
-responsible for it were measured in different places.} The parity result is
-measured at the first answer; the failure-to-revise result is measured after
-feedback, and almost always in a single-agent setting where there is no
-organization to ablate. Nothing in either literature licenses carrying the
-parity finding across the phase boundary, and nothing has stopped the field
-from doing so. Putting them in one budget-matched design makes the parity a
-\emph{control condition} rather than a conclusion, and asks the question
-that then becomes available: whether the phase where organization is idle
-and the phase where it is load-bearing are the same phase. Answering it
-needs the \emph{phase} decomposition --- a budget-matched, two-directional
-role intervention that measures the realized organization directly rather
-than inferring it from a score.
+\paragraph{What is open, stated narrowly.} These literatures establish four
+things --- roles are often not obeyed; deleting them leaves first-pass
+accuracy intact; models fail to revise under external feedback; structure
+tends to help weaker models --- each about a \emph{different stage of the
+work}, and no study holds them in one frame. So the field has an implicit
+synthesis, that role prompts are decorative, which no single experiment has
+tested. \textbf{It has not been tested because the two findings most
+responsible for it were measured in different places}: parity at the first
+answer, failure-to-revise after feedback and almost always single-agent,
+where there is no organization to ablate. Nothing licenses carrying parity
+across that phase boundary, and nothing has stopped the field from doing
+so.
 
 \paragraph{Relation to the corpus this work instruments.} Three prior
 studies analyze
-it~\cite{jiang2026confidence,yang2026protocol,yang2026precise}, and
-\S\ref{subsec:notsingle}'s single-agent control is drawn from its released
-form; two are observational, the third runs within-\PER{} interventions
-varying how critique \emph{reaches} the solver~\cite{yang2026precise}.
-\textbf{None manipulates the role structure itself}, none measures whether
-the specified division of labor is realized, and the controlled conditions
-of \S\ref{sec:method} do not exist in that corpus.
+it~\cite{jiang2026confidence,yang2026protocol,yang2026precise} and our
+single-agent control is drawn from its released form; two are
+observational, the third varies how critique \emph{reaches} the
+solver~\cite{yang2026precise}. \textbf{None manipulates the role structure
+itself}, none measures whether the specified division of labor is realized,
+and the controlled conditions of \S\ref{sec:method} do not exist in that
+corpus.

@@ -105,32 +105,27 @@ frozen snapshot.
 
 Deleting the role instructions destroys the intended division of labor in
 all three actors: the rate at which every agent independently asserts its
-own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$, the
-planner supplying almost all of the swing. First-pass accuracy does not
-follow --- unchanged for gemma-4, \emph{improved} for gpt-oss ($+0.050$),
-flat for Llama-3.3 --- a parity consistent with prior role ablations and
-reported here as our control condition. \textbf{The difference appears only
-after a team is told its answer is wrong.} Both teams hold the same six
-deliberation cycles by construction and the role-free team draws
-\emph{more} oracle verdicts, so it is neither stopped early nor given less
-information; what differs is use. In gemma-4 the role-structured team
-spends $5.52$ realized cycles as $1.54$ submissions and $3.98$ revisions,
-the role-free team $5.83$ as $5.80$ submissions and $0.03$ revisions, leaving its answer
-unchanged in $0.845$ of first-pass-wrong trajectories against $0.288$.
-\textbf{Told they are wrong, one team revises and the other resubmits} ---
-and that split becomes an outcome split: recovery falls $0.222 \rightarrow
-0.051$ (gemma-4, paired $37$ versus $3$ discordant, exact McNemar
-$p=2\times10^{-8}$), with first-pass rates equal to four decimals, so the
-role-free team does not enter recovery already behind. The same returns for that actor on $574$
-free-response college-science problems: first-pass difference $0.000$,
-recovery $0.212 \rightarrow 0.020$ ($n=99$, $p=6.6\times10^{-5}$).
-Enforcing the division of labor at the interface un-freezes the answer and
-returns revisability, at $8$--$17\%$ attrition that keeps it from reaching
+own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$.
+First-pass accuracy does not follow --- unchanged for gemma-4,
+\emph{improved} for gpt-oss ($+0.050$), flat for Llama-3.3 --- a parity
+consistent with prior role ablations and reported here as our control
+condition. \textbf{The difference appears only after a team is told its
+answer is wrong.} Both teams hold the same six deliberation cycles by
+construction and the role-free team draws \emph{more} oracle verdicts, so
+it is neither stopped early nor given less information; what differs is
+use. In gemma-4 the role-structured team spends its cycles revising while
+the role-free team resubmits, leaving its answer unchanged in $0.845$ of
+first-pass-wrong trajectories against $0.288$. That split becomes an
+outcome split: recovery falls $0.222 \rightarrow 0.051$ (gemma-4, exact
+McNemar $p=2\times10^{-8}$), with first-pass rates equal to four decimals,
+so the role-free team does not enter recovery already behind. Both halves
+return on $574$ free-response college-science problems. Enforcing the
+division of labor at the interface un-freezes the answer and returns
+revisability, at $8$--$17\%$ attrition that keeps it from reaching
 end-to-end accuracy. \textbf{Role structure \emph{can} be load-bearing for
 feedback-driven recovery where it is not load-bearing for first-pass
-solving} --- cleanly in one actor, directionally in a second (gpt-oss,
-paired $p=0.208$), absent in a third (Llama-3.3, a genuine null of the role
-manipulation, since enforcement moves that actor's recovery to $0.139$).
+solving} --- cleanly in one actor, directionally in a second, absent in a
+third.
 \end{abstract}
 
 \begin{CCSXML}

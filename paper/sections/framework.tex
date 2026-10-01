@@ -32,25 +32,23 @@ trajectory length, and is \textbf{not applicable to the structurally
 enforced conditions}, whose schema forbids an answer field.
 
 \paragraph{Exact output duplication (secondary, a lower bound).} Two or more
-role messages byte-identical, as \texttt{sha256} of the raw completion before
-parsing. Precision $1.000$, recall $0.262$ against the adjudication (a
-within-item comparison, so unaffected by that adjudication's condition leak,
-\S\ref{subsec:collapse}): it establishes that at least a given amount of
-collapse occurred and, its recall differing by actor, is \textbf{never used
-to compare how much organization two actors lost}.
+role messages byte-identical, as \texttt{sha256} of the raw completion
+before parsing. Precision $1.000$, recall $0.262$ against the adjudication
+(a within-item comparison, so unaffected by that adjudication's condition
+leak, \S\ref{subsec:collapse}): it establishes that at least a given amount
+of collapse occurred and, its recall differing by actor, is \textbf{never
+used to compare how much organization two actors lost}.
 
-\paragraph{Answer authorship.} Whether a Planner authors a final answer ---
-the clause structural enforcement makes unrepresentable, and the
-manipulation check.
-
-\paragraph{Computation (\Pone{} and density).} Whether a Planner abstains
-from computing, scored as containing no evaluated numeric equality
+\paragraph{Answer authorship, and computation.} Whether a Planner authors a
+final answer --- the clause structural enforcement makes unrepresentable,
+and the manipulation check. Separately, whether a Planner abstains from
+\emph{computing}, scored as containing no evaluated numeric equality
 (\textbf{\Pone{}}, a pre-registered fidelity measure). Being the absence of
-a pattern it is anti-correlated with length, so every computation claim
-cites \textbf{evaluated equations per 1{,}000 characters} instead: the
-role-free gpt-oss Planner scores $0.722$ on the binary rate --- apparently
-the study's most compliant --- on a 37-character message. A metric that rewards silence
-cannot measure a division of labor.
+a pattern, \Pone{} is anti-correlated with length, so every computation
+claim cites \textbf{evaluated equations per 1{,}000 characters} instead:
+the role-free gpt-oss Planner scores $0.722$ on the binary rate ---
+apparently the study's most compliant --- on a 37-character message. A
+metric that rewards silence cannot measure a division of labor.
 
 \paragraph{Recovery.} The fraction of trajectories whose first submitted
 answer was graded wrong that nonetheless finish correct --- not a new
