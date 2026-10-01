@@ -86,3 +86,60 @@ kit, re-verify and update:
 **Do not treat the year-advanced 2026 block as correct metadata.** It is a
 placeholder chosen because no 2027 source exists, and it is flagged in
 `main.tex`'s header comment as such.
+
+---
+
+## AAMAS 2027 template: re-checked 2026-10-01, STILL NOT REACHABLE HERE
+
+Bella reports the official AAMAS 2027 submission page now exposes
+`aamas_2027_template.zip`. **I could not reach it from this environment.**
+That is a negative result about my network, not a contradiction of her
+report, and it is recorded in that spirit.
+
+### Everything I probed
+
+| target | result |
+|---|---|
+| `aamas2027.org`, `www.aamas2027.org`, `aamas-2027.org` | **NXDOMAIN** (no DNS) |
+| `ifaamas.org/previousaamas.html` | lists 2002-2026; **2027 absent** |
+| `cyprusconferences.org/aamas2026/` | no forward link, no "Hanoi", no "Vietnam" |
+| `ifaamas.org/AAMAS/aamas2027/` | 404 |
+| `aamas_2027_template.zip` at ifaamas.org, aamas2027.org, cyprusconferences.org | 404 / no DNS |
+| `aamas2027.hanoi.vn`, `aamas2027.vn`, `aamas27.org`, `aamas2027.com`, `aamas2027.github.io`, `conf.researchr.org/home/aamas-2027` | no DNS or 404 |
+| `aamas-conference.org` | 200 but serves a browser-verification interstitial only |
+| `sites.google.com/view/aamas2027` | 302 to a Google login wall |
+| DuckDuckGo HTML + lite endpoints | returned no usable result links |
+| DBLP API | no parseable hits |
+
+**WebSearch is blocked by org policy in this environment** (HTTP 400,
+`constraints/vertexai.allowedPartnerModelFeatures`), so the search was
+exhaustive only over direct URL probes and two search-engine HTML endpoints.
+A reachable 2027 site almost certainly exists on a host I did not guess.
+
+### What I did instead
+
+Applied the parts of P0-1/P0-2 that do **not** require the kit:
+
+- **Venue metadata corrected to Hanoi, Vietnam** in `\acmConference`.
+  Verified absent: zero occurrences of "Paphos" remain in the rendered PDF.
+- Edition number checked: AAMAS 2026 is the 25th, so **26th** for 2027 is
+  correct as written.
+- The header comment in `main.tex` now records the probe result and the
+  migration instruction, rather than the earlier and now-stale claim that no
+  2027 kit exists at all.
+
+### What a next agent must do
+
+**This is the single highest-value action available to someone on a
+different network.** Fetch `aamas_2027_template.zip`, diff `aamas.cls`
+against `paper_support/aamas_official/aamas.cls`
+(sha256 `f0af39a72cbcdc88be4817b56cfa74510896b5ef9f32c3f3d32884f68280980c`),
+and migrate. The layout rules (8 pages main text, unlimited references,
+double-blind, no style edits) have been stable across editions, so the risk
+is cosmetic rather than structural — but **do not assume that**; re-run every
+gate after swapping the class.
+
+Note the server behaviour already documented above: the 2026 kit is served
+behind a hotlink guard that returns a 401KB HTML "404" to a plain `curl`. If
+the 2027 host behaves the same way, use a browser User-Agent and a same-site
+Referer before concluding the file is missing.

@@ -22,12 +22,23 @@
 % -- Anonymity: no author block, no acknowledgements, no repo URLs. ----------
 % The aamas class handles anonymisation via the [anonymous] option.
 
-% -- IFAAMAS copyright block, verbatim from the official sample ("do not
-% -- change"), year advanced to 2027. Re-verify against the 2027 author kit.
+% -- IFAAMAS copyright block. Structure is verbatim from the official
+% -- AAMAS-2026 sample ("do not change"); year, edition number and city are
+% -- advanced to AAMAS 2027, Hanoi, Vietnam.
+% --
+% -- TEMPLATE STATUS, re-checked 2026-10-01: aamas2027.org does not resolve
+% -- (NXDOMAIN on three spellings), ifaamas.org/previousaamas.html still ends
+% -- at 2026, and cyprusconferences.org/aamas2026 carries no forward link.
+% -- `aamas_2027_template.zip` could not be located at any reachable host;
+% -- WebSearch is blocked by org policy in this environment, so the search
+% -- was exhaustive only over direct URL probes. See
+% -- paper_support/aamas_official/PROVENANCE.md for the full probe list.
+% -- IF the 2027 kit is reachable from another network, migrate to it and
+% -- re-verify this block -- the class may itself have changed.
 \setcopyright{ifaamas}
 \acmConference[AAMAS '27]{Proc.\@ of the 26th International Conference
 on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{May 2027}
-{Paphos, Cyprus}{Anonymous (eds.)}
+{Hanoi, Vietnam}{Anonymous (eds.)}
 \copyrightyear{2027}
 \acmYear{2027}
 \acmDOI{}
@@ -86,7 +97,8 @@ Multi-agent LLM systems are specified as role diagrams --- Planner, Executor,
 Reviewer --- and the diagram is read as a mechanism. We ask which phase of the
 work that organization carries. Holding agents, call budget, context policy,
 verifier and grading fixed, we delete every role instruction (Arm~B) and,
-separately, make the division of labor structurally unrepresentable (Arm~C),
+separately, enforce it structurally, making violations of it
+unrepresentable (Arm~C),
 across three actor models on $11{,}600$ trajectories from one frozen
 snapshot.
 
