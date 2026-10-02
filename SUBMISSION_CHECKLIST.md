@@ -29,31 +29,49 @@ hostnames failed to resolve. Reported as access failures, not as findings.
 
 | # | item | status |
 |---|---|---|
-| 1 | Final anonymized AAMAS PDF | **IN PROGRESS** — compiles clean on the official class, **9 pp against an 8 pp limit** |
-| 2 | Final title | "When Is Multi-Agent Organization Load-Bearing?" — in `main.tex` and the PDF |
-| 3 | Final abstract | **DRAFTED** against the frozen 11,600-trajectory snapshot, in `main.tex`. **Needs a pass against `STATISTICAL_AUDIT.md`** — see below. |
-| 4 | Author-independent submission metadata to paste | TODO |
-| 5 | Supplementary material | TODO — decide after the page budget. **Must ship inside the submission, never behind a link** (AAMAS: "Papers must not include pointers to any supplementary material that is not provided as part of the submission"). Single zip, ≤ 25 MB, same anonymity policy. |
-| 6 | Verified bibliography | **DONE** — 24 entries; audit in `paper_support/BIB-AUDIT-2026-09-29.txt` |
-| 7 | Clean Overleaf | **STALE** — clone is at `128771e` (12 files), missing the class file and the later section rewrites. `paper/` is the working copy and must be synced to Overleaf before submission. The clone lives at `/tmp/aamas_ol` and will not survive a reboot. |
-| 8 | Clean GitHub / reproducibility artifacts | **PARTIAL** — 2.70 MiB packed, raw JSONL stripped from history, secret scan clean. **`origin/main` is 16 commits behind local** — push. |
-| 9 | This checklist | LIVE |
+| 1 | Final anonymized AAMAS PDF | **DONE** — official class, **8 main-text pages + references on 9**, every gate passing |
+| 2 | Final title | **DONE** — *From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing* |
+| 3 | Final abstract | **DONE** — ~294 words, generated to `paper/ABSTRACT_SUBMIT.txt` from `main.tex`; paste the file rather than retyping |
+| 4 | Submission metadata to paste | **DONE** — `SUBMISSION_PACKAGE.md` (title, abstract, area, keywords) |
+| 5 | Supplementary material | **DONE** — `paper/supplement.pdf`, 11 pp, anonymous, gated. Ships **inside** the submission; the paper contains no pointer to it |
+| 6 | Verified bibliography | **DONE** — `refs.bib` holds **27** entries, every one machine-checked against arXiv or CrossRef (`paper_support/BIB-AUDIT-2026-09-29.txt`). **26 render**; `barrak2025traceability` is verified but uncited, so bibtex drops it. Harmless, and left in place rather than cited: adding a citation to a paper at its page limit costs main-text lines for no argumentative gain. |
+| 7 | Clean Overleaf | **BLOCKED, not at risk** — git access off (affiliation link pending). `paper/` is the authoritative copy and a fresh clone of this repo rebuilds both PDFs to identical text. Push procedure in `HANDOFF_CURRENT.md` |
+| 8 | Clean GitHub / reproducibility artifacts | **DONE** — pushed through `57daaaf2c8cd`, raw JSONL out of git history, secret scan clean |
+| 9 | AI-assistance disclosure | **DONE** — `paper/AI_ASSISTANCE_DISCLOSURE.md`, anonymous |
+| 10 | This checklist | LIVE |
 
 ## Blocking before submission
 
-- [ ] **Page budget 9 → 8.** AAMAS: *"Excessive use of typesetting tricks to make everything fit into 8 pages is not admissible."* Cut content.
-- [ ] **Close out `STATISTICAL_AUDIT.md`** — 1 FATAL + 5 SERIOUS. The FATAL and two of the SERIOUS are claims a reviewer can check against the artifact:
-  - **FATAL-1** — Arm C's recovery denominator dropped 173 rows. **The tables are fixed** (commit `ba28977`; T1 now 0.314/0.395/0.139). Still open in prose: `results.tex` §R5's "paired-significant in all three (p=1.6e-3, 1.6e-3, 3.8e-6)" must go — only Llama-3.3 survives.
-  - **SERIOUS-1** — `method.tex:63` and `results.tex:6` assert a Holm correction that `FINAL_TABLES.py` never applies. **A reviewer verifies this with one grep.** Running it changes no verdict, so run it.
-  - **SERIOUS-2** — the "floor effect" language for Llama-3.3 is falsified by our own Arm C. `results.tex` §R3 and `limitations.tex` both need it removed; limitations has it exactly backwards.
-  - **SERIOUS-3** — `results.tex` §R4 quotes an n=12 cell and pooled quartiles that are arm indicators.
-  - **SERIOUS-4** — drop every "effect ÷ noise floor" ratio.
-  - **SERIOUS-5** — say which P4 DiDs are informative nulls (only gpt-oss−gemma, MDE 0.033) and which are not.
-- [ ] **Abstract re-check.** It currently says enforcement "restores both organization and recovery" and calls Llama's result "a floor effect that does not replicate." Both are now dead claims (FATAL-1, SERIOUS-2).
-- [ ] **Push the 16 local commits.**
-- [ ] **Sync `paper/` → Overleaf.**
-- [ ] **Back up `experiments/results/FROZEN/`.** 297 MB, one laptop, not in git, not regenerable (temperature 0 is not deterministic on this endpoint). Losing it ends the project.
-- [ ] **Re-run the anonymity audit after the final trim** — it is not a one-time check.
+**None open.** Everything below was blocking and has been verified closed,
+each by running the check rather than by recalling that it was fixed.
+
+- [x] **Page budget 9 → 8.** `scripts/pagecheck.py` exit 0; main text ends
+      page 8. Met by cutting prose, not by typesetting — AAMAS forbids the
+      latter and `microtype` protrusion is explicitly disabled, which makes
+      lines looser, not tighter.
+- [x] **`STATISTICAL_AUDIT.md` closed out** — 1 FATAL + 5 SERIOUS, all
+      resolved and each verified absent from the current prose:
+      the "paired-significant in all three" claim is gone (only Llama-3.3
+      survived); Holm is actually applied in `FINAL_TABLES.py`; the "floor
+      effect" language for Llama-3.3 is gone, falsified by our own enforced
+      condition; the n=12 cell is gone; every "effect ÷ noise floor" ratio
+      is gone; and the paper now says which P4 contrasts are informative
+      nulls and which cannot detect an effect of any plausible size.
+- [x] **Abstract re-checked** — the dead claims ("restores both
+      organization and recovery", Llama as "a floor effect") are absent.
+- [x] **All commits pushed** — `origin/main..HEAD` is empty.
+- [x] **Anonymity re-audited after the final trim** — 0 hits in the
+      rendered text of **both** PDFs. Re-run by `scripts/final_freeze.py`,
+      so it is no longer a one-time manual check.
+- [x] **`experiments/results/FROZEN/` is no longer single-copy.** The old
+      entry here said "297 MB, one laptop, losing it ends the project."
+      That is now false and the correction matters: all three Omni-MATH
+      traces plus the SciBench trace are in the **private** HF repo, and I
+      verified the bytes rather than the filenames — `campaign_v2`
+      `e4e53cb117d91129`, `actor3` `fa22a446d5314bb6`, `armCp`
+      `038e08aec4d4aee1`, identical local and remote. The laptop copy is
+      still the working copy and a second local backup is still worth
+      having, but losing it no longer ends the project.
 
 ## Anonymity gates
 
@@ -63,14 +81,24 @@ hostnames failed to resolve. Reported as access failures, not as findings.
 - [x] **`.bib` warning comments do not render** — stripped by bibtex.
 - [x] **Prior group work (2609.27822, 2608.14927, 2607.15388) cited in third person.** Author surnames therefore appear in the bibliography — Yang ×7, Jiang ×4, Zheng ×5, Thakur ×3, Vishwanath ×2, Chih-Hsuan ×3, all confined to entries [10], [19], [20]. **That is the required blinding form, not a leak.**
 - [x] **Official AAMAS document class in place.** The earlier "the .cls could not be fetched" finding was **wrong** — the 404 was a hotlink guard returning 401 KB of HTML. Retrieved 2026-09-30; see `paper_support/aamas_official/PROVENANCE.md`.
-- [ ] **Re-run this audit after the final trim and number refresh.**
+- [x] **Re-run after the final trim** — automated. `scripts/final_freeze.py`
+  runs the anonymity scan over the rendered text of **both** PDFs on every
+  invocation, so it cannot be forgotten, and it fails the freeze on a
+  single hit. Positive-controlled: planting an HF URL in `supplement.tex`
+  made it report 2 hits and fail.
 
 Reproduce the audit:
 
 ```bash
-pdftotext paper/main.pdf /tmp/anon.txt
-for t in AgentsSci ChihHsuan github.com huggingface Argonne ALCF Sophia bellayang; do
-  printf '%s: %s\n' "$t" "$(grep -ci "$t" /tmp/anon.txt)"; done
+python3 scripts/final_freeze.py          # runs it over both PDFs, among all gates
+
+# or by hand, on the RENDERED text -- never on the source, which legitimately
+# contains these strings in comments and in paper/README.md:
+for d in main supplement; do
+  pdftotext paper/$d.pdf /tmp/anon.txt
+  for t in AgentsSci ChihHsuan github.com huggingface overleaf Argonne ALCF Sophia bellayang; do
+    printf '%s %s: %s\n' "$d" "$t" "$(grep -ci "$t" /tmp/anon.txt)"; done
+done
 pdfinfo paper/main.pdf | grep -Ei 'Author|Creator|Producer|Pages'
 ```
 

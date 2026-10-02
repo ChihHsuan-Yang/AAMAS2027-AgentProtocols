@@ -93,7 +93,7 @@ pdftotext main.pdf - | grep -icE "argonne|github|huggingface|overleaf"   # 0
 |---|---|---|
 | `main.tex` | preamble, venue block, abstract | **hand-written** |
 | `sections/*.tex` | 10 sections | **hand-written** |
-| `refs.bib` | 26 entries, each verified against arXiv or CrossRef | **hand-written** |
+| `refs.bib` | 27 entries, each machine-verified against arXiv or CrossRef; 26 are cited and render | **hand-written** |
 | `tables/*.tex` | 6 result tables | **generated** — see `tables/README.md` |
 | `figures/*.pdf` | figures LaTeX includes | **generated** — see `figures/README.md` |
 | `aamas.cls`, `ACM-Reference-Format.bst` | official IFAAMAS kit | **upstream — never modify** |

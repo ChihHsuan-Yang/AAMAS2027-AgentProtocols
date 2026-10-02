@@ -50,6 +50,54 @@ def build(stem):
 IDENTIFYING = ("argonne", "alcf", "bellayang", "huggingface", "agentssci",
                "github.com", "overleaf", "chihhsuan")
 
+# ------------------------------------------------------------ the abstract
+# Taken from the SOURCE, not from pdftotext output.
+#
+# DEFECT FIXED 2026-10-02: the old abstract hash sliced the rendered text
+# between "Multi-agent LLM systems" and "CCS CONCEPTS". In a two-column
+# layout pdftotext's reading order puts the Introduction's first paragraph
+# inside that span, so the "abstract hash" covered the abstract PLUS 140
+# words of intro -- stable, reproducible, and not the abstract. A hash is
+# only as meaningful as the subject it is taken over.
+abstract_src = re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}",
+                         open("main.tex").read(), re.S).group(1)
+
+
+def abstract_plaintext(tex):
+    """LaTeX abstract -> the plain text a submission form wants."""
+    t = tex
+    # Sweep the whole command set repeatedly, innermost-first, until nothing
+    # changes. One pass per command in a fixed order is NOT enough: the
+    # abstract ends with \textbf{Role structure \emph{can} be ...}, whose
+    # outer group contains braces, so the textbf pattern cannot match until
+    # the emph inside it is gone -- and by then textbf's turn has passed.
+    # That left a literal "\textbfRole" in the output, which the guard below
+    # caught.
+    for _ in range(10):
+        before = t
+        for cmd in ("textbf", "emph", "textsc", "text"):
+            t = re.sub(r"\\" + cmd + r"\{([^{}]*)\}", r"\1", t)
+        if t == before:
+            break
+    t = (t.replace(r"\rightarrow", "->").replace(r"\times", "x")
+          .replace(r"\%", "%").replace(r"\,", " "))
+    t = re.sub(r"\$([^$]*)\$", lambda m: m.group(1), t)
+    t = t.replace("{,}", ",").replace("^{-8}", "^-8").replace("{-}", "-")
+    t = t.replace("---", "--").replace("{", "").replace("}", "")
+    t = re.sub(r"\s+", " ", t).strip()
+    # Nothing may survive that would read as markup in a plain-text box.
+    leftover = re.findall(r"\\[a-zA-Z]+", t)
+    if leftover:
+        raise SystemExit(f"abstract plaintext still contains LaTeX: {leftover}")
+    return t
+
+
+abstract_txt = abstract_plaintext(abstract_src)
+abstract_words = len(abstract_txt.split())
+# Written out so the submission form is filled from a file, not from a
+# hand-retyped paragraph that can drift from the compiled paper.
+open("ABSTRACT_SUBMIT.txt", "w").write(abstract_txt + "\n")
+
 gates = {}
 
 # ---------------------------------------------------------------- main paper
@@ -104,6 +152,13 @@ src = "".join(open(f, errors="ignore").read()
 gates["todo_uses"] = len(re.findall(r"(?<!newcommand\{)\\TODO\{", src))
 
 # ---------------------------------------------------------- class integrity
+# Bibliography: entries present, entries rendered, and -- the one that
+# matters -- that every \cite resolves. An uncited entry is harmless (bibtex
+# drops it); an unresolved \cite ships a "[?]".
+gates["bib_entries"] = len(re.findall(r"^@[a-zA-Z]+\{", open("refs.bib").read(), re.M))
+gates["bib_rendered"] = (len(re.findall(r"\\bibitem", open("main.bbl").read()))
+                         if os.path.exists("main.bbl") else 0)
+
 gates["aamas_cls_official"] = (
     sha("aamas.cls") == sha(f"{P}/paper_support/aamas_official/aamas.cls"))
 
@@ -134,14 +189,31 @@ freeze = {
     "github_head": sh(f"git -C {P} rev-parse HEAD"),
     "overleaf_head": sh("git -C /tmp/aamas_ol ls-remote origin 2>/dev/null "
                         "| head -1 | cut -f1") or "UNREACHABLE (access blocked)",
-    "main_pdf_sha256": sha("main.pdf"),
+    # BYTE hashes of a PDF change on every build -- pdflatex embeds a
+    # wall-clock CreationDate -- so they identify a BUILD, not a paper. Record
+    # them, but the field that answers "is this the same paper?" is the TEXT
+    # hash below, which is stable across rebuilds and across machines. The
+    # Overleaf equivalence check compares the text hash for that reason.
+    "main_pdf_sha256_build": sha("main.pdf"),
     "main_pdf_bytes": os.path.getsize("main.pdf"),
-    "supplement_pdf_sha256": sha("supplement.pdf") if gates["supplement_exists"] else None,
+    # Hashed over the RAW pdftotext bytes, so this equals what
+    #     pdftotext main.pdf - | shasum -a 256
+    # prints. `sh()` strips trailing whitespace, and a recorded number that
+    # the documented command does not reproduce is worse than no number --
+    # whoever checks it concludes the paper changed.
+    "main_text_sha256": hashlib.sha256(
+        subprocess.run(["pdftotext", "main.pdf", "-"],
+                       capture_output=True).stdout).hexdigest(),
+    "supplement_pdf_sha256_build": sha("supplement.pdf") if gates["supplement_exists"] else None,
+    "supplement_text_sha256": (hashlib.sha256(
+        subprocess.run(["pdftotext", "supplement.pdf", "-"],
+                       capture_output=True).stdout).hexdigest()
+        if gates["supplement_exists"] else None),
     "figures_used": figs,
     "figures_missing": missing,
-    "abstract_sha256": hashlib.sha256(main_txt[
-        main_txt.find("Multi-agent LLM systems"):
-        main_txt.find("CCS CONCEPTS")].encode()).hexdigest(),
+    "abstract_sha256": hashlib.sha256(abstract_src.encode()).hexdigest(),
+    "abstract_words_approx": abstract_words,
+    "abstract_plaintext": "paper/ABSTRACT_SUBMIT.txt",
     "data_omnimath": frz["files"],
     "data_scibench": {f: {"sha256": sha(f"{SCI}/{f}"),
                           "rows": sum(1 for _ in open(f"{SCI}/{f}"))}

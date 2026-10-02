@@ -1,17 +1,21 @@
 {
-  "frozen_at": "2026-10-02T10:32:14",
+  "frozen_at": "2026-10-02T10:47:04",
   "title": "From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing",
-  "github_head": "7417d71ff5ad5138b968f5ee59271a7a0df4feb8",
+  "github_head": "57daaaf2c8cdeb0f1f2f35f827f183a13c8fe5d6",
   "overleaf_head": "UNREACHABLE (access blocked)",
-  "main_pdf_sha256": "fee7a9e7c7594aa3e1a942d3c7570d0d902f340b094e01905bd30a66e75b4450",
+  "main_pdf_sha256_build": "7d3800ad7c723ef9144ab6db0a221d49cf45fd55a3e7b227c474501807b0712d",
   "main_pdf_bytes": 640245,
-  "supplement_pdf_sha256": "9a978358fff6aea38454c0d3c06f95f1d0998ba2a3d419baedb6dc3ff850f2a7",
+  "main_text_sha256": "3cb9712a40d2176034a309a438883b93cc00d8f4c871bf128e8042d95f21dcf6",
+  "supplement_pdf_sha256_build": "cf4b5c233582eba921592e0eb9eb08bda73f647028b0c400a2c65d0ad26fe39a",
+  "supplement_text_sha256": "48f51c61629cf99e552b3722985234f8f17dfc19eddfaeee6e3cdc8630592dd9",
   "figures_used": {
     "fig1_v1_story.pdf": "3c91da3e3ab4d9f61b97929243a38ec88538af0c431b682c1364a095906852ad",
     "fig2_v2_xdomain.pdf": "4525bb027304ef3c381815056e8403fb44391a152ae7816b1104588368093413"
   },
   "figures_missing": [],
-  "abstract_sha256": "e8621c9822120bf625858305e1551e726bb96f1add3dda879c10a703e2414971",
+  "abstract_sha256": "a497dba29f199e46f9965c4a8aac65e2a05a5d2bf36cca75236aadc7e5db7a4e",
+  "abstract_words_approx": 294,
+  "abstract_plaintext": "paper/ABSTRACT_SUBMIT.txt",
   "data_omnimath": {
     "actor3.jsonl": {
       "sha256": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
@@ -55,6 +59,8 @@
     "armcode_in_sources": 0,
     "figure_pdfs_clean_exit": 0,
     "todo_uses": 0,
+    "bib_entries": 27,
+    "bib_rendered": 26,
     "aamas_cls_official": true,
     "tables_match_sources_exit": 0,
     "figures_present": true
