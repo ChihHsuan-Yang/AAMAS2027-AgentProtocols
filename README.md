@@ -66,16 +66,21 @@ since structural enforcement moves that same actor's recovery to 0.139.
 | **the only source of a number** | `analysis/scripts/FINAL_TABLES.py` → `analysis/out/FINAL_TABLES_OUTPUT.txt` |
 | **what may be claimed** | `APPROVED_CLAIMS.md` — its DEAD table is binding |
 | **live handoff pointer** | `HANDOFF_CURRENT.md` |
+| **what Bella pastes into the form** | `SUBMISSION_PACKAGE.md`, abstract in `paper/ABSTRACT_SUBMIT.txt` |
+| **AI-assistance disclosure** (anonymous) | `paper/AI_ASSISTANCE_DISCLOSURE.md` |
+| **one command for "is this releasable?"** | `python3 scripts/final_freeze.py` |
 
 ## Handoff status
 
 | | |
 |---|---|
-| manuscript | **8 main-text pages**, references on 9; every submission gate passes |
+| manuscript | **8 main-text pages**, references on 9 |
+| supplement | **assembled** — `paper/supplement.tex`, 11 pages, a second document in the same project sharing the class, bibliography and tables |
+| gates | `python3 scripts/final_freeze.py` → **ALL_GATES_PASS**, over *both* documents |
 | GitHub | current and authoritative |
-| **Overleaf** | **BLOCKED** — git access refused pending an affiliation link. **Not a defect, and not a blocker.** `paper/` is a complete, verified reconstruction: a fresh clone of this repo builds the identical PDF. |
-| Hugging Face | v1.1.0, private, hash-verified |
-| remaining | supplement assembly; final blind review; Bella's OpenReview actions |
+| **Overleaf** | **BLOCKED** — git access refused pending an affiliation link. **Not a defect, and not a blocker.** `paper/` is a complete, verified reconstruction: a fresh clone of this repo builds both PDFs to identical text. |
+| Hugging Face | v1.1.0, private, cold-download hash-verified |
+| remaining | **Bella's OpenReview actions only** |
 
 ## Reader-facing naming
 
