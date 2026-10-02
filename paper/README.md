@@ -57,17 +57,25 @@ from this directory alone. `/tmp/aamas_ol` is convenience only.
 
 ```bash
 cd paper
-pdflatex -interaction=nonstopmode main.tex
-bibtex main
-pdflatex -interaction=nonstopmode main.tex
-pdflatex -interaction=nonstopmode main.tex
+for d in main supplement; do
+  pdflatex -interaction=nonstopmode $d.tex
+  bibtex $d
+  pdflatex -interaction=nonstopmode $d.tex
+  pdflatex -interaction=nonstopmode $d.tex
+done
 python3 ../scripts/pagecheck.py main.pdf      # NO PIPE: `| tail` makes $? report tail
 ```
+
+The page check applies to `main.pdf` only; the supplement has no limit.
 
 `latexmk -pdf main.tex` works on a warm tree but fails from a clean one — it
 schedules bibtex before any `.aux` exists.
 
 ## Gates before any freeze
+
+**Run `python3 scripts/final_freeze.py` from the project root** — it runs
+all of the below over *both* documents and writes `FINAL_FREEZE.json`.
+Individually:
 
 ```bash
 python3 ../scripts/pagecheck.py main.pdf              # exit 0: main text ends p8
@@ -152,13 +160,24 @@ fails by design until institution-naming rows are sanitized after acceptance.
 
 ## Main paper vs supplement
 
-Main paper: `main.tex`, the 10 sections, Figures 1–2, and
-`tables/main_role_collapse.tex`. The other five generated tables are
-supplement-bound — dispositions in `tables/README.md`. **The main paper must
-remain readable without the supplement**; it points, never depends.
+Two documents, one project. `main.tex` is the 8-page submission: the 10
+sections, Figures 1–2, and `tables/main_role_collapse.tex`.
+`supplement.tex` is a second document in **this same directory**, sharing
+`aamas.cls`, `refs.bib` and `tables/`, so a regenerated table lands in both
+at once and the two can never disagree. It carries the other six generated
+tables and has no page limit.
+
+**The main paper must remain readable without the supplement.** It points;
+it never depends. If you find yourself moving an argument step into the
+supplement, move it back.
+
+Build the supplement the same way (`pdflatex supplement` → `bibtex
+supplement` → `pdflatex` ×2) and gate it the same way — it has no page
+limit, but it must stay anonymous and free of internal condition codes.
+`scripts/final_freeze.py` does both documents.
 
 ## Current state
 
-- **8 main-text pages**, references on 9. Every gate above passes.
-- **Supplement not yet assembled.** That is the one remaining consumer of the
-  five supplement tables.
+- **8 main-text pages**, references on 9. Supplement 11 pages.
+- `python3 scripts/final_freeze.py` → **ALL_GATES_PASS true**, FAILED_GATES
+  empty. That is the single command that answers "is this releasable?".
