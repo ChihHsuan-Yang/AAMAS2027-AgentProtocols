@@ -1,72 +1,114 @@
-# When Is Multi-Agent Organization Load-Bearing?
+# From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing
 
-AAMAS 2027 submission (GAAI track). **Abstract Oct 1, full paper Oct 8 AoE.**
-8 pages main text + unlimited references, double-blind, LaTeX mandatory.
+> **Roles do not primarily help a team produce its first answer. They help it
+> turn an external "your answer is wrong" signal into a revision rather than a
+> resubmission of the same candidate.**
 
-**Bella submits manually.** An agent's job ends at a submission-ready package —
-see `SUBMISSION_CHECKLIST.md`, section *"Bella — manual submission actions"*.
-
-> **New agent with no prior context?** Read this file top to bottom, then go to
-> **[Cold-Start Handoff for the Next Agent](#cold-start-handoff-for-the-next-agent)**
-> at the bottom. Everything you need is in those two places.
+AAMAS 2027 submission, GAAI track. 8 pages main text + unlimited references,
+double-blind. **Bella submits manually** — an agent's job ends at a
+submission-ready package.
 
 ---
 
-## Project Goal
+## The story in one paragraph
 
-Multi-agent LLM systems are specified as role diagrams — Planner → Executor →
-Reviewer — and those diagrams are routinely read as *mechanism*: the roles are
-assumed to be doing the work the picture says they do. This project asks a
-falsifiable version of that assumption: **when is the organization actually
-load-bearing?** Load-bearing is defined operationally as *removing or altering
-the role structure causes a reproducible performance degradation under matched
-compute and information budgets.* Holding the actor models, the call budget,
-the context-visibility policy, the verifier and the grading fixed, we delete
-the role instructions (Arm B) and separately make the division of labor
-structurally unrepresentable (Arm C), and measure what breaks.
+Multi-agent LLM systems are specified as role diagrams — Planner, Executor,
+Reviewer — and the diagram is read as a mechanism. We ask which **phase** of
+the work that organization actually carries. Deleting every role instruction,
+with topology, model, information, retry budget and evaluator held fixed,
+destroys the intended division of labor but leaves first-pass solving intact.
+The difference appears only *after* a team is told its answer is wrong: both
+teams hold the same six deliberation cycles and the role-free team draws
+**more** oracle verdicts, so it is neither stopped early nor given less
+information. What differs is use — told they are wrong, one team revises and
+the other resubmits. That behavioral split becomes a recovery split, and the
+same dissociation reappears in a second, free-response science domain.
 
-## Current Story
+## Scale
 
-**Plain language.** Give three copies of the same model the roles "planner,"
-"executor," and "reviewer," and they divide up the work. Take the role labels
-away and they stop dividing it — all three just solve the whole problem
-themselves and agree with each other. Surprisingly, this costs nothing on the
-first attempt: the team gets the same fraction of problems right the first
-time, and one model actually gets *better*. The damage shows up only after the
-team gets an answer wrong. A team with roles will argue with itself, change its
-answer, and sometimes fix the mistake. A team without roles locks onto its
-first answer, rubber-stamps it for the rest of its budget, and almost never
-recovers. So the roles are not what produce the answer — they are what let the
-team abandon a wrong one.
+| | |
+|---|---|
+| **Omni-MATH** (competition mathematics) | **11,600 trajectories**, 1,600 problems, 3 actors, 4 conditions |
+| **SciBench** (college chemistry/physics, free response) | **2,296 trajectories**, the complete 574-problem matched slice, 2 actors, 2 conditions |
+| total | **13,896 trajectories** across two domains, both frozen and sha256-manifested |
+| actors | `google/gemma-4-31B-it`, `openai/gpt-oss-120b`, `meta-llama/Llama-3.3-70B-Instruct` |
 
-**Technical.** Removing role instructions destroys the functional division of
-labor in all three actors (blinded adjudication: 0.964 "no division of labor"
-in Arm B vs 0.000 in Arm A). First-pass accuracy is unchanged or improves,
-which is our control condition and is consistent with prior role-ablation work.
-The cost is localized to *recovery* conditional on a wrong first pass, and only
-one actor shows it cleanly (gemma-4 0.222 → 0.051, McNemar p=2e-08); Llama-3.3
-does not replicate it, and that is a genuine null rather than a floor — its
-recovery channel is demonstrably movable by Arm C. It is not
-premature stopping: every arm holds the same six deliberation cycles by
-construction, and the role-free arm receives *more* evaluator feedback, having
-converted nearly every cycle into a resubmission instead of a revision. The
-proximate mechanism is failure to produce a distinct second candidate —
-frozen-answer rate 0.288 → 0.845 — which is Liang's Degeneration-of-Thought
-arriving in a setting where multi-agency was the prescribed cure. Architectural
-enforcement (Arm C) restores the organization, and restores recovery in
-Llama-3.3 (p=3.8e-06) — the other two actors move in the same direction but
-are not resolvable against Arm C's 8–17% attrition. It does not improve final
-accuracy in any actor.
+## Strongest evidence
 
-One sentence, from `APPROVED_CLAIMS.md`:
+**The mechanism.** On gemma-4, told its answer is wrong, the role-structured
+team spends 5.52 cycles as **1.54 submissions + 3.98 revisions**; the
+role-free team spends 5.83 as **5.80 submissions + 0.03 revisions**, leaving
+its answer unchanged in **0.845** of first-pass-wrong trajectories against
+**0.288**. Same budget, opposite use.
 
-> Role structure is not load-bearing for generating the first answer, but it
-> can be load-bearing for repairing an initially wrong one.
+**The outcome.** Recovery falls **0.222 → 0.051**. Paired on problems wrong
+under both conditions: **37 recovered only with roles against 3 only without**,
+exact McNemar **p = 2×10⁻⁸**. Because gemma-4's first-pass rates are equal to
+four decimals, this contrast is algebraically the **intent-to-treat effect**,
+not a post-treatment conditional — the cleanest answer available to the
+obvious objection.
+
+**The replication.** SciBench, gemma-4: first pass **0.794 → 0.794**, paired
+recovery **0.212 → 0.020** (n=99, 21 vs 2 discordant, p = 6.6×10⁻⁵).
+
+**Actor scope, stated once.** gemma-4 clean; gpt-oss directional but the
+paired contrast does not resolve (p = 0.208); Llama-3.3 does not show the
+effect — a genuine null specific to the role manipulation, **not** a floor,
+since structural enforcement moves that same actor's recovery to 0.139.
+
+## Where everything is
+
+| | |
+|---|---|
+| **manuscript** | `paper/` — the durable mirror of the Overleaf project; see `paper/README.md` |
+| **data artifact** | HF `AgentsSci/AAMAS2027-Roles` **v1.1.0, PRIVATE during review** |
+| **frozen data** | `experiments/results/FROZEN/` and `experiments/results/xdomain/FROZEN_SCIBENCH/` |
+| **the only source of a number** | `analysis/scripts/FINAL_TABLES.py` → `analysis/out/FINAL_TABLES_OUTPUT.txt` |
+| **what may be claimed** | `APPROVED_CLAIMS.md` — its DEAD table is binding |
+| **live handoff pointer** | `HANDOFF_CURRENT.md` |
+
+## Handoff status
+
+| | |
+|---|---|
+| manuscript | **8 main-text pages**, references on 9; every submission gate passes |
+| GitHub | current and authoritative |
+| **Overleaf** | **BLOCKED** — git access refused pending an affiliation link. **Not a defect, and not a blocker.** `paper/` is a complete, verified reconstruction: a fresh clone of this repo builds the identical PDF. |
+| Hugging Face | v1.1.0, private, hash-verified |
+| remaining | supplement assembly; final blind review; Bella's OpenReview actions |
+
+## Reader-facing naming
+
+The manuscript never uses internal condition codes. Raw data keeps them, because
+renaming would break provenance against every manifest and script:
+
+| raw code | manuscript |
+|---|---|
+| A | role-structured |
+| B | role-free |
+| C | structurally enforced |
+| Cp | context-restored structural enforcement |
+
+> **New agent with no prior context?** Read this file top to bottom, then
+> **[Cold-Start Handoff for the Next Agent](#cold-start-handoff-for-the-next-agent)**
+> at the bottom.
+
+---
+
+# Technical detail and provenance
+
+Everything below is the working record: design, claim status, regeneration
+commands, and the cold-start handoff. It uses internal condition codes where
+they match the code and the data.
 
 ## Current Headline Results
 
-All numbers from `analysis/out/FINAL_TABLES_OUTPUT.txt`, frozen
-`2026-09-30T10:09:30`, 11,600 trajectories. Table ids (T*) index that file.
+All numbers from `analysis/out/FINAL_TABLES_OUTPUT.txt`. Omni-MATH frozen
+`2026-09-30T10:09:30`, 11,600 trajectories; SciBench frozen separately,
+2,296 trajectories (see *Actors and Domains*). Table ids (T*) index that
+file. **This section uses internal condition codes** (A/B/C) because they
+match the code and the data; the manuscript uses the semantic names given
+above.
 
 | | gemma-4-31B-it | gpt-oss-120b | Llama-3.3-70B |
 |---|---|---|---|
