@@ -8,9 +8,10 @@
   "script": "analysis/scripts/FINAL_TABLES.py",
   "validation": "scripts/validate_artifact.py -- 181/181 PASS, re-run against the canonical output regenerated 2026-09-30 14:49Z"
  },
- "emitted_utc": "2026-10-02T15:26:45.426940+00:00",
+ "emitted_utc": "2026-10-02T15:34:21.513577+00:00",
  "freeze_commit": "e313dc30c5ecabe107ebdba8b68edf50e87831db",
  "frozen_at": "2026-09-30T10:09:30.201557",
+ "frozen_at_scibench": "2026-09-30T23:26:47.198588+00:00",
  "held_reason": "AAMAS 2027 reviewing is double-blind and the hosting org identifies the research group. A public dataset matching the paper's numbers is a deanonymization path even with no pointer from the paper. The repository is PRIVATE. See RELEASE_PROCEDURE.md.",
  "licensing": "per-source and MIXED; see LICENSES/README.md and LICENSES/registry.json",
  "mixed_licence": "v1.1.0 ships TWO upstreams under TWO licences: omnimath2 = Apache-2.0, scibench = MIT. Neither is applied over the other and the project's own Apache-2.0 covers neither. Filter by benchmark_id. LICENSES/ is the authority; the HF `license:` field can hold only one value.",

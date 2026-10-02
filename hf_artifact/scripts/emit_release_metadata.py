@@ -5,7 +5,14 @@ Every released file gets: sha256, bytes, and (for traces/tables) rows.
 Every released TRACE additionally gets: semantic version, freeze commit,
 timestamp, actor, arm, domain, backend, config version.
 
-Deterministic: sorted walk, sorted keys. A rebuild is byte-identical.
+Deterministic where it matters: sorted walk, sorted keys, and every digest
+derived from file bytes, so CHECKSUMS.txt rebuilds byte-identical. VERSION
+and MANIFEST.json carry `emitted_utc`, a wall-clock stamp that changes on
+every run -- they are excluded from CHECKSUMS.txt for that reason, and a
+diff in those two files means nothing until you ignore that key.
+
+`freeze_commit` is derived from the frozen-data descriptors, NOT from HEAD.
+See data_freeze_commit() for why.
 """
 import hashlib, json, os, subprocess, collections, datetime
 
@@ -63,6 +70,50 @@ V100_TRACE_SHA = {
     "actor3.jsonl":      "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
     "armCp.jsonl":       "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4",
 }
+
+
+# The paths that DEFINE the data freeze. freeze_commit is derived from these
+# and from nothing else.
+FREEZE_PATHS = [
+    "experiments/results/FROZEN/MANIFEST.json",
+    "experiments/results/xdomain/FROZEN_SCIBENCH/MANIFEST.json",
+    "hf_artifact/manifests/FROZEN_MANIFEST.json",
+    "hf_artifact/manifests/FROZEN_MANIFEST_SCIBENCH.json",
+]
+
+
+def data_freeze_commit():
+    """The commit at which the released DATA last changed.
+
+    DEFECT FIXED 2026-10-02. This was `git rev-parse HEAD`, which records
+    whatever commit happened to be checked out when the script ran. A
+    docs-only re-stamp therefore moved freeze_commit from e313dc30 -- the
+    real data freeze -- to that day's manuscript commit, asserting that the
+    data had been frozen at a commit that changed only prose. The digests
+    were unchanged throughout, so nothing detected it; a provenance field
+    filled from the ambient environment is worse than an absent one,
+    because it looks measured.
+
+    Derived instead from the last commit touching the frozen-data
+    descriptors. A re-stamp that changes no data cannot move it.
+    """
+    c = git("log", "-1", "--format=%H", "--", *FREEZE_PATHS)
+    if not c:
+        raise RuntimeError(
+            "cannot derive freeze_commit: git log over FREEZE_PATHS returned "
+            "nothing. Refusing to fall back to HEAD -- that fallback is the "
+            "defect this function exists to prevent.")
+    # Positive control: the paths must actually be tracked. An untracked or
+    # renamed path makes `git log --` return the repository's first commit or
+    # nothing at all, either of which would be a plausible-looking wrong
+    # answer rather than an error.
+    tracked = git("ls-files", "--", *FREEZE_PATHS)
+    missing = [f for f in FREEZE_PATHS if f not in (tracked or "").splitlines()]
+    if missing:
+        raise RuntimeError(
+            f"freeze_commit would be derived from paths git does not track: "
+            f"{missing}. Fix the paths rather than accepting the answer.")
+    return c
 
 
 def trace_facts():
@@ -130,7 +181,7 @@ def main():
             f.write(f"{digests[rel][0]}  {rel}\n")
 
     tf = trace_facts()
-    freeze_commit = git("rev-parse", "HEAD")
+    freeze_commit = data_freeze_commit()
     frozen_at = json.load(open(os.path.join(RAW, "MANIFEST.json")))["frozen_at"]
     frozen_at_scibench = None
     _sbm = os.path.join(RAW, "MANIFEST_SCIBENCH.json")
@@ -193,6 +244,10 @@ def main():
         "emitted_utc": now,
         "freeze_commit": freeze_commit,
         "frozen_at": frozen_at,
+        # Two domains were frozen at different times. VERSION carried only
+        # the Omni-MATH timestamp while MANIFEST.json carried both, so the
+        # provenance file a reader opens first was the less complete one.
+        "frozen_at_scibench": frozen_at_scibench,
         "released_traces": tf,
         "canonical_analysis": {
             "script": "analysis/scripts/FINAL_TABLES.py",

@@ -185,8 +185,8 @@
    "sha256": "0"
   },
   "scripts/emit_release_metadata.py": {
-   "bytes": 11293,
-   "sha256": "2"
+   "bytes": 14000,
+   "sha256": "1"
   },
   "scripts/emit_scibench_config.py": {
    "bytes": 9369,
@@ -210,7 +210,7 @@
   }
  },
  "artifact": "AAMAS2027-Roles",
- "emitted_utc": "2026-10-02T15:26:45.426940+00:00",
+ "emitted_utc": "2026-10-02T15:34:21.513577+00:00",
  "freeze_commit": "e313dc30c5ecabe107ebdba8b68edf50e87831db",
  "frozen_at": "2026-09-30T10:09:30.201557",
  "frozen_at_scibench": "2026-09-30T23:26:47.198588+00:00",
