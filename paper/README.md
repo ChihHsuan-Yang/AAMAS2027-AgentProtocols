@@ -1,10 +1,149 @@
-# AAMAS 2027 manuscript — what is here and how to rebuild it
+# Overleaf handoff — the intended Overleaf project, durably mirrored
+
+## Current title
 
 **From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing**
 
-This directory is the **authoritative manuscript**. The Overleaf project is a
-mirror of it, currently un-pushable (see `../HANDOFF_CURRENT.md`). Everything
-needed to build the PDF is in this directory and tracked in git.
+## Current story
+
+Roles do not primarily improve the first answer. The difference appears
+after an external correctness signal arrives: role-structured teams revise,
+while role-free teams largely resubmit. This behavioral difference becomes a
+recovery difference and replicates for gemma-4 across Omni-MATH and SciBench.
+
+---
+
+## PRIVATE HANDOFF LINKS — DO NOT COMPILE OR COPY INTO THE DOUBLE-BLIND PAPER
+
+| | |
+|---|---|
+| Private GitHub | `https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols` |
+| Overleaf browser project | `https://www.overleaf.com/project/6abae70ebd16e2dc9cdecee6` |
+| Overleaf git remote | `https://git@git.overleaf.com/6abae70ebd16e2dc9cdecee6` |
+| Private HF data artifact | `https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles` |
+
+These appear **only** in this file, which is never compiled. An anonymity
+audit runs on the rendered PDF, not the source, so a link here cannot leak —
+but do not paste one into a `.tex` file.
+
+---
+
+## This directory IS the Overleaf project
+
+Overleaf git access is currently blocked (affiliation link pending; see
+`../HANDOFF_CURRENT.md`). **That is not a blocker and nothing is at risk:**
+`paper/` is a complete, verified mirror.
+
+**Verified 2026-10-02:** a fresh `git clone` of this repository, building
+`paper/` and nothing else, produces a PDF whose extracted text is
+byte-identical to the working copy — exit 0, 9 pages, 0 undefined citations,
+pagecheck pass. If the Overleaf project vanished today it could be rebuilt
+from this directory alone. `/tmp/aamas_ol` is convenience only.
+
+## Build
+
+```bash
+cd paper
+pdflatex -interaction=nonstopmode main.tex
+bibtex main
+pdflatex -interaction=nonstopmode main.tex
+pdflatex -interaction=nonstopmode main.tex
+python3 ../scripts/pagecheck.py main.pdf      # NO PIPE: `| tail` makes $? report tail
+```
+
+`latexmk -pdf main.tex` works on a warm tree but fails from a clean one — it
+schedules bibtex before any `.aux` exists.
+
+## Gates before any freeze
+
+```bash
+python3 ../scripts/pagecheck.py main.pdf              # exit 0: main text ends p8
+grep -a -c "Undefined citation" main.log              # 0
+grep -a -c "multiply defined" main.log                # 0
+grep -n "Arm~\?[ABC]" main.tex sections/*.tex         # empty
+python3 ../scripts/check_terminology_pdfs.py          # exit 0
+shasum -a 256 aamas.cls                               # == ../paper_support/aamas_official/aamas.cls
+pdftotext main.pdf - | grep -icE "argonne|github|huggingface|overleaf"   # 0
+```
+
+## Hand-written vs generated
+
+| path | | |
+|---|---|---|
+| `main.tex` | preamble, venue block, abstract | **hand-written** |
+| `sections/*.tex` | 10 sections | **hand-written** |
+| `refs.bib` | 26 entries, each verified against arXiv or CrossRef | **hand-written** |
+| `tables/*.tex` | 6 result tables | **generated** — see `tables/README.md` |
+| `figures/*.pdf` | figures LaTeX includes | **generated** — see `figures/README.md` |
+| `aamas.cls`, `ACM-Reference-Format.bst` | official IFAAMAS kit | **upstream — never modify** |
+| `TERMINOLOGY.md` | internal condition-code map | internal, never compiled |
+
+## Canonical numeric source
+
+No number in this manuscript is hand-maintained.
+
+```
+experiments/results/FROZEN/                  Omni-MATH, 11,600 rows, sha256-manifested
+experiments/results/xdomain/FROZEN_SCIBENCH/ SciBench, 2,296 rows, sha256 10068f72cfd936d3…
+        |
+        v
+analysis/scripts/FINAL_TABLES.py             the ONLY source of a number
+        |--> analysis/out/FINAL_TABLES_OUTPUT.txt
+        `--> analysis/out/FIGDATA.json
+        |
+        +--> analysis/scripts/mk_tables.py   -> paper/tables/*.tex
+        `--> analysis/scripts/mk_fig*.py     -> figures/*.pdf -> paper/figures/
+```
+
+```bash
+python3 analysis/scripts/FINAL_TABLES.py > analysis/out/FINAL_TABLES_OUTPUT.txt
+python3 analysis/scripts/mk_tables.py          # --check verifies without writing
+python3 analysis/scripts/mk_fig1_story.py
+python3 analysis/scripts/mk_fig2_xdomain.py
+cp figures/fig1_v1_story.pdf figures/fig2_v2_xdomain.pdf paper/figures/
+```
+
+What may be asserted is governed by `../APPROVED_CLAIMS.md`; its DEAD table
+is binding. **After any change to `FINAL_TABLES.py`, re-derive that file
+too** — it has gone stale behind the manuscript twice, and workers are told
+to follow it over their own derivations.
+
+## Where the data live — HF `AgentsSci/AAMAS2027-Roles` **v1.1.0, PRIVATE**
+
+**Omni-MATH** — raw frozen trajectories (`campaign_v2`, `actor3`, `armCp`);
+normalized trajectory table; role messages; evaluator calls; enforcement
+events; prompts and configs; manifests.
+
+**SciBench** — raw frozen trajectories (2,296, over the complete 574-problem
+matched slice); normalized trajectory table; role messages; evaluator calls;
+SciBench-specific prompts and config; SciBench manifest.
+
+**Condition codes.** Raw columns keep `A`/`B`/`C`/`Cp` because renaming would
+break provenance against every manifest and analysis script. The manuscript
+uses semantic names:
+
+| raw | manuscript |
+|---|---|
+| A | role-structured |
+| B | role-free |
+| C | structurally enforced |
+| Cp | context-restored structural enforcement |
+
+The artifact must stay private through review; `scripts/preflight_public.py`
+fails by design until institution-naming rows are sanitized after acceptance.
+
+## Main paper vs supplement
+
+Main paper: `main.tex`, the 10 sections, Figures 1–2, and
+`tables/main_role_collapse.tex`. The other five generated tables are
+supplement-bound — dispositions in `tables/README.md`. **The main paper must
+remain readable without the supplement**; it points, never depends.
+
+## Current state
+
+- **8 main-text pages**, references on 9. Every gate above passes.
+- **Supplement not yet assembled.** That is the one remaining consumer of the
+  five supplement tables.
 
 ---
 
