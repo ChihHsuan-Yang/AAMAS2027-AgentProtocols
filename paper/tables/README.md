@@ -1,37 +1,42 @@
-# Generated tables — index and disposition
+# `paper/tables/` --- generated tables
 
-**Every file here is GENERATED. Do not hand-edit: `mk_tables.py` overwrites.**
+**Every file in this directory is generated. Do not hand-edit one: the next
+run of the generator overwrites it, and a hand-typed number has no
+provenance.**
 
-Regenerate all: `python3 analysis/scripts/mk_tables.py`
-Verify without writing: `python3 analysis/scripts/mk_tables.py --check`
-(exit 1 = stale, exit 2 = a reader-facing condition code leaked in)
+```
+python3 analysis/scripts/mk_tables.py           # regenerate all tables
+python3 analysis/scripts/mk_tables.py --check   # verify, write nothing
+```
 
-## Disposition — where each table goes
+Regeneration is **byte-identical**: the generator stamps the canonical
+input's mtime rather than wall-clock time, so a rerun that changes a file
+means the *data* changed.
 
-No orphans: every table below is explicitly MAIN, SUPPLEMENT, or
-HANDOFF/REFERENCE. If you add one, give it a disposition in the same commit.
+## Disposition --- where each table goes
+
+Every table has a declared disposition, and the last column is **read off
+the two documents' sources at generation time**, not asserted --- so it says
+*which* document inputs each table, and a table inputted by neither is
+reported as an orphan rather than quietly passing.
 
 | file | reader-facing name | disposition | `\input` now? |
 |---|---|---|---|
-| `main_role_collapse.tex` | Functional collapse per actor | **MAIN** | **yes** — `results.tex`, `tab:collapse` |
-| `main_recovery.tex` | First-pass and recovery per actor and condition | **SUPPLEMENT** | no |
-| `scibench_replication.tex` | Cross-domain replication, both actors | **SUPPLEMENT** | no — the main paper carries gemma-4 in Figure 2 and prose |
-| `structural_enforcement.tex` | Enforcement: manipulation check, attrition, both scorings | **SUPPLEMENT** | no |
-| `single_agent_comparison.tex` | Budget-matched single agent, both directions | **SUPPLEMENT** | no |
-| `prereg_endpoints.tex` | Full pre-registered endpoint table incl. P4 and Holm | **SUPPLEMENT** | no |
+| `main_role_collapse.tex` | Functional collapse per actor | **MAIN** | **main paper** |
+| `main_recovery.tex` | First pass and recovery, marginal and paired | **SUPPLEMENT** | **supplement** |
+| `scibench_replication.tex` | Cross-domain replication, both actors | **SUPPLEMENT** | **supplement** |
+| `structural_enforcement.tex` | Enforcement: check, attrition, both scorings | **SUPPLEMENT** | **supplement** |
+| `single_agent_comparison.tex` | Budget-matched single agent, both directions | **SUPPLEMENT** | **supplement** |
+| `prereg_endpoints.tex` | Pre-registered endpoints incl. P4 and Holm | **SUPPLEMENT** | **supplement** |
+| `context_quartiles.tex` | Recovery by context quartile (directional only) | **SUPPLEMENT** | **supplement** |
 
-**Why only one is in the main paper.** The 8-page limit is hard and the
-narrative carries its numbers in prose and two figures. The five supplement
-tables are the complete numeric backing a reviewer may want, and the main
-paper must stay readable **without** them — each is referenced from the text
-by a pointer, never depended on.
+**Why only one is in the main paper.** The page limit is hard and the
+narrative carries its numbers in prose and two figures. The supplement
+tables are the complete numeric backing a reviewer may want; the main paper
+must stay readable **without** them, pointing at them and never depending on
+them.
 
-**The supplement is not yet assembled.** Until it is, these five are
-HANDOFF/REFERENCE in practice: correct, generated, provenance-stamped, and
-waiting for a `supplement/main.tex` to `\input` them. That is the one
-remaining consumer.
-
----
+**The supplement is assembled** at `paper/supplement.tex` --- a second document in this same project, sharing this directory, so a regenerated table lands in both at once and the two cannot disagree. It `\input`s all 6 supplement tables; no table is an orphan.
 
 ## Where the numbers come from
 
@@ -205,30 +210,3 @@ writing. A violation is a hard failure, not a warning.
 | B | role-free |
 | C | structurally enforced |
 | C' | context-restored |
-
----
-
-## INTEGRATION NOTE — label collision, pending (added by Master Agent 2026-10-01)
-
-These generated tables are verified and ready, but **not yet wired into the
-manuscript**. `sections/results.tex` still carries three inline `table`
-environments that collide with them:
-
-| inline in `results.tex` | generated replacement | action |
-|---|---|---|
-| `tab:collapse` (line ~46) | `tables/main_role_collapse.tex` | delete inline, `\input` |
-| `tab:main` (line ~321) | split: `tables/main_recovery.tex` + `tables/single_agent_comparison.tex` | delete inline, `\input` both, remap refs |
-| `tab:armc` (line ~467) | `tables/structural_enforcement.tex` | delete inline, `\input`, remap refs |
-
-Two labels are defined twice right now (`tab:collapse`), which LaTeX reports
-as a warning rather than an error — so **a build can pass while one of the
-two tables is silently unreferenced**. This is why the swap is tracked here
-rather than left to be noticed.
-
-**Not done yet because the writing agent holds `results.tex` exclusively**
-for the compression pass. Doing it concurrently would have produced a
-conflict in the one file whose prose is being rewritten. It is the first
-item after compression lands.
-
-`tables/prereg_endpoints.tex` is destined for the supplement, not the main
-paper.

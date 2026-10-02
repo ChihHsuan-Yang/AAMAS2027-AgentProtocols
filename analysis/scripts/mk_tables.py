@@ -66,6 +66,9 @@ POWER = ROOT / "analysis/scripts/stat_audit_a7_power.py"
 FROZEN_MANIFEST = ROOT / "experiments/results/FROZEN/MANIFEST.json"
 SCIBENCH_MANIFEST = ROOT / "experiments/results/xdomain/FROZEN_SCIBENCH/MANIFEST.json"
 OUTDIR = ROOT / "paper/tables"
+# The supplement is a second document in the SAME project, sharing this
+# tables/ directory, so a regenerated table lands in both at once.
+SUPPLEMENT = ROOT / "paper/supplement.tex"
 
 THIS = "analysis/scripts/mk_tables.py"
 
@@ -925,6 +928,23 @@ Regeneration is **byte-identical**: the generator stamps the canonical
 input's mtime rather than wall-clock time, so a rerun that changes a file
 means the *data* changed.
 
+## Disposition --- where each table goes
+
+Every table has a declared disposition, and the last column is **read off
+the two documents' sources at generation time**, not asserted --- so it says
+*which* document inputs each table, and a table inputted by neither is
+reported as an orphan rather than quietly passing.
+
+{{DISPOSITION_TABLE}}
+
+**Why only one is in the main paper.** The page limit is hard and the
+narrative carries its numbers in prose and two figures. The supplement
+tables are the complete numeric backing a reviewer may want; the main paper
+must stay readable **without** them, pointing at them and never depending on
+them.
+
+{{SUPPLEMENT_STATE}}
+
 ## Where the numbers come from
 
 No result literal is typed into the generator. Every figure is parsed out of
@@ -1103,6 +1123,117 @@ writing. A violation is a hard failure, not a warning.
 # ==========================================================================
 # main
 # ==========================================================================
+# ==========================================================================
+# TABLE 7 -- context-quartile panel (supplement)
+# ==========================================================================
+def t_context(S, pv) -> str:
+    """The full panel behind the one-sentence context caveat in R2.
+
+    The manuscript says the recovery gap 'survives context matching in the
+    lower quartiles --- though in gpt-oss's top quartile the ordering
+    reverses' and sends the reader to the supplement. This is that panel.
+    It is DIRECTIONAL ONLY: quartiles are pooled across conditions, and
+    accumulated context is nearly a function of condition, so the strata are
+    not balanced and this is not a controlled comparison.
+    """
+    rows = {}
+    for line in S["T22"]:
+        mm = re.match(r"^\s*(\S+)\s+(Q[1-4])(?:\s+\((?:low|high)\))?\s+"
+                      r"([0-9.]+|--)\s+\(n=(\d+)\)\s+([0-9.]+|--)\s+\(n=(\d+)\)\s*$",
+                      line)
+        if mm and mm.group(1) in ACTORS:
+            rows[(mm.group(1), mm.group(2))] = mm.groups()[2:]
+    if len(rows) != 12:
+        raise SourceMissing(f"T22: parsed {len(rows)} cells, expected 12 (3 actors x 4 quartiles)")
+
+    QLAB = {"Q1": "Q1 (least context)", "Q2": "Q2", "Q3": "Q3", "Q4": "Q4 (most)"}
+    body = []
+    for a in ACTORS:
+        body.append(f"\\multicolumn{{5}}{{@{{}}l}}{{\\emph{{{ACTOR_LABEL[a]}}}}} \\\\")
+        for q in ("Q1", "Q2", "Q3", "Q4"):
+            rA, nA, rB, nB = need(rows, (a, q), "T22")
+            # A cell the canonical output suppressed for n<8 stays suppressed.
+            cA = "--" if rA == "--" else m(rA)
+            cB = "--" if rB == "--" else m(rB)
+            d = ("--" if "--" in (rA, rB)
+                 else m(f"{float(rA) - float(rB):+.3f}"))
+            body.append(f"\\quad {QLAB[q]} & {cA} & ${nA}$ & {cB} & ${nB}$ & {d} \\\\")
+        body.append("\\addlinespace")
+
+    pre = header("Supplement -- recovery by pooled context quartile", pv,
+                 [f"analysis/out/{CANON.name}  section T22"],
+                 ["DIRECTIONAL ONLY. Quartile cut points are POOLED over both",
+                  "conditions, and accumulated context is nearly a function of",
+                  "condition, so the strata are NOT balanced -- this cannot",
+                  "separate context from condition and must never be described",
+                  "as a controlled comparison or a mediation analysis.",
+                  "Cells with n<8 print '--' in the canonical output and stay",
+                  "suppressed here rather than being recomputed at low n."])
+    return pre + f"""\\begin{{table}}[t]
+\\centering
+\\caption{{\\textbf{{Recovery by pooled accumulated-context quartile}}
+(supplement; the panel behind the context caveat in R2). Denominator is the
+first-pass-wrong population. Context is the total character count of all
+planner, executor and reviewer messages in the trajectory; quartile cut
+points are computed \\emph{{once per actor over both conditions pooled}}.
+\\textbf{{This is directional only.}} Accumulated context is nearly a
+function of condition --- the role-free team talks less because it stops
+reworking --- so the strata are not balanced and this comparison cannot
+separate context from condition. It is reported because it is the obvious
+competing explanation and because \\textbf{{it does not behave uniformly}}:
+the gap survives in the lower quartiles, but in gpt-oss's top quartile the
+ordering reverses.}}
+\\label{{tab:context}}
+\\small
+\\begin{{tabular}}{{@{{}}lccccc@{{}}}}
+\\toprule
+ & \\multicolumn{{2}}{{c}}{{role-structured}}
+ & \\multicolumn{{2}}{{c}}{{role-free}} & \\\\
+\\cmidrule(lr){{2-3}}\\cmidrule(lr){{4-5}}
+context quartile & recovery & $n$ & recovery & $n$ & difference \\\\
+\\midrule
+{chr(10).join(body)}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+"""
+
+
+# Disposition is declared here, beside the registry, so a table cannot be
+# added without one. The "is it \input now?" column is NOT declared -- it is
+# read off paper/sections/*.tex at generation time, because a hand-maintained
+# answer to that question is exactly the kind that goes stale.
+DISPOSITION = {
+    "main_role_collapse.tex": ("MAIN", "Functional collapse per actor"),
+    "main_recovery.tex": ("SUPPLEMENT", "First pass and recovery, marginal and paired"),
+    "scibench_replication.tex": ("SUPPLEMENT", "Cross-domain replication, both actors"),
+    "structural_enforcement.tex": ("SUPPLEMENT", "Enforcement: check, attrition, both scorings"),
+    "single_agent_comparison.tex": ("SUPPLEMENT", "Budget-matched single agent, both directions"),
+    "prereg_endpoints.tex": ("SUPPLEMENT", "Pre-registered endpoints incl. P4 and Holm"),
+    "context_quartiles.tex": ("SUPPLEMENT", "Recovery by context quartile (directional only)"),
+}
+
+
+def inputted() -> dict[str, str]:
+    """Which document actually \inputs each table, right now?
+
+    Read from the sources rather than declared, and it answers WHICH
+    document: a table claiming to be SUPPLEMENT while only the main paper
+    inputs it is a disagreement worth seeing, and so is the reverse.
+    """
+    docs = {
+        "main paper": "".join(
+            f.read_text() for f in
+            sorted((ROOT / "paper/sections").glob("*.tex")) + [ROOT / "paper/main.tex"]),
+        "supplement": (SUPPLEMENT.read_text() if SUPPLEMENT.exists() else ""),
+    }
+    out = {}
+    for name in DISPOSITION:
+        hits = [d for d, src in docs.items() if f"input{{tables/{name[:-4]}}}" in src]
+        out[name] = "**" + " + ".join(hits) + "**" if hits else "no --- orphan"
+    return out
+
+
 TABLES = {
     "main_role_collapse.tex": lambda S, pv: t_collapse(S, pv),
     "main_recovery.tex": lambda S, pv: t_recovery(S, pv),
@@ -1110,6 +1241,7 @@ TABLES = {
     "structural_enforcement.tex": lambda S, pv: t_enforcement(S, pv),
     "single_agent_comparison.tex": lambda S, pv: t_single_agent(S, pv),
     "prereg_endpoints.tex": lambda S, pv: t_prereg(S, pv),
+    "context_quartiles.tex": lambda S, pv: t_context(S, pv),
 }
 
 
@@ -1124,7 +1256,35 @@ def main() -> int:
     OUTDIR.mkdir(parents=True, exist_ok=True)
 
     rendered = {name: fn(S, pv) for name, fn in TABLES.items()}
-    rendered["README.md"] = mk_readme(pv)
+    inp = inputted()
+    lines = ["| file | reader-facing name | disposition | `\\input` now? |",
+             "|---|---|---|---|"]
+    for name in TABLES:
+        if name not in DISPOSITION:
+            print(f"NO DISPOSITION DECLARED for {name} -- add one to DISPOSITION")
+            return 2
+        where, what = DISPOSITION[name]
+        lines.append(f"| `{name}` | {what} | **{where}** | {inp[name]} |")
+    supp = [n for n, (w, _) in DISPOSITION.items() if w == "SUPPLEMENT"]
+    orphans = [n for n in DISPOSITION if inp[n].startswith("no")]
+    if not SUPPLEMENT.exists():
+        state = (f"**The supplement is not yet assembled.** Until it is, those "
+                 f"{len(supp)} tables are correct, generated and "
+                 f"provenance-stamped but have no consumer.")
+    elif orphans:
+        state = ("**The supplement is assembled** at `paper/supplement.tex`, but "
+                 "these tables are inputted by neither document: "
+                 + ", ".join(f"`{o}`" for o in orphans)
+                 + ". An orphan is a defect: input it or delete it.")
+    else:
+        state = (f"**The supplement is assembled** at `paper/supplement.tex` --- a "
+                 f"second document in this same project, sharing this directory, so "
+                 f"a regenerated table lands in both at once and the two cannot "
+                 f"disagree. It `\\input`s all {len(supp)} supplement tables; no "
+                 f"table is an orphan.")
+    rendered["README.md"] = (mk_readme(pv)
+                             .replace("{DISPOSITION_TABLE}", "\n".join(lines))
+                             .replace("{SUPPLEMENT_STATE}", state))
 
     # Terminology gate. A bare internal arm code reaching a reader is a hard
     # failure -- checked on the rendered bytes, not on intent.

@@ -8,7 +8,7 @@
   "script": "analysis/scripts/FINAL_TABLES.py",
   "validation": "scripts/validate_artifact.py -- 181/181 PASS, re-run against the canonical output regenerated 2026-09-30 14:49Z"
  },
- "emitted_utc": "2026-10-01T00:38:47.757802+00:00",
+ "emitted_utc": "2026-10-02T15:26:45.426940+00:00",
  "freeze_commit": "e313dc30c5ecabe107ebdba8b68edf50e87831db",
  "frozen_at": "2026-09-30T10:09:30.201557",
  "held_reason": "AAMAS 2027 reviewing is double-blind and the hosting org identifies the research group. A public dataset matching the paper's numbers is a deanonymization path even with no pointer from the paper. The repository is PRIVATE. See RELEASE_PROCEDURE.md.",

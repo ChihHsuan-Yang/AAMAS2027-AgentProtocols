@@ -1,0 +1,72 @@
+% ==========================================================================
+% Supplement -- recovery by pooled context quartile
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  section T22
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : 4f157fe9ff37c759844393e8af22c61e5b14875a98e4dee870a1a57c5451f036
+% generation date   : 2026-10-01  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% DIRECTIONAL ONLY. Quartile cut points are POOLED over both
+% conditions, and accumulated context is nearly a function of
+% condition, so the strata are NOT balanced -- this cannot
+% separate context from condition and must never be described
+% as a controlled comparison or a mediation analysis.
+% Cells with n<8 print '--' in the canonical output and stay
+% suppressed here rather than being recomputed at low n.
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table}[t]
+\centering
+\caption{\textbf{Recovery by pooled accumulated-context quartile}
+(supplement; the panel behind the context caveat in R2). Denominator is the
+first-pass-wrong population. Context is the total character count of all
+planner, executor and reviewer messages in the trajectory; quartile cut
+points are computed \emph{once per actor over both conditions pooled}.
+\textbf{This is directional only.} Accumulated context is nearly a
+function of condition --- the role-free team talks less because it stops
+reworking --- so the strata are not balanced and this comparison cannot
+separate context from condition. It is reported because it is the obvious
+competing explanation and because \textbf{it does not behave uniformly}:
+the gap survives in the lower quartiles, but in gpt-oss's top quartile the
+ordering reverses.}
+\label{tab:context}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{role-structured}
+ & \multicolumn{2}{c}{role-free} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+context quartile & recovery & $n$ & recovery & $n$ & difference \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{gemma-4-31B}} \\
+\quad Q1 (least context) & $0.662$ & $65$ & $0.151$ & $93$ & $+0.511$ \\
+\quad Q2 & $0.280$ & $50$ & $0.009$ & $108$ & $+0.271$ \\
+\quad Q3 & $0.047$ & $85$ & $0.014$ & $73$ & $+0.033$ \\
+\quad Q4 (most) & $0.078$ & $116$ & $0.000$ & $42$ & $+0.078$ \\
+\addlinespace
+\multicolumn{5}{@{}l}{\emph{gpt-oss-120b}} \\
+\quad Q1 (least context) & $0.923$ & $13$ & $0.258$ & $198$ & $+0.665$ \\
+\quad Q2 & $0.656$ & $128$ & $0.293$ & $82$ & $+0.363$ \\
+\quad Q3 & $0.262$ & $164$ & $0.191$ & $47$ & $+0.071$ \\
+\quad Q4 (most) & $0.070$ & $158$ & $0.189$ & $53$ & ${-}0.119$ \\
+\addlinespace
+\multicolumn{5}{@{}l}{\emph{Llama-3.3-70B}} \\
+\quad Q1 (least context) & $0.100$ & $40$ & $0.031$ & $96$ & $+0.069$ \\
+\quad Q2 & $0.000$ & $86$ & $0.000$ & $50$ & $+0.000$ \\
+\quad Q3 & $0.000$ & $103$ & $0.030$ & $33$ & ${-}0.030$ \\
+\quad Q4 (most) & $0.000$ & $47$ & $0.000$ & $89$ & $+0.000$ \\
+\addlinespace
+\bottomrule
+\end{tabular}
+\end{table}

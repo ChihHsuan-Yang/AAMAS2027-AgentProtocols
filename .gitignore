@@ -30,3 +30,7 @@ paper/main.pdf
 # (AgentsSci/AAMAS2027-Roles, PRIVATE) and in FROZEN/, not in git.
 # Derived parquet/docs ARE tracked; raw/ is not.
 hf_artifact/raw/
+paper/supplement.aux
+paper/supplement.log
+paper/supplement.out
+paper/supplement.blg

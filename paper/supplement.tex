@@ -1,0 +1,208 @@
+%==============================================================================
+% AAMAS 2027 submission -- SUPPLEMENTARY MATERIAL
+%
+% Deliberately a SECOND DOCUMENT INSIDE THE SAME PROJECT, not a separate
+% project and not an appendix to main.tex:
+%   * it shares aamas.cls, refs.bib and tables/ with the main paper, so a
+%     regenerated table lands in both at once and the two can never disagree;
+%   * it stays out of main.tex's page budget, which is measured by
+%     scripts/pagecheck.py on main.pdf alone.
+%
+% Build:  pdflatex supplement && bibtex supplement && pdflatex supplement x2
+%
+% ANONYMOUS. Same rule as the main paper: no author, institution, repository
+% or URL. Run the anonymity gate on THIS pdf too, not only main.pdf.
+%
+% THE MAIN PAPER MUST REMAIN READABLE WITHOUT THIS FILE. Everything here is
+% backing for a claim the main text already states; nothing here is load-
+% bearing for the argument. If you find yourself moving an argument step into
+% this document, move it back.
+%==============================================================================
+\documentclass[sigconf,anonymous]{aamas}
+
+\setcopyright{ifaamas}
+\acmConference[AAMAS '27]{Proc.\@ of the 26th International Conference
+on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{May 2027}
+{Hanoi, Vietnam}{Anonymous (eds.)}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{}
+\acmPrice{}
+\acmISBN{}
+
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\microtypesetup{protrusion=false}
+
+\newcommand{\Pone}{\textsf{P1a}}
+\newcommand{\PER}{\textsc{PER}}
+
+\begin{document}
+
+\title{Supplementary Material\\
+\large From Feedback to Revision: When Multi-Agent Roles Become
+Load-Bearing}
+
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+  \country{}
+}
+
+\maketitle
+
+\section*{What this document is}
+
+The main paper states every claim it makes and is complete without this
+file. What it cannot carry, at eight pages, is the full numeric backing
+behind five of its sentences. That backing is here, one table per sentence,
+each reproducing the pointer the main text gives.
+
+Every table below is \textbf{generated} from one hash-manifested frozen
+snapshot by a single script; no number in either document is hand-typed.
+Each table carries its own provenance header in the source. The tables are
+reproduced here unchanged --- same files, same bytes --- so a number cannot
+drift between the paper and its supplement.
+
+\paragraph{Reading the denominators.} Two populations recur and are not
+interchangeable. The \emph{marginal} population is every trajectory in a
+cell, with each condition on its own denominator. The \emph{paired}
+population is only those problems first-pass wrong under \emph{both}
+conditions, on one shared denominator; that is the actual test, and it is
+what every reported $p$-value is computed on (exact McNemar on discordant
+pairs). Where a table shows both, they are labeled and must not be read
+across. Conflating them has already produced one error in this project.
+
+\paragraph{Recovery denominator.} Throughout, recovery is conditioned on a
+recorded \emph{first} evaluator verdict of incorrect --- including
+trajectories that later died in regeneration, which score as failures under
+the pre-registered rule. Excluding those was a real defect in an earlier
+analysis and it moved results materially; it is noted here so a reader
+recomputing from the released data gets the same denominator.
+
+\section{The pre-registered endpoints in full}
+
+The main paper reports, in its Intervention section, that the pre-registered
+primary endpoint P4 --- the actor~$\times$~intervention interaction on
+accuracy --- is null in all three pairwise difference-in-differences, and
+that the \Pone{} manipulation objective failed. Table~\ref{tab:prereg} is
+the complete endpoint table promised there: all five endpoints as written
+before any intervention data existed, what each one returned, and the
+Holm-corrected verdict.
+
+Two things in it deserve to be read rather than skimmed. First, only one of
+the three P4 contrasts is an \emph{informative} null: the two involving
+Llama-3.3 cannot detect an interaction of any plausible size at their
+sample size, and are uninformative rather than evidence of absence.
+Second, the contrast this paper is organized around --- role-structured
+versus role-free --- was pre-registered as \textbf{secondary and
+exploratory}. It is labeled post-hoc in the main paper and is labeled
+post-hoc here.
+
+\input{tables/prereg_endpoints}
+
+\clearpage
+\section{First pass and recovery, both populations}
+
+Table~\ref{tab:recovery} gives the per-actor numbers behind the main
+paper's central result, in both populations, so that the marginal rates and
+the paired test can be checked against each other.
+
+The gemma-4 row is the one the paper's headline rests on. Its first-pass
+rates are equal to four decimal places, which is why the recovery contrast
+in that actor is an exact reparameterization of the randomized
+intent-to-treat effect rather than a conditional on a post-treatment
+variable: with equal first-pass rates the two populations coincide in
+expectation, and the role-free team does not enter recovery already behind.
+That argument does \emph{not} transfer to the other two actors, and the
+paper does not make it there.
+
+\input{tables/main_recovery}
+
+\clearpage
+\section{Cross-domain replication}
+
+Table~\ref{tab:scibench} is the SciBench replication in full. The main
+paper carries gemma-4 in Figure~2 and in prose; this is both halves with
+their denominators.
+
+The domain contract is \emph{not} byte-identical to Omni-MATH. SciBench
+problems are free-response college science with units, so the answer
+normalizer and the problem framing are domain-adapted; the role contracts,
+topology, budget, decoding and evaluator protocol are unchanged. This is a
+replication of the \emph{mechanism} under a matched protocol, not a rerun
+of identical prompts, and the main text says so.
+
+\input{tables/scibench_replication}
+
+\clearpage
+\section{Structural enforcement: both scorings, and the attrition that
+separates them}
+
+The main paper reports that enforcement un-freezes the answer in all three
+actors but does not become end-to-end accuracy, and that the apparent
+accuracy benefit is survivorship. Table~\ref{tab:enforcement} is the evidence
+for both halves: the manipulation check, the one-sided attrition, and the
+same accuracy column under both scorings with intervals.
+
+This is the table behind the sentence in the main text that the enforced
+recovery and first-pass rates \textbf{do not compose} into the accuracy
+column. They cannot: trajectories that never finish are never graded, so
+the three quantities do not share a denominator and the
+$(1-\text{first-pass})\times\text{recovery}$ identity does not hold. The
+pre-registration fixed in advance that unparseable trajectories count as
+incorrect rather than being dropped, and that rule is what makes the
+as-graded reading survivorship rather than a finding.
+
+\input{tables/structural_enforcement}
+
+\clearpage
+\section{The single-agent comparator}
+
+Table~\ref{tab:singleagent} is the budget-matched single-agent reference. The
+main paper uses it in one direction only --- as a guard against reading
+``collapse costs nothing'' as ``the system was one agent all along'' --- and
+this table is why that restraint is necessary.
+
+The comparator comes from a \textbf{previously released corpus whose two
+actor arms were built from different source commits}. Each direction within
+an actor is therefore a sound guard, and \emph{the gap between actors is
+not}. The result cuts both ways: a collapsed gpt-oss team beats its own
+single agent, while gemma-4's is significantly worse in both conditions.
+Neither ``multi-agent systems are just single agents'' nor ``more agents
+help'' survives contact with it.
+
+\input{tables/single_agent_comparison}
+
+\clearpage
+\section{Accumulated context as a competing explanation}
+
+Accumulated context is the obvious competing cause of recovery failure, and
+Table~\ref{tab:context} is the full panel promised in the main text.
+
+It is reported with a caveat that is not decoration. Quartile cut points
+are computed over both conditions \emph{pooled}, and accumulated context is
+nearly a function of condition --- the role-free team accumulates less
+because it stops reworking. The strata are therefore not balanced, and this
+comparison cannot separate context from condition. It is
+\textbf{directional only}, and it is included because it does not behave
+uniformly: the gap survives in the lower quartiles, but in gpt-oss's top
+quartile the ordering reverses. A stratification that had come out cleanly
+everywhere would have been weaker evidence, not stronger, because it could
+not have failed.
+
+\input{tables/context_quartiles}
+
+\clearpage
+\section{AI assistance}
+
+This work used LLM agents substantially in hypothesis formation,
+experimental design, execution, analysis and writing, under human direction
+and approval. The full disclosure --- tools and versions as retained, what
+the agents did at each stage, what the human author directed and approved,
+which prompts are released and which were not retained, and the
+instrumentation defects this process found in its own work --- accompanies
+this submission as a separate anonymous document.
+
+\end{document}

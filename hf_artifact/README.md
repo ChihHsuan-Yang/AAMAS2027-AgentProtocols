@@ -46,64 +46,105 @@ configs:
      URLs, or a citation block until the paper is accepted.
      See RELEASE_PROCEDURE.md. -->
 
-A controlled study of whether **role structure** in a multi-agent LLM pipeline
-is load-bearing. **13,896 trajectories across two domains** — 11,600 on
-competition mathematics (Omni-MATH-2, 1,600 problems, 3 actors, 4 conditions)
-and **2,296 on college chemistry and physics (SciBench, 574 problems, 2 actors,
-2 conditions, added in v1.1.0)** — with an external oracle grader in the loop.
+> Roles do not primarily improve the first answer. The difference appears after
+> an external correctness signal arrives: role-structured teams revise, while
+> role-free teams largely resubmit. This behavioral difference becomes a
+> recovery difference, and replicates for gemma-4 across Omni-MATH and SciBench.
+
+**13,896 trajectories across two domains** — 11,600 on competition mathematics
+(Omni-MATH-2, 1,600 problems, 3 actors, 4 conditions) and **2,296 on college
+chemistry and physics (SciBench, 574 problems, 2 actors, 2 conditions, added in
+v1.1.0)** — with an external oracle grader in the loop.
 
 This release ships **both layers**: the raw frozen traces as exact bytes, and a
 normalized analysis-ready parquet layer derived from them.
 
-> **Two domains, two licences, two Arm A contracts.** Omni-MATH-2 content is
-> **Apache-2.0**; SciBench content is **MIT**. And **Arm A's prompt is NOT the
-> same in both domains** — it was deliberately adapted. Arm B *is* byte-identical.
-> Read *Cross-domain (v1.1.0)* before pooling anything.
+> **Two domains, two licences, two role-structured contracts.** Omni-MATH-2
+> content is **Apache-2.0**; SciBench content is **MIT**. And **the
+> role-structured prompt is NOT the same in both domains** — it was deliberately
+> adapted. The role-free prompt *is* byte-identical. Read
+> *Cross-domain (v1.1.0)* before pooling anything.
 
 **Anonymous during review.** Author, institution, and code repository are
 withheld and will be added on acceptance.
 
-## The finding, in one sentence
+## Condition names: the data says `A`/`B`/`C`/`Cp`, the paper says words
 
-Role structure is not load-bearing for generating a first answer, but it can be
-load-bearing for **repairing** an initially wrong one.
+**Read this before writing any filter.** The accompanying manuscript names
+conditions by what they *are*; the released data keeps the short internal codes
+it was collected under. They are the same four conditions under two
+vocabularies:
 
-Removing roles leaves first-pass accuracy unchanged (and for one actor slightly
-improves it) while degrading recovery from a wrong first answer — for the
-clearest actor, 0.222 → 0.051. The mechanism is not premature stopping and not
-less feedback: every arm holds the same 6 deliberation cycles by construction,
-and the role-free arm receives *more* oracle feedback. It is failure to produce
-a distinct second candidate. Hard enforcement restores organization and
-un-freezes answers, but does **not** improve final accuracy, because it is
-brittle (8–17% attrition).
+| raw column value | condition |
+|---|---|
+| `A` | **role-structured** |
+| `B` | **role-free** |
+| `C` | **structurally enforced** |
+| `Cp` | **context-restored structural enforcement** |
+
+**The raw columns deliberately keep `A`/`B`/`C`/`Cp`.** Renaming them would
+break provenance against every manifest, checksum and analysis script in this
+release — `manifests/cell_census*.json`, `raw/MANIFEST*.json`,
+`scripts/validate_artifact.py` and `scripts/validate_scibench.py` all key on
+the letters, and the frozen trace bytes cannot be rewritten without
+invalidating their published sha256. So the mismatch between the paper's words
+and the data's codes is **intended**, not an inconsistency: filter on `arm ==
+"A"`, and read it as *role-structured*.
+
+One spelling note: the fourth condition is written `Cp` in the data (and
+`CP_*` in prompt keys) but renders as **C′** in prose, including in this card.
+Same condition.
+
+## The finding
+
+Roles are not primarily what produces a good first answer. They are what
+determines whether a team can *change its mind* once told it is wrong.
+
+First-pass accuracy is unchanged when roles are removed (and for one actor
+slightly improves). What changes is what happens after the oracle returns a
+verdict: the role-structured team revises, the role-free team resubmits the
+answer it already had. Recovery from a wrong first answer falls — for the
+clearest actor, 0.222 → 0.051 — with the frozen-answer rate going the other way,
+0.288 → 0.845.
+
+The mechanism is not premature stopping and not less feedback: every condition
+holds the same 6 deliberation cycles by construction, and the role-free
+condition receives *more* oracle feedback. It is failure to produce a distinct
+second candidate. Structural enforcement restores organization and un-freezes
+answers, but does **not** improve final accuracy, because it is brittle
+(8–17% attrition).
 
 The effect is **actor-dependent** and the cells where it does not replicate are
 released intact.
 
 ## Design
 
-| arm | condition |
-|---|---|
-| **A** | full role structure — distinct planner / executor / reviewer prompts |
-| **B** | role structure removed — three agents, one generic prompt |
-| **C** | hard enforcement — role-boundary violations rejected and regenerated |
-| **C′** | context control at fixed enforcement (C with `shared_history` restored) |
+| raw `arm` | condition | what it is |
+|---|---|---|
+| **`A`** | **role-structured** | distinct planner / executor / reviewer prompts |
+| **`B`** | **role-free** | three agents, one generic prompt |
+| **`C`** | **structurally enforced** | role-boundary violations rejected and regenerated |
+| **`Cp`** (C′) | **context-restored structural enforcement** | `C` with `shared_history` restored |
 
-| actor model | A | B | C | C′ |
+Trajectory counts per cell (column headers are the raw `arm` codes):
+
+| actor model | `A` role-structured | `B` role-free | `C` structurally enforced | `Cp` context-restored |
 |---|---|---|---|---|
 | `google/gemma-4-31B-it` | 1,600 | 1,600 | 1,600 | 400 |
 | `openai/gpt-oss-120b` | 1,600 | 1,600 | 1,600 | 400 |
 | `meta-llama/Llama-3.3-70B-Instruct` | 400 | 400 | 400 | — |
 
-**Second domain — SciBench (v1.1.0), Arms A and B only:**
+**Second domain — SciBench (v1.1.0), role-structured and role-free only
+(`arm` ∈ {`A`, `B`}):**
 
-| actor model | A | B | C | C′ |
+| actor model | `A` role-structured | `B` role-free | `C` structurally enforced | `Cp` context-restored |
 |---|---|---|---|---|
 | `google/gemma-4-31B-it` | 574 | 574 | — | — |
 | `openai/gpt-oss-120b` | 574 | 574 | — | — |
 
-There is **no Arm C in SciBench**, so there is **no `enforcement_events` table
-and no adjudication study for that domain**. Those remain Omni-MATH-only.
+There is **no structurally-enforced condition in SciBench** (no `arm == "C"`),
+so there is **no `enforcement_events` table and no adjudication study for that
+domain**. Those remain Omni-MATH-only.
 
 Grader: `openai/gpt-oss-120b`, temperature 0 — **the same checkpoint as one of
 the three actors** — in both domains. Budget identical across arms *and across
@@ -122,7 +163,7 @@ about role manipulation, so the data is not interpretable without them.
 | `data/trajectories.parquet` | 11,600 rows — one per trajectory; the main results tables |
 | `data/role_messages.parquet` | 83,320 rows — one per role message; collapse, duplication, frozen-answer analyses |
 | `data/evaluator_calls.parquet` | 17,486 rows — one per oracle grading; the noise-floor analysis |
-| `data/enforcement_events.parquet` | 29,796 rows — Arm C/C′ validation attempts, **3,489** rejections, regenerations |
+| `data/enforcement_events.parquet` | 29,796 rows — validation attempts in the enforced conditions (`C`/`Cp`), **3,489** rejections, regenerations |
 | `data/adjudication.parquet` | 513 rows — 171 items × up to 3 reps of model adjudication |
 | **`data/scibench/trajectories.parquet`** | **2,296 rows** — SciBench, same 41 columns as the Omni table |
 | **`data/scibench/role_messages.parquet`** | **13,500 rows** — SciBench role messages |
@@ -152,20 +193,33 @@ files as well.
 import pandas as pd
 tr = pd.read_parquet("data/trajectories.parquet")
 
+# NB: the `arm` column holds the internal codes, not the paper's words.
+CONDITION = {"A": "role-structured", "B": "role-free",
+             "C": "structurally enforced", "Cp": "context-restored"}
+
 for arm in ["A", "B"]:
     s = tr[(tr.actor_model == "gemma-4-31B-it") & (tr.arm == arm)]
     g, w = s[s.graded], s[s.first_pass_wrong]
-    print(arm,
+    print("%-18s" % CONDITION[arm],
           "first-pass %.3f" % g.first_pass_correct.mean(),
           "recovery %.3f"   % w.final_correct_prereg.mean(),
           "frozen %.3f"     % w.frozen_answer.mean())
-# A first-pass 0.802 recovery 0.222 frozen 0.288
-# B first-pass 0.802 recovery 0.051 frozen 0.845
+# role-structured    first-pass 0.802 recovery 0.222 frozen 0.288
+# role-free          first-pass 0.802 recovery 0.051 frozen 0.845
 ```
+
+The two conditions answer the first question equally well (0.802 vs 0.802) and
+differ entirely in what they do afterwards: `recovery` falls 0.222 → 0.051
+while `frozen` — the rate at which the team resubmits the answer it already
+had — rises 0.288 → 0.845. That contrast is the dataset's reason for existing.
 
 ## Cross-domain (v1.1.0) — SciBench, and what does **not** transfer
 
-### The Arm A contract is NOT the same in both domains. Read this first.
+### The role-structured contract is NOT the same in both domains. Read this first.
+
+Prompt keys carry the same internal letters as the `arm` column: `A_*` is the
+**role-structured** condition, `B_*` the **role-free** one, `C_*`/`CP_*` the
+enforced ones.
 
 | prompt | Omni-MATH-2 vs SciBench |
 |---|---|
@@ -182,28 +236,29 @@ for arm in ["A", "B"]:
 `prompts_scibench.json._COMPARISON_TO_OMNIMATH` gives a per-prompt
 identical/differs flag with sha256 prefixes so you can check this yourself.
 
-**Why adapt rather than reuse.** Arm B's generic prompt contains no domain
-language at all. Leaving Arm A's math-specific wording ("competition-level
-mathematics", "olympiad-style") in a chemistry benchmark would make the arms
-differ in **two** ways — role structure *and* domain fit — and the domain-fit
-difference runs **against** Arm A. Adapting A restores a single-variable
-manipulation. Every structural clause of A is preserved (role separation,
-DELTA, required structure, Diagnosis/Fix Instruction, answer ownership,
-routing tags); only domain nouns and the answer-form enumeration change.
+**Why adapt rather than reuse.** The role-free prompt contains no domain
+language at all. Leaving the role-structured condition's math-specific wording
+("competition-level mathematics", "olympiad-style") in a chemistry benchmark
+would make the conditions differ in **two** ways — role structure *and* domain
+fit — and the domain-fit difference runs **against** the role-structured arm.
+Adapting it restores a single-variable manipulation. Every structural clause is
+preserved (role separation, DELTA, required structure, Diagnosis/Fix
+Instruction, answer ownership, routing tags); only domain nouns and the
+answer-form enumeration change.
 
 **Consequence — do not compute these across domains.** P1a and every
 clause-specific role-fidelity metric. Scoring SciBench agents against
 Omni-MATH's clauses would score them against instructions they never received.
-The evaluator adaptation is **common mode**: byte-identical across arms A and B
-*within* SciBench, so it cannot manufacture an A-vs-B difference — it only sets
-the difficulty floor.
+The evaluator adaptation is **common mode**: byte-identical across the
+role-structured and role-free conditions *within* SciBench, so it cannot
+manufacture a difference between them — it only sets the difficulty floor.
 
 ### What replicates
 
-Paired on problems first-pass-wrong under **both** arms — the same population
-the Omni-MATH headline uses:
+Paired on problems first-pass-wrong under **both** conditions — the same
+population the Omni-MATH headline uses:
 
-| domain | actor | n | A recovers only | B recovers only | B−A | exact McNemar p |
+| domain | actor | n | role-structured (`A`) recovers only | role-free (`B`) recovers only | `B`−`A` | exact McNemar p |
 |---|---|---|---|---|---|---|
 | Omni-MATH | gemma-4 | 237 | 37 | 3 | −0.1435 | 1.95e-08 |
 | **SciBench** | **gemma-4** | **99** | **21** | **2** | **−0.1919** | **6.60e-05** |
@@ -217,7 +272,8 @@ ours. The conclusion is identical under all three — the effects are
 indistinguishable — and none of them is evidence that the effects are the
 **same**, only that this comparison cannot separate them.* First-pass accuracy moves by **exactly
 0.000** for gemma (0.794 vs 0.794), as in Omni-MATH. Functional collapse goes
-0.000 → 0.998. Arm B spends **0.00** cycles revising and never once declines.
+0.000 → 0.998. The role-free condition spends **0.00** cycles revising and never
+once declines — it resubmits rather than revises, exactly as in Omni-MATH.
 
 ### What must NOT be claimed from this
 
@@ -343,7 +399,7 @@ A consumer who does not read this section will trip over them. **F13 and F18
 reproduce in the second domain**, and the grader noise floor is
 **domain-specific** — each has its own subsection below.
 
-### F13 — visible text is truncated relative to hidden reasoning (gpt-oss, Arm B)
+### F13 — visible text is truncated relative to hidden reasoning (gpt-oss, role-free `B`)
 
 The runner logged `message.content` and fell back to `message.reasoning` **only
 when content was empty**. A response with short content and a long hidden
@@ -455,7 +511,7 @@ Two things are *better* here: there are **no mangled LaTeX escapes** (0 of
 Omni-MATH), and **no attrition at all** — 0 hard failures, 0 unjudged, all four
 cells exactly 574.
 
-### Arm C attrition — 8.0 / 9.9 / 17.0%, and it is one-sided
+### Structural-enforcement (`C`) attrition — 8.0 / 9.9 / 17.0%, and it is one-sided
 
 Regeneration-exhaustion attrition is **0.080** (gemma-4), **0.099** (gpt-oss),
 **0.170** (Llama-3.3), against 0.000–0.025 in Arms A/B.
