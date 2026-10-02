@@ -30,7 +30,7 @@ Last successful Overleaf push: `19f5d6e53c81` (2026-10-01, pre-rewrite).
 | | |
 |---|---|
 | staging clone | `/tmp/aamas_ol` — the real Overleaf clone, remote intact |
-| commit sitting there, unpushed | **`6ddae970a8ab`** |
+| commit sitting there, unpushed | **`1d5883811cfc`** (supersedes 6ddae970a8ab) |
 | contents | `main.tex`, all 9 sections, `tables/` (7 files), `figures/fig1_v1_story.pdf`, `figures/fig2_v2_xdomain.pdf` |
 | canonical copy in GitHub | `paper/` at HEAD |
 
@@ -73,34 +73,37 @@ python3 ~/Documents/note/projects/AAMAS2027-AgentProtocols/scripts/pagecheck.py 
 
 ## STATE OF THE MANUSCRIPT RIGHT NOW
 
-**This is an intermediate draft and is deliberately over the page limit.**
+**This draft is at the page limit and passes every submission gate.**
 
 | | |
 |---|---|
 | title | From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing |
-| pages | **11** — the expanded story draft |
-| 8-page compression | **IN FLIGHT** |
-| `latexmk` | exit 0, 0 undefined citations |
-| arm labels in prose | **0** |
+| pages | **8 main text + references on 9** — compression COMPLETE |
+| `pagecheck` | EXIT 0, positive-controlled on this build |
+| `latexmk` | exit 0, 0 undefined citations, 0 duplicate labels |
+| arm labels in prose / figures | **0 / 0** |
 | venue | Hanoi, Vietnam |
+| `aamas.cls` | byte-identical to the official kit |
 
-Bella's instruction was that story quality precedes compression; the
-expansion pass deliberately overshot so the argument could be written
-properly, and the compression pass is cutting it back using the writing
-agent's own ranked cut list. **Do not push the expanded draft believing it
-is submission-ready**, and do not panic at 11 pages.
+Bella's instruction was that story quality precedes compression. The
+expansion pass deliberately overshot (11 pages) so the argument could be
+written properly; the compression pass then cut it to 8 using the writing
+agent's own ranked cut list, ending with one decisive 165-word condensation
+once I measured that small cuts were not moving a Conclusion that reflows as
+one block.
 
 ---
 
 ## KNOWN OPEN ITEM BEFORE THE NEXT FREEZE
 
-**Table label collision.** `sections/results.tex` still carries three inline
-`table` environments that collide with the generated set in `paper/tables/`.
-`tab:collapse` is currently defined **twice** — LaTeX reports that as a
-*warning*, not an error, so a build can pass while one table is silently
-unreferenced. The remapping is specified in `paper/tables/README.md`.
-Deferred only because the writing agent holds `results.tex` exclusively for
-compression. **First item once compression lands.**
+**RESOLVED 2026-10-02.** The inline `tab:collapse` is replaced by
+`\input{tables/main_role_collapse}`; duplicate-label warnings are 0 and the
+table in the paper is generated, so its numbers carry provenance. The other
+two inline tables had already been removed by the compression pass.
+
+**Still open:** the remaining five generated tables in `paper/tables/` are
+not yet `\input` anywhere — they are destined for the supplement, which is
+not yet built. See `paper/tables/README.md` for which goes where.
 
 ---
 
