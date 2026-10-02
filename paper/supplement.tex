@@ -127,12 +127,26 @@ Table~\ref{tab:scibench} is the SciBench replication in full. The main
 paper carries gemma-4 in Figure~2 and in prose; this is both halves with
 their denominators.
 
-The domain contract is \emph{not} byte-identical to Omni-MATH. SciBench
-problems are free-response college science with units, so the answer
-normalizer and the problem framing are domain-adapted; the role contracts,
-topology, budget, decoding and evaluator protocol are unchanged. This is a
-replication of the \emph{mechanism} under a matched protocol, not a rerun
-of identical prompts, and the main text says so.
+The domain contract is \emph{not} byte-identical to Omni-MATH, and the
+released prompt files make the difference checkable: of the $16$ prompts
+the two domains share, $11$ are byte-identical and $5$ differ. The five are
+the four role-structured Planner/Executor/Reviewer prompts and the
+\textbf{evaluator} prompt, which must ask for scientific rather than
+mathematical equivalence. \textbf{All four role-free prompts are
+byte-identical across domains}, as are all six structurally enforced ones.
+
+That asymmetry is worth stating plainly rather than leaving to a diff: the
+condition this paper argues is \emph{better} is the one whose prompts were
+rewritten, and the condition it argues is worse ran identical text in both
+domains. The rewrite is domain wording --- ``algebraic manipulation or
+numerical calculation'' where Omni-MATH said ``symbolic manipulation or
+arithmetic'' --- and the structural clauses are unchanged. A reader who
+suspects the adaptation is doing the work can check the released files;
+that is why they are released.
+
+Topology, budget, decoding, retry policy and the evaluator protocol are
+unchanged. This is a replication of the \emph{mechanism} under a matched
+protocol, not a rerun of identical prompts.
 
 \input{tables/scibench_replication}
 

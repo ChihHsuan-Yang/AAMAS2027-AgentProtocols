@@ -41,7 +41,9 @@ single-agent comparator is a directional guard only
 labor, but the recovery result is carried by gemma-4 alone}: one clean
 actor, one \PER{} organization, an evaluator that is itself one of the
 actor models under study, and a second domain
-(\S\ref{subsec:xdomain}) covering gemma-4 only with a domain-adapted
-rather than byte-identical prompt. Finally, the functional measure
+(\S\ref{subsec:xdomain}) covering gemma-4 only, where the role-free prompt
+is byte-identical but the role-structured and \emph{evaluator} prompts are
+domain-adapted --- so the replication is of the mechanism under a matched
+protocol, not a rerun of identical text. Finally, the functional measure
 detects that every agent asserted an answer, not that their reasoning was
 the same.

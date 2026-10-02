@@ -266,9 +266,10 @@ whether the split belongs to the organization or to the benchmark. Both
 halves reappear on \textbf{SciBench} --- the complete $574$-problem
 matched slice of free-response college science, $2{,}296$ trajectories,
 frozen separately (Figure~\ref{fig:xdomain}). The role-free prompt is
-byte-identical to its Omni-MATH form and the role-structured one keeps the
-same structural contract with domain wording adapted, so no
-clause-specific metric crosses domains. For \textbf{gemma-4} first-pass
+byte-identical to its Omni-MATH form; the role-structured one keeps the
+same structural contract with domain wording adapted, as does the
+evaluator, which must grade scientific rather than mathematical
+equivalence --- so no clause-specific metric crosses domains. For \textbf{gemma-4} first-pass
 accuracy is flat and paired recovery falls $0.212 \rightarrow 0.020$
 ($n=99$, $p=6.6\times10^{-5}$), not distinguishable in size from
 Omni-MATH. \textbf{gpt-oss}'s cell is underpowered (power $0.06$--$0.45$
