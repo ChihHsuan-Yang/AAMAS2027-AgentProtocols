@@ -20,35 +20,17 @@ explains why the clause that matters is a \textsc{must not}, and why
 enforcement --- the same prohibition moved to the interface --- moves the
 same quantity.
 
-\paragraph{What a role diagram is evidence of.} Both interventions changed
-the realized organization dramatically and final accuracy barely at all,
-in opposite directions. A diagram is a hypothesis about a system, and
-task-outcome evaluation --- the only evaluation most multi-agent systems
-receive --- cannot test it: an aggregate score averages a stage where the
-organization is idle with one where it does all its work, dominated by
-whichever stage has more mass. In our two stronger actors most problems
-are answered on the first pass ($0.802$ and $0.710$), so most of each
-accuracy number is generation, precisely the stage where the organization
-contributes nothing. A system can therefore lose its entire organization
-and move the headline metric by $0.0338$. Ours did. Two cheap additions
+\paragraph{What a role diagram is evidence of.} A diagram is a
+hypothesis, and task-outcome evaluation --- the only evaluation most
+multi-agent systems receive --- cannot test it: an aggregate score averages
+a stage where the organization is idle with one where it does all its work,
+dominated by whichever has more mass. Our system lost its entire
+organization and moved the headline metric by $0.0338$. Two cheap additions
 fix most of it: report performance \emph{conditioned on the first attempt
-having failed} --- the split that separates our two phases, computable
-from logs any retry-capable system already writes --- and \emph{measure}
-the realized organization instead of assuming the specified one. A
-collapsed organization and a load-bearing one are indistinguishable by
-accuracy and trivially distinguishable by whether all three agents are
-writing down answers.
-
-Capability-dependence accounts predict structure helping weaker models and
-mattering less as they
-improve~\cite{canedo2026architecture,yu2026bottleneck,dochkina2026drop};
-our panel does not order that way, and the mechanism says why. If roles
-supply differentiation after failure rather than scaffolding for a weak
-solver, the actors they help are those with a repair channel to open, not
-those with the lowest accuracy --- and our weakest actor is the one role
-labels do not reach, though enforcement opens that channel in it.
-Capability is the wrong axis; whether the organization can produce a
-second distinct candidate is the right one.
+having failed}, computable from logs any retry-capable system already
+writes, and \emph{measure} the realized organization rather than assume the
+specified one --- indistinguishable by accuracy, trivially distinguishable
+by whether all three agents are writing down answers.
 
 \paragraph{What our own measurement errors imply.} Three instruments here
 reported confidently on what they could not see: an exact-duplication

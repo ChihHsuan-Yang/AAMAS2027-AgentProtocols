@@ -32,37 +32,7 @@ either way and the reviewer was already high, while the planner moves
 $0.000$/$0.000$/$0.183$ to $0.979$/$0.889$/$0.898$ (gemma-4 / Llama-3.3 /
 gpt-oss) --- a claim about the \emph{change}, not the level.
 
-\begin{table}[t]
-\centering
-\caption{\textbf{R1.} Functional collapse: first pipeline passes in which
-all three agents independently assert a final answer. The last two columns
-are the role-free values of the two secondary instruments --- byte
-duplication (a lower bound) and the adjudication (outcome-blind but
-\emph{not} condition-blind, see text); both read $0.000$ in every
-role-structured cell. Functional collapse is not applicable under
-structural enforcement, whose schema forbids an answer field.}
-\label{tab:collapse}
-\small
-\begin{tabular}{lcccc}
-\toprule
- & \multicolumn{2}{c}{functional collapse}
- & byte & adjud. \\
-\cmidrule(lr){2-3}
-actor & role-struct. & role-free & dup. & no div. \\
-\midrule
-gemma-4-31B   & $0.000$ & $\mathbf{0.976}$ & $0.000$ & $\mathbf{0.857}$ \\
-gpt-oss-120b  & $0.120$ & $\mathbf{0.846}$ & $0.680$ & $\mathbf{1.000}$ \\
-Llama-3.3-70B & $0.000$ & $\mathbf{0.872}$ & $0.008$ & $\mathbf{1.000}$ \\
-enforced, all & \multicolumn{2}{c}{n/a} & $\leq.003$ & $.067$--$.286$ \\
-\bottomrule
-\end{tabular}
-
-\vspace{2pt}
-\footnotesize\emph{Sensitivity.} The role-free rate is stable across three
-answer-marker definitions ($0.846$--$0.999$); \textbf{the role-structured
-rate is not} ($0.000$--$0.892$), so read its column as ``low,'' not a point
-estimate. The ordering holds in all nine actor$\times$marker cells.
-\end{table}
+\input{tables/main_role_collapse}
 
 \paragraph{Content duplication, against the right null.} gemma-4's and
 Llama-3.3's role-free planners write full independent solutions
@@ -82,16 +52,15 @@ label withheld and role words neutralized (Table~\ref{tab:collapse}, last
 column; stability $0.953$). This is \textbf{model adjudication, not human
 annotation}, and not ground truth. \textbf{It is also outcome-blind but
 \emph{not} condition-blind}: neutralization renamed the role words without
-equalizing their \emph{presence}, and a neutralized \texttt{Agent-P/E/R}
-token appears in all $42$ role-structured items and $3$ of $56$ role-free
-ones (Fisher exact $p=1.5\times10^{-24}$), so a judge noticing only
-whether a transcript labels its speakers could separate the conditions
-without reading content; output format separates the enforced condition
-further. Normalizing to a common surface would destroy the differences
-being judged, so we disclose rather than re-run: \textbf{we do not call
-the condition-contrastive adjudication blinded}, and the collapse claim
-does not rest on it. Judge stability and the byte metric's
-precision/recall are within-item, so unaffected.
+equalizing their \emph{presence} --- a neutralized token appears in all $42$
+role-structured items and $3$ of $56$ role-free ones (Fisher exact
+$p=1.5\times10^{-24}$) --- so a judge noticing only whether a transcript
+labels its speakers could separate the conditions without reading content.
+Normalizing to a common surface would destroy the differences being judged,
+so we disclose rather than re-run: \textbf{we do not call the
+condition-contrastive adjudication blinded}, and the collapse claim does
+not rest on it. Judge stability and the byte metric's precision/recall are
+within-item, so unaffected.
 
 \paragraph{First-pass accuracy does not follow --- the control condition.}
 \emph{Not a finding} but the control it is: the ablation removed the
@@ -253,30 +222,26 @@ load-bearing for first-pass solving, not that it always is.
 the role-free minus role-structured difference is $-0.0338$
 ($p=1.6\times10^{-5}$, gemma-4), $+0.0163$ ($p=0.062$) and $+0.0025$
 ($p=1.00$). Repeated identical evaluator prompts at temperature $0$
-disagree on $20$ of $2{,}790$ distinct graded strings, a group-level rate
-of $0.0072$ keyed on the exact candidate bytes. \textbf{We do not divide
-an effect size by a disagreement rate} --- noise largely cancels in a
-paired contrast --- but propagate it into the interval inside the
-bootstrap. gemma-4's survives ($[-0.0494,-0.0175]$); \textbf{gpt-oss's and
-Llama-3.3's do not} --- not resolvable above grader noise rather than
-absent.
+disagree on $20$ of $2{,}790$ distinct graded strings ($0.0072$, keyed on
+exact candidate bytes); rather than divide an effect by a disagreement rate
+--- noise largely cancels in a paired contrast --- we propagate it inside
+the bootstrap. gemma-4's interval survives ($[-0.0494,-0.0175]$);
+\textbf{gpt-oss's and Llama-3.3's do not}, so those are not resolvable
+above grader noise rather than absent.
 
 \paragraph{Is the role-free team just a single agent?}
 \label{subsec:notsingle}
-A standing objection holds that a setup where collapse is free never
-needed multi-agent structure at all~\cite{zhang2026rethinking}. A
-budget-matched single-agent protocol refuses both easy readings, and we
-report \textbf{both directions together}: a collapsed gpt-oss team beats
-its own single agent ($+0.0294$), so three agents emitting one answer is
-not functionally one agent, \textbf{while gemma-4's team is significantly
-worse than its own single agent in both conditions} ($-0.0225$,
-$-0.0563$). Neither ``multi-agent systems are just single agents'' nor
-``more agents help'' survives. The comparator is \textbf{from a previously
-released corpus, not our frozen snapshot}, and \textbf{its two actor arms
-were built from different source commits}, so each direction is a sound
-guard and \emph{the gap between actors is not}; it also drew \emph{more}
-oracle feedback, conservative on the decisive axis. Full panel in the
-supplement.
+A standing objection holds that a setup where collapse is free
+never needed multi-agent structure at all~\cite{zhang2026rethinking}. This
+asks a different question from ours --- whether the team is worth its budget,
+not what roles do inside it --- and a budget-matched single-agent comparator
+\textbf{cuts both ways}: a collapsed gpt-oss team beats its own single agent
+($+0.0294$) \textbf{while gemma-4's is significantly worse in both
+conditions} ($-0.0225$, $-0.0563$). Neither ``multi-agent systems are just
+single agents'' nor ``more agents help'' survives. The comparator comes from
+a previously released corpus whose two actor arms were built from different
+source commits, so each direction is a sound guard and \emph{the gap between
+actors is not} (supplement).
 
 \subsection{R4. The same dissociation in a second domain}
 \label{subsec:xdomain}
@@ -284,13 +249,13 @@ supplement.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig2_v2_xdomain.pdf}
-\caption{\textbf{Cross-domain replication, gemma-4.} First pass is flat in
-both domains; paired recovery drops in both. Top row \emph{marginal},
-bottom row \emph{paired}: the bottom-row Omni-MATH figures are the paired
-form of the marginal rates in Figure~\ref{fig:dissociation}B, not a
-different result. ``$x$ vs $y$ of $n$'' counts problems recovered under one
-condition only. The two deltas are two replications of a direction; a test
-that cannot distinguish them is not evidence that they match.}
+\caption{\textbf{Cross-domain replication, gemma-4.} First pass
+flat in both domains; paired recovery drops in both. Top row
+\emph{marginal}, bottom \emph{paired} --- the bottom-row Omni-MATH figures
+are the paired form of Figure~\ref{fig:dissociation}B's marginal rates, not
+a different result. ``$x$ vs $y$ of $n$'' counts problems recovered under
+one condition only. The two deltas replicate a direction; a test that
+cannot distinguish them is not evidence they match.}
 \label{fig:xdomain}
 \end{figure}
 
@@ -360,9 +325,6 @@ on successful parsing.} Restoring shared history at fixed enforcement does
 not rescue it either --- attrition, not context. Both scorings with
 intervals are tabulated in the supplement.
 
-\textbf{The enforced recovery and first-pass rates do not compose into
-that accuracy column}, because the $(1-\text{fp})$ identity of
-\S\ref{subsec:recovery} is exact only when both share a denominator and
-here the never-graded trajectories break it. The
-role-structured-versus-role-free composition is valid because those two
-have essentially no attrition.
+\textbf{The enforced recovery and first-pass rates do not
+compose into that accuracy column} --- the never-graded trajectories break
+the shared denominator the $(1-\text{fp})$ identity needs (supplement).

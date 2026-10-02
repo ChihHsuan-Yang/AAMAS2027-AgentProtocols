@@ -7,28 +7,26 @@ oracle verdict}, so every recovery number is recovery \emph{given} a
 ground-truth-informed failure signal: not unaided self-correction, and
 stop-on-correct censors destructive revision.
 
-\paragraph{A scoring defect that runs against us.} Beyond the logging
-defect of \S\ref{subsec:logging}, the runner grades the last answer
-\emph{submitted} but records the last answer \emph{held}; these disagree
-on $17\%$ of role-structured and $0\%$ of role-free first-pass-wrong
+\paragraph{A scoring defect that runs against us.} Beyond the
+logging defect of \S\ref{subsec:logging}, the runner grades the last answer
+\emph{submitted} but records the last answer \emph{held}; these disagree on
+$17\%$ of role-structured and $0\%$ of role-free first-pass-wrong
 trajectories --- an error proportional to how much a team revises, the
 behavior our headline is about. Recoding the $62$ affected trajectories
-(positive control: $0$ of $10{,}734$ non-mismatched rows) \emph{widens}
-every recovery gap; we keep the pre-registered outcome as primary, because
-changing it after seeing which way it moves is what preregistration
-prevents.
+(positive control: $0$ of $10{,}734$) \emph{widens} every recovery gap; we
+keep the pre-registered outcome as primary, since changing it after seeing
+which way it moves is what preregistration prevents.
 
-\paragraph{What the conditional analyses are, and are not.} First-pass-wrong,
-cycles used, accumulated context and collapse are all post-treatment
-outcomes of the intervention, so the recovery decomposition is a
-decomposition and not a causal mediation --- except for gemma-4, whose
-contrast is algebraically the intent-to-treat effect
-(\S\ref{subsec:recovery}). The other two accuracy contrasts are nulls the
-instrument could not resolve rather than measured absences. The collapse
-validation is \textbf{model adjudication, not human annotation, not ground
-truth and not condition-blind} (\S\ref{subsec:collapse}), which is why the
-collapse claim rests on the mechanical measures, and the enforced reading
-is partly mechanical since its validator forbids an answer field.
+\paragraph{What the conditional analyses are, and are not.}
+First-pass-wrong, cycles used, context and collapse are post-treatment
+outcomes, so the recovery decomposition is a decomposition and not a causal
+mediation --- except for gemma-4, whose contrast is algebraically the
+intent-to-treat effect (\S\ref{subsec:recovery}). The other two accuracy
+contrasts are nulls the instrument could not resolve, not measured
+absences. The collapse validation is \textbf{model adjudication, not human
+annotation, not ground truth and not condition-blind}
+(\S\ref{subsec:collapse}), which is why the collapse claim rests on the
+mechanical measures.
 
 \paragraph{Scope, provenance, and blind spots.} Enforcement's $8$--$17\%$
 one-sided attrition (\S\ref{subsec:enforce}) is why its as-graded gain is
