@@ -1,17 +1,37 @@
-# `paper/tables/` --- generated tables
+# Generated tables — index and disposition
 
-**Every file in this directory is generated. Do not hand-edit one: the next
-run of the generator overwrites it, and a hand-typed number has no
-provenance.**
+**Every file here is GENERATED. Do not hand-edit: `mk_tables.py` overwrites.**
 
-```
-python3 analysis/scripts/mk_tables.py           # regenerate all tables
-python3 analysis/scripts/mk_tables.py --check   # verify, write nothing
-```
+Regenerate all: `python3 analysis/scripts/mk_tables.py`
+Verify without writing: `python3 analysis/scripts/mk_tables.py --check`
+(exit 1 = stale, exit 2 = a reader-facing condition code leaked in)
 
-Regeneration is **byte-identical**: the generator stamps the canonical
-input's mtime rather than wall-clock time, so a rerun that changes a file
-means the *data* changed.
+## Disposition — where each table goes
+
+No orphans: every table below is explicitly MAIN, SUPPLEMENT, or
+HANDOFF/REFERENCE. If you add one, give it a disposition in the same commit.
+
+| file | reader-facing name | disposition | `\input` now? |
+|---|---|---|---|
+| `main_role_collapse.tex` | Functional collapse per actor | **MAIN** | **yes** — `results.tex`, `tab:collapse` |
+| `main_recovery.tex` | First-pass and recovery per actor and condition | **SUPPLEMENT** | no |
+| `scibench_replication.tex` | Cross-domain replication, both actors | **SUPPLEMENT** | no — the main paper carries gemma-4 in Figure 2 and prose |
+| `structural_enforcement.tex` | Enforcement: manipulation check, attrition, both scorings | **SUPPLEMENT** | no |
+| `single_agent_comparison.tex` | Budget-matched single agent, both directions | **SUPPLEMENT** | no |
+| `prereg_endpoints.tex` | Full pre-registered endpoint table incl. P4 and Holm | **SUPPLEMENT** | no |
+
+**Why only one is in the main paper.** The 8-page limit is hard and the
+narrative carries its numbers in prose and two figures. The five supplement
+tables are the complete numeric backing a reviewer may want, and the main
+paper must stay readable **without** them — each is referenced from the text
+by a pointer, never depended on.
+
+**The supplement is not yet assembled.** Until it is, these five are
+HANDOFF/REFERENCE in practice: correct, generated, provenance-stamped, and
+waiting for a `supplement/main.tex` to `\input` them. That is the one
+remaining consumer.
+
+---
 
 ## Where the numbers come from
 
