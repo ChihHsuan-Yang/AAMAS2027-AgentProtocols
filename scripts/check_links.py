@@ -154,7 +154,8 @@ def main():
             rel = os.path.relpath(os.path.join(base, path), ROOT)
             if in_git(rel):
                 continue
-            if path in LOCAL_ONLY or os.path.exists(os.path.join(base, path)):
+            if (path in LOCAL_ONLY or rel in LOCAL_ONLY
+                    or os.path.exists(os.path.join(base, path))):
                 untracked.append((doc, tgt))
             else:
                 broken.append((doc, tgt, "link target does not exist"))
@@ -167,7 +168,16 @@ def main():
                 rels = [c, os.path.relpath(os.path.join(base, c), ROOT)]
                 if any(in_git(r) for r in rels):
                     continue
-                if any(os.path.exists(os.path.join(ROOT, r)) for r in rels):
+                # LOCAL_ONLY FIRST, existence second. A declared
+                # local-only path is absent from a clone BY DEFINITION, so
+                # testing existence before the declaration makes the check
+                # pass here and fail there -- which is the exact bug this
+                # whole function was rewritten to remove, reintroduced one
+                # branch over. Found by running the fixed checker in a clone
+                # rather than assuming the fix generalised.
+                if c in LOCAL_ONLY or any(r in LOCAL_ONLY for r in rels):
+                    untracked.append((doc, c))
+                elif any(os.path.exists(os.path.join(ROOT, r)) for r in rels):
                     untracked.append((doc, c))
                 else:
                     broken.append((doc, c, "qualified path does not exist"))
