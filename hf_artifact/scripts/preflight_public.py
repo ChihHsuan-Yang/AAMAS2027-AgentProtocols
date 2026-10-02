@@ -11,8 +11,16 @@ This script fails while any such string is present. It is called from
 RELEASE_PROCEDURE.md step 1. Do not flip public on a FAIL, and do not "fix" it
 by deleting this check.
 
-    python3 scripts/preflight_public.py         # check
-    python3 scripts/preflight_public.py --fix   # redact raw/, then re-check
+Run it from the PROJECT ROOT (paths below are relative to the repo root;
+the older spelling `scripts/preflight_public.py` is relative to
+hf_artifact/ and silently fails from the root with "No such file"):
+
+    python3 hf_artifact/scripts/preflight_public.py         # check
+    python3 hf_artifact/scripts/preflight_public.py --fix   # redact raw/, re-check
+
+Check the EXIT CODE, not the printed tail: `| tail` makes $? report tail's
+status, and this project has already recorded one false PASS from exactly
+that.
 
 --fix rewrites ONLY the `error` field of affected rows, replacing the captured
 upstream response body with a redaction marker that preserves the failure
@@ -211,7 +219,7 @@ def main():
         print(f"  {fn} line {i}  uid={uid} arm={arm}  fields={where}")
     if len(bad) > 20:
         print(f"  ... and {len(bad)-20} more")
-    print("\n  Fix:  python3 scripts/preflight_public.py --fix")
+    print("\n  Fix:  python3 hf_artifact/scripts/preflight_public.py --fix")
     return 1
 
 

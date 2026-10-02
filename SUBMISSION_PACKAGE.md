@@ -89,7 +89,7 @@ to have the rows.
 4. **Reciprocal reviewing.** Required in past years; check 2027.
 5. **Do NOT publish the HuggingFace artifact before acceptance.** A public
    dataset matching the paper's numbers is a deanonymization path.
-   `scripts/preflight_public.py` fails by design until then.
+   `hf_artifact/scripts/preflight_public.py` fails by design until then.
 
 None of items 1–4 could be agent-verified: `api.openreview.net` returned
 **HTTP 403 on every call** — a 403 is the API refusing, **not** evidence a
@@ -117,7 +117,7 @@ instructions if they exist.
 | abstract sha256 (source) | `a497dba29f199e46f9965c4a…`, ~294 words |
 | Figure 1 | `3c91da3e3ab4d9f61b979292…` |
 | Figure 2 | `4525bb027304ef3c38181505…` |
-| Omni-MATH data | 11,600 rows, 3 files, sha256 in `FROZEN/MANIFEST.json` |
+| Omni-MATH data | 11,600 rows, 3 files, sha256 in `experiments/results/FROZEN/MANIFEST.json` |
 | SciBench data | 2,296 rows, 574 problems, `10068f72cfd936d3…` |
 | HF artifact | `AgentsSci/AAMAS2027-Roles` v1.1.0, **PRIVATE** |
 

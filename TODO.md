@@ -77,6 +77,6 @@ Deadlines: **abstract Oct 1 AoE** · **paper Oct 8 AoE**.
    Run it without a pipe — `| tail` makes `$?` report tail.
 4. **HF stays PRIVATE until acceptance.** `hf_artifact/raw/` is gitignored
    (283MB; GitHub rejects it) and 14 rows still name the institution;
-   `scripts/preflight_public.py` fails by design until fixed.
+   `hf_artifact/scripts/preflight_public.py` fails by design until fixed.
 5. **No underpowered null may be reported as absence.** This project has made
    that error twice.

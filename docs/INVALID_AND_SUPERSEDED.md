@@ -3,7 +3,7 @@
 Back to [the project README](../README.md) ·
 [artifact map](PAPER_ARTIFACT_MAP.md) ·
 [trace availability](TRACE_AVAILABILITY.md) ·
-[data construction](DATA_CONSTRUCTION.md)
+[data provenance](DATA_PROVENANCE.md)
 
 **Retraction here is labelling, not deletion.** Every number below is left
 readable on purpose. A retracted value that has been deleted cannot be

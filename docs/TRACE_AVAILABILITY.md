@@ -13,7 +13,7 @@ Back to [the project README](../README.md) · [artifact map](PAPER_ARTIFACT_MAP.
 | `armCp.jsonl` | Omni-MATH, context-restored enforcement, 800 rows | **no** — gitignored | `experiments/results/FROZEN/` present | yes, **byte-identical** |
 | `scibench_AB.jsonl` | SciBench, role-structured and role-free, 2 actors, 2,296 rows | **no** — gitignored | `experiments/results/xdomain/FROZEN_SCIBENCH/` present | yes, **byte-identical** |
 
-**No raw trace is in git.** GitHub rejects files over 100 MB and the four traces total ~324 MB; `hf_artifact/raw/` is gitignored. The off-laptop copy is the **private** Hugging Face repo `AgentsSci/AAMAS2027-Roles` v1.1.0 — private during double-blind review, and `scripts/preflight_public.py` fails by design until institution-identifying rows are sanitized after acceptance.
+**No raw trace is in git.** GitHub rejects files over 100 MB and the four traces total ~324 MB; `hf_artifact/raw/` is gitignored. The off-laptop copy is the **private** Hugging Face repo `AgentsSci/AAMAS2027-Roles` v1.1.0 — private during double-blind review, and `hf_artifact/scripts/preflight_public.py` fails by design until institution-identifying rows are sanitized after acceptance.
 
 ## What each trace contains
 

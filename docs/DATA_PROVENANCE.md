@@ -14,10 +14,14 @@ Back to [the project README](../README.md) ·
 
 ## Where the data is, and what is canonical
 
+> Paths written `hf:…` are inside the Hugging Face artifact repository, a
+> different file tree from this one. Paths without that prefix are
+> repo-relative and are checked by `scripts/check_links.py`.
+
 | artifact | unit | count | location | status |
 |---|---|---|---|---|
-| Omni-MATH campaign | trajectory | **11,600** over 1,600 distinct problems | `experiments/results/FROZEN/` (local, gitignored) + HF `raw/` | **CANONICAL** — every main-paper number |
-| SciBench campaign | trajectory | **2,296** over the complete 574-problem matched slice | `experiments/results/xdomain/FROZEN_SCIBENCH/` + HF `raw/` | **CANONICAL** — the cross-domain claim |
+| Omni-MATH campaign | trajectory | **11,600** over 1,600 distinct problems | `experiments/results/FROZEN/` (local, gitignored) + `hf:raw/` (mirrored locally at `hf_artifact/raw/`, gitignored) | **CANONICAL** — every main-paper number |
+| SciBench campaign | trajectory | **2,296** over the complete 574-problem matched slice | `experiments/results/xdomain/FROZEN_SCIBENCH/` + `hf:raw/` (mirrored locally at `hf_artifact/raw/`, gitignored) | **CANONICAL** — the cross-domain claim |
 | adjudication | trajectory (3 repetitions each) | **171 trajectories, 513 verdict rows** | `adjudication/` — **in git** | CANONICAL for the collapse second opinion; outcome-blind, **not** condition-blind |
 | single-agent comparator | trajectory | external corpus | outside this repo, local only | **DIAGNOSTIC** — a directional guard only; its two actor arms came from different source commits |
 | grader noise floor | evaluator call group | 2,790 groups | derived, `[T6]` | CALIBRATION |
@@ -27,8 +31,8 @@ Back to [the project README](../README.md) ·
 8 parquet tables (5 Omni-MATH, 3 SciBench), 4 raw JSONL traces, prompts,
 configs, manifests, checksums. Last verified **2026-10-02** by cold
 download: `shasum -c CHECKSUMS.txt` 52/52 OK, private confirmed three ways
-(authenticated API `private=True`; anonymous fetch of both `README.md` and
-`data/trajectories.parquet` → 401; positive control `openai/gsm8k` → 200).
+(authenticated API `private=True`; anonymous fetch of both the card and
+`hf:data/trajectories.parquet` → 401; positive control `openai/gsm8k` → 200).
 
 **Withheld, and why.** Problem text and gold answers are not redistributed
 — only `problem_uid`, which joins to the public benchmark. Omni-MATH-2 is
@@ -36,7 +40,7 @@ Apache-2.0 and SciBench is MIT (© 2023 Xiaoxuan Wang); the artifact is
 mixed-licence and declares both. The repository must stay private through
 double-blind review: a public dataset matching the paper's numbers is a
 deanonymization path even with no pointer from the paper.
-`scripts/preflight_public.py` **fails by design** until institution-naming
+`hf_artifact/scripts/preflight_public.py` **fails by design** until institution-naming
 rows are sanitized after acceptance. Do not weaken it to make it pass.
 
 Field-by-field availability, measured from the rows rather than asserted:

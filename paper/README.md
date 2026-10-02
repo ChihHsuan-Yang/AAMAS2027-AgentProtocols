@@ -155,7 +155,7 @@ uses semantic names:
 | C | structurally enforced |
 | Cp (written C′ in `TERMINOLOGY.md`) | context-restored structural enforcement |
 
-The artifact must stay private through review; `scripts/preflight_public.py`
+The artifact must stay private through review; `hf_artifact/scripts/preflight_public.py`
 fails by design until institution-naming rows are sanitized after acceptance.
 
 ## Main paper vs supplement

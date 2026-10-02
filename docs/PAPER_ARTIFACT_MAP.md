@@ -63,8 +63,8 @@ a value this project reports.
 
 | | |
 |---|---|
-| freeze record | `FINAL_FREEZE.json`, 2026-10-02T11:28:31 |
-| GitHub HEAD then | `e4a644b5cd05` |
+| freeze record | `FINAL_FREEZE.json`, 2026-10-02T11:37:01 |
+| GitHub HEAD then | `5ae9f0fcba1a` |
 | main paper | 9 pages, main text ends p8 |
 | supplement | 11 pages, no limit |
 | main text sha256 | `91741620602076cc7bec603e…` |

@@ -1,12 +1,12 @@
 {
-  "frozen_at": "2026-10-02T11:28:31",
+  "frozen_at": "2026-10-02T11:37:01",
   "title": "From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing",
-  "github_head": "e4a644b5cd055a3e57b9ebb74c3f57541a227432",
+  "github_head": "5ae9f0fcba1a7770e83358a2f8e3bdf23d43788f",
   "overleaf_head": "UNREACHABLE (access blocked)",
-  "main_pdf_sha256_build": "8472836d74ef09d9622670cc94305065bf040984a66b40e9847669d2ce72e1e0",
+  "main_pdf_sha256_build": "c3b57691111002516e3e7bb6f1027e92435dbb6f9f35f6a82763de92dcb42ca7",
   "main_pdf_bytes": 640415,
   "main_text_sha256": "91741620602076cc7bec603e4e74160df9a9a683414ef2fc8b4edeefcc7b5402",
-  "supplement_pdf_sha256_build": "c286452616106e160722a197aa513a2ebd859aee6397de82c9d54add99d22560",
+  "supplement_pdf_sha256_build": "08dc6ee0ec85a46ee4ef980e81453de8bb017085b64e24aacc16890a880a2fee",
   "supplement_text_sha256": "c71100f5da0f6182afa3868cfdd96a8b4b71b0d47fe043a9e3eeef45ecdbb238",
   "figures_used": {
     "fig1_v1_story.pdf": "3c91da3e3ab4d9f61b97929243a38ec88538af0c431b682c1364a095906852ad",
@@ -63,6 +63,7 @@
     "bib_rendered": 26,
     "aamas_cls_official": true,
     "canonical_output_describes_figdata": true,
+    "doc_links_resolve_exit": 0,
     "tables_match_sources_exit": 0,
     "figures_present": true
   },

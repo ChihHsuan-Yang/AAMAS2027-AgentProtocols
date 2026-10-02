@@ -178,6 +178,13 @@ _actual = sha(f"{P}/analysis/out/FIGDATA.json")[:16]
 gates["canonical_output_describes_figdata"] = bool(
     _claimed and _claimed.group(1) == _actual)
 
+# ---------------------------------------------- documentation navigation
+# A README that sends a collaborator to a path that does not exist costs
+# them the time it was meant to save. Gated like any other promise.
+gates["doc_links_resolve_exit"] = subprocess.run(
+    f"python3 {P}/scripts/check_links.py", shell=True,
+    capture_output=True).returncode
+
 # ------------------------------------------------------------ tables fresh
 gates["tables_match_sources_exit"] = subprocess.run(
     f"python3 {P}/analysis/scripts/mk_tables.py --check", shell=True,
@@ -241,7 +248,8 @@ freeze = {
 MUST_BE_ZERO = ["main_build_exit", "main_pagecheck_exit", "main_undefined_citations",
                 "main_undefined_refs", "main_multiply_defined", "main_anonymity_hits",
                 "armcode_in_main_pdf", "armcode_in_supp_pdf", "armcode_in_sources",
-                "figure_pdfs_clean_exit", "todo_uses", "tables_match_sources_exit"]
+                "figure_pdfs_clean_exit", "todo_uses", "tables_match_sources_exit",
+                "doc_links_resolve_exit"]
 if gates["supplement_exists"]:
     MUST_BE_ZERO += ["supp_build_exit", "supp_undefined_refs",
                      "supp_undefined_citations", "supp_anonymity_hits"]
