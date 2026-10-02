@@ -410,6 +410,6 @@ Llama-3.3-70B-Instruct    +0.0025  [-0.0325,+0.0375]    [-0.0350,+0.0400]    NOT
   gemma-4-31B-it           fp 0.794/0.794   rec paired 0.212/0.020 n=99 p=6.6e-05
   gpt-oss-120b             fp 0.784/0.789   rec paired 0.219/0.135 n=96 p=0.17
   wrote /Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/analysis/out/FIGDATA.json
-  sha256(FIGDATA.json)[:16] e267255da317b4fe
+  sha256(FIGDATA.json)[:16] bfd65bc8a3e9c0eb
 
 ================================================================================================

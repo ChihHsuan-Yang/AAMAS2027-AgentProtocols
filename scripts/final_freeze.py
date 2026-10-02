@@ -162,6 +162,22 @@ gates["bib_rendered"] = (len(re.findall(r"\\bibitem", open("main.bbl").read()))
 gates["aamas_cls_official"] = (
     sha("aamas.cls") == sha(f"{P}/paper_support/aamas_official/aamas.cls"))
 
+# ------------------------------ canonical output vs the file it describes
+# DEFECT FOUND 2026-10-02. FINAL_TABLES.py writes FIGDATA.json and then
+# prints its sha256, so within ONE run the two always agree. They were
+# committed from DIFFERENT runs: the committed output claimed FIGDATA was
+# e267255d while the committed FIGDATA was bfd65bc8. Every number was
+# correct -- regenerating moved exactly one line, the self-hash -- but the
+# canonical output was no longer a true description of the tree, and the
+# documented "re-running is byte-identical" check failed for a reader who
+# tried it. A provenance line that does not match its subject is worse than
+# no line: it makes the honest check look like a real discrepancy.
+_canon = open(f"{P}/analysis/out/FINAL_TABLES_OUTPUT.txt").read()
+_claimed = re.search(r"sha256\(FIGDATA\.json\)\[:16\]\s+([0-9a-f]+)", _canon)
+_actual = sha(f"{P}/analysis/out/FIGDATA.json")[:16]
+gates["canonical_output_describes_figdata"] = bool(
+    _claimed and _claimed.group(1) == _actual)
+
 # ------------------------------------------------------------ tables fresh
 gates["tables_match_sources_exit"] = subprocess.run(
     f"python3 {P}/analysis/scripts/mk_tables.py --check", shell=True,
@@ -229,7 +245,8 @@ MUST_BE_ZERO = ["main_build_exit", "main_pagecheck_exit", "main_undefined_citati
 if gates["supplement_exists"]:
     MUST_BE_ZERO += ["supp_build_exit", "supp_undefined_refs",
                      "supp_undefined_citations", "supp_anonymity_hits"]
-MUST_BE_TRUE = ["aamas_cls_official", "figures_present"]
+MUST_BE_TRUE = ["aamas_cls_official", "figures_present",
+                "canonical_output_describes_figdata"]
 
 failed = ([k for k in MUST_BE_ZERO if gates.get(k) != 0]
           + [k for k in MUST_BE_TRUE if not gates.get(k)]
