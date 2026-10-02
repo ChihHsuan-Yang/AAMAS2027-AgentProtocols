@@ -70,7 +70,7 @@ Alternative kept: `figures/fig2_v1_xdomain.pdf` (grouped bars).
 | file | status |
 |---|---|
 | `figures/figS1_conditions.pdf` | supplement candidate — the three conditions as pipelines |
-| `figures/fig1_v1_grouped.pdf` | **superseded** by `fig1_v1_story`. Still in `paper/figures/` and no longer referenced. It was the figure that printed bare condition codes before the terminology gate existed. |
+| `figures/fig1_v1_grouped.pdf` | **superseded** by `fig1_v1_story`, and **deleted from `paper/figures/` on 2026-10-02**. Leaving it there was not harmless: the copy in `paper/figures/` was the *uncorrected* one, still printing `A soft roles / B no roles / C enforced`, and it sat in the Overleaf-bound directory for a day while the terminology gate reported clean --- the gate was reading `figures/`, where the corrected copy lives. It survives only under `figures/`, where it is a draft variant. |
 | `figures/fig3_*`, `fig4_*` | earlier exploratory designs, not for the paper |
 
 ---
@@ -91,3 +91,36 @@ enforced" while that grep reported clean.
 at rendered output after every check went green: a clipped label where a
 margin had been sized for a short condition name, and a collided annotation.
 Look at the figure.
+
+---
+
+## Three gates now stand between a figure and the PDF
+
+Added 2026-10-02, each after a real failure rather than a hypothetical one.
+
+**1. `paper/figures/` is synced automatically.** `mk_figstyle.save()` copies
+a regenerated figure into `paper/figures/` whenever a file of that name is
+already there. Only files already there: `paper/figures/` holds exactly what
+the manuscript ships, and a draft variant must not land in it by being
+generated. Before this, the copy was a manual step and skipping it left
+LaTeX including the old image while every check inspected the new one.
+
+**2. The terminology gate reads both directories, and compares them.**
+`scripts/check_terminology_pdfs.py` previously scanned only `figures/` ---
+where the generators write --- while LaTeX resolves `\includegraphics`
+against `paper/figures/`. A gate that inspects the producer's output cannot
+certify the consumer's input. It now scans both, fails if a figure present
+in both differs between them, fails on a file in `paper/figures/` that no
+document includes, and fails on a document reference with no file.
+
+**3. Figure PDFs are byte-reproducible.** `savefig` was embedding a
+wall-clock `CreationDate`, so every regeneration produced a different
+sha256 even with identical data. The hash recorded in `FINAL_FREEZE.json`
+could not then distinguish *the figure changed* from *the figure was
+regenerated*. `metadata={"CreationDate": None}` strips it; regenerating from
+the same frozen data is now byte-identical, so a changed hash means changed
+data.
+
+All three were positive-controlled by planting a violation in each one's own
+shape --- a stray file, a missing file, a stale consumer copy --- and all
+three fired.

@@ -26,10 +26,21 @@ Usage:
   python3 scripts/check_terminology_pdfs.py            # gate
   python3 scripts/check_terminology_pdfs.py --selftest # prove it can fail
 """
-import glob, os, re, shutil, subprocess, sys
+import glob, hashlib, os, re, shutil, subprocess, sys
 
-ROOT = "/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols"
-FIGDIR = os.path.join(ROOT, "figures")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# BOTH figure directories, and the second one is the important one.
+#
+# DEFECT FOUND 2026-10-02: this gate scanned only figures/ -- where the
+# GENERATORS write -- while LaTeX resolves \includegraphics against
+# paper/figures/. Those are different files. paper/figures/ held a stale
+# pre-fix copy of fig1_v1_grouped.pdf still printing "A soft roles / B no
+# roles" while the gate reported all clean, because it was reading the
+# corrected copy one directory up. A gate that inspects the producer's
+# output cannot certify the consumer's input.
+FIGDIRS = [os.path.join(ROOT, "figures"), os.path.join(ROOT, "paper", "figures")]
+FIGDIR = FIGDIRS[0]            # selftest plants here; generators write here
 
 # "Arm A" / "arm~B" / "A soft roles" / "B no roles" / "C enforced".
 # Deliberately NOT a bare \b[ABC]\b: a lone capital letter is a legitimate
@@ -119,13 +130,57 @@ def main():
         if not selftest():
             return 1
         print()
-    pdfs = glob.glob(os.path.join(FIGDIR, "*.pdf"))
-    if not pdfs:
-        print(f"ABORT: no PDFs under {FIGDIR}. An empty sweep is not a pass.")
-        return 2
-    print(f"TERMINOLOGY GATE — scanning {len(pdfs)} PDFs under figures/")
+    pdfs = []
+    for d in FIGDIRS:
+        found = glob.glob(os.path.join(d, "*.pdf"))
+        if not found:
+            print(f"ABORT: no PDFs under {d}. An empty sweep is not a pass.")
+            return 2
+        pdfs += found
+    print(f"TERMINOLOGY GATE — scanning {len(pdfs)} PDFs under "
+          + " and ".join(os.path.relpath(d, ROOT) + "/" for d in FIGDIRS))
     bad, unreadable = scan(pdfs)
-    n = len(bad) + len(unreadable)
+
+    # Divergence check. A figure present in both directories under one name
+    # must be the same bytes; if it is not, the copy step was skipped and
+    # the PDF ships something other than what was regenerated and inspected.
+    diverged = []
+    for f in sorted(set(os.path.basename(p) for p in pdfs)):
+        a, b = (os.path.join(d, f) for d in FIGDIRS)
+        if os.path.exists(a) and os.path.exists(b):
+            ha, hb = (hashlib.sha256(open(x, "rb").read()).hexdigest() for x in (a, b))
+            if ha != hb:
+                diverged.append((f, ha[:16], hb[:16]))
+    for f, ha, hb in diverged:
+        print(f"  FAIL {f}: figures/ is {ha} but paper/figures/ is {hb} "
+              f"-- the copy into paper/figures/ was skipped; LaTeX ships the "
+              f"latter")
+
+    # paper/figures/ must hold EXACTLY what the manuscript includes. A file
+    # that is there but unreferenced is not harmless: the stale
+    # fig1_v1_grouped.pdf that prompted the divergence check above was
+    # unreferenced, which is precisely why nobody regenerated it, and it sat
+    # in the Overleaf-bound directory printing bare condition codes.
+    src = ""
+    for f in sorted(glob.glob(os.path.join(ROOT, "paper", "sections", "*.tex"))) \
+             + [os.path.join(ROOT, "paper", "main.tex"),
+                os.path.join(ROOT, "paper", "supplement.tex")]:
+        if os.path.exists(f):
+            src += open(f, errors="ignore").read()
+    used = set(re.findall(r"\\includegraphics\[[^\]]*\]\{figures/([^}]+)\}", src))
+    shipped = set(os.path.basename(p) for p in glob.glob(
+        os.path.join(ROOT, "paper", "figures", "*.pdf")))
+    stray = sorted(shipped - used)
+    absent = sorted(used - shipped)
+    for f in stray:
+        print(f"  FAIL paper/figures/{f}: in the Overleaf-bound directory but "
+              f"included by no document. Delete it or include it -- an "
+              f"unreferenced figure is one nobody regenerates.")
+    for f in absent:
+        print(f"  FAIL paper/figures/{f}: included by a document but not "
+              f"present. The build cannot be reproduced from this tree.")
+
+    n = len(bad) + len(unreadable) + len(diverged) + len(stray) + len(absent)
     if n:
         print(f"\n{n} of {len(pdfs)} FAIL. paper/TERMINOLOGY.md forbids arm "
               f"codes in reader-facing output.\nRegenerate via the mk_fig*.py "

@@ -13,7 +13,7 @@ TARGET GEOMETRY.  Measured from the official class, not assumed:
     body font    = 9pt
 Reproduce with:  pdflatex on a stub that \\typeout{\\the\\columnwidth}.
 """
-import json, os
+import json, os, shutil
 
 import matplotlib
 matplotlib.use("Agg")
@@ -219,8 +219,32 @@ def save(fig, stem, width_in):
     png = os.path.join(FIGDIR, stem + ".png")
     # bbox_inches is deliberately NOT 'tight': tight silently changes the width,
     # which would invalidate the point sizes above.
-    fig.savefig(pdf)
+    # metadata CreationDate=None strips the wall-clock stamp matplotlib
+    # otherwise embeds. Without it a figure PDF has a different sha256 on
+    # every run even when nothing changed, which makes the hash recorded in
+    # FINAL_FREEZE.json useless: it cannot distinguish "the figure changed"
+    # from "the figure was regenerated". With it, regeneration from the same
+    # frozen data is byte-identical and a changed hash means changed data.
+    fig.savefig(pdf, metadata={"CreationDate": None})
     fig.savefig(png, dpi=400)
     plt.close(fig)
+
+    # Keep the CONSUMER's copy in step with the producer's.
+    #
+    # LaTeX resolves \includegraphics against paper/figures/, not here. For a
+    # figure the paper ships, regenerating it and forgetting the copy leaves
+    # the PDF carrying the OLD image while every check inspects the new one:
+    # that is exactly how a stale fig1_v1_grouped.pdf kept printing bare
+    # condition codes inside paper/figures/ while the terminology gate,
+    # reading figures/, reported all clean.
+    #
+    # Only files ALREADY there are refreshed: paper/figures/ holds what the
+    # manuscript uses, and a draft variant must not land in it by being
+    # generated.
+    consumer = os.path.join(os.path.dirname(FIGDIR), "paper", "figures", stem + ".pdf")
+    if os.path.exists(consumer):
+        shutil.copyfile(pdf, consumer)
+        print(f"  synced paper/figures/{stem}.pdf (the copy LaTeX actually uses)")
+
     print(f"  wrote {stem}.pdf / .png   {width_in:.3f}in wide   min font {FS_MIN}pt")
     return pdf
