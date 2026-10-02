@@ -1,13 +1,13 @@
 {
-  "frozen_at": "2026-10-02T10:47:04",
+  "frozen_at": "2026-10-02T10:48:57",
   "title": "From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing",
-  "github_head": "57daaaf2c8cdeb0f1f2f35f827f183a13c8fe5d6",
+  "github_head": "8d08f7bf07cc7f9d1e93678ea08134314b321069",
   "overleaf_head": "UNREACHABLE (access blocked)",
-  "main_pdf_sha256_build": "7d3800ad7c723ef9144ab6db0a221d49cf45fd55a3e7b227c474501807b0712d",
+  "main_pdf_sha256_build": "9a8b58786ecdb7816a805d0af14ebeee89e53a6ada61aaaf32d20384b2b31fa8",
   "main_pdf_bytes": 640245,
   "main_text_sha256": "3cb9712a40d2176034a309a438883b93cc00d8f4c871bf128e8042d95f21dcf6",
-  "supplement_pdf_sha256_build": "cf4b5c233582eba921592e0eb9eb08bda73f647028b0c400a2c65d0ad26fe39a",
-  "supplement_text_sha256": "48f51c61629cf99e552b3722985234f8f17dfc19eddfaeee6e3cdc8630592dd9",
+  "supplement_pdf_sha256_build": "ccc375c4496d181057c3ea87434d06f66fa497f14c46a73cd01e94da3a725746",
+  "supplement_text_sha256": "e1ac8502961c41b1c6d57043208427d31163921790caa71e7eda85c4ab36e30b",
   "figures_used": {
     "fig1_v1_story.pdf": "3c91da3e3ab4d9f61b97929243a38ec88538af0c431b682c1364a095906852ad",
     "fig2_v2_xdomain.pdf": "4525bb027304ef3c381815056e8403fb44391a152ae7816b1104588368093413"
