@@ -57,7 +57,9 @@ import schemas as S  # noqa: E402
 
 BACKEND = "sophia_vllm"
 BASE_URL = "https://inference-api.alcf.anl.gov/resource_server/sophia/vllm/v1"
-AUTH_SCRIPT_DIR = "/Users/bellayang/work/agent-e/mas-eval"
+# Machine-specific; override with AAMAS_AUTH_SCRIPT_DIR when running elsewhere.
+AUTH_SCRIPT_DIR = os.environ.get(
+    "AAMAS_AUTH_SCRIPT_DIR", "/Users/bellayang/work/agent-e/mas-eval")
 
 MAX_OUTER_ROUNDS = 3
 INNER_ROUNDS = 2
@@ -80,9 +82,24 @@ VISIBILITY = {
     "A": {"planner": ["problem", "shared_history", "advice"],
           "executor": ["problem", "shared_history", "advice"],
           "reviewer": ["problem", "shared_history", "advice"]},
-    "B": {"planner": ["problem", "shared_history", "advice"],
-          "executor": ["problem", "shared_history", "advice"],
-          "reviewer": ["problem", "shared_history", "advice"]},
+    # CORRECTED 2026-10-03: the Arm B template never interpolates ${advice},
+    # build_messages() never passes it, and shared_history only ever receives
+    # [Planner]/[Executor]/[Reviewer] turns -- so Arm B agents never saw the
+    # evaluator's FAIL verdict or repair hint. The previous entry listed
+    # "advice" for B and was logged per trajectory as ground truth. Same class
+    # of error as the Arm C entry below.
+    "B": {"planner": ["problem", "shared_history"],
+          "executor": ["problem", "shared_history"],
+          "reviewer": ["problem", "shared_history"]},
+    # Arm Bf (added 2026-10-03): Arm B with the evaluator's feedback DELIVERED.
+    # Prompt templates are byte-identical to Arm B. When the evaluator returns
+    # FAIL, the same advice string Arm A receives in ${advice} is shown to all
+    # three agents for the next cycle, as a trailing "[Evaluator]" entry of the
+    # shared-history block -- the same one-cycle lifetime ${advice} has in A.
+    # Until the first FAIL, an Arm Bf prompt is byte-identical to Arm B's.
+    "Bf": {"planner": ["problem", "shared_history", "evaluator_feedback"],
+           "executor": ["problem", "shared_history", "evaluator_feedback"],
+           "reviewer": ["problem", "shared_history", "evaluator_feedback"]},
     # Arm C is the manipulation: the executor's view of the planner is the
     # PARSED PLAN OBJECT, never the planner's raw text.
     # CORRECTED 2026-09-28 (master, D9-R3): the Arm C templates never
@@ -100,10 +117,11 @@ VISIBILITY = {
                         "parsed_execution", "advice"]},
 }
 
-PROBLEMS_PARQUET = (
+# Machine-specific; override with AAMAS_PROBLEMS_PARQUET when running elsewhere.
+PROBLEMS_PARQUET = os.environ.get("AAMAS_PROBLEMS_PARQUET", (
     "/Users/bellayang/Documents/note/projects/IEEE-BigData-SciAgentTrace/"
     "analysis/hf_cache/release/data/problems/part-00000.parquet"
-)
+))
 BENCHMARK_ID = "omnimath2"
 DOMAIN = "math"
 
@@ -415,7 +433,7 @@ class StubResponder:
             else:
                 text = ('{"verdict":"accept","target":"executor",'
                         '"critique":"stub critique: derivation supports the form"}')
-        elif arm == "B":
+        elif arm in ("B", "Bf"):
             text = ("Continuing the shared work on the problem.\n"
                     "\\boxed{1 + \\lceil n/2 \\rceil}\n"
                     + ("[Agree]" if role == "reviewer" else "[Continue]"))
@@ -612,6 +630,10 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
     # Shared state, identical fields in all arms.
     shared_history: List[str] = []
     advice = ""
+    # Arm Bf only: evaluator feedback pending delivery in the NEXT cycle. Set
+    # when the evaluator returns FAIL, cleared at the end of the following
+    # cycle -- the lifetime ${advice} has in Arm A.
+    evaluator_feedback = ""
     previous_plan = ""
     plan_obj: Optional[Dict[str, Any]] = None
     exec_obj: Optional[Dict[str, Any]] = None
@@ -637,6 +659,9 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
         }
         if extra:
             m.update(extra)
+        if arm == "Bf":
+            # Measured, not declared: was evaluator feedback in THIS prompt?
+            m["evaluator_feedback_in_prompt"] = bool(evaluator_feedback)
         traj.messages.append(m)
 
     def build_messages(role: str, rnd: int, inner: int) -> List[Dict[str, str]]:
@@ -656,8 +681,12 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                            preliminary_solution=last_executor_text, advice=advice)
                 app = P.A_CRITIC_APPEND
             return [{"role": "user", "content": pre + "\n\n" + hist + "\n\n" + app}]
-        if arm == "B":
+        if arm in ("B", "Bf"):
             slot = ROLE_ORDER.index(role) + 1
+            if arm == "Bf" and evaluator_feedback:
+                # Same string Arm A gets in ${advice}; template unchanged.
+                hist = ((hist + "\n\n") if hist else "") + \
+                    "[Evaluator]\n" + evaluator_feedback
             pre = fill(P.B_GENERIC_PREPEND, task_description=task,
                        shared_history=hist, slot_index=slot)
             return [{"role": "user", "content": pre + "\n\n" + P.B_GENERIC_APPEND}]
@@ -860,6 +889,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                 traj.messages[-1]["route"] = route
                 traj.messages[-1]["answer_owner_after_turn"] = answer_owner
                 advice = reviewer_advice
+                evaluator_feedback = ""   # one-cycle lifetime, as ${advice} in A
 
                 # ---- Evaluator, INSIDE the loop (config stop_on_agree=true,
                 # reviewer_feedback_mode=hint).  Identical in every arm.
@@ -874,11 +904,13 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                     # exactly as reviewer_feedback_mode: hint prescribes.
                     advice = ("Evaluator feedback: FAIL / Score: False\n"
                               "Repair hint: {}".format(hint))
+                    evaluator_feedback = advice
                     stop_reason = "reviewer_agree_evaluator_fail"
                 elif approve and current_answer is None:
                     advice = ("Evaluator feedback: FAIL / Score: False\n"
                               "Repair hint: no final answer was produced; "
                               "produce a properly formed final answer.")
+                    evaluator_feedback = advice
                     stop_reason = "agree_without_answer"
             if stop:
                 break
@@ -1007,6 +1039,8 @@ async def amain(args) -> int:
     # normalize arm names: A/B/C uppercase, Cp keeps its lowercase suffix
     def _norm_arm(a):
         a = a.strip()
+        if a.upper() == "BF":
+            return "Bf"
         return "Cp" if a.upper() in ("CP", "C'", "CPRIME") else a.upper()
     arms = [_norm_arm(a) for a in args.arms.split(",") if a.strip()]
     actors = [m.strip() for m in args.actors.split(",") if m.strip()]
