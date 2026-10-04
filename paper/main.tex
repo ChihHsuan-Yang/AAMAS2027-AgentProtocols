@@ -1,49 +1,50 @@
 %==============================================================================
 % AAMAS 2027 submission -- main document
 %
-% CLASS: the OFFICIAL IFAAMAS class, aamas.cls, obtained 2026-09-30 from the
-% AAMAS-2026 author kit (see ../paper_support/aamas_official/PROVENANCE.md for
-% the exact URL, the sha256, and the fetch command -- the server needs a
-% browser User-Agent and a same-site Referer, and returns a 401KB HTML "404"
-% without them, which is what made an earlier attempt conclude wrongly that
-% the class was unobtainable).
+% CLASS: the OFFICIAL AAMAS-2027 author kit (aamas_2027_template.zip, from
+% https://warwick.ac.uk/fac/sci/dcs/aamas2027/aamas_2027_template.zip, linked
+% on the AAMAS 2027 Submission Instructions page), migrated 2026-10-03.
+% aamas.cls, ACM-Reference-Format.bst and by.pdf in this directory are the
+% kit's files, unmodified. The earlier build used the AAMAS-2026 class with
+% the year advanced by hand, because the 2027 kit had not been located.
 %
 % The class file must NOT be modified: "Please do not modify the style files
 % or any of the layout parameters." Nor may the page budget be met by
 % typesetting tricks: "Excessive use of typesetting tricks to make everything
 % fit into 8 pages is not admissible."
-%
-% Venue metadata below is the AAMAS-2026 block from the official sample with
-% the year advanced; AAMAS 2027 had not published its own kit at the time of
-% writing. VERIFY BEFORE CAMERA-READY.
 %==============================================================================
 \documentclass[sigconf,anonymous]{aamas}
 
 % -- Anonymity: no author block, no acknowledgements, no repo URLs. ----------
 % The aamas class handles anonymisation via the [anonymous] option.
 
-% -- IFAAMAS copyright block. Structure is verbatim from the official
-% -- AAMAS-2026 sample ("do not change"); year, edition number and city are
-% -- advanced to AAMAS 2027, Hanoi, Vietnam.
-% --
-% -- TEMPLATE STATUS, re-checked 2026-10-01: aamas2027.org does not resolve
-% -- (NXDOMAIN on three spellings), ifaamas.org/previousaamas.html still ends
-% -- at 2026, and cyprusconferences.org/aamas2026 carries no forward link.
-% -- `aamas_2027_template.zip` could not be located at any reachable host;
-% -- WebSearch is blocked by org policy in this environment, so the search
-% -- was exhaustive only over direct URL probes. See
-% -- paper_support/aamas_official/PROVENANCE.md for the full probe list.
-% -- IF the 2027 kit is reachable from another network, migrate to it and
-% -- re-verify this block -- the class may itself have changed.
+% -- AAMAS-2027 copyright block, verbatim from AAMAS_2027_sample.tex
+% -- ("do not change!").
+\makeatletter
+\gdef\@copyrightpermission{
+  \begin{minipage}{0.2\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{\includegraphics[width=0.90\textwidth]{by}}
+  \end{minipage}\hfill
+  \begin{minipage}{0.8\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{This work is licensed under a Creative Commons Attribution International 4.0 License.}
+  \end{minipage}
+  \vspace{5pt}
+}
+\makeatother
+
 \setcopyright{ifaamas}
-\acmConference[AAMAS '27]{Proc.\@ of the 26th International Conference
-on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{May 2027}
-{Hanoi, Vietnam}{Anonymous (eds.)}
+\acmConference[AAMAS 2027]{Proc.\@ of the 26th International Conference
+on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, Vietnam}{M.~Baldoni, F.~Fang, W.~Yeoh, N.~Yorke-Smith (eds.)}
 \copyrightyear{2027}
 \acmYear{2027}
 \acmDOI{}
-\acmPrice{}
 \acmISBN{}
+
+% -- OpenReview submission number (printed on page 1 in anonymous mode) and
+% -- track. REPLACE THE PLACEHOLDER with the number OpenReview assigned at
+% -- abstract registration before building the submission PDF.
+\acmSubmissionID{SUBMISSION-ID-TODO}
+\submissionType{Research Paper Track}
 
 \usepackage{booktabs}
 \usepackage{amsmath}
@@ -128,25 +129,12 @@ solving} --- cleanly in one actor, directionally in a second, absent in a
 third.
 \end{abstract}
 
-\begin{CCSXML}
-<ccs2012>
-<concept>
-<concept_id>10010147.10010178.10010219.10010220</concept_id>
-<concept_desc>Computing methodologies~Multi-agent systems</concept_desc>
-<concept_significance>500</concept_significance>
-</concept>
-<concept>
-<concept_id>10010147.10010178.10010179</concept_id>
-<concept_desc>Computing methodologies~Natural language processing</concept_desc>
-<concept_significance>300</concept_significance>
-</concept>
-</ccs2012>
-\end{CCSXML}
-\ccsdesc[500]{Computing methodologies~Multi-agent systems}
-\ccsdesc[300]{Computing methodologies~Natural language processing}
+% CCS concepts are not part of the AAMAS-2027 sample (AAMAS_2027_sample.tex
+% has no CCSXML / \ccsdesc block), so none is set here.
 
-\keywords{Multi-agent systems; large language models; role specialization;
-division of labor; organizational structure; ablation}
+% Comma-separated, as the AAMAS-2027 sample instructs.
+\keywords{Multi-agent systems, large language models, role specialization,
+division of labor, organizational structure, ablation}
 
 \maketitle
 

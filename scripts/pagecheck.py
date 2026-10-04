@@ -34,8 +34,13 @@ pages = int(subprocess.run(["pdfinfo", PDF], capture_output=True, text=True
 # and the Paphos->Hanoi venue fix had already done to the previous list).
 _title = subprocess.run(["pdfinfo", PDF], capture_output=True, text=True).stdout
 _title = _title.split("Title:")[1].split("\n")[0].strip() if "Title:" in _title else ""
+# 2026-10-03: the AAMAS-2027 class prints "Research Paper Track" (left) and
+# "AAMAS 2027, 3–7 May 2027, Hanoi, Vietnam" (right) as the running head; the
+# older "AAMAS ’27, May 2027" words are kept so the check still reads an old
+# build correctly.
 RUNHEAD = set(_title.split()) | {"Anon.", "AAMAS", "’27,", "May", "2027,",
-                                 "Hanoi,", "Vietnam"}
+                                 "Hanoi,", "Vietnam",
+                                 "Research", "Paper", "Track", "3–7"}
 
 ref_page = ref_col = ref_y = None
 for p in range(1, pages + 1):

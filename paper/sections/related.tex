@@ -15,10 +15,10 @@ condition returns the binding to the interface.
 
 \paragraph{Role specialization and role drift.} That prompted roles are not
 reliably obeyed is established: Cemri et al.~\cite{cemri2025why} name
-disobeying the role specification a failure mode from 1{,}600+ annotated
+disobeying the role specification a failure mode across 1{,}600+ annotated
 traces, Cao et al.~\cite{cao2026modules} give the training-time account of
 \emph{role drift}, Orogat et al.~\cite{orogat2026architectural} find
-prompt-level role conditioning does not induce the intended
+role-label conditioning does not induce the intended
 specialization, Patel~\cite{patel2026representational} measures collapse
 as near-identical rationales, Kandoussi~\cite{kandoussi2026whoami} reports
 differentiation arising \emph{without} assigned roles, and
@@ -34,37 +34,41 @@ Planner--Executor--Critic team no better than an evolved single agent
 which we report as a control condition and only a \emph{partial}
 replication of their null, since gpt-oss \emph{improves} by $+0.0503$ with
 an interval excluding zero. Zhang et al.~\cite{zhang2026rethinking} argue
-reported multi-agent gains are setup artifacts of structural collapse ---
+gains of multi-agent efficiency methods often arise where one agent
+suffices ---
 an objection aimed at our role-free condition, which is why
 \S\ref{subsec:notsingle} runs that control and reports that it cuts
 \emph{both} ways; Chen et al.~\cite{chen2026agentslimming} prune redundant
 agents on the same premise.
 
-\paragraph{Failure to revise, and answer lock-in.} That models restate
-answers under external correction is established for complete verifier
-feedback~\cite{jiang2026exactfeedback} and binary
-backprompts~\cite{stechly2024selfverification}; the phenomenon has a name,
+\paragraph{Failure to revise, and answer lock-in.} That models repeat
+earlier outputs under exact verifier feedback is
+established~\cite{jiang2026exactfeedback}; under self-reflection the
+failure has a name,
 \textbf{Degeneration-of-Thought}~\cite{liang2024divergent}, and belief
 entrenchment is studied directly~\cite{oh2026entrenchment}. Huang et
 al.~\cite{huang2024selfcorrect} are frequently misread here: their
 \emph{oracle} condition, which uses the correct label as a stopping rule,
 \textbf{improves} accuracy ($75.9 \to 84.3$ on GSM8K) and only the
-\emph{intrinsic} condition degrades. Our loop is oracle-gated like theirs.
+\emph{intrinsic} condition
+degrades~\cite[see also][]{stechly2024selfverification}. Our loop is
+oracle-gated like theirs.
 Closest to our lever is Chen et al.~\cite{chen2026relabeling}, who hold an
 erroneous claim byte-identical and vary only the \emph{role label} it
 carries, moving explicit-correction rate $23$--$93$pp --- the strongest
 published evidence that a role label is causal for error correction, but
 \textbf{single-agent}, with chat-template message roles rather than agent
 personas, and no recovery conditional or budget matching. \emph{Owned:} the
-failure, the name, and recovery-after-error as a
-metric~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
+failure and the
+name~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
 \textbf{inversion}: multi-agency is the prescribed cure for
 Degeneration-of-Thought, and a multi-agent system without role
 differentiation does not escape it.
 
 \paragraph{Premature consensus, which we test rather than propose.} Early
 convergence is a widely proposed explanation for multi-agent failure and
-sustaining diversity a widely proposed remedy~\cite{oh2026entrenchment};
+sustaining diversity a widely proposed
+remedy~\cite[e.g.,][]{oh2026entrenchment};
 self-correction's limits are surveyed by~\cite{kamoi2024when}. \emph{We
 propose neither:} \S\ref{subsec:mechanism} treats premature stopping as a
 \textbf{standing hypothesis and rejects it} on matched realized budget.
@@ -77,7 +81,7 @@ Canedo~\cite{canedo2026architecture} frames structured specification as a
 \emph{capability equalizer} whose value falls with model strength;
 \cite{yu2026bottleneck} reaches the same prediction from theory and
 Dochkina~\cite{dochkina2026drop} the complementary case. Our enforced
-condition reproduces their monotone ordering exactly --- \emph{but only
+condition reproduces that direction --- \emph{but only
 under a scoring rule that drops $8$--$17\%$ of trajectories}, and under
 our pre-registered rule it disappears (\S\ref{subsec:enforce}). We report
 both, because a reader who re-derives either needs to find the other.

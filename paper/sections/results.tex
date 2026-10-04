@@ -96,6 +96,7 @@ $0.120$ --- the gap is intact on clean messages.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig1_v1_story.pdf}
+\Description{Three panels. A: bars of first-pass accuracy per actor model, about equal with and without roles. B: bars of recovery after a wrong first answer per actor model and condition, lower without roles for gemma-4. C: stacked bars of deliberation cycles spent resubmitting versus revising for gemma-4.}
 \caption{\textbf{The phase dissociation, and what it is made of.}
 \textbf{(A)} Removing roles leaves first-pass accuracy alone.
 \textbf{(B)} The difference appears after the evaluator says the answer is
@@ -166,8 +167,8 @@ first-pass-wrong trajectories $133$ submit a second time and $128$ of
 those hold a second distinct answer at some point, while of the $316$
 role-free ones \emph{all} submit again and only $49$ ever hold one.
 \textbf{The role-free team is not failing to get another turn; it is using
-every turn to send back what it already sent.} This is
-Degeneration-of-Thought~\cite{liang2024divergent}, and the point is the
+every turn to send back what it already sent.} This mirrors
+Degeneration-of-Thought~\cite{liang2024divergent}; the point is the
 \textbf{inversion}: multi-agency is the prescribed cure that role-free
 multi-agency does not deliver. Rubber-stamping is a symptom of answer
 lock-in, not established as its cause: we observe the Reviewer approving
@@ -249,6 +250,7 @@ actors is not} (supplement).
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig2_v2_xdomain.pdf}
+\Description{Two columns, Omni-MATH and SciBench, for gemma-4. Top row: first-pass accuracy is the same with and without roles. Bottom row: paired recovery drops without roles in both domains.}
 \caption{\textbf{Cross-domain replication, gemma-4.} First pass
 flat in both domains; paired recovery drops in both. Top row
 \emph{marginal}, bottom \emph{paired} --- the bottom-row Omni-MATH figures

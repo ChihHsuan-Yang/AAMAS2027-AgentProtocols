@@ -1,4 +1,51 @@
-# Official AAMAS class — retrieved 2026-09-30
+# Official AAMAS class
+
+## CURRENT: AAMAS-2027 author kit — added 2026-10-03
+
+Source: https://warwick.ac.uk/fac/sci/dcs/aamas2027/aamas_2027_template.zip
+linked from the AAMAS 2027 Submission Instructions page
+(https://warwick.ac.uk/fac/sci/dcs/aamas2027/guidelines-and-policies/instructions/).
+Downloaded in a browser by a co-author on 2026-10-03.
+
+| file | sha256 |
+|---|---|
+| `aamas_2027_template.zip` (not stored here) | `e70e88d36fd96db0777b9d00a1cd0bd1eecbbb28619e9e723dcf207a9bc6ce2a` |
+| `aamas.cls` (acmart v2.19, 2026/06/27) | `e88c8e3e5fd1e39f93a2a4fa5b664e125b67487996b4236668206acf5c70ca7e` |
+| `ACM-Reference-Format.bst` | `8ec002c927068bfc5b3cfe71b66aa4767b9e485530ac3c67ba5c064df4c2e6ac` |
+| `by.pdf` (CC-BY mark used by the copyright block) | `19b7b19350bb937afead8e45e4ad006187e14803bef783902dbd88e370fc9917` |
+
+`aamas.cls`, `ACM-Reference-Format.bst` and `by.pdf` in this directory and in
+`paper/` are now the 2027 kit's files, unmodified. `AAMAS_2027_sample.tex` and
+`sample_2027.bib` are kept for reference.
+
+What changed against the 2026 kit, as it affects this paper:
+
+- New copyright block (CC-BY, uses `by.pdf`), copied verbatim into
+  `paper/main.tex` and `paper/supplement.tex`.
+- `\acmConference` now reads "AAMAS 2027 ... 3--7 May 2027 ... Hanoi, Vietnam"
+  with the named editors.
+- NEW, REQUIRED: `\acmSubmissionID{<OpenReview submission id>}` — printed on
+  page 1 in anonymous mode — and `\submissionType{Research Paper Track}`.
+  **The submission ID in main.tex and supplement.tex is
+  `2850` (set 2026-10-03 from the OpenReview author console).**
+- The 2027 sample has no CCS-concepts block and gives keywords separated by
+  commas; main.tex follows the sample on both.
+- `\acmPrice` removed (the sample no longer sets it).
+- The class warns about figures without `\Description{}`; both figures have one.
+- Section headings are set in mixed case ("References", not "REFERENCES");
+  the running head is "Research Paper Track" / "AAMAS 2027, 3–7 May 2027,
+  Hanoi, Vietnam". `scripts/pagecheck.py` was updated for the new head.
+
+Result on 2026-10-03 (TeX Live 2023 build): main text ends on page 8,
+references on page 9, supplement 11 pages. Re-check on the submitting machine.
+
+Everything below this line is the HISTORICAL record for the AAMAS-2026 kit the
+paper was built on until 2026-10-03. Statements there that the 2027 kit does
+not exist are superseded by this section.
+
+---
+
+# Official AAMAS class (2026 kit) — retrieved 2026-09-30
 
 Source: https://cyprusconferences.org/aamas2026/wp-content/uploads/2025/06/AAMAS-2026-Formatting-Instructions-pre-CR.zip
 linked from https://cyprusconferences.org/aamas2026/submission-instructions/

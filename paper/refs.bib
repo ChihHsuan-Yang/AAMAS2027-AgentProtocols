@@ -17,6 +17,16 @@
 % confirmed against the arXiv API on 2026-09-29, not a fetch error. MONTH
 % fields are deliberately omitted throughout; YEAR is taken from the
 % identifier prefix, which is authoritative for the announcement year.
+%
+% UPDATED 2026-10-03 (pre-submission citation audit):
+%   - cemri2025why, chen2026agentslimming, stechly2024selfverification now
+%     cite the published versions (NeurIPS 2025; ACL 2026, Anthology
+%     2026.acl-long.1387; ICLR 2025). liang2024divergent and oh2026entrenchment
+%     completed from the ACL Anthology records (2024.emnlp-main.992;
+%     2026.tacl-1.58). Venue pages were loaded on 2026-10-03.
+%   - Working notes removed from `note` fields (they print in the PDF).
+%   - jiang2026exactfeedback and yang2026contamination moved to the common
+%     misc form used by the other arXiv-only entries.
 
 @misc{orogat2026architectural,
   title        = {Architectural Design, Not Only Model Intelligence, Governs
@@ -27,9 +37,7 @@
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
   doi          = {10.48550/arXiv.2602.03128},
-  note         = {Version v2 (17 Sep 2026). Accepted to SIGMOD 2027.
-                  Cite v2: the role-conditioning table is Table 14 in v2 and
-                  Table 12 in v1.}
+  note         = {Version v2. To appear at SIGMOD 2027.}
 }
 
 @misc{canedo2026architecture,
@@ -54,23 +62,18 @@
   doi          = {10.48550/arXiv.2609.04217}
 }
 
-@misc{cemri2025why,
+@inproceedings{cemri2025why,
   title        = {Why Do Multi-Agent {LLM} Systems Fail?},
   author       = {Cemri, Mert and Pan, Melissa Z. and Yang, Shuyi and
                   Agrawal, Lakshya A. and Chopra, Bhavya and Tiwari, Rishabh and
                   Keutzer, Kurt and Parameswaran, Aditya and Klein, Dan and
                   Ramchandran, Kannan and Zaharia, Matei and
                   Gonzalez, Joseph E. and Stoica, Ion},
+  booktitle    = {Advances in Neural Information Processing Systems
+                  (NeurIPS)},
   year         = {2025},
   eprint       = {2503.13657},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.AI},
-  doi          = {10.48550/arXiv.2503.13657},
-  note         = {Version v3 (26 Oct 2025). Introduces the MAST failure
-                  taxonomy over 1{,}600+ annotated traces. The
-                  ``disobey role specification'' mode is cited from the paper
-                  body; the v3 abstract page does not print mode identifiers,
-                  so the FM-1.2 label is not asserted here.}
+  archivePrefix= {arXiv}
 }
 
 @misc{cao2026modules,
@@ -94,8 +97,7 @@
   eprint       = {2609.28693},
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
-  doi          = {10.48550/arXiv.2609.28693},
-  note         = {White paper, 30 pages. The system is named \emph{skilder}.}
+  doi          = {10.48550/arXiv.2609.28693}
 }
 
 @misc{ge2026roles,
@@ -106,8 +108,7 @@
   eprint       = {2605.28433},
   archivePrefix= {arXiv},
   primaryClass = {cs.CL},
-  doi          = {10.48550/arXiv.2605.28433},
-  note         = {Introduces SERO.}
+  doi          = {10.48550/arXiv.2605.28433}
 }
 
 @misc{barrak2025traceability,
@@ -140,8 +141,7 @@
   eprint       = {2609.27822},
   archivePrefix= {arXiv},
   primaryClass = {cs.MA},
-  doi          = {10.48550/arXiv.2609.27822},
-  note         = {19 pages, 5 figures, 21 tables.}
+  doi          = {10.48550/arXiv.2609.27822}
 }
 
 @misc{yang2026protocol,
@@ -155,8 +155,7 @@
   eprint       = {2608.14927},
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
-  doi          = {10.48550/arXiv.2608.14927},
-  note         = {23 pages, 6 figures.}
+  doi          = {10.48550/arXiv.2608.14927}
 }
 
 % ---------------------------------------------------------------------------
@@ -178,8 +177,7 @@
   eprint       = {2607.15388},
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
-  doi          = {10.48550/arXiv.2607.15388},
-  note         = {48 pages, 20 figures, 25 tables.}
+  doi          = {10.48550/arXiv.2607.15388}
 }
 
 @misc{zhang2026rethinking,
@@ -193,8 +191,7 @@
   archivePrefix= {arXiv},
   primaryClass = {cs.LG},
   doi          = {10.48550/arXiv.2609.05933},
-  note         = {Conference on Empirical Methods in Natural Language
-                  Processing (EMNLP) 2026.}
+  note         = {To appear at EMNLP 2026.}
 }
 
 @misc{dochkina2026drop,
@@ -205,20 +202,23 @@
   eprint       = {2603.28990},
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
-  doi          = {10.48550/arXiv.2603.28990},
-  note         = {Submitted to IEEE Access; not accepted at time of writing.}
+  doi          = {10.48550/arXiv.2603.28990}
 }
 
-@misc{chen2026agentslimming,
+@inproceedings{chen2026agentslimming,
   title        = {{AgentSlimming}: Towards Efficient and Cost-Aware
                   Multi-Agent Systems},
   author       = {Chen, Yulang and Peng, Haoxuan and Liu, Jinyan and
                   Wen, Zichen and Liu, Dongrui and Zhang, Linfeng},
+  booktitle    = {Proceedings of the 64th Annual Meeting of the Association
+                  for Computational Linguistics (Volume 1: Long Papers)},
+  pages        = {30064--30086},
+  publisher    = {Association for Computational Linguistics},
+  address      = {San Diego, California, United States},
   year         = {2026},
+  doi          = {10.18653/v1/2026.acl-long.1387},
   eprint       = {2605.08813},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.LG},
-  doi          = {10.48550/arXiv.2605.08813}
+  archivePrefix= {arXiv}
 }
 
 @misc{yu2026bottleneck,
@@ -279,22 +279,23 @@
   archivePrefix= {arXiv}
 }
 
-@article{jiang2026exactfeedback,
+@misc{jiang2026exactfeedback,
   author       = {Jiang, Haitong and Liu, Chunlin and Wang, Yile and Feng, Yuhong},
   title        = {Exact Feedback Is Not Control: Evaluating Text-based
                   Closed-Loop Revision in {LLM}s},
-  journal      = {arXiv preprint arXiv:2609.28150},
   year         = {2026},
   eprint       = {2609.28150},
-  archivePrefix= {arXiv}
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CL},
+  doi          = {10.48550/arXiv.2609.28150}
 }
 
-@article{stechly2024selfverification,
+@inproceedings{stechly2024selfverification,
   author       = {Stechly, Kaya and Valmeekam, Karthik and Kambhampati, Subbarao},
   title        = {On the Self-Verification Limitations of Large Language
                   Models on Reasoning and Planning Tasks},
-  journal      = {arXiv preprint arXiv:2402.08115},
-  year         = {2024},
+  booktitle    = {International Conference on Learning Representations},
+  year         = {2025},
   eprint       = {2402.08115},
   archivePrefix= {arXiv}
 }
@@ -305,8 +306,13 @@
                   and Tu, Zhaopeng},
   title        = {Encouraging Divergent Thinking in Large Language Models
                   through Multi-Agent Debate},
-  booktitle    = {Proceedings of EMNLP},
+  booktitle    = {Proceedings of the 2024 Conference on Empirical Methods in
+                  Natural Language Processing},
+  pages        = {17889--17904},
+  publisher    = {Association for Computational Linguistics},
+  address      = {Miami, Florida, USA},
   year         = {2024},
+  doi          = {10.18653/v1/2024.emnlp-main.992},
   eprint       = {2305.19118},
   archivePrefix= {arXiv}
 }
@@ -315,7 +321,10 @@
   author       = {Oh, Jihwan and Jeong, Minchan and Ko, Jongwoo and Yun, Se-Young},
   title        = {From Belief Entrenchment to Robust Reasoning in {LLM} Agents},
   journal      = {Transactions of the Association for Computational Linguistics},
+  volume       = {14},
+  pages        = {1286--1307},
   year         = {2026},
+  doi          = {10.1162/tacl.a.728},
   eprint       = {2503.16814},
   archivePrefix= {arXiv}
 }
@@ -333,14 +342,15 @@
   archivePrefix= {arXiv}
 }
 
-@article{yang2026contamination,
+@misc{yang2026contamination,
   author       = {Yang, Zhanfu},
   title        = {Why Retrying Fails: Context Contamination in {LLM}
                   Agent Pipelines},
-  journal      = {arXiv preprint arXiv:2605.08563},
   year         = {2026},
   eprint       = {2605.08563},
-  archivePrefix= {arXiv}
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2605.08563}
 }
 
 % Added 2026-09-30 from the forward-citation audit (notes/FINAL-LITERATURE-AUDIT.md).
@@ -356,7 +366,7 @@
   eprint       = {2606.05976},
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
-  note         = {15 pages, 3 figures, 15 tables.}
+  doi          = {10.48550/arXiv.2606.05976}
 }
 
 % --- Classical MAS organizational specification. -----------------------------
