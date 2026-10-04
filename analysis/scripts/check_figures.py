@@ -25,7 +25,6 @@ Usage:
 import json, os, re, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ROOT = "/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols"
 FIGDIR = os.path.join(ROOT, "figures")
 DATA = os.path.join(ROOT, "analysis", "out", "FIGDATA.json")
 

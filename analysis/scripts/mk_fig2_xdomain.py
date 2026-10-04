@@ -107,9 +107,13 @@ def v1():
     """Grouped bars, 2x2.  Rows share a y scale within the row so the two
     domains are directly comparable; the two ROWS never share a scale,
     because a first-pass rate and a recovery rate are different quantities."""
-    fig = plt.figure(figsize=(S.COLWIDTH_IN, 3.75))
-    gs = fig.add_gridspec(2, 2, left=0.185, right=0.980, top=0.760,
-                          bottom=0.270, hspace=1.15, wspace=0.18)
+    # 2.95in tall since 2026-10-04 (was 3.75): the in-figure subtitle and
+    # four-line footnote repeated the caption and the row labels, and the
+    # footnote sat directly under "37 vs 3 of n=237" so the two read as one
+    # block.  Margins re-measured for the shorter figure.
+    fig = plt.figure(figsize=(S.COLWIDTH_IN, 2.95))
+    gs = fig.add_gridspec(2, 2, left=0.185, right=0.980, top=0.835,
+                          bottom=0.235, hspace=1.10, wspace=0.14)
     x = np.arange(2, dtype=float)
     for ci, (dk, dname) in enumerate(DOMAIN):
         # --- row 1: first pass, MARGINAL
@@ -149,21 +153,12 @@ def v1():
     fig.text(0.006, 0.995,
              "Same first pass, then a large drop — twice",
              fontsize=S.FS_TITLE, ha="left", va="top", color=S.INK)
-    fig.text(0.006, 0.942,
-             "gemma-4-31B. Top row marginal, bottom row paired:\n"
-             "different populations, different numbers.",
-             fontsize=S.FS_ANNOT, ha="left", va="top", color=S.INK3,
-             linespacing=1.3)
-    fig.text(0.006, 0.006,
-             "“x vs y of n” = discordant problems, recovered under one\n"
-             "condition only. The two deltas are two replications of a\n"
-             "direction, not one effect measured twice — a test that\n"
-             "cannot distinguish them is not evidence that they match.",
-             fontsize=S.FS_ANNOT, ha="left", va="bottom", color=S.INK3,
-             linespacing=1.3)
+    # The population of each row is named in its y label ("marginal" /
+    # "paired") and the caption; the discordant-count notation is defined in
+    # the caption.  Neither is repeated here.
     h = [Patch(facecolor=S.ARMC[k], label=S.ARM_LONG[k]) for k in ARMS]
     fig.legend(handles=h, ncol=2, loc="upper left",
-               bbox_to_anchor=(0.004, 0.900), fontsize=S.FS_ANNOT,
+               bbox_to_anchor=(0.004, 0.952), fontsize=S.FS_ANNOT,
                handlelength=0.9, columnspacing=0.8, handletextpad=0.35)
     return S.save(fig, "fig2_v1_xdomain", S.COLWIDTH_IN)
 
@@ -176,9 +171,13 @@ def v2():
 
     The recovery row additionally plots the discordant split as the paired
     evidence, because that -- not an interval -- is what the exact test uses."""
-    fig = plt.figure(figsize=(S.COLWIDTH_IN, 3.75))
-    gs = fig.add_gridspec(2, 2, left=0.185, right=0.980, top=0.760,
-                          bottom=0.270, hspace=1.15, wspace=0.18)
+    # 2.95in tall since 2026-10-04 (was 3.75): the in-figure subtitle and
+    # four-line footnote repeated the caption and the row labels, and the
+    # footnote sat directly under "37 vs 3 of n=237" so the two read as one
+    # block.  Margins re-measured for the shorter figure.
+    fig = plt.figure(figsize=(S.COLWIDTH_IN, 2.95))
+    gs = fig.add_gridspec(2, 2, left=0.185, right=0.980, top=0.835,
+                          bottom=0.235, hspace=1.10, wspace=0.14)
     xs = np.array([0.0, 1.0])
     for ci, (dk, dname) in enumerate(DOMAIN):
         ax = fig.add_subplot(gs[0, ci])
@@ -187,13 +186,18 @@ def v2():
         for xi, v, k in zip(xs, (a, b), ARMS):
             ax.plot([xi], [v], "o", ms=4.0, mfc=S.ARMC[k], mec=S.SURFACE,
                     mew=0.9, zorder=4)
+        # First-pass points sit at ~0.8 on a 0-1 axis, so a label ABOVE them
+        # ran into the panel title (seen in rendered output); the band below
+        # the points is empty, so the labels hang under them.
         ax.annotate(f"{a:.3f}", (xs[0], a), textcoords="offset points",
-                    xytext=(-2.0, 5.0), ha="right", va="bottom",
+                    xytext=(-2.0, -5.0), ha="right", va="top",
                     fontsize=S.FS_ANNOT, color=S.INK)
         ax.annotate(f"{b:.3f}", (xs[1], b), textcoords="offset points",
-                    xytext=(2.0, 5.0), ha="left", va="bottom",
+                    xytext=(2.0, -5.0), ha="left", va="top",
                     fontsize=S.FS_ANNOT, color=S.INK)
         ax.set_ylim(0, 1.0); ax.set_yticks(np.arange(0, 1.01, 0.5))
+        if ci == 1:
+            ax.set_yticklabels([])        # same scale as the left column
         ax.set_xlim(-0.85, 1.85); ax.set_xticks(xs)
         ax.set_xticklabels([S.ARM_SHORT[k] for k in ARMS], fontsize=S.FS_ANNOT)
         S.clean(ax, grid_axis="y")
@@ -216,6 +220,8 @@ def v2():
                     xytext=(2.0, 5.0), ha="left", va="bottom",
                     fontsize=S.FS_ANNOT, color=S.INK)
         ax.set_ylim(0, 0.42); ax.set_yticks([0, 0.2, 0.4])
+        if ci == 1:
+            ax.set_yticklabels([])
         ax.set_xlim(-0.85, 1.85); ax.set_xticks(xs)
         ax.set_xticklabels([S.ARM_SHORT[k] for k in ARMS], fontsize=S.FS_ANNOT)
         S.clean(ax, grid_axis="y")
@@ -228,21 +234,12 @@ def v2():
     fig.text(0.006, 0.995,
              "Same first pass, then a large drop — twice",
              fontsize=S.FS_TITLE, ha="left", va="top", color=S.INK)
-    fig.text(0.006, 0.942,
-             "gemma-4-31B. Top row marginal, bottom row paired:\n"
-             "different populations, different numbers.",
-             fontsize=S.FS_ANNOT, ha="left", va="top", color=S.INK3,
-             linespacing=1.3)
-    fig.text(0.006, 0.006,
-             "“x vs y of n” = discordant problems, recovered under one\n"
-             "condition only. The two deltas are two replications of a\n"
-             "direction, not one effect measured twice — a test that\n"
-             "cannot distinguish them is not evidence that they match.",
-             fontsize=S.FS_ANNOT, ha="left", va="bottom", color=S.INK3,
-             linespacing=1.3)
+    # The population of each row is named in its y label ("marginal" /
+    # "paired") and the caption; the discordant-count notation is defined in
+    # the caption.  Neither is repeated here.
     h = [Patch(facecolor=S.ARMC[k], label=S.ARM_LONG[k]) for k in ARMS]
     fig.legend(handles=h, ncol=2, loc="upper left",
-               bbox_to_anchor=(0.004, 0.900), fontsize=S.FS_ANNOT,
+               bbox_to_anchor=(0.004, 0.952), fontsize=S.FS_ANNOT,
                handlelength=0.9, columnspacing=0.8, handletextpad=0.35)
     return S.save(fig, "fig2_v2_xdomain", S.COLWIDTH_IN)
 

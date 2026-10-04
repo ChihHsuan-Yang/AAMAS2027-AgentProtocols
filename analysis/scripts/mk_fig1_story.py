@@ -22,7 +22,9 @@ FINAL_NUMBER_AUDIT.md and it is how a wrong pair of numbers enters a paper:
     first-pass-wrong set (n_fpw differs per condition).
   * the p-values are PAIRED -- computed only on problems first-pass-wrong
     under BOTH conditions (paired_recovery[*].n, a different, smaller set).
-Both are stated on the figure, with their own n, so neither reads as the other.
+Both are stated on the figure, with their own n, so neither reads as the other
+(since 2026-10-04 as a two-line note inside panel B, which is where the marks
+are; the earlier five-line footnote under panel C repeated the caption).
 
 HONESTY CONSTRAINT ON PANEL B.  Only gemma-4's role contrast survives pairing
 (p=2e-08).  gpt-oss (p=0.208) and Llama-3.3 (p=0.375) do NOT.  The panel marks
@@ -62,7 +64,7 @@ MAXCYC = D["max_cycles"]     # from the frozen budget record, not typed
 FOCUS = "gemma-4-31B-it"     # the actor whose role contrast survives pairing
 
 # ---- figure geometry, in inches, so every band is checked against the column
-FIG_H   = 4.40
+FIG_H   = 3.88              # was 4.40 with a 5-line footnote that duplicated the caption
 L_AB    = 0.700              # left margin for panels A/B (two-line y label)
 L_C     = 1.010              # left margin for panel C (row labels are text)
 R_EDGE  = 3.270              # right edge of every plot box
@@ -151,6 +153,16 @@ def panel_B(ax, arms=("A", "B", "C")):
         ax.text((xl + xr) / 2, yb + 0.036, pfmt(PR[f"{a}|AB"]["p"]) if res else "n.s.",
                 ha="center", va="bottom", fontsize=S.FS_ANNOT,
                 color=S.INK if res else S.INK3, zorder=5)
+    # Which population each mark draws, stated ON the panel that draws it.
+    # The bars and brackets peak below 0.6, so the band above is empty; the
+    # five-line footnote this replaces repeated the caption word for word.
+    nf = "/".join(str(S.cell(a, "A")["n_fpw"]) for a in ACTORS)
+    pn = PR[f"{FOCUS}|AB"]["n"]
+    ax.text(0.012, 0.975,
+            f"bars: marginal, role-structured n={nf}\n"
+            f"brackets: paired p, gemma-4 n={pn}",
+            transform=ax.transAxes, ha="left", va="top",
+            fontsize=S.FS_ANNOT, color=S.INK3, linespacing=1.3, zorder=5)
     S.clean(ax)
     ax.set_ylim(0, 1.0)
     ax.set_yticks(np.arange(0, 1.01, 0.5))
@@ -187,14 +199,17 @@ def panel_C_budget(ax):
         else:
             # 0.03 cycles is far too thin to hold a label in place.  To the
             # RIGHT it leaves the axes; BELOW it collides with the x tick
-            # labels (both seen in rendered output).  Point UP into the panel,
-            # where the role-free row has empty space above its bar.
-            ax.annotate(f"{rev:.2f} revising", xy=(sub + gap + rev / 2, yi + 0.21),
-                        xytext=(-6.0, 11.0), textcoords="offset points",
+            # labels; ABOVE it landed on the role-structured row and read as
+            # that row's label (all three seen in rendered output).  So the
+            # label sits INSIDE this row's own long bar, at its right end,
+            # with a leader to the sliver -- the row it belongs to is then
+            # the row it is printed on.
+            ax.annotate(f"{rev:.2f} revising", xy=(sub + gap + rev / 2, yi),
+                        xytext=(sub - 0.12, yi), textcoords="data",
                         ha="right", va="center", fontsize=S.FS_ANNOT,
-                        color=S.INK, zorder=6,
-                        arrowprops=dict(arrowstyle="-", lw=0.5, color=S.INK2,
-                                        shrinkA=1.0, shrinkB=1.0))
+                        color=S.SURFACE, zorder=6,
+                        arrowprops=dict(arrowstyle="-", lw=0.6, color=S.SURFACE,
+                                        shrinkA=0.5, shrinkB=0.5))
         # row label in AXES coords: in data coords it was clipped by the margin
         ax.text(-0.025, yi, S.ARM_LONG[arm], transform=ax.get_yaxis_transform(),
                 ha="right", va="center", fontsize=S.FS_ANNOT, color=S.INK)
@@ -280,23 +295,16 @@ def build(panel_c, stem):
              "C   Same retry budget, different use (gemma-4-31B)",
              fontsize=S.FS_TITLE, color=S.INK, ha="left", va="bottom")
 
+    # Panel A draws two conditions and panel B three; a shared legend that
+    # lists three above a two-bar panel was read as a missing bar, so the
+    # third entry names the panel it belongs to.
     h = [Patch(facecolor=S.ARMC[a], hatch=S.ARMHATCH[a], edgecolor=S.SURFACE,
-               label=S.ARM_LONG[a]) for a in ("A", "B", "C")]
+               label=S.ARM_LONG[a] + (" (panel B)" if a == "C" else ""))
+         for a in ("A", "B", "C")]
     fig.legend(handles=h, ncol=3, loc="upper center", bbox_to_anchor=(0.52, 1.003),
                fontsize=S.FS_ANNOT, handlelength=0.9, columnspacing=0.6,
                handletextpad=0.3)
 
-    nf = " / ".join(str(S.cell(a, "A")["n_fpw"]) for a in ACTORS)
-    pn = PR[f"{FOCUS}|AB"]["n"]
-    # Wrapped to fit 3.337in at 6.5pt -- measured, not estimated.
-    fig.text(0.004, 0.004,
-             "Bars are MARGINAL rates, each condition over its own\n"
-             f"first-pass-wrong set (role-structured: {nf}). Bracket\n"
-             "p-values are PAIRED, on problems wrong under BOTH\n"
-             f"conditions (gemma-4 n={pn}) — a different, smaller\n"
-             "population. Bars bootstrap; “n.s.” = not resolvable paired.",
-             fontsize=S.FS_ANNOT, color=S.INK3, ha="left", va="bottom",
-             linespacing=1.3)
     return S.save(fig, stem, S.COLWIDTH_IN)
 
 

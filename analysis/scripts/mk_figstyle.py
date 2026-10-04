@@ -19,7 +19,10 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT    = "/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols"
+# Repository root, resolved from this file (analysis/scripts/mk_figstyle.py)
+# so the scripts run from any checkout; a hard-coded path only ran on one
+# machine.
+ROOT    = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FIGDIR  = os.path.join(ROOT, "figures")
 DATA    = os.path.join(ROOT, "analysis", "out", "FIGDATA.json")
 
@@ -41,18 +44,26 @@ FS_TITLE  = 8.0
 FS_MIN    = 6.5
 
 # ---------------------------------------------------------------- palette
-# Okabe-Ito. Checked with the dataviz validator, categorical, --pairs all,
-# light surface: lightness band PASS, chroma floor PASS, CVD separation PASS
-# (worst adjacent pair deltaE 11.0 deutan / 8.6 tritan), normal-vision floor
-# PASS (18.7), contrast vs surface PASS.  Arm identity is ALSO carried by
-# position, by the A/B/C tick label, and by hatch on arm C -- never by hue
-# alone.
-ARMC = {"A": "#0072B2", "B": "#D55E00", "C": "#009E73"}
+# Deep purple / rose / warm gold (2026-10-04; replaced Okabe-Ito blue/orange/
+# green at the PI's request for a pink-purple family).  Checked with the
+# dataviz validator, categorical, --pairs all, light surface: lightness band
+# PASS, chroma floor PASS, CVD separation PASS (worst pair gold-rose deltaE
+# 15.1 deutan / 8.1 tritan; purple-rose 18.8 protan / 27.7 tritan),
+# normal-vision floor PASS (worst 18.8; purple-rose 25.5), contrast vs
+# surface: purple and rose PASS, gold 2.43:1 (WARN -- relief is the hatch,
+# the tick label and the legend).  A third colour INSIDE the pink-purple
+# family (lilac, plum, magenta) fails the normal-vision floor against one of
+# the other two in every variant tried, so the supporting condition takes a
+# warm accent instead.  Arm identity is ALSO carried by position, by the
+# tick label, and by hatch on arm C -- never by hue alone.
+ARMC = {"A": "#5B3F8C", "B": "#D4689A", "C": "#D8973C"}
 ARMHATCH = {"A": "", "B": "", "C": "///"}      # C = secondary, non-colour channel
-INK      = "#1a1a1a"
-INK2     = "#4d4d4d"
-INK3     = "#767676"
-GRID     = "#d9d9d9"
+# Neutrals: slate rather than pure black (text 11.2:1, secondary 6.5:1,
+# tertiary 4.6:1 on white -- every text colour clears 4.5:1).
+INK      = "#3A3A4A"
+INK2     = "#5C5C6E"
+INK3     = "#74747E"
+GRID     = "#E6E6EE"
 SURFACE  = "#ffffff"
 
 # ---------------------------------------------------------------- terminology
@@ -128,7 +139,7 @@ def apply_rc():
         "xtick.labelcolor": INK, "ytick.labelcolor": INK,
         "xtick.major.width": 0.6, "ytick.major.width": 0.6,
         "xtick.major.size": 2.0,  "ytick.major.size": 2.0,
-        "grid.color": GRID, "grid.linewidth": 0.5, "grid.linestyle": "-",
+        "grid.color": GRID, "grid.linewidth": 0.5, "grid.linestyle": (0, (3, 2)),
         "legend.frameon": False,
         "legend.handlelength": 1.2,
         "legend.handletextpad": 0.5,
@@ -147,7 +158,7 @@ def clean(ax, grid_axis="y"):
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     if grid_axis:
-        ax.grid(True, axis=grid_axis, lw=0.5, color=GRID, zorder=0)
+        ax.grid(True, axis=grid_axis, lw=0.5, color=GRID, ls=(0, (3, 2)), zorder=0)
         ax.set_axisbelow(True)
 
 

@@ -3,6 +3,46 @@
 **Owner: figure agent.** Everything in this directory is generated. Do not
 hand-edit a PDF, a PNG, or a number.
 
+## 2026-10-04 revision (supersedes the colour and layout notes below)
+
+Layout and colour only; every number is still read from `FIGDATA.json` and
+`analysis/scripts/check_figures.py` passes (numbers traced, no arm codes,
+vector text). The two draft variants written by the same scripts
+(`fig1_v2_story`, `fig2_v1_xdomain`) were regenerated alongside; the other
+draft variants (`fig1_v1_grouped`, `fig1_v2_slopes`, `fig1_v3_dumbbell`,
+`fig2_v*_budget/panels/funnel`, `fig3_*`, `fig4_*`, `figS1_conditions`) still
+carry the old palette and are not shipped by either document.
+
+- **Palette** is now deep purple / rose / warm gold
+  (`#5B3F8C` role-structured, `#D4689A` role-free, `#D8973C` structurally
+  enforced, hatched), at the PI's request for a pink-purple family.
+  Re-validated with the dataviz validator (categorical, `--pairs all`, light
+  surface): lightness band, chroma floor, CVD separation (worst pair gold–rose
+  ΔE 15.1 deutan / 8.1 tritan; purple–rose 18.8 protan / 27.7 tritan) and
+  normal-vision floor (worst 18.8) PASS; contrast vs surface PASS for purple
+  and rose, 2.43:1 for gold (relief: hatch, tick label, legend). Every
+  in-family third colour tried (lilac, plum, magenta) failed the
+  normal-vision floor against one of the other two. Neutrals are slate
+  (`#3A3A4A` / `#5C5C6E` / `#74747E`, all ≥4.5:1 on white); grid is a faint
+  dash. Rationale and the full validator record are in `mk_figstyle.py`.
+- **Figure 1** (`fig1_v1_story`, 3.88 in tall, was 4.40): the shared legend
+  names the panel its third entry belongs to ("structurally enforced (panel
+  B)") because panel A draws two conditions; the population note (bars
+  marginal with their n, brackets paired with n) moved from a five-line
+  footnote under panel C — which repeated the caption — into the empty band
+  at the top of panel B; the `0.03 revising` callout now sits inside the
+  role-free bar it describes (the earlier upward offset landed it on the
+  role-structured row).
+- **Figure 2** (`fig2_v2_xdomain`, 2.95 in tall, was 3.75): the in-figure
+  subtitle and four-line footnote are gone (both repeated the caption and
+  the row labels, and the footnote sat directly under "37 vs 3 of n=237");
+  first-pass value labels hang below their points instead of colliding with
+  the panel titles; the right column no longer repeats the left column's
+  y tick labels.
+- `mk_figstyle.py` and `check_figures.py` resolve the repository root from
+  their own location instead of a hard-coded path, so they run from any
+  checkout.
+
 ## The rule this directory is built on
 
 **Every numeric label in every figure is computed from data at render time.
