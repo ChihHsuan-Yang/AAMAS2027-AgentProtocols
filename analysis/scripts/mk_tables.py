@@ -271,6 +271,7 @@ def t_collapse(S, pv) -> str:
     T1 = rowmap(S["T1"], 8)       # n fp fin rec n_fpw collapse unanim frozen
     T18 = rowmap(S["T18"], 4)     # n bytedup normdup dupsameprompt
     T20 = rowmap(S["T20"], 4)     # n strict medium loose
+    T9  = rowmap(S["T9"], 6)      # n medchars medlat medch/s frac<500ch reasfallbk
 
     # Adjudication: '  <actor>  <arm>  <n>  <rate>'
     adj = {}
@@ -285,6 +286,7 @@ def t_collapse(S, pv) -> str:
     # reader-facing names are long ("structurally enforced"), and as a column
     # they push this one-column table ~33pt past the text block.
     body = []
+    dagger = []   # (short-message fraction) for cells whose duplication is uninterpretable
     for arm in ("A", "B"):
         body.append(f"\\multicolumn{{4}}{{@{{}}l}}{{\\emph{{{ARM_LABEL[arm]}}}}} \\\\")
         for a in ACTORS:
@@ -292,7 +294,17 @@ def t_collapse(S, pv) -> str:
             dup = need(T18, (a, arm), "T18")[1]
             aj = need(adj, (a, arm), "T23")[1]
             bold = (lambda s: f"$\\mathbf{{{s}}}$") if arm == "B" else m
-            body.append(f"\\quad {ACTOR_LABEL[a]} & {bold(coll)} & {m(dup)} & {bold(aj)} \\\\")
+            # The logging defect (T9, T26; manuscript 5.1): where most planner
+            # messages are under 500 visible characters, byte-identical
+            # outputs are expected and the rate is not interpretable (T21
+            # excludes the cell from the duplication claim). Flagged from the
+            # data, not by naming the cell, so it tracks the snapshot.
+            short = float(need(T9, (a, arm), "T9")[4])
+            dup_cell = m(dup)
+            if short > 0.5:
+                dup_cell = dup_cell[:-1] + "^{\\dagger}$"   # inside the same math group
+                dagger.append(short)
+            body.append(f"\\quad {ACTOR_LABEL[a]} & {bold(coll)} & {dup_cell} & {bold(aj)} \\\\")
         body.append("\\addlinespace")
 
     # Enforced conditions: collapse is n/a (their schema has no answer field).
@@ -313,6 +325,12 @@ def t_collapse(S, pv) -> str:
     # Ordering check: role-free exceeds role-structured in every actor x marker cell.
     ok = sum(1 for a in ACTORS for k in (1, 2, 3)
              if float(need(T20, (a, "B"), "T20")[k]) > float(need(T20, (a, "A"), "T20")[k]))
+
+    dagger_note = ""
+    if dagger:
+        dagger_note = (f" $^{{\\dagger}}$Not interpretable: ${max(dagger)*100:.0f}\\%$ of this"
+                       f" cell's planner messages are under $500$ visible characters"
+                       f" (the logging defect, \\S\\ref{{subsec:logging}}).")
 
     pre = header("Table 1 (manuscript) -- functional collapse per actor", pv,
                  [f"analysis/out/{CANON.name}  sections T1, T18, T20, T23"],
@@ -346,7 +364,7 @@ actor & collapse & duplication & no division \\\\
 answer-marker definitions (${b_lo:.3f}$--${b_hi:.3f}$, every actor);
 \\textbf{{the role-structured rate is not}} (${a_lo:.3f}$--${a_hi:.3f}$), so
 read that column as ``low,'' not a point estimate. The ordering holds in all
-{ok} of {ncells} actor$\\times$marker cells.
+{ok} of {ncells} actor$\\times$marker cells.{dagger_note}
 \\end{{table}}
 """
 

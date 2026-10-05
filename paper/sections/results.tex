@@ -3,7 +3,8 @@
 
 All contrasts are paired at the problem level with bootstrap intervals
 clustered by problem, under the pre-registered rule that trajectories never
-producing a graded answer count as incorrect; significance is exact McNemar
+producing a graded answer count as incorrect (the first-pass contrast of
+\S\ref{subsec:mechanism} excepted, as stated there); significance is exact McNemar
 on discordant pairs, and the Holm correction changes no verdict.
 \textbf{The role-structured-versus-role-free contrast supplying this
 paper's headline was pre-registered as secondary and exploratory}, and
@@ -29,8 +30,8 @@ measure is not length-confounded (Table~\ref{tab:collapse}); it rises from
 $0.000$--$0.120$ to $0.846$--$0.976$. \textbf{Decomposed by role, the
 planner supplies almost all of the change}: the executor is at ceiling
 either way and the reviewer was already high, while the planner moves
-$0.000$/$0.000$/$0.183$ to $0.979$/$0.889$/$0.898$ (gemma-4 / Llama-3.3 /
-gpt-oss) --- a claim about the \emph{change}, not the level.
+$0.000$/$0.183$/$0.000$ to $0.979$/$0.898$/$0.889$ (gemma-4 / gpt-oss /
+Llama-3.3) --- a claim about the \emph{change}, not the level.
 
 \input{tables/main_role_collapse}
 
@@ -65,8 +66,9 @@ within-item, so unaffected.
 \paragraph{First-pass accuracy does not follow --- the control condition.}
 \emph{Not a finding} but the control it is: the ablation removed the
 organization without crippling the
-solver~\cite{dylan2026equal,orogat2026architectural}. On matched problems
-the first-pass difference is \emph{identical} for gemma-4 ($+0.0000$,
+solver~\cite{dylan2026equal,orogat2026architectural}. On problems graded
+under both conditions ($n=1{,}600$ / $1{,}592$ / $389$) the first-pass
+difference is \emph{identical} for gemma-4 ($+0.0000$,
 $[-0.0156,+0.0150]$) and flat for Llama-3.3 ($+0.0077$), while it
 \emph{improves} for gpt-oss ($+0.0503$, $[+0.0339,+0.0666]$;
 Figure~\ref{fig:dissociation}A). Whatever roles buy, they do not buy the
@@ -215,9 +217,7 @@ Llama-3.3} ($0.014$ versus $0.015$). That last is a genuine null of the
 actor's repair channel exists and is movable, since enforcement raises it
 to $0.139$ ($p=3.8\times10^{-6}$, \S\ref{subsec:enforce}), and the test
 has ${\approx}80\%$ power against an excess of $0.04$--$0.05$ where
-gemma-4's effect is $0.171$. The claim is therefore that role structure
-\textbf{can} be load-bearing for feedback-driven recovery where it is not
-load-bearing for first-pass solving, not that it always is.
+gemma-4's effect is $0.171$.
 
 \paragraph{Final accuracy, against grader noise.} Pooled over both phases
 the role-free minus role-structured difference is $-0.0338$
@@ -291,8 +291,9 @@ intervention the other way, replacing the request with a constraint:
 making the division of labor unavoidable at the interface --- where no
 wording can talk its way around it --- should return the capacity to
 produce a second distinct candidate. It does. The manipulation check
-passes: the planner authors an answer in $0.000$ of enforced trajectories
-in all three actors against $0.986$/$0.916$/$0.958$ under generic prompts,
+passes: the planner asserts a final answer in $0.000$ of enforced first
+passes in all three actors against $0.979$/$0.898$/$0.889$ under generic
+prompts, as in \S\ref{subsec:collapse},
 with $838$/$1{,}183$/$395$ role-boundary rejections per cell (formatting
 coercions excluded by a definition fixed in advance). Enforcement
 \textbf{un-freezes the answer}: $0.119$/$0.092$/$0.072$ against the

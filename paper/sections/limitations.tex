@@ -9,11 +9,13 @@ stop-on-correct censors destructive revision.
 
 \paragraph{A scoring defect that runs against us.} Beyond the
 logging defect of \S\ref{subsec:logging}, the runner grades the last answer
-\emph{submitted} but records the last answer \emph{held}; these disagree on
-$17\%$ of role-structured and $0\%$ of role-free first-pass-wrong
-trajectories --- an error proportional to how much a team revises, the
-behavior our headline is about. Recoding the $62$ affected trajectories
-(positive control: $0$ of $10{,}734$) \emph{widens} every recovery gap; we
+\emph{submitted} but records the last answer \emph{held}; for gemma-4 these
+disagree on $17\%$ of role-structured and $0\%$ of role-free
+first-pass-wrong trajectories (gpt-oss $16\%$/$7\%$, Llama-3.3
+$6\%$/$0.4\%$) --- an error proportional to how much a team revises, the
+behavior our headline is about. Recoding the $62$ trajectories (all cells)
+whose held answer matched the key but was graded wrong (positive control:
+$0$ of $10{,}734$) \emph{widens} every recovery gap; we
 keep the pre-registered outcome as primary, since changing it after seeing
 which way it moves is what preregistration prevents.
 
