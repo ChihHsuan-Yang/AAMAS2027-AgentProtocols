@@ -1,0 +1,77 @@
+{
+ "note": "Arm Bf control (role-free + evaluator feedback delivered), gemma-4-31B-it. Run outside the frozen snapshot; never pooled into FROZEN/ or FINAL_TABLES.py inputs. See experiments/BF_CONTROL.md and DECISION_LOG.md D23.",
+ "code_commit": "0450ac0 (control-rolefree-feedback)",
+ "endpoint": "ALCF Sophia vLLM gateway (same as frozen campaign)",
+ "launched": "2026-10-06T00:41:18-05:00",
+ "files": {
+  "bf_omnimath_gemma4.jsonl": {
+   "sha256": "d00cc8e3d09f50a2611e3ad211808d9f5cfa02737000f033cb0c4274511a3474",
+   "rows": 1600,
+   "bytes": 27891526,
+   "cells": {
+    "gemma-4-31B-it|Bf": 1600
+   },
+   "config_versions": {
+    "25a04a554afcd006": 1600
+   },
+   "run_ids": {
+    "bf-gemma4-n1600": 1600
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 1474,
+    "max_rounds_exhausted_after_fail": 124,
+    "no_answer_produced": 2
+   },
+   "first_started": "2026-10-06T05:41:19.502503+00:00",
+   "last_ended": "2026-10-06T09:19:29.918613+00:00"
+  },
+  "bf_scibench_gemma4.jsonl": {
+   "sha256": "494081dac0ecddc0875fc5440e331ec43654115a6afbbbd40829104047fa7224",
+   "rows": 574,
+   "bytes": 8430177,
+   "cells": {
+    "gemma-4-31B-it|Bf": 574
+   },
+   "config_versions": {
+    "d311904cee36c21b": 574
+   },
+   "run_ids": {
+    "bf-gemma4-scibench": 574
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 505,
+    "max_rounds_exhausted_after_fail": 68,
+    "no_answer_produced": 1
+   },
+   "first_started": "2026-10-06T09:19:31.387444+00:00",
+   "last_ended": "2026-10-06T10:41:46.781948+00:00"
+  },
+  "bridgeA_omnimath_gemma4_n400.jsonl": {
+   "sha256": "cfe9c8f80daca372ec640e83d887888e12b9e51196ed62325d77ea9d4940c717",
+   "rows": 400,
+   "bytes": 8820253,
+   "cells": {
+    "gemma-4-31B-it|A": 400
+   },
+   "config_versions": {
+    "25a04a554afcd006": 400
+   },
+   "run_ids": {
+    "bridgeA-gemma4-n400": 400
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 307,
+    "max_rounds_exhausted_after_fail": 45,
+    "max_rounds_exhausted": 28,
+    "max_rounds_then_evaluator_pass": 20
+   },
+   "first_started": "2026-10-06T10:41:47.939182+00:00",
+   "last_ended": "2026-10-06T11:39:48.765979+00:00",
+   "code_commit": "0450ac0 (control-rolefree-feedback)",
+   "note": "Arm A re-run on 400 frozen problems: endpoint-drift check only, never pooled into any cell"
+  }
+ },
+ "excluded": {
+  "smoke.jsonl": "25-problem smoke run, not part of any cell"
+ }
+}
