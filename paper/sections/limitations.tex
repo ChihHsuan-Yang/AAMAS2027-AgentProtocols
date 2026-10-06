@@ -2,8 +2,8 @@
 \label{sec:limitations}
 
 \paragraph{The recovery loop is oracle-gated.} The evaluator triggering
-retries sees ground truth and \textbf{no cell recovers before the first
-oracle verdict}, so every recovery number is recovery \emph{given} a
+retries sees ground truth and no cell recovers before the first
+oracle verdict, so every recovery number is recovery \emph{given} a
 ground-truth-informed failure signal: not unaided self-correction, and
 stop-on-correct censors destructive revision.
 
@@ -19,33 +19,14 @@ $0$ of $10{,}734$) \emph{widens} every recovery gap; we
 keep the pre-registered outcome as primary, since changing it after seeing
 which way it moves is what preregistration prevents.
 
-\paragraph{What the conditional analyses are, and are not.}
-First-pass-wrong, cycles used, context and collapse are post-treatment
-outcomes, so the recovery decomposition is a decomposition and not a causal
-mediation --- except for gemma-4, whose contrast is algebraically the
-intent-to-treat effect (\S\ref{subsec:recovery}). The other two accuracy
-contrasts are nulls the instrument could not resolve, not measured
-absences. The collapse validation is \textbf{model adjudication, not human
-annotation, not ground truth and not condition-blind}
-(\S\ref{subsec:collapse}), which is why the collapse claim rests on the
-mechanical measures.
-
 \paragraph{Scope, provenance, and blind spots.} Enforcement's $8$--$17\%$
 one-sided attrition (\S\ref{subsec:enforce}) is why its as-graded gain is
 survivorship, why its recovery gain resolves only for Llama-3.3, and why
-the context-restored condition is only a \emph{partial} control. The
-pre-registered primary endpoint (P4) is null and the \Pone{} manipulation
-objective failed (\S\ref{subsec:prereg}); the contrast this paper is
-organized around was pre-registered as secondary and exploratory --- an
-observation meriting replication, not a confirmed result --- and the
-single-agent comparator is a directional guard only
-(\S\ref{subsec:notsingle}). \textbf{All three actors lose the division of
-labor, but the recovery result is carried by gemma-4 alone}: one clean
-actor, one \PER{} organization, an evaluator that is itself one of the
-actor models under study, and a second domain
-(\S\ref{subsec:xdomain}) covering gemma-4 only, where the role-free prompt
-is byte-identical but the role-structured and \emph{evaluator} prompts are
-domain-adapted --- so the replication is of the mechanism under a matched
-protocol, not a rerun of identical text. Finally, the functional measure
+the context-restored condition is only a \emph{partial} control. We test
+one \PER{} organization, with an evaluator that is itself one of the
+actors under study; the second domain (\S\ref{subsec:xdomain}) keeps the
+role-free prompt byte-identical but adapts the role-structured and
+\emph{evaluator} prompts, so it replicates the mechanism under a matched
+protocol, not identical text. Finally, the functional measure
 detects that every agent asserted an answer, not that their reasoning was
 the same.

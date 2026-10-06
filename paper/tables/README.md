@@ -161,7 +161,7 @@ reason.
 - **Carry these caveats.** **Not from the frozen snapshot** --- it is a
   previously released trace corpus, and that must be said wherever the
   numbers appear. **Both directions, always together**; never quote gpt-oss
-  alone. **The two actor arms were built from different source commits**, so
+  alone. **The two actor arms were produced in separate runs**, so
   each direction is a sound guard and *the gap between actors is not*. The
   caption carries all three.
 

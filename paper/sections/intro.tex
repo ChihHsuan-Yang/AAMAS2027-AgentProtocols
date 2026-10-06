@@ -22,7 +22,7 @@ produce a \emph{different} one. Those are not the same task --- the first
 rewards getting to a candidate, the second requires abandoning one --- and
 nothing guarantees an organizational structure contributes equally to both.
 A component is \textbf{load-bearing} if removing or altering it
-reproducibly degrades task performance \emph{under matched compute and
+reproducibly degrades task performance \emph{under matched call and
 information budgets} (\S\ref{sec:framework}). Our interventions hold that
 budget fixed and vary only what each agent is told it is, or what its
 interface lets it emit.
@@ -30,12 +30,11 @@ interface lets it emit.
 \paragraph{The manipulation works, and the first answer does not notice.}
 Deleting every role instruction --- with topology, actor model, context
 policy, retry budget and evaluator held fixed --- destroys the division of
-labor in \textbf{all three} actors: the rate at which every agent
+labor in all three actors: the rate at which every agent
 independently asserts its own final answer goes from $0.000$--$0.120$ to
 $0.846$--$0.976$. First-pass accuracy does not follow it down --- a parity
 prior role ablations already
-report~\cite{dylan2026equal,orogat2026architectural}, and our control
-condition rather than a finding. Read alone, this is the familiar negative
+report~\cite{dylan2026equal,orogat2026architectural}. Read alone, this is the familiar negative
 result: the organization was decorative, and three agents were a more
 expensive way to be one. The rest of this paper is about where to look
 before drawing that conclusion.
@@ -56,15 +55,13 @@ resubmits.}
 
 \paragraph{That behavioral difference becomes an outcome difference.}
 Recovery from a wrong first answer falls $0.222 \rightarrow 0.051$ for
-gemma-4; on the $237$ problems wrong under both conditions, $37$ recover
-with roles against $3$ without (exact McNemar $p=2\times10^{-8}$). Its
-first-pass rates are equal to four decimals, so the role-free team does not enter recovery
-already behind, and the contrast is an exact reparameterization of the
-randomized intent-to-treat effect rather than a post-treatment
-conditional. The result is \textbf{clean in that actor, directional but
-unresolved in gpt-oss} and \textbf{absent in Llama-3.3} --- a genuine null
-of the role manipulation, not a floor, since enforcement moves that same
-actor to $0.139$. Both halves return on $574$ free-response
+gemma-4; on the $237$ problems wrong under both conditions, $37$ are recovered
+only with roles and $3$ only without (exact McNemar $p=2\times10^{-8}$). Both
+conditions reach a correct first answer on $1{,}284$ of $1{,}600$
+problems, and a correct first answer is never lost, so the
+role-free team's entire final-accuracy deficit --- $54$ problems,
+$p=1.6\times10^{-5}$ --- is recoveries it does not make. The result is clean in that actor, directional in gpt-oss and absent in
+Llama-3.3, and for gemma-4 both halves return on $574$ free-response
 college-science problems.
 
 \paragraph{And it runs in the other direction.} Making the division of
@@ -72,11 +69,12 @@ labor unavoidable at the interface returns the same capacity: structural
 enforcement un-freezes the answer in all three actors. It does not become
 end-to-end accuracy, because enforcing a schema makes the pipeline brittle
 and $8$--$17\%$ of its trajectories never finish --- a mechanism that
-transfers and a deployment recipe that does not.
+transfers and a deployment recipe that, as implemented here with free-text
+JSON and regeneration, does not.
 
 \paragraph{Contribution.} An operational definition of
-\textbf{load-bearing} and a budget-matched, two-directional design testing
-it; the \textbf{phase dissociation}, scoped per actor rather than
-smoothed; a \textbf{refutation of premature stopping} on matched realized
-budget; and \textbf{three measurement results we had to absorb ourselves}
+load-bearing and a budget-matched, two-directional design testing
+it; the phase dissociation, scoped per actor rather than
+smoothed; a refutation of premature stopping on matched realized
+budget; and three measurement results we had to absorb ourselves
 (\S\ref{sec:discussion}).

@@ -14,7 +14,7 @@ guaranteed to match it, and nothing records which clauses were honored.
 
 \textbf{Definition.} A component of an organization is
 \textbf{load-bearing} if removing or altering it reproducibly degrades
-task performance \emph{under matched compute and information budgets}. The
+task performance \emph{under matched call and information budgets}. The
 budget clause is what makes it usable: removing role instructions
 \emph{and} agents, calls or context tests scale, not organization. Because
 performance itself decomposes --- producing a first answer, repairing a
@@ -27,8 +27,8 @@ wrong one --- the definition is applied \emph{per phase}.
 final answer, making the pipeline three solvers rather than a division of
 labor. It targets the property the diagram asserts rather than what a hash
 can see, is measured on the first pass so it is not confounded with
-trajectory length, and is \textbf{not applicable to the structurally
-enforced conditions}, whose schema forbids an answer field.
+trajectory length, and is not applicable to the structurally
+enforced conditions, whose schema forbids an answer field.
 
 \paragraph{Exact output duplication (secondary, a lower bound).} Two or
 more role messages byte-identical, as \texttt{sha256} of the raw
@@ -36,7 +36,7 @@ completion. Precision $1.000$, recall $0.262$ against the adjudication (a
 within-item comparison, so unaffected by that adjudication's condition
 leak, \S\ref{subsec:collapse}): it establishes that at least a given
 amount of collapse occurred and, its recall differing by actor, is
-\textbf{never used to compare how much organization two actors lost}.
+never used to compare how much organization two actors lost.
 
 \paragraph{Answer authorship, and computation.} Whether a Planner authors
 a final answer --- the clause structural enforcement makes
@@ -44,13 +44,19 @@ unrepresentable, and the manipulation check. Separately, whether a Planner
 abstains from \emph{computing}, scored as containing no evaluated numeric
 equality (\textbf{\Pone{}}, a pre-registered fidelity measure). Being the
 absence of a pattern, \Pone{} is anti-correlated with length, so every
-computation claim cites \textbf{evaluated equations per 1{,}000
-characters} instead: the role-free gpt-oss Planner scores $0.722$ on the
+computation claim cites evaluated equations per 1{,}000
+characters instead: the role-free gpt-oss Planner scores $0.722$ on the
 binary rate --- apparently the study's most compliant --- on a
 37-character message. A metric that rewards silence cannot measure a
 division of labor.
 
-\paragraph{Recovery.} The fraction of trajectories whose first submitted
-answer was graded wrong that nonetheless finish correct --- not a new
+\paragraph{First pass and recovery.} \emph{First-pass} accuracy grades
+the first answer submitted to the evaluator --- for the role-structured team
+possibly after internal revision, never after external feedback.
+\emph{Recovery} is the fraction of trajectories
+whose first submitted answer was graded wrong that nonetheless finish
+correct --- not a new
 metric; contrasting it across a role ablation
-is. It conditions on a post-treatment variable throughout.
+is. It conditions on a post-treatment variable, so recovery contrasts are
+descriptive; for gemma-4 the claim rests on the unconditional
+final-accuracy contrast they account for (\S\ref{subsec:recovery}).

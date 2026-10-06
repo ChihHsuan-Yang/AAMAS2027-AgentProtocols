@@ -30,9 +30,8 @@ performance~\cite{cao2026modules,yang2026precise}.
 \paragraph{Redundancy, and the parity we do not claim.} Dylan et
 al.~\cite{dylan2026equal} hold total LLM calls fixed and find an evolved
 Planner--Executor--Critic team no better than an evolved single agent
-($p=0.80$). \emph{Owned:} \textbf{first-pass parity under role ablation},
-which we report as a control condition and only a \emph{partial}
-replication of their null, since gpt-oss \emph{improves} by $+0.0503$ with
+($p=0.80$). \emph{Owned:} first-pass parity under role ablation,
+which we replicate only in part, since gpt-oss \emph{improves} by $+0.0503$ with
 an interval excluding zero. Zhang et al.~\cite{zhang2026rethinking} argue
 gains of multi-agent efficiency methods often arise where one agent
 suffices ---
@@ -45,11 +44,11 @@ agents on the same premise.
 earlier outputs under exact verifier feedback is
 established~\cite{jiang2026exactfeedback}; under self-reflection the
 failure has a name,
-\textbf{Degeneration-of-Thought}~\cite{liang2024divergent}, and belief
+Degeneration-of-Thought~\cite{liang2024divergent}, and belief
 entrenchment is studied directly~\cite{oh2026entrenchment}. Huang et
 al.~\cite{huang2024selfcorrect} are frequently misread here: their
 \emph{oracle} condition, which uses the correct label as a stopping rule,
-\textbf{improves} accuracy ($75.9 \to 84.3$ on GSM8K) and only the
+\emph{improves} accuracy ($75.9 \to 84.3$ on GSM8K) and only the
 \emph{intrinsic} condition
 degrades~\cite[see also][]{stechly2024selfverification}. Our loop is
 oracle-gated like theirs.
@@ -57,11 +56,11 @@ Closest to our lever is Chen et al.~\cite{chen2026relabeling}, who hold an
 erroneous claim byte-identical and vary only the \emph{role label} it
 carries, moving explicit-correction rate $23$--$93$pp --- the strongest
 published evidence that a role label is causal for error correction, but
-\textbf{single-agent}, with chat-template message roles rather than agent
+single-agent, with chat-template message roles rather than agent
 personas, and no recovery conditional or budget matching. \emph{Owned:} the
 failure and the
 name~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
-\textbf{inversion}: multi-agency is the prescribed cure for
+inversion: multi-agency is the prescribed cure for
 Degeneration-of-Thought, and a multi-agent system without role
 differentiation does not escape it.
 
@@ -71,8 +70,8 @@ sustaining diversity a widely proposed
 remedy~\cite[e.g.,][]{oh2026entrenchment};
 self-correction's limits are surveyed by~\cite{kamoi2024when}. \emph{We
 propose neither:} \S\ref{subsec:mechanism} treats premature stopping as a
-\textbf{standing hypothesis and rejects it} on matched realized budget.
-Our lever is the role \emph{label}, not a diversity intervention --- and
+standing hypothesis and rejects it on matched realized budget.
+Our lever is the role \emph{contract}, not a diversity intervention --- and
 one actor's content diversity runs opposite to its recovery, which is why
 we do not call diversity the active ingredient.
 
@@ -99,10 +98,10 @@ where there is no organization to ablate. Nothing licenses carrying parity
 across that phase boundary, and nothing has stopped the field from doing
 so.
 
-\paragraph{Relation to the corpus this work instruments.} Three prior
-studies analyze
-it~\cite{jiang2026confidence,yang2026protocol,yang2026precise} and our
-single-agent control is drawn from its released form; two are
+\paragraph{Prior analyses of a released corpus.} Three studies analyze a
+publicly released multi-agent trace corpus on this
+benchmark~\cite{jiang2026confidence,yang2026protocol,yang2026precise},
+from which our single-agent comparator is also drawn; two are
 observational, the third varies how critique \emph{reaches} the
 solver~\cite{yang2026precise}. \textbf{None manipulates the role structure
 itself}, none measures whether the specified division of labor is

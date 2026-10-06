@@ -10,21 +10,21 @@ candidate'' succeeds one time in three by chance, confounding the mechanism
 we measure with guessing.
 
 \paragraph{Actors and scale.} Three actor models served from one pinned
-vLLM endpoint: \textbf{gpt-oss-120b}, \textbf{gemma-4-31B} and
-\textbf{Llama-3.3-70B}. The primary analysis reads a single frozen,
-sha256-manifested snapshot: \textbf{11{,}600 trajectories over 83{,}320
-role messages and 17{,}486 gradings}, on $1{,}600$ problems sampled
+vLLM endpoint: gpt-oss-120b, gemma-4-31B and
+Llama-3.3-70B. The primary analysis reads a single frozen,
+sha256-manifested snapshot: 11{,}600 trajectories over 83{,}320
+role messages and 17{,}486 gradings, on $1{,}600$ problems sampled
 uniformly at random from the $4{,}181$ available. The three main conditions
 run $n=1{,}600$ per cell for the first two actors and $n=400$ for
-Llama-3.3; \textbf{the context-restored control covers only the first two}
+Llama-3.3; the context-restored control covers only the first two
 at $n=400$ each. Every trajectory carries the same budget record and the
 snapshot contains exactly one distinct budget. The evaluator is
 gpt-oss-120b in every cell, itself one of the actors under study
 (\S\ref{sec:limitations}). The single-agent comparator of
-\S\ref{subsec:notsingle} is \textbf{not} part of this campaign or its
+\S\ref{subsec:notsingle} is \emph{not} part of this campaign or its
 snapshot: it is a previously released trace corpus of the same benchmark
-joined by problem identifier, and \textbf{its two actor arms were built
-under different source commits}. Power was estimated by simulation from
+joined by problem identifier, and its two actor arms were produced
+in separate runs. Power was estimated by simulation from
 discordance rates in that corpus: the paired per-actor main effect is well
 powered, the actor~$\times$~intervention interaction needs roughly twice
 the sample (\S\ref{subsec:prereg}).

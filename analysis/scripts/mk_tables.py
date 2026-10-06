@@ -726,7 +726,7 @@ def t_single_agent(S, pv) -> str:
                   "benchmark omnimath2), joined by problem_uid. This must be",
                   "stated wherever the four numbers appear (APPROVED_CLAIMS A9).",
                   "BOTH DIRECTIONS, ALWAYS TOGETHER. Never quote gpt-oss alone.",
-                  "The two actor arms were built from DIFFERENT SOURCE COMMITS:",
+                  "The two actor arms were produced in SEPARATE RUNS:",
                   "each direction is a sound guard; the GAP BETWEEN ACTORS is not."])
     return pre + f"""\\begin{{table}}[t]
 \\centering
@@ -737,7 +737,7 @@ agent, so three agents emitting one answer is not functionally one agent;
 conditions}} --- and gemma-4 carries the recovery result.
 \\textbf{{Provenance: this panel is not from the frozen snapshot}}; it comes
 from a previously released trace corpus, joined by problem. \\textbf{{Its two
-actor arms were built from different source commits}}, so each direction is a
+actor arms were produced in separate runs}}, so each direction is a
 sound directional guard while \\emph{{the gap between actors is not}} --- no
 statement about relative magnitude across actors is supported here. The
 comparison is conservative on the decisive axis: the single agent draws
@@ -1086,7 +1086,7 @@ reason.
 - **Carry these caveats.** **Not from the frozen snapshot** --- it is a
   previously released trace corpus, and that must be said wherever the
   numbers appear. **Both directions, always together**; never quote gpt-oss
-  alone. **The two actor arms were built from different source commits**, so
+  alone. **The two actor arms were produced in separate runs**, so
   each direction is a sound guard and *the gap between actors is not*. The
   caption carries all three.
 

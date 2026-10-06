@@ -218,7 +218,7 @@ def panel_C_budget(ax):
             va="bottom", fontsize=S.FS_ANNOT, color=S.INK2)
     # direct segment labels, placed over the long bar where both fit
     dA = S.cell(FOCUS, "A")
-    ax.annotate("resubmitting", xy=(dA["submissions"] / 2, ys[0] + 0.21),
+    ax.annotate("submitting", xy=(dA["submissions"] / 2, ys[0] + 0.21),
                 xytext=(0, 2.0), textcoords="offset points", ha="center",
                 va="bottom", fontsize=S.FS_ANNOT, color=S.INK3)
     ax.annotate("revising", xy=(dA["submissions"] + gap + dA["revising"] / 2,
@@ -266,7 +266,7 @@ def panel_C_flow(ax):
                 f"{rev:.2f} revising", ha="left", va="center",
                 fontsize=S.FS_ANNOT, color=S.INK)
         ax.text(x_l1 + 0.018, y - 0.030 - max(ts, 0.006) / 2,
-                f"{sub:.2f} resubmitting", ha="left", va="center",
+                f"{sub:.2f} submitting", ha="left", va="center",
                 fontsize=S.FS_ANNOT, color=S.INK)
         ax.text(x_a0 - 0.008, y + 0.055, f"{sub + rev:.2f} of {MAXCYC}",
                 ha="right", va="bottom", fontsize=S.FS_ANNOT, color=S.INK3)

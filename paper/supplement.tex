@@ -124,14 +124,23 @@ Table~\ref{tab:recovery} gives the per-actor numbers behind the main
 paper's central result, in both populations, so that the marginal rates and
 the paired test can be checked against each other.
 
-The gemma-4 row is the one the paper's headline rests on. Its first-pass
-rates are equal to four decimal places, which is why the recovery contrast
-in that actor is an exact reparameterization of the randomized
-intent-to-treat effect rather than a conditional on a post-treatment
-variable: with equal first-pass rates the two populations coincide in
-expectation, and the role-free team does not enter recovery already behind.
-That argument does \emph{not} transfer to the other two actors, and the
-paper does not make it there.
+The gemma-4 row is the one the paper's headline rests on. Both conditions
+reach a correct first answer on $1{,}284$ of $1{,}600$ problems, and a
+correct first answer is never lost (the loop halts on a passing verdict),
+so the paired final-accuracy difference --- $-54/1{,}600=-0.0338$, exact
+McNemar $p=1.6\times10^{-5}$, conditioned on nothing --- equals the
+difference in recovery counts, $70$ against $16$. Stratified by the pair of
+first-pass outcomes, counting role-structured minus role-free final
+correct answers: the $1{,}205$ problems both teams answer correctly first
+contribute $0$; the $237$ both miss contribute $38-4=+34$ (discordant
+$37$ versus $3$, the paired test of the main paper); the $79$ only the
+role-structured team misses contribute $32-79=-47$; and the $79$ only the
+role-free team misses contribute $79-12=+67$. The last two strata
+condition on different problems, so their recovery rates ($32/79$ versus
+$12/79$) are descriptive; together they contribute $+20$, in the same
+direction as the paired stratum. This accounting needs equal first-pass
+counts and does \emph{not} transfer to the other two actors, and the paper
+does not make it there.
 
 \input{tables/main_recovery}
 
@@ -195,7 +204,7 @@ main paper uses it in one direction only --- as a guard against reading
 this table is why that restraint is necessary.
 
 The comparator comes from a \textbf{previously released corpus whose two
-actor arms were built from different source commits}. Each direction within
+actor arms were produced in separate runs}. Each direction within
 an actor is therefore a sound guard, and \emph{the gap between actors is
 not}. The result cuts both ways: a collapsed gpt-oss team beats its own
 single agent, while gemma-4's is significantly worse in both conditions.
