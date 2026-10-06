@@ -1,7 +1,9 @@
 # Arm Bf control: role-free with evaluator feedback delivered
 
-Status: **PREPARED, NOT RUN.** Do not launch until Jane or Bella approves.
-Prepared 2026-10-03.
+Status: **LAUNCH APPROVED 2026-10-05 by X. Li** (co-author; Jane and Bella
+informed, no reply before the deadline window — see DECISION_LOG.md D23).
+Prepared 2026-10-03. Design and reading below are unchanged from 32b959a;
+only the run commands were corrected (see "Run").
 
 ## The problem this control answers
 
@@ -118,6 +120,31 @@ python3 experiments/runner_xdomain.py --n 574 --arms Bf \
     --out experiments/results/bf/bf_scibench_gemma4.jsonl \
     --run-id bf-gemma4-scibench --concurrency 24
 ```
+
+**Correction (2026-10-05).** The commands above omit `--actor-concurrency`,
+whose default is 3: a single-actor run would then have at most 3 trajectories
+in flight (about 15 h for 1,600). The launch uses
+`--concurrency 20 --actor-concurrency 20` (gemma-4 was measured stable at 25
+concurrent requests, `infra/throughput_ledger.md`). The actual launch is
+`experiments/run_bf.sh`, which runs, in order, Omni-MATH Bf (n=1600),
+SciBench Bf (n=574) and an Omni-MATH Arm A bridge (n=400, the prefix subset
+of the 1,600; a drift check on the endpoint since 2026-09-30, never pooled
+into any table).
+
+Pre-launch gate: `experiments/bf_preflight.py` (frozen files match their
+committed MANIFEST sha256; the parquet selects exactly the frozen problem
+set; the auth helper returns a token). Monitoring and completion:
+`experiments/bf_status.py`.
+
+**Infrastructure failures (rule fixed before launch).** `runner.load_done()`
+treats only `model_unavailable` as not done; a `runtime_error` row (a call
+that failed after all transport retries, a failed evaluator call, an
+unexpected exception) would be counted complete and, under the
+pre-registered scoring, as incorrect. `experiments/bf_requeue.py` moves
+`model_unavailable` and `runtime_error` rows to `*.infra_failed.jsonl` and
+the identical command re-runs them. Every other stopping condition is a
+protocol outcome and is never touched. A problem whose `runtime_error`
+recurs 3 times keeps its last row (counted incorrect) and is reported.
 
 Resume is automatic: re-run the identical command until every problem has a
 row that is not `model_unavailable`. The run is complete when the cell is

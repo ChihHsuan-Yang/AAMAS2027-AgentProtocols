@@ -1132,3 +1132,45 @@ gpt-oss goes the other way (-0.096), again consistent with its Arm B planner
 being the uninstrumented tail rather than a solution.
 
 **Use excess-over-own-null, never raw Jaccard and never B-minus-A Jaccard.**
+
+## 2026-10-05 23:45 — D23. Arm Bf is launched by X. Li without waiting for Jane/Bella
+
+**Context.** On 2026-10-03 a code read showed that the role-free arm (B) never
+received the evaluator's FAIL verdict or repair hint (`experiments/BF_CONTROL.md`).
+The A-vs-B recovery gap is therefore confounded with feedback delivery. The
+Bf control (B prompts, byte-identical, plus the same feedback string A
+receives) was prepared and committed the same day (`32b959a`) and emailed to
+Jane and Bella for approval. No reply by the evening of 2026-10-05; the
+deadline is 2026-10-08 AoE.
+
+**Decision.** X. Li (co-author) runs Bf on his own ALCF access, from a git
+worktree of `control-rolefree-feedback`, on the Mac mini. Jane and Bella are
+informed by email before launch. How the paper reports the result remains
+their decision; nothing in the manuscript is changed from the result
+without them.
+
+**Unchanged from 32b959a (fixed before any Bf data existed):** the design,
+the scope (gemma-4; Omni-MATH 1,600 + SciBench 574), and the three-way
+reading in BF_CONTROL.md.
+
+**Added before launch, also fixed before any Bf data existed:**
+1. `--actor-concurrency 20` (the committed commands omitted it; default 3).
+2. An Omni-MATH Arm A bridge, n=400 (prefix subset), as an endpoint-drift
+   check only. Its rows are never pooled into any table.
+3. The infrastructure-failure rule implemented by `bf_requeue.py`
+   (`model_unavailable` / `runtime_error` re-run; protocol outcomes untouched;
+   3 attempts, then the last row is kept and counted incorrect).
+4. Pre-launch gate `bf_preflight.py`; the frozen A/B rows are fetched from the
+   private HF artifact and verified against the committed MANIFEST sha256.
+
+**Order of events, for the record.** This entry and the tooling were written
+before any Bf data existed and committed after a 25-problem smoke run
+(`experiments/results/bf/smoke.jsonl`, kept separate and not part of any
+cell). The smoke checked delivery and infrastructure only (feedback flag on
+every post-FAIL cycle, no errors, first verdicts identical to frozen Arm B on
+25/25); it changed no rule above.
+
+**Data handling.** Bf rows are written to
+`experiments/results/bf/` of the main checkout (gitignored), sha256-manifested
+when complete, and copied off the machine. They are never pooled into
+`FROZEN/` or into `FINAL_TABLES.py` inputs.
