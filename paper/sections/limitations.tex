@@ -5,18 +5,31 @@
 retries sees ground truth and no cell recovers before the first
 oracle verdict, so every recovery number is recovery \emph{given} a
 ground-truth-informed failure signal: not unaided self-correction, and
-stop-on-correct censors destructive revision.
+stop-on-correct censors destructive revision. An oracle that can be queried six times
+also favors the team that queries it most (\S\ref{sec:discussion}).
 
-\paragraph{A scoring defect that runs against us.} Beyond the
+\paragraph{The feedback-matched condition.} It was added after the
+snapshot was frozen and is not pre-registered; a role-structured re-run on
+$400$ problems shows no endpoint drift, but the two runs are separate. It
+matches the role-structured condition on the feedback string, not on its
+framing: role-structured agents receive it inside role-specific
+instructions, including the Reviewer clause that forbids approval after a
+FAIL, and role-free agents as a bare \texttt{[Evaluator]} entry. Running
+the role-structured prompts without that clause would separate the
+contract from the clause; we did not. On SciBench it was run for gemma-4
+only \textbf{[TBD: and gpt-oss]}.
+
+\paragraph{A scoring defect that favors our result.} Beyond the
 logging defect of \S\ref{subsec:logging}, the runner grades the last answer
 \emph{submitted} but records the last answer \emph{held}; for gemma-4 these
-disagree on $17\%$ of role-structured and $0\%$ of role-free
-first-pass-wrong trajectories (gpt-oss $16\%$/$7\%$, Llama-3.3
+disagree on $17\%$ of role-structured, $0\%$ of role-free and $13\%$ of
+feedback-matched role-free first-pass-wrong trajectories (gpt-oss $16\%$/$7\%$, Llama-3.3
 $6\%$/$0.4\%$) --- an error proportional to how much a team revises, the
 behavior our headline is about. Recoding the $62$ trajectories (all cells)
 whose held answer matched the key but was graded wrong (positive control:
-$0$ of $10{,}734$) \emph{widens} every recovery gap; we
-keep the pre-registered outcome as primary, since changing it after seeing
+$0$ of $10{,}734$), with the $3$ such in gemma-4's feedback-matched run,
+moves gemma-4's role-structured recovery to $0.275$ and the feedback-matched
+role-free one to $0.618$; we keep the pre-registered outcome as primary, since changing it after seeing
 which way it moves is what preregistration prevents.
 
 \paragraph{Scope, provenance, and blind spots.} Enforcement's $8$--$17\%$

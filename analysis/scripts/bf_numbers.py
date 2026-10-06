@@ -163,6 +163,13 @@ def features(r, gold):
     gold_ok = g is not None and len(g) >= 2      # 1-character golds match by accident
     fails = [x for x in e if int(x.get("correctness") or 0) == 0]
     leaks = sum(1 for x in fails if gold_ok and g in (nrm(evaluator_hint(x.get("raw"))) or ""))
+    # FINAL_TABLES T19: the runner grades the last SUBMITTED answer but records
+    # the last HELD one (final_answer); count disagreements and the ones where
+    # the held answer equals the gold string while the grade is 0.
+    held = nrm(r.get("final_answer"))
+    last_sub = nrm((e[-1] or {}).get("candidate")) if e else None
+    mism = held is not None and last_sub is not None and held != last_sub
+    undercredit = bool(mism and g is not None and held == g and fin_prereg(r) == 0)
     return dict(
         uid=r["problem_uid"], arm=r.get("arm"), actor=actor(r),
         stop=r.get("stopping_condition"), cfg=r.get("config_version"),
@@ -177,6 +184,7 @@ def features(r, gold):
         fb_msgs=sum(1 for m in msgs if m.get("evaluator_feedback_in_prompt")),
         actor_msgs=sum(1 for m in msgs if m.get("role") in ("planner", "executor", "reviewer")),
         n_fail=len(fails), gold_ok=gold_ok, n_leak=leaks,
+        mismatch=mism, undercredit=undercredit,
     )
 
 
@@ -720,6 +728,32 @@ def main():
                               DOMAIN_NAME[dom], act, arm, len(fs), fr(nl, nf), fr(tl, len(fpw)),
                               fr(rc, len(clean_w))))
         print("  Arm B's hints were generated but never shown to its agents (the defect Bf removes).")
+
+    # ------------------------------------------------------------------ B13
+    head("[B13] SCORING DEFECT (FINAL_TABLES T19): graded = last SUBMITTED, recorded = last HELD")
+    print("  first-pass-wrong trajectories; 'under-credited' = held answer equals the gold string")
+    print("  but the trajectory is graded 0. 'recovery if recoded' counts those as recovered.")
+    FIG["scoring_defect"] = {}
+    if gold is None:
+        print("  SKIPPED: {}".format(gmsg))
+    else:
+        for dom in DOMAINS:
+            for act in ACTORS:
+                if (act, "Bf") not in CELLS[dom]: continue
+                for arm in ARMS:
+                    C = CELLS[dom].get((act, arm))
+                    if not C: continue
+                    fpw = [f for f in C.values() if f["judged"] and f["fp"] == 0]
+                    mm = sum(1 for f in fpw if f["mismatch"])
+                    uc = sum(1 for f in fpw if f["undercredit"])
+                    rec = sum(f["fin"] for f in fpw)
+                    FIG["scoring_defect"]["{}|{}|{}".format(dom, act, arm)] = dict(
+                        n_fpw=len(fpw), mismatched=mm, undercredited=uc, recovered=rec,
+                        recovery_if_recoded=(rec + uc) / len(fpw) if fpw else float("nan"))
+                    print("  {:<9} {:<24}{:<3} n_fpw={:<4} mismatch {:.3f}  under-credited {:<3} "
+                          "recovery {} -> if recoded {}".format(
+                              DOMAIN_NAME[dom], act, arm, len(fpw), mm / max(len(fpw), 1), uc,
+                              fr(rec, len(fpw)), fr(rec + uc, len(fpw))))
 
     # ------------------------------------------------------------------ B12
     head("[B12] HEADLINE NUMBERS (each traceable to a block above)")

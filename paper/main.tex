@@ -100,33 +100,30 @@ Executor, Reviewer --- and the diagram is read as a mechanism. We ask which
 phase of the work that organization carries. Holding agents, topology, call
 budget, verifier and grading fixed, we delete every role
 instruction and, separately, enforce the same division of labor at the
-interface, across three actor models and $11{,}600$ trajectories from one
-frozen snapshot.
+interface, across three actor models ($11{,}600$ trajectories from a
+frozen snapshot, plus a feedback-matched control).
 
 Deleting the role instructions destroys the intended division of labor in
-all three actors: the rate at which every agent independently asserts its
-own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$.
-First-pass accuracy does not follow --- unchanged for gemma-4,
-\emph{improved} for gpt-oss ($+0.050$), flat for Llama-3.3 --- a parity
-consistent with prior role ablations and reported here as our control
-condition. \textbf{The difference appears only after a team is told its
-answer is wrong.} Both teams hold the same six deliberation cycles by
-construction and the role-free team draws \emph{more} oracle verdicts, so
-it is neither stopped early nor given less information; what differs is
-use. In gemma-4 the role-structured team spends its cycles revising while
-the role-free team resubmits, leaving its answer unchanged in $0.845$ of
-first-pass-wrong trajectories against $0.288$. That split becomes an
-outcome split: on the $237$ problems both gemma-4 teams first answer
-wrongly, $37$ are recovered only with roles and $3$ only without (exact
-McNemar $p=2\times10^{-8}$), with first-pass counts identical, so the
-role-free team does not enter recovery already behind. For gemma-4 both
-halves return on $574$ free-response college-science problems. Enforcing the
-division of labor at the interface un-freezes the answer and returns
-revisability, at $8$--$17\%$ attrition that keeps it from reaching
-end-to-end accuracy. \textbf{Role structure \emph{can} be load-bearing for
-feedback-driven recovery where it is not load-bearing for first-pass
-solving} --- cleanly in one actor, directionally in a second, absent in a
-third.
+all three actors --- the rate at which every agent independently asserts its
+own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$ --- while
+first-pass accuracy does not follow. The phases come apart only after a
+rejected first answer, and there the deciding variable is whether the
+verifier's feedback reaches the team. A role-free team whose prompts carry
+no feedback slot almost never recovers ($0.051$ for gemma-4, against
+$0.222$ with roles); given the identical feedback string, the same
+role-free team recovers $0.609$ and reaches $0.921$ final accuracy, above
+the role-structured team's $0.846$. On problems both teams first answer
+wrongly, $89$ are recovered only without roles and $4$ only with them
+(exact McNemar $p=6\times10^{-22}$), and the ordering returns on $574$
+college-science problems ($0.419$ vs.\ $0.254$). \textbf{[TBD: gpt-oss /
+Llama-3.3.]} Roles still shape what happens after feedback, as a budget
+allocation rather than a capability: the role-structured Reviewer must
+decline after a failure, so that team revises internally and resubmits
+$1.54$ times per failed trajectory against $3.20$. Each of its
+resubmissions is more often right, but there are far fewer of them.
+\textbf{Roles appear load-bearing for revision exactly when their prompts
+are the only channel carrying the feedback}; ablations of agent roles must
+hold information channels, not just budgets, fixed.
 \end{abstract}
 
 % CCS concepts are not part of the AAMAS-2027 sample (AAMAS_2027_sample.tex

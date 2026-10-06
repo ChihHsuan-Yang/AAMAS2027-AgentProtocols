@@ -8,21 +8,20 @@ agents, the same interaction order
 graph, total call budget, verifier and verifier prompt, retry budget,
 decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
 stopping rule and grading; every trajectory in the frozen snapshot carries
-the identical budget record --- a test of organization, not of scale. One
-asymmetry we state rather than smooth, the one place the conditions are
-\emph{not} matched: the evaluator fires on Reviewer approval, so a team
-that submits more \emph{consumes} more oracle verdicts even under an
-identical cap. The role-free team draws $1.95$/$1.85$/$3.82$ evaluator
-calls per trajectory against the role-structured team's
-$1.11$/$1.35$/$1.03$ (gemma-4 / gpt-oss / Llama-3.3). \textbf{This runs
-against our result} and we report it for that reason: a ground-truth
-verdict is the only external information in the loop, and the condition we
-find worse receives more of it in every actor.
+the identical budget record --- a test of organization, not of scale.
+\textbf{One channel differs by condition: feedback.} After a FAIL the
+evaluator returns a non-leaking repair hint, which the role-structured and
+enforced prompts receive through an advice slot. The role-free template has
+no such slot: its agents are not told that, or why, an answer failed, and
+see only that another cycle runs. The role-free condition is therefore
+reported in two forms, without and with the feedback.
 
 \paragraph{Role-structured \PER{} (baseline).} Role prompts as ordinarily
-written. The organization as specified.
+written: the organization as specified, including one clause the role-free
+prompts lack --- in a cycle that receives a FAIL, the Reviewer must route
+the work back to the Planner or Executor and may not approve.
 
-\paragraph{Role-free (organization removed).} Identical topology and
+\paragraph{Role-free without feedback.} Identical topology and
 budget; all three agents get one byte-identical prompt: ``You are one of
 three agents collaboratively solving this problem. Continue the work,''
 the problem, the shared history, the agent's slot number, and a footer
@@ -32,7 +31,15 @@ the conventions the role-structured Executor and Reviewer use. Removed is
 every clause saying who does what, above all the Planner's \textsc{must
 not}s on computing and answering. In both prose conditions the third
 agent's \texttt{[Agree]} is approval (untagged counts as
-\texttt{[Continue]}) and the latest boxed answer is submitted.
+\texttt{[Continue]}) and the latest boxed answer is submitted. Nothing in
+this template carries the evaluator's verdict or hint.
+
+\paragraph{Role-free with feedback.} The same role-free prompt, byte for byte, plus the evaluator's verdict and
+repair hint --- the string the role-structured team receives --- shown to
+all three agents as an \texttt{[Evaluator]} entry in the cycle after a FAIL.
+It differs from the role-free condition only in feedback, and from the
+role-structured one in roles, in the Reviewer clause above, and in how the
+feedback is framed (\S\ref{sec:limitations}).
 
 \paragraph{Structurally enforced.} Specialization is enforced by the
 interface rather than by wording. The Planner emits JSON against
@@ -93,7 +100,10 @@ that condition is met only under the as-graded scoring
 \textbf{The role-structured-versus-role-free contrast this paper is
 organized around was pre-registered as a secondary, exploratory
 replication of a published null}; splitting it into a first-pass and a
-recovery phase is post hoc. The \Pone{} manipulation objective --- that
+recovery phase is post hoc. The role-free condition with feedback is not
+pre-registered either: it was added and run after the snapshot was frozen,
+with its design and analysis committed in writing before any of its data
+existed. The \Pone{} manipulation objective --- that
 enforcement would drive Planner \emph{computation}-abstention to
 ${\approx}1.0$ --- also failed, naming a clause the intervention
 does not enforce: the schema forbids emitting an \emph{answer}, and

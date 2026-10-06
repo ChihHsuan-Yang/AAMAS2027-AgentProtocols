@@ -59,21 +59,23 @@ published evidence that a role label is causal for error correction, but
 single-agent, with chat-template message roles rather than agent
 personas, and no recovery conditional or budget matching. \emph{Owned:} the
 failure and the
-name~\cite{jiang2026exactfeedback,liang2024divergent}. Not owned is the
-inversion: multi-agency is the prescribed cure for
-Degeneration-of-Thought, and a multi-agent system without role
-differentiation does not escape it.
+name~\cite{jiang2026exactfeedback,liang2024divergent}. What we add is the
+multi-agent case: a role-free team repeats itself exactly as
+Degeneration-of-Thought describes when the verdict does not reach it, and
+stops when it does --- the repetition follows the information, not the
+organization.
 
 \paragraph{Premature consensus, which we test rather than propose.} Early
 convergence is a widely proposed explanation for multi-agent failure and
 sustaining diversity a widely proposed
 remedy~\cite[e.g.,][]{oh2026entrenchment};
 self-correction's limits are surveyed by~\cite{kamoi2024when}. \emph{We
-propose neither:} \S\ref{subsec:mechanism} treats premature stopping as a
-standing hypothesis and rejects it on matched realized budget.
-Our lever is the role \emph{contract}, not a diversity intervention --- and
-one actor's content diversity runs opposite to its recovery, which is why
-we do not call diversity the active ingredient.
+propose neither.} The team in our data that looks most like premature
+consensus --- approving and resubmitting one answer until the budget runs
+out --- is the one whose prompts never carried the verdict; told, the same
+team revises. Our lever is the role \emph{contract}, not a diversity
+intervention, and one actor's content diversity runs opposite to its
+recovery, which is why we do not call diversity the active ingredient.
 
 \paragraph{Coordination versus capability.}
 Canedo~\cite{canedo2026architecture} frames structured specification as a

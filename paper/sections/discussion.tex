@@ -1,33 +1,43 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{Why organization would be phase-specific.} The two phases
-demand different things. Producing a first answer is a \emph{generation}
-problem: there is no incumbent candidate, and three agents arriving at the
-same place by three routes costs nothing but tokens, since the pipeline
-emits one answer and it is as good as the best route that reached it. A
-division of labor has nothing to do here that redundancy does not already
-do. Repairing a wrong answer is a \emph{differentiation} problem: an
-incumbent candidate exists, it is in every agent's context, and the useful
-move is to produce something unlike it. gemma-4's role-free team fails
-there not for lack of effort --- it spends its whole budget --- but for
-lack of difference: three agents that are now the same solver, all
-conditioned on the same incumbent answer, reproduce it. A role contract
-supplies a reason for one agent's next output not to be a function of the
-previous agent's, worth nothing when there is nothing to differ from and a
-great deal when there is; enforcement, the same prohibition moved to the
-interface, moves the same quantity. The contract is necessary rather than
-sufficient. With roles, Llama-3.3's Reviewer declines in $4.88$ of $5.93$
-cycles, yet $0.750$ of its first-pass-wrong trajectories never write down a
-second distinct answer and only $10$ of $276$ submit again: the role opens
-the revision channel, and this solver has little to send through it.
+\paragraph{What roles do after feedback.} Producing a first answer is a
+\emph{generation} problem: three agents reaching the same place by three
+routes cost nothing but tokens, a division of labor has nothing to do that
+redundancy does not already do, and first-pass accuracy is indifferent to
+it in every actor. After a failure the problem changes --- the team must
+produce something unlike an incumbent candidate --- and it can do so only
+if it knows the candidate failed. Given that knowledge, the role contract
+does not supply the capacity to revise; the role-free team has it. What the
+contract decides is how a fixed budget is split between two uses of a
+verdict: internal review before the next submission, or the next
+submission itself. The role-structured contract buys review --- its
+resubmissions pass more often, and each verdict after the first yields
+more recoveries --- and the role-free team buys verdicts. Under an exact
+oracle and a six-verdict cap, verdicts win. Where verification is costly,
+noisy or unavailable, the usual case outside a benchmark, the same contract
+could be the better allocation; this design cannot say which.
+
+\paragraph{What a role ablation removes.} In a prompted multi-agent system
+the channels through which agents receive feedback, tool output or a
+verifier's verdict are slots in the same templates that carry the roles.
+Rewriting the templates to remove the roles can remove a channel with
+them, and silently: a runtime input a template does not reference is
+simply not shown, and nothing in the budget record, the call counts or the
+accuracy reports its absence. A role ablation therefore needs an
+information audit beside the budget audit --- for each agent and
+condition, the set of runtime inputs its template actually consumes --- and
+a contrast is matched only where those sets agree. Ours differ in exactly
+one input, the feedback, which is why the role-free condition is reported
+both without and with it.
 
 \paragraph{What a role diagram is evidence of.} A diagram is a
 hypothesis, and task-outcome evaluation --- the only evaluation most
 multi-agent systems receive --- cannot test it: an aggregate score averages
 a stage where the organization is idle with one where it does all its work,
 dominated by whichever has more mass. Our system lost its entire
-organization and moved the headline metric by $0.0338$. Two cheap additions
+organization and moved the headline metric by $-0.034$ without feedback and
+$+0.075$ with it, both entirely after a first answer had failed. Two cheap additions
 fix most of it: report performance \emph{conditioned on the first attempt
 having failed}, computable from logs any retry-capable system already
 writes, and \emph{measure} the realized organization rather than assume the
