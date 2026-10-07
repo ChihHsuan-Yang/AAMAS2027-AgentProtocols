@@ -132,9 +132,15 @@ first rejected ($541$ of $547$ across the five cells with feedback
 matched), and grader noise ($0.0072$, the rate at which identical evaluator
 prompts disagree) is an order of magnitude below the difference.
 
-\paragraph{Not drift, not leakage.} The feedback-matched condition ran
-after the freeze, but a re-run of the role-structured condition on $400$
-frozen problems reproduces its frozen cell (\S\ref{sec:experiments}).
+\paragraph{Reproducibility, drift and leakage.} The two gemma-4
+feedback-matched cells, on which the main contrast rests, were run twice,
+independently and with identical code. The second run reproduces the first
+(Omni-MATH recovery $0.586$ against $0.609$, final accuracy $0.922$ against
+$0.921$; SciBench recovery $0.435$ against $0.419$, its paired test at
+$p=0.052$ against $0.013$); we report the first throughout (supplement).
+The feedback-matched condition ran after the freeze, but a re-run of the
+role-structured condition on $400$ frozen problems reproduces its frozen
+cell (\S\ref{sec:experiments}).
 Repair hints contain the gold answer verbatim in $2.3\%$ of failing
 verdicts with roles and $2.2\%$ without; dropping every trajectory that saw
 one leaves $0.599$ against $0.212$.

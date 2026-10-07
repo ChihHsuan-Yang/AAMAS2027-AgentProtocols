@@ -315,5 +315,5 @@ SciBench  gpt-oss-120b            Bf      120    4.54     3.95      0.59   0.925
     roles given feedback (A vs Bf, paired): n=93 only A 7, only Bf 18, p=0.043
     final accuracy A vs Bf (paired, all problems): A-only 7 vs 30 -> delta +0.040 [+0.019,+0.061], p=0.00019
 
-wrote analysis/out/FIGDATA_BF.json  sha256[:16] 9053c92b9dc92ef2
+wrote analysis/out/FIGDATA_BF.json  sha256[:16] 487ff0db9646f2df
 ================================================================================================

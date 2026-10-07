@@ -376,9 +376,11 @@ def main():
         os.path.join(ROOT, "analysis/hf_cache/release/data/problems/part-00000.parquet")))
     ap.add_argument("--figdata", default=os.path.join(ROOT, "analysis/out/FIGDATA.json"))
     ap.add_argument("--out-dir", default=os.path.join(ROOT, "analysis/out"))
+    ap.add_argument("--suffix", default="",
+                    help="appended to the output names, e.g. _chain2 for the second gemma-4 run")
     a = ap.parse_args()
     os.makedirs(a.out_dir, exist_ok=True)
-    sys.stdout = Tee(os.path.join(a.out_dir, "BF_TABLES_OUTPUT.txt"))
+    sys.stdout = Tee(os.path.join(a.out_dir, "BF_TABLES_OUTPUT{}.txt".format(a.suffix)))
 
     print("=" * 96)
     print("BF_NUMBERS -- Arm Bf (role-free + evaluator feedback) against the frozen cells")
@@ -420,9 +422,11 @@ def main():
     assert frozen_ok, "a frozen file does not match its committed MANIFEST: STOP"
 
     man_bf = {}
-    mp = os.path.join(a.bf_dir, "MANIFEST_BF.json")
-    if os.path.exists(mp):
-        man_bf = json.load(open(mp)).get("files", {})
+    for mname in ("MANIFEST_BF.json", "MANIFEST.json"):   # ours, or bf_freeze.py's
+        mp = os.path.join(a.bf_dir, mname)
+        if os.path.exists(mp):
+            for k, v in json.load(open(mp)).get("files", {}).items():
+                man_bf[os.path.basename(k)] = v
     BF = {d: collections.defaultdict(dict) for d in DOMAINS}    # BF[dom][actor][uid]
     BRIDGE = collections.defaultdict(dict)                      # BRIDGE[actor][uid]
     health = collections.defaultdict(lambda: dict(stops=collections.Counter(), cfg=set(),
@@ -817,7 +821,8 @@ def main():
     if pending:
         print("\n  PENDING Bf cells: {}".format(", ".join(pending)))
 
-    out = os.path.join(a.out_dir, "FIGDATA_BF.json")
+    FIG["provenance"]["bf_dir"] = os.path.relpath(os.path.abspath(a.bf_dir), ROOT)
+    out = os.path.join(a.out_dir, "FIGDATA_BF{}.json".format(a.suffix))
     with open(out, "w") as fh:
         json.dump(clean(FIG), fh, indent=1, sort_keys=True)
     print("\nwrote {}  sha256[:16] {}".format(os.path.relpath(out, ROOT), sha256(out)[:16]))

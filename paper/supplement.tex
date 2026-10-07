@@ -175,6 +175,23 @@ protocol, not a rerun of identical prompts.
 \input{tables/scibench_replication}
 
 \clearpage
+\section{The feedback-matched control, run twice}
+\label{sec:bfreplication}
+
+The two gemma-4 cells of the feedback-matched role-free condition were run
+twice, independently, about thirteen hours apart, with byte-identical runner
+and prompt code; every other feedback-matched cell was run once. Each run
+also repeated the drift check of the main text on the same $400$ frozen
+problems: the role-structured re-run reaches final accuracy $0.818$ in the
+first and $0.845$ in the second, against $0.825$ frozen (paired $p=0.75$ and
+$p=0.20$). The main text reports the first run throughout. Table~\ref{tab:bfreplication} gives
+both against the frozen role-structured cell. The ordering and the
+final-accuracy contrasts reproduce in both domains; the SciBench paired
+recovery test, on $100$ problems, is $p=0.013$ in the first run and
+$p=0.052$ in the second.
+
+\input{tables/bf_replication}
+
 \section{Structural enforcement: both scorings, and the attrition that
 separates them}
 

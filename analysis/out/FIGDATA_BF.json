@@ -1269,6 +1269,7 @@
   }
  },
  "provenance": {
+  "bf_dir": "experiments/results/bf",
   "files": {
    "actor3.jsonl": {
     "domain": "omni",

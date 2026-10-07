@@ -1,0 +1,92 @@
+{
+  "artifact": "AAMAS2027-Roles / controls / rolefree_feedback / gemma4",
+  "caveats": [
+    "Endpoint-drift verdict NONE certifies first-pass and final only; its `bounded` predicate never reads the recovery CI, so recovery drift is unresolved at n=400.",
+    "The bridge cell is re-run-sensitive: these bytes give 338/400; a superseded earlier pass implies 327/400. See BF_DATA_CUSTODY.md on the GitHub branch."
+  ],
+  "control_name": "Bf (role-free + evaluator feedback DELIVERED)",
+  "emitted_utc": "2026-10-07T00:29:26.728356+00:00",
+  "files": {
+    "endpoint_drift_bridge/bridgeA_omnimath_gemma4_n400.jsonl": {
+      "actor_model": [
+        "google/gemma-4-31B-it"
+      ],
+      "arms": [
+        "A"
+      ],
+      "benchmark_id": [
+        "omnimath2"
+      ],
+      "bytes": 8472059,
+      "config_version": [
+        "25a04a554afcd006"
+      ],
+      "duplicate_uids": [],
+      "ended_at_max": "2026-10-06T23:43:22.720019+00:00",
+      "evaluator_model": [
+        "openai/gpt-oss-120b"
+      ],
+      "infra_failed_rows_retained": 0,
+      "rows": 400,
+      "sha256": "0ec97d88048e84e3d83f926bb6b42805d19061d359b0fa578fa334f3b4314f29",
+      "started_at_min": "2026-10-06T22:42:35.758853+00:00"
+    },
+    "omnimath/bf_omnimath_gemma4.jsonl": {
+      "actor_model": [
+        "google/gemma-4-31B-it"
+      ],
+      "arms": [
+        "Bf"
+      ],
+      "benchmark_id": [
+        "omnimath2"
+      ],
+      "bytes": 27097121,
+      "config_version": [
+        "25a04a554afcd006"
+      ],
+      "duplicate_uids": [],
+      "ended_at_max": "2026-10-06T21:55:43.316118+00:00",
+      "evaluator_model": [
+        "openai/gpt-oss-120b"
+      ],
+      "infra_failed_rows_retained": 0,
+      "rows": 1600,
+      "sha256": "be3469f720048ca9aa21816ca6c9dd1f514170e3e38cffa2613db4317b1bb8e1",
+      "started_at_min": "2026-10-06T18:33:39.806034+00:00"
+    },
+    "scibench/bf_scibench_gemma4.jsonl": {
+      "actor_model": [
+        "google/gemma-4-31B-it"
+      ],
+      "arms": [
+        "Bf"
+      ],
+      "benchmark_id": [
+        "scibench"
+      ],
+      "bytes": 8495787,
+      "config_version": [
+        "d311904cee36c21b"
+      ],
+      "duplicate_uids": [],
+      "ended_at_max": "2026-10-06T22:42:34.769380+00:00",
+      "evaluator_model": [
+        "openai/gpt-oss-120b"
+      ],
+      "infra_failed_rows_retained": 0,
+      "rows": 574,
+      "sha256": "965ed061ebb107d52a9063707deac7b43c3fcdffb698bf045af2b75e6d904b29",
+      "started_at_min": "2026-10-06T21:55:45.375541+00:00"
+    }
+  },
+  "relationship_to_frozen_campaign": "SEPARATE CONTROL. Collected after the frozen v1.1.0 campaign and NEVER pooled into it. No v1.0.0/v1.1.0 file is modified by this upload. Bf rows must not be added to FINAL_TABLES.py inputs or to any frozen cell.",
+  "runner_sha256": {
+    "experiments/prompts.py": "fe83fabf878bbbdf07848b79732306b2a6982cc4c693af4db1267d63d19100b5",
+    "experiments/runner.py": "48368c4381fe13b0aba086082086ae45be216b65df4ea1b6e4a2d95418a88d90",
+    "experiments/runner_xdomain.py": "c3c2288422119dac566931d5634b38ae79eb6841aca08d9bb532781487178ae0"
+  },
+  "source_branch": "control-rolefree-feedback",
+  "source_branch_sha": "0450ac0635008da899861170c4e7921b4ecd11dd",
+  "verify": "sha256 each file and compare to files[<path>].sha256; or use experiments/bf_freeze.py --verify FROZEN_BF <dir> on the GitHub branch."
+}
