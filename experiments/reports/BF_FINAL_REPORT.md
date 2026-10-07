@@ -347,6 +347,24 @@ rows, 0 infra failures, 0 duplicate uids, `arms = ['A']`.
 | final | 330/400 = 0.8250 | 338/400 = 0.8450 | +0.0200 | [−0.0068, +0.0468] | 0.200 |
 | recovery (unpaired) | 12/82 = 0.1463 | 18/80 = 0.2250 | +0.0787 | [−0.0419, +0.1980] | CI includes 0 |
 
+### The bridge number is re-run-sensitive (found at handoff)
+
+`run_bf.sh` defaults to `TAG=${TAG:-gemma4}` and writes a fixed filename, so it
+was run twice into the same three paths ~13 h apart. The current bytes
+(**chain 2**, the ones analysed above and frozen) overwrote an earlier pass
+(**chain 1**), which survives only as `experiments/results/bf/MANIFEST_BF.json`
+— its rows are gone and cannot be re-analysed.
+
+The two Bf cells differ by ≤1 trajectory between chains, so the headline
+Bf-vs-A and Bf-vs-B contrasts in §D/§E are insensitive to this. **The bridge is
+not**: chain 2 gives 338/400 (delta **+0.0200** vs the frozen 330/400), chain 1
+implies 327/400 (delta **−0.0075**). The point estimate changes sign. Both are
+small and both fall inside the CI reported above, so `NONE` is unlikely to
+flip — but the drift estimate is demonstrably re-run-sensitive at n=400, which
+is a second reason (alongside the `bounded`-predicate defect in §I) to read
+`NONE` as weak evidence rather than a certificate. Re-running would yield a
+third chain, not a reconciliation. Full account: `BF_DATA_CUSTODY.md`.
+
 ### NONE was predicted to be unreachable. Why it was returned anyway
 
 `BF_DRIFT_POWER.md`, written before any bridge row existed, predicted that at
