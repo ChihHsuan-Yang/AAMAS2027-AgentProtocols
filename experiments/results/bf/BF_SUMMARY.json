@@ -1,0 +1,171 @@
+{
+  "actor_model": "google/gemma-4-31B-it",
+  "arms": {
+    "A": "role-structured (planner/executor/reviewer)",
+    "B": "role-free, evaluator feedback NOT delivered (original frozen campaign)",
+    "Bf": "role-free, evaluator feedback DELIVERED (this control)"
+  },
+  "bf_data_sha256_12": {
+    "bf_omnimath_gemma4.jsonl": "be3469f72004",
+    "bf_scibench_gemma4.jsonl": "965ed061ebb1",
+    "bridgeA_omnimath_gemma4_n400.jsonl": "0ec97d88048e"
+  },
+  "caveats": [
+    "Bf is frozen separately and must NEVER be pooled into the original frozen campaign (S.12/S.16).",
+    "Endpoint-drift verdict NONE certifies first-pass and final only; its `bounded` predicate never reads the recovery CI, so recovery drift is unresolved at n=400.",
+    "The S.16 bridge is re-run-sensitive: chain 2 gives 338/400, superseded chain 1 implies 327/400. See BF_DATA_CUSTODY.md."
+  ],
+  "domains": {
+    "omnimath": {
+      "arms": {
+        "A": {
+          "final_correct": [
+            1354,
+            1600
+          ],
+          "final_rate": 0.8462,
+          "first_pass_correct": [
+            1284,
+            1600
+          ],
+          "first_pass_rate": 0.8025,
+          "n": 1600,
+          "recovery": {
+            "k": 70,
+            "n": 316,
+            "rate": 0.2215
+          }
+        },
+        "B": {
+          "final_correct": [
+            1300,
+            1600
+          ],
+          "final_rate": 0.8125,
+          "first_pass_correct": [
+            1284,
+            1600
+          ],
+          "first_pass_rate": 0.8025,
+          "n": 1600,
+          "recovery": {
+            "k": 16,
+            "n": 316,
+            "rate": 0.0506
+          }
+        },
+        "Bf": {
+          "final_correct": [
+            1475,
+            1600
+          ],
+          "final_rate": 0.9219,
+          "first_pass_correct": [
+            1298,
+            1600
+          ],
+          "first_pass_rate": 0.8113,
+          "n": 1600,
+          "recovery": {
+            "k": 177,
+            "n": 302,
+            "rate": 0.5861
+          }
+        }
+      },
+      "paired": {
+        "A vs B": {
+          "mcnemar_exact_p": 1.95e-08,
+          "n_discordant_denom": 237
+        },
+        "A vs Bf": {
+          "mcnemar_exact_p": 7.85e-21,
+          "n_discordant_denom": 241
+        },
+        "Bf vs B": {
+          "mcnemar_exact_p": 1.09e-37,
+          "n_discordant_denom": 255
+        }
+      }
+    },
+    "scibench": {
+      "arms": {
+        "A": {
+          "final_correct": [
+            486,
+            574
+          ],
+          "final_rate": 0.8467,
+          "first_pass_correct": [
+            456,
+            574
+          ],
+          "first_pass_rate": 0.7944,
+          "n": 574,
+          "recovery": {
+            "k": 30,
+            "n": 118,
+            "rate": 0.2542
+          }
+        },
+        "B": {
+          "final_correct": [
+            462,
+            574
+          ],
+          "final_rate": 0.8049,
+          "first_pass_correct": [
+            456,
+            574
+          ],
+          "first_pass_rate": 0.7944,
+          "n": 574,
+          "recovery": {
+            "k": 6,
+            "n": 118,
+            "rate": 0.0508
+          }
+        },
+        "Bf": {
+          "final_correct": [
+            504,
+            574
+          ],
+          "final_rate": 0.878,
+          "first_pass_correct": [
+            450,
+            574
+          ],
+          "first_pass_rate": 0.784,
+          "n": 574,
+          "recovery": {
+            "k": 54,
+            "n": 124,
+            "rate": 0.4355
+          }
+        }
+      },
+      "paired": {
+        "A vs B": {
+          "mcnemar_exact_p": 6.6e-05,
+          "n_discordant_denom": 99
+        },
+        "A vs Bf": {
+          "mcnemar_exact_p": 0.0522,
+          "n_discordant_denom": 100
+        },
+        "Bf vs B": {
+          "mcnemar_exact_p": 5.12e-12,
+          "n_discordant_denom": 114
+        }
+      }
+    }
+  },
+  "evaluator_model": "openai/gpt-oss-120b",
+  "generated_at": "2026-10-07T00:22:08.673627+00:00",
+  "generated_by": "analysis/scripts/bf_control.py (re-run at handoff)",
+  "primary_endpoint": "recovery = first evaluator verdict wrong AND final answer correct",
+  "schema": "bf_control_summary/v1",
+  "source_branch_sha": "0450ac0635008da899861170c4e7921b4ecd11dd",
+  "verdict": "FEEDBACK DELIVERY EXPLAINS ORIGINAL GAP (both domains)"
+}
