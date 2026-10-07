@@ -50,13 +50,36 @@ flipping one grade in a throwaway copy: it reported MISMATCH and exited 1.
 
 ## The original frozen campaign is untouched
 
-Re-verified at handoff, unchanged from the digests recorded before the Bf
-freeze ran:
+Re-verified at handoff with the project's own tool, which hashes each data
+file the frozen manifest names:
 
-| dir | digest (first 16) |
-|---|---|
-| `experiments/results/FROZEN` | `8e7b191d8c52f13f` |
-| `experiments/results/xdomain/FROZEN_SCIBENCH` | `c35afcf862c709bd` |
+```bash
+python experiments/bf_freeze.py --verify experiments/results/FROZEN /tmp/frozen_omni
+python experiments/bf_freeze.py --verify experiments/results/xdomain/FROZEN_SCIBENCH /tmp/frozen_sci
+```
+
+| dir | files checked | result |
+|---|---|---|
+| `experiments/results/FROZEN` | `campaign_v2.jsonl` (9600), `actor3.jsonl` (1200), `armCp.jsonl` (800) | **PASS**, exit 0 |
+| `experiments/results/xdomain/FROZEN_SCIBENCH` | `scibench_AB.jsonl` (2296) | **PASS**, exit 0 |
+
+Arm composition of the frozen raw files is unchanged and contains **no Bf
+rows**: `campaign_v2.jsonl` = {A: 3200, B: 3200, C: 3200}, `scibench_AB.jsonl`
+= {A: 1148, B: 1148}.
+
+> **Correction.** An earlier revision of this file reported two whole-directory
+> digests (`8e7b191d8c52f13f`, `c35afcf862c709bd`) as the preservation
+> evidence. Those values could not be reproduced at handoff by any digest
+> definition tried (directory walk with or without path names, hash of
+> `MANIFEST.json`, concatenation of the manifest's own sha256 entries, over
+> either the frozen dir or the source data dir), and they appear nowhere in the
+> repo or either manifest. They are withdrawn as unverifiable rather than
+> restated. They are **not** evidence of a change: the per-file manifest
+> verification above passes, and `git status` reports no modification to either
+> directory. The lesson is that a bespoke digest is worthless as custody
+> evidence unless the exact function that produced it is recorded with it —
+> `bf_freeze.py --verify` is reproducible by anyone, so it is used here
+> instead.
 
 `bf_freeze.py` writes only to `<SRC>/FROZEN_BF` and structurally cannot touch
 those directories. Bf is frozen **separately** and is never pooled (S.12/S.16);
@@ -148,3 +171,45 @@ Chain 1 cannot be used to check this, because its rows are gone. Re-running the
 bridge would produce a *third* chain, not a reconciliation — and the user has
 directed that no further Bf runs be launched. Recorded here for the human
 authors rather than resolved.
+
+## Hugging Face: where the raw Bf rows now live
+
+Uploaded 2026-10-06 to the **private** dataset `AgentsSci/AAMAS2027-Roles`
+under a separate control path. No existing file was overwritten.
+
+```
+controls/rolefree_feedback/gemma4/
+    omnimath/bf_omnimath_gemma4.jsonl                        1600 rows  be3469f720048ca9...
+    scibench/bf_scibench_gemma4.jsonl                         574 rows  965ed061ebb107d5...
+    endpoint_drift_bridge/bridgeA_omnimath_gemma4_n400.jsonl  400 rows  0ec97d88048e84e3...
+    MANIFEST.json    README.md    BF_SUMMARY.json
+```
+
+Verified at handoff: **cold re-download of all three files reproduced the
+manifest sha256 exactly**, and each also matches the local freeze. Repo
+privacy was confirmed three ways in one run — authenticated API reports
+`private=True`, anonymous fetch of both the API and a raw file returns **401**,
+and a known-public dataset returns **200** in the same run (so the 401 is
+access denial, not a network artifact). Diff of the file list before/after:
+6 added, 0 removed, 0 pre-existing files modified except an **additive** LFS
+rule appended to `.gitattributes` for the new large trace.
+
+The four frozen traces on HF (`raw/campaign_v2.jsonl`, `raw/scibench_AB.jsonl`,
+`raw/actor3.jsonl`, `raw/armCp.jsonl`) still carry the sha256 recorded in
+`VERSION.release_history`.
+
+### These uploaded traces are outside the public-release gate
+
+`scripts/preflight_public.py` scans an explicit `TRACES` tuple under `raw/`.
+The control traces are under `controls/` and are **not in it**, so the gate
+does not scan them — and the dataset's own `RELEASE_PROCEDURE.md` warns that a
+trace absent from `TRACES` is *unchecked, not clean*.
+
+They were scanned by hand at upload with the gate's own `DEANON` regex and
+`_allowed()` helper: **0 institution-identifying hits** in all three files,
+with a 9/9 positive control. That is point-in-time evidence, not an enforced
+guarantee. Whoever prepares the public release must add these three paths to
+`TRACES` and `TRACE_MANIFEST` in the same commit that promotes them. The gate
+was deliberately **not** modified here — it still FAILS on the pre-existing
+v1.0.0 rows, as it must, and amending a check to cover new data is one step
+away from amending it to pass.
