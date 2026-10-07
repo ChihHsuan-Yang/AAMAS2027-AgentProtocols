@@ -339,6 +339,11 @@ def t_collapse(S, pv) -> str:
         return min(v), max(v)
     a_lo, a_hi = spread("A")
     b_lo, b_hi = spread("B")
+    # strict and medium are answer markers; loose also matches any
+    # "therefore"/"hence"/"= <digit>" (FINAL_TABLES.py LOOSE), which a Planner
+    # restating givens produces.
+    a_hi2 = max(float(x) for a in ACTORS for x in need(T20, (a, "A"), "T20")[1:3])
+    a_loose = [float(need(T20, (a, "A"), "T20")[3]) for a in ACTORS]
     ncells = sum(1 for a in ACTORS for _ in range(3))
     # Ordering check: role-free exceeds role-structured in every actor x marker cell.
     ok = sum(1 for a in ACTORS for k in (1, 2, 3)
@@ -359,15 +364,13 @@ def t_collapse(S, pv) -> str:
                   "describe it as blinded (APPROVED_CLAIMS A1 / DEAD list)."])
     return pre + f"""\\begin{{table}}[t]
 \\centering
-\\caption{{\\textbf{{Functional collapse.}} First pipeline passes in which all
-three agents independently assert their own final answer, with exact byte
-duplication as a \\emph{{lower bound}} and the model adjudication beside it.
-Byte duplication has precision $1.000$ but recall $0.262$, so it never
-carries this result alone. The adjudication is outcome-blind but
-\\textbf{{not}} condition-blind and is a second opinion, not ground truth.
-Collapse is not applicable to the structurally enforced conditions, whose
-schema forbids an answer field. The role-free condition with feedback uses
-the role-free prompts unchanged; only its collapse was measured.}}
+\\caption{{\\textbf{{Functional collapse, Omni-MATH.}} First pipeline passes in which all
+three agents assert their own final answer, with exact byte duplication (a
+\\emph{{lower bound}}: precision $1.000$, recall $0.262$) and a model
+adjudication that is outcome-blind but \\textbf{{not}} condition-blind.
+Collapse is not applicable to the enforced conditions, whose schema has no
+answer field; for the role-free condition with feedback only collapse was
+measured.}}
 \\label{{tab:collapse}}
 \\small
 \\begin{{tabular}}{{@{{}}lccc@{{}}}}
@@ -380,11 +383,14 @@ actor & collapse & duplication & no division \\\\
 \\end{{tabular}}
 
 \\vspace{{2pt}}
-\\footnotesize\\emph{{Sensitivity.}} The feedback-withheld role-free rate is stable across three
-answer-marker definitions (${b_lo:.3f}$--${b_hi:.3f}$, every actor);
-\\textbf{{the role-structured rate is not}} (${a_lo:.3f}$--${a_hi:.3f}$), so
-read that column as ``low,'' not a point estimate. The ordering holds in all
-{ok} of {ncells} actor$\\times$marker cells.{dagger_note}
+\\footnotesize\\emph{{Sensitivity.}} Across three answer-marker definitions the
+feedback-withheld role-free rate stays at ${b_lo:.3f}$--${b_hi:.3f}$ and the
+role-structured rate at ${a_lo:.3f}$--${a_hi2:.3f}$ under the two answer
+markers; the loosest, which also counts any ``therefore'', ``hence'' or
+``$=$\\,number'' --- as in a Planner restating givens --- raises it to
+${min(a_loose):.3f}$--${max(a_loose):.3f}$, so read that column as ``low,''
+not a point estimate. The
+ordering holds in all {ok} of {ncells} actor$\\times$marker cells.{dagger_note}
 \\end{{table}}
 """
 

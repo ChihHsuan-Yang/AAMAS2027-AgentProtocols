@@ -22,7 +22,7 @@ DOM = [("omni", "Omni-MATH"), ("scibench", "SciBench")]
 def p(x):
     """Exact McNemar p: two significant figures, scientific below 0.001."""
     if x < 1e-3:
-        m, e = "{:.0e}".format(x).split("e")
+        m, e = "{:.1e}".format(x).split("e")
         return "$p={}\\times10^{{{}}}$".format(m, int(e))
     return "$p={:.2g}$".format(x)
 

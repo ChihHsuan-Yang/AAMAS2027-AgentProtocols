@@ -96,32 +96,35 @@ Load-Bearing}
 
 \begin{abstract}
 Multi-agent LLM systems are specified as role diagrams --- Planner,
-Executor, Reviewer --- and the diagram is read as a mechanism. We ask which
-phase of the work that organization carries. Holding agents, topology, call
-budget, verifier and grading fixed, we delete every role
-instruction and, separately, enforce the same division of labor at the
-interface, across three actor models ($11{,}600$ trajectories from a
-frozen snapshot, plus a feedback-matched control).
+Executor, Reviewer --- and the diagram is read as a mechanism. We ask when
+the roles are load-bearing. Holding agents, topology, call budget, evaluator
+and grading fixed, we delete every role instruction and, separately,
+enforce the same division of labor at the interface, across three actor
+models ($11{,}600$ trajectories from a frozen snapshot), and add an
+exploratory feedback-matched role-free condition after the freeze, whose two
+gemma-4 cells we ran twice.
 
-Deleting the role instructions destroys the intended division of labor in
-all three actors --- the rate at which every agent independently asserts its
-own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$ --- so the
-roles do organize the team. That organization does not make the team better
-at the task. First-pass accuracy does not follow the collapse, and when the
-verifier's corrective feedback reaches both teams alike, the role-free team
-recovers from a rejected first answer more often, not less: $0.609$ against
-$0.222$ for gemma-4 ($89$ problems recovered only without roles, $4$ only
-with them; exact McNemar $p=6\times10^{-22}$), with the same ordering for
-gpt-oss ($0.552$ vs.\ $0.324$) and Llama-3.3 ($0.147$ vs.\ $0.014$) and on
-$574$ college-science problems. Its recoveries are revised answers, not
-re-graded ones. A role-free baseline from which the feedback is withheld
-almost never recovers ($0.051$), so recovery follows access to corrective
-feedback, not role structure. What roles change is how a team spends its
-budget after a failure: the role-structured Reviewer must decline after a
-FAIL, so that team revises internally and resubmits $1.54$ times per failed
-trajectory against $3.20$. \textbf{Structure is not adaptability}: a clean
-division of labor should not be read as evidence that a team acts on
-corrective information.
+Deleting the role instructions destroys the intended division of labor on
+Omni-MATH --- the rate at which every agent asserts its own final answer
+rises from $0.000$--$0.120$ to $0.846$--$0.976$ --- while first-pass accuracy
+does not fall. Roles look load-bearing for repairing a rejected answer only against
+a role-free team whose prompts never carried the evaluator's feedback
+(gemma-4 recovers $0.222$ with roles, $0.051$ without). Given the same
+feedback string, the role-free team recovers more: $0.609$ against $0.222$
+for gemma-4 (on problems both first answer wrongly, $89$ recovered only
+without roles and $4$ only with them; exact McNemar $p=6.2\times10^{-22}$),
+with higher final accuracy in all five actor--domain cells. Yet when each
+team is credited with the same number of evaluator verdicts on the same
+problem, recovery no longer differs: pooled over the five cells, by $+0.009$
+($95\%$ CI $-0.014$ to $+0.033$), within $\pm0.05$ by an equivalence test.
+Roles neither add nor remove the capacity to use feedback. What they change is how often
+the team asks for it. The role-structured Reviewer withholds approval ---
+on Omni-MATH, gemma-4's team submits $1.27$ times per failed trajectory against $3.20$,
+and $84$ of its $316$ failed trajectories never submit at all --- and
+against a ground-truth evaluator with a fixed budget, that costs recovery.
+\textbf{Structure is not adaptability}: a clean division of labor is not
+evidence that a team acts on corrective information, and role ablations
+must hold information channels fixed, not only budgets.
 \end{abstract}
 
 % CCS concepts are not part of the AAMAS-2027 sample (AAMAS_2027_sample.tex

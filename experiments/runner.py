@@ -100,6 +100,13 @@ VISIBILITY = {
     "Bf": {"planner": ["problem", "shared_history", "evaluator_feedback"],
            "executor": ["problem", "shared_history", "evaluator_feedback"],
            "reviewer": ["problem", "shared_history", "evaluator_feedback"]},
+    # Arm Afs (added 2026-10-07, exploratory): Arm A, byte-identical prompts
+    # and visibility, with FORCED SUBMISSION -- the pipeline submits the current
+    # answer to the evaluator at the end of every cycle, whatever the Reviewer
+    # routes. It isolates the role contract from its submission gate.
+    "Afs": {"planner": ["problem", "shared_history", "advice"],
+            "executor": ["problem", "shared_history", "advice"],
+            "reviewer": ["problem", "shared_history", "advice"]},
     # Arm C is the manipulation: the executor's view of the planner is the
     # PARSED PLAN OBJECT, never the planner's raw text.
     # CORRECTED 2026-09-28 (master, D9-R3): the Arm C templates never
@@ -666,7 +673,7 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
 
     def build_messages(role: str, rnd: int, inner: int) -> List[Dict[str, str]]:
         hist = "\n\n".join(shared_history[-8:])
-        if arm == "A":
+        if arm in ("A", "Afs"):
             if role == "planner":
                 pre = fill(P.A_SOLVER_PREPEND, task_description=task,
                            previous_plan=previous_plan, advice=advice)
@@ -879,6 +886,11 @@ async def run_trajectory(problem: Dict[str, Any], arm: str, actor_model: str,
                     shared_history.append("[Reviewer]\n" + raw)
                     route = parse_route(raw)
                     approve = (route == "agree")
+                    if arm == "Afs":
+                        # Forced submission: the Reviewer's route is logged but
+                        # does not gate the evaluator call.
+                        traj.messages[-1]["forced_submission"] = True
+                        approve = True
                     reviewer_advice = raw[-1500:]
                     # Arms A/B: the reviewer MAY author a new answer.  If it
                     # does, it takes ownership -- the leak arm C forbids.
@@ -1041,6 +1053,8 @@ async def amain(args) -> int:
         a = a.strip()
         if a.upper() == "BF":
             return "Bf"
+        if a.upper() == "AFS":
+            return "Afs"
         return "Cp" if a.upper() in ("CP", "C'", "CPRIME") else a.upper()
     arms = [_norm_arm(a) for a in args.arms.split(",") if a.strip()]
     actors = [m.strip() for m in args.actors.split(",") if m.strip()]

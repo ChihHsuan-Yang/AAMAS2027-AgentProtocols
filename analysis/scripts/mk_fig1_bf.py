@@ -43,6 +43,11 @@ S.apply_rc()
 D = S.figdata()
 with open(os.path.join(S.ROOT, "analysis", "out", "FIGDATA_BF.json")) as _f:
     DB = json.load(_f)
+# Panel C: approvals (submissions) and declines per first-pass-wrong trajectory,
+# counted over Reviewer turns (bf_gate.py). bf_numbers' "submits" also counts the
+# one grading at the end of the budget of a trajectory that never submitted.
+with open(os.path.join(S.ROOT, "analysis", "out", "FIGDATA_GATE.json")) as _f:
+    DG = json.load(_f)
 MAXCYC = D["max_cycles"]
 FOCUS = "gemma-4-31B-it"
 ALPHA = 0.05
@@ -70,7 +75,8 @@ def cell(dom, actor, arm):
 
 
 def pfmt(p):
-    return f"p={p:.0e}" if p < 1e-3 else f"p={p:.2f}"
+    """Two significant figures, as in the text."""
+    return f"p={p:.1e}".replace("e-0", "e-") if p < 1e-3 else f"p={p:.2g}"
 
 
 def draw_bar(ax, x, arm, c, key, w, dom="omni"):
@@ -119,7 +125,7 @@ def panel_A(ax):
     for gi, (dom, a) in enumerate(GROUPS):
         for k, arm in enumerate(arms):
             draw_bar(ax, gi + (k - 1) * w, arm, cell(dom, a, arm), "firstpass", w * 0.86, dom)
-    axes_common(ax, "first-pass\naccuracy", "A   Roles removed: first answer unchanged")
+    axes_common(ax, "first-pass\naccuracy", "A   Roles removed: first answer no worse")
 
 
 def panel_B(ax):
@@ -137,11 +143,12 @@ def panel_B(ax):
             ax.plot([xl, xl, xr, xr], [yb, yb + 0.022, yb + 0.022, yb],
                     lw=0.6, color=S.INK2, zorder=5)
             ok = pr["p"] < ALPHA
-            ax.text((xl + xr) / 2, yb + 0.032, pfmt(pr["p"]) if ok else "n.s.",
-                    ha="center", va="bottom", fontsize=S.FS_ANNOT,
+            # left-aligned at the bracket so no label crosses a domain divider
+            ax.text(xl - 0.10, yb + 0.032, pfmt(pr["p"]) if ok else "n.s.",
+                    ha="left", va="bottom", fontsize=S.FS_ANNOT,
                     color=S.INK if ok else S.INK3, zorder=5)
     axes_common(ax, "recovery after\na failed answer",
-                "B   Same feedback: roles add no recovery")
+                "B   Recovery after a failed first answer")
 
 
 def panel_C(ax):
@@ -149,10 +156,10 @@ def panel_C(ax):
     ys = np.arange(len(arms), dtype=float)[::-1]
     gap = 0.045
     for yi, arm in zip(ys, arms):
-        d = cell("omni", FOCUS, arm)
+        d = DG.get(f"omni|{FOCUS}|{arm}")
         if d is None:
             continue
-        sub, rev = d["submissions"], d["revising"]
+        sub, rev = d["approvals"], d["declines"]
         kw = dict(facecolor=S.SURFACE, edgecolor=COL[arm], linewidth=0.9) if arm in HOLLOW \
             else dict(color=COL[arm], hatch=HATCH.get(arm, ""), edgecolor=S.SURFACE, linewidth=0.0)
         ax.barh(yi, sub, 0.56, zorder=3, **kw)
@@ -160,23 +167,22 @@ def panel_C(ax):
                 linewidth=0.0)
         tc = S.INK if (arm in HOLLOW or arm == "C") else S.SURFACE
         ax.text(sub / 2 if rev >= 0.6 else sub * 0.30, yi, f"{sub:.2f}",
-                ha="center", va="center", fontsize=S.FS_ANNOT, color=tc, zorder=6)
+                ha="center", va="center", fontsize=S.FS_ANNOT, color=tc, zorder=6,
+                bbox=(dict(facecolor=S.SURFACE, edgecolor="none", pad=0.4, alpha=0.9)
+                      if arm == "C" else None))
         if rev >= 0.6:
             ax.text(sub + gap + rev / 2, yi, f"{rev:.2f}", ha="center", va="center",
                     fontsize=S.FS_ANNOT, color=S.INK, zorder=6)
         else:
-            ax.annotate(f"{rev:.2f} revising", xy=(sub + gap + rev / 2, yi),
-                        xytext=(sub - 0.12, yi), textcoords="data", ha="right",
-                        va="center", fontsize=S.FS_ANNOT, color=tc, zorder=6,
-                        arrowprops=dict(arrowstyle="-", lw=0.6, color=S.INK2,
-                                        shrinkA=0.5, shrinkB=0.5))
+            ax.text(sub - 0.15, yi, f"+ {rev:.2f} revising", ha="right",
+                    va="center", fontsize=S.FS_ANNOT, color=tc, zorder=6)
         ax.text(-0.025, yi, LONG[arm], transform=ax.get_yaxis_transform(),
                 ha="right", va="center", fontsize=S.FS_ANNOT, color=S.INK)
     ax.axvline(MAXCYC, color=S.INK2, lw=0.7, zorder=2)
-    dA = cell("omni", FOCUS, "A")
-    ax.text(dA["submissions"] / 2, ys[0] + 0.42, "submitting", ha="center", va="bottom",
+    dA = DG[f"omni|{FOCUS}|A"]
+    ax.text(dA["approvals"] / 2, ys[0] + 0.42, "submitting", ha="center", va="bottom",
             fontsize=S.FS_ANNOT, color=S.INK3)
-    ax.text(dA["submissions"] + gap + dA["revising"] / 2, ys[0] + 0.42, "revising",
+    ax.text(dA["approvals"] + gap + dA["declines"] / 2, ys[0] + 0.42, "revising",
             ha="center", va="bottom", fontsize=S.FS_ANNOT, color=S.INK3)
     ax.text(MAXCYC - 0.07, ys[0] + 0.42, f"budget {MAXCYC}", ha="right", va="bottom",
             fontsize=S.FS_ANNOT, color=S.INK2)
@@ -211,7 +217,7 @@ def build(stem="fig1_v3_story"):
              "C   Same budget, different allocation (gemma-4)",
              fontsize=S.FS_TITLE, color=S.INK, ha="left", va="bottom")
     h = []
-    for arm in ("A", "Bf", "C", "B"):
+    for arm in ("A", "B", "Bf", "C"):    # column-major fill: rows read A, Bf / B, C
         if arm in HOLLOW:
             h.append(Patch(facecolor=S.SURFACE, edgecolor=COL[arm], linewidth=0.9, label=LONG[arm]))
         else:

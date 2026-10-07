@@ -5,21 +5,25 @@ To ask whether organization is load-bearing we vary it in both directions
 from one baseline: remove it, and enforce it. All conditions share three
 agents, the same interaction order
 (Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), message-passing
-graph, total call budget, verifier and verifier prompt, retry budget,
-decoding parameters (temperature $0$, identical \texttt{max\_tokens}),
-stopping rule and grading; every trajectory in the frozen snapshot carries
+graph, context visibility (except under enforcement, below), total call
+budget, verifier and verifier prompt, retry budget, decoding parameters
+(temperature $0$, identical \texttt{max\_tokens}), stopping rule (a PASS ends
+the trajectory) and grading; every trajectory in the frozen snapshot carries
 the identical budget record --- a test of organization, not of scale.
-\textbf{One channel differs by condition: feedback.} After a FAIL the
-evaluator returns a non-leaking repair hint, which the role-structured and
-enforced prompts receive through an advice slot. The role-free template has
-no such slot: its agents are not told that, or why, an answer failed, and
-see only that another cycle runs. The role-free condition is therefore
-reported in two forms, without and with the feedback.
+\textbf{Besides the roles, two things differ, and we report them rather
+than hide them.} After a FAIL the evaluator returns a repair hint, written
+with the gold answer in view and instructed not to reveal it; the
+role-structured and enforced templates show it to all three agents in the
+next cycle, each through its role's advice slot. The role-free template has
+no such slot, so the role-free condition is reported both without and with
+the feedback. And the role-structured Reviewer carries one clause the
+role-free prompt lacks (below).
 
 \paragraph{Role-structured \PER{} (baseline).} Role prompts as ordinarily
-written: the organization as specified, including one clause the role-free
-prompts lack --- in a cycle that receives a FAIL, the Reviewer must route
-the work back to the Planner or Executor and may not approve.
+written: the organization as specified, including a Reviewer told to
+approve only a complete answer of the right shape and, in a cycle that
+receives a FAIL, to route the work back to the Planner or Executor rather
+than approve.
 
 \paragraph{Role-free, feedback withheld.} Identical topology and
 budget; all three agents get one byte-identical prompt: ``You are one of
@@ -34,12 +38,13 @@ agent's \texttt{[Agree]} is approval (untagged counts as
 \texttt{[Continue]}) and the latest boxed answer is submitted. Nothing in
 this template carries the evaluator's verdict or hint.
 
-\paragraph{Role-free with feedback.} The same role-free prompt, byte for byte, plus the evaluator's verdict and
-repair hint --- the string the role-structured team receives --- shown to
-all three agents as an \texttt{[Evaluator]} entry in the cycle after a FAIL.
-It differs from the role-free condition only in feedback, and from the
-role-structured one in roles, in the Reviewer clause above, and in how the
-feedback is framed (\S\ref{sec:limitations}).
+\paragraph{Role-free with feedback.} The same role-free prompt, byte for
+byte, plus the evaluator's verdict and repair hint --- the string the
+role-structured team receives --- shown to all three agents as an
+\texttt{[Evaluator]} entry after the shared history in the cycle after a
+FAIL, the lifetime the advice slot has. It differs from the role-free
+condition only in feedback, and from the role-structured one in roles, in
+the Reviewer's clauses and in how the feedback is framed.
 
 \paragraph{Structurally enforced.} Specialization is enforced by the
 interface rather than by wording. The Planner emits JSON against
@@ -49,19 +54,19 @@ the problem --- never the Planner's raw text --- and emits
 \texttt{\{derivation, answer\}}; the Reviewer emits
 \texttt{\{verdict, target\_span, critique\}}, and \texttt{accept}
 promotes the Executor's answer verbatim \emph{by reference}, having no
-field in which to \emph{author} one. Enforcement removes no capability ---
-each function is still performed by one agent under the same budget --- at
-the cost that a rejected emission can exhaust the regeneration budget. A
-\emph{context-restored control} repeats it with shared history restored;
-matching the baseline exactly would require feeding raw prose back in,
-dissolving the constraint that defines the condition.
+field in which to \emph{author} one. Each function stays with one agent
+under the same budget, but the Executor sees less context and a rejected
+emission can exhaust the regeneration budget. A \emph{context-restored
+control} repeats it with shared history restored.
 
 \paragraph{Single-agent reference.} A budget-matched single-agent protocol
 on the same problems, from a previously released corpus rather than this
-campaign (\S\ref{sec:experiments}). Without it, ``collapse costs nothing''
-cannot be told from ``the system was one agent all
-along''~\cite{zhang2026rethinking}. It cuts both ways and is reported in the
-supplement.
+campaign (\S\ref{sec:experiments}), guards against ``the system was one
+agent all along''~\cite{zhang2026rethinking}. It cuts both ways: gemma-4's
+role-structured and feedback-withheld role-free teams finish below their
+single agent ($-0.0225$, $-0.0563$) and gpt-oss's feedback-withheld
+role-free team above it ($+0.0294$); the arms come from separate runs
+(supplement).
 
 \subsection{Instrumentation and pre-registered analyses}
 \label{subsec:prereg}
@@ -77,38 +82,20 @@ All five endpoints were fixed in writing and committed before any
 intervention data existed; the full table, with what happened to each, is
 in the supplement. Units are (problem, actor) pairs and all conditions run
 the same problems, so every test is paired with bootstrap clustering by
-problem. P4 --- the actor~$\times$~intervention interaction on
-accuracy --- is \emph{the} primary test of the original thesis, and the
-pre-registered Holm correction alters no verdict.
-
-\paragraph{The pre-registered primary endpoint is null.}
-\label{subsec:p4null}
-\textbf{P4 is null in all three pairwise difference-in-differences, before
-and after Holm --- every interval contains zero} --- and we report it as
-the failure of the theory it was written to test. Only one of the
-three is an informative null: a true interaction is plausibly
-${\leq}0.040$ and only the gpt-oss$-$gemma-4 contrast can see that (MDE
-$0.033$ at $80\%$ power), while the two Llama-3.3 contrasts (MDE $0.069$,
-$0.075$ at $n=400$) cannot detect an interaction of any plausible
-size and are uninformative rather than evidence of absence. Our
-pre-declared not-submit condition was a null P4 \emph{and} a main effect
-in the published capability-equalizer direction. Under the pre-registered
-scoring the effects are ordered by actor weakness but are not gains:
-enforcement significantly \emph{lowers} gemma-4's accuracy ($-0.0225$, the
-only per-actor contrast to survive Holm) and leaves the other two null, so
-that condition is met only under the as-graded scoring
-\S\ref{subsec:enforce} shows to be survivorship.
-\textbf{The role-structured-versus-role-free contrast this paper is
-organized around was pre-registered as a secondary, exploratory
-replication of a published null}; splitting it into a first-pass and a
-recovery phase is post hoc. The role-free condition with feedback is not
-pre-registered either: it was added and run after the snapshot was frozen,
-with its design and analysis committed in writing before any of its data
-existed. The \Pone{} manipulation objective --- that
-enforcement would drive Planner \emph{computation}-abstention to
-${\approx}1.0$ --- also failed, naming a clause the intervention
-does not enforce: the schema forbids emitting an \emph{answer}, and
-nothing stops a Planner writing $=1/27$. It was re-designated to answer
-authorship. Exclusions were fixed in advance, including the rule that
-decides \S\ref{subsec:enforce}: \emph{unparseable trajectories count as
-incorrect rather than dropped}.
+problem. \textbf{The pre-registered primary endpoint is null}: no pairwise
+difference-in-differences of P4 --- the actor~$\times$~intervention
+interaction on accuracy --- survives Holm (smallest adjusted $p=0.17$;
+before correction the Llama-3.3$-$gemma-4 interval narrowly excludes zero,
+$+0.040$ $[+0.001,+0.080]$), and only the gpt-oss$-$gemma-4 contrast was
+powered for an interaction of plausible size. The \Pone{} manipulation
+objective --- enforcement driving Planner computation-abstention to
+${\approx}1.0$ --- also failed: the schema forbids an \emph{answer}, not a
+computation. It was re-designated to answer authorship. \textbf{The
+role-structured-versus-role-free contrast this paper is organized around
+was pre-registered as a secondary, exploratory replication of a published
+null}; splitting it into phases is post hoc, and the role-free condition
+with feedback was added after the snapshot was frozen, with its design and
+analysis committed in writing before any of its data existed. Its results
+are exploratory, and its two gemma-4 cells were run twice. Exclusions were
+fixed in advance, including the rule that decides \S\ref{subsec:enforce}:
+\emph{unparseable trajectories count as incorrect rather than dropped}.

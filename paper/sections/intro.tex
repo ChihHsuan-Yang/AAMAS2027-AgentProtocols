@@ -4,75 +4,79 @@
 A multi-agent LLM system is usually presented as a diagram: a Planner that
 decomposes without solving, an Executor that carries out the plan, a
 Reviewer that critiques rather than re-derives (\PER{}), and arrows saying
-who hands what to whom. The diagram is read as a \emph{mechanism} --- where
-the system's competence comes from, and why one pays for three agents
-instead of one. But what runs is three prompts handed to a language model,
-which may honor the division of labor, ignore it, or satisfy its surface
-while doing the whole task in every box. An accuracy score cannot tell
-those apart: a pipeline whose three agents have quietly become three copies
-of the same solver returns the same number as one whose organization is
-doing exactly what the diagram says.
+who hands what to whom~\cite{hong2024metagpt,qian2024chatdev,wu2024autogen}.
+The diagram is read as a \emph{mechanism} --- where the system's competence
+comes from, and why one pays for three agents instead of one. But what runs
+is three prompts handed to a language model, which may honor the division
+of labor, ignore it, or satisfy its surface while doing the whole task in
+every box. An accuracy score cannot tell those apart: a pipeline whose three
+agents have quietly become three copies of the same solver returns the same
+number as one whose organization is doing exactly what the diagram says.
 
 \paragraph{The question.}
-We ask what a diagram cannot answer: \textbf{which phase of the work is
-multi-agent organization load-bearing for?} There is a phase in the
-question because a team solving a problem does two different things: it
-produces an answer, and then, if that answer comes back wrong, it has to
-produce a \emph{different} one. Those are not the same task --- the first
-rewards getting to a candidate, the second requires abandoning one --- and
-nothing guarantees an organizational structure contributes equally to both.
-A component is \textbf{load-bearing} if removing or altering it
-reproducibly degrades task performance \emph{under matched call and
-information budgets} (\S\ref{sec:framework}). Matching information is the
-subtle part: feedback reaches each agent through its prompt, and the prompt
-is exactly what a role ablation rewrites.
+We ask what a diagram cannot answer: \textbf{for which phase of the work,
+and under what conditions, is multi-agent organization load-bearing?} There
+is a phase in the question because a team solving a problem does two
+different things: it produces an answer, and then, if that answer comes
+back wrong, it has to produce a \emph{different} one. A component is
+\textbf{load-bearing} if removing or altering it reproducibly degrades task
+performance \emph{under matched call and information budgets}
+(\S\ref{sec:framework}). Matching information is the subtle part: feedback
+reaches each agent through its prompt, and the prompt is exactly what a
+role ablation rewrites.
 
-\paragraph{The manipulation works, and the first answer does not notice.}
+\paragraph{The manipulation works, and the first answer barely notices.}
 Deleting every role instruction --- with topology, actor model, retry
-budget and evaluator held fixed --- destroys the division of
-labor in all three actors: the rate at which every agent
-independently asserts its own final answer goes from $0.000$--$0.120$ to
-$0.846$--$0.976$. First-pass accuracy does not follow it down --- a parity
-prior role ablations already
-report~\cite{dylan2026equal,orogat2026architectural}. Read alone, this is the familiar negative
-result: the organization was decorative, and three agents were a more
-expensive way to be one. The rest of this paper is about where to look
-before drawing that conclusion.
+budget and evaluator held fixed --- destroys the division of labor in all
+three actors: on Omni-MATH the rate at which every agent asserts its own
+final answer goes from $0.000$--$0.120$ to $0.846$--$0.976$ (the role-free
+prompt asks each agent for its current answer). First-pass accuracy does not
+fall (it is unchanged for gemma-4 and rises by $0.05$ for gpt-oss), the
+parity prior role ablations
+report~\cite{dylan2026equal,orogat2026architectural}. Read alone, this is
+the familiar negative result: the organization was decorative.
 
-\paragraph{Organization is not adaptability.} The test is what happens
-after the evaluator rejects a first answer, when the useful move is to put
-forward a \emph{different} candidate. Given the same corrective feedback as
-the role-structured team, the role-free team does not merely keep up. On
-the $236$ problems both first answer wrongly it recovers $89$ the
+\paragraph{When roles look load-bearing, and why.} After a rejected first
+answer, roles do look load-bearing: the role-structured team recovers
+$0.222$ of gemma-4's failures, a role-free team $0.051$. But the
+role-structured templates carry the evaluator's verdict and repair hint to
+every agent, and the role-free template has no slot for it. Given the same
+feedback string --- an exploratory condition we added after the snapshot was
+frozen, running its gemma-4 cells twice --- the role-free team recovers
+more: on the $236$ problems both first answer wrongly it recovers $89$ the
 role-structured team misses, against $4$ the other way (exact McNemar
-$p=6\times10^{-22}$; gemma-4), its final accuracy is $0.921$ against
-$0.846$, and the ordering returns in both other actors and on $574$
-free-response college-science problems. Its recoveries are revisions: the
-passing answer differs from the rejected one in $541$ of $547$ cases. A
-feedback-withheld baseline --- the same role-free prompts with no slot for
-the evaluator's verdict --- recovers in only $0.051$ of cases, so what a
-team needs in order to adapt is the feedback, not the roles.
-\textbf{The roles organize the team; they do not make it more adaptive.}
+$p=6.2\times10^{-22}$), and its final accuracy is higher in every actor and
+on $574$ free-response college-science problems. \textbf{Roles appear
+load-bearing for repair exactly when their prompts are the only channel
+carrying the feedback.}
 
-\paragraph{What roles do instead.} Roles change how the six-cycle budget
-is spent after a failure: the role-structured Reviewer may not approve in
-the cycle a FAIL arrives, so that team revises internally and submits
-$1.54$ times per failed trajectory against $3.20$. Its resubmissions are
-more often right; there are far fewer of them, and against an exact oracle
-with a capped number of verdicts, verdicts are what pays. Enforcing the
-division of labor at the interface shifts the allocation toward submission
-and raises recovery in every actor --- resolvably only for Llama-3.3 ---
-but does not become end-to-end accuracy, because enforcing a schema makes
-the pipeline brittle and $8$--$17\%$ of its trajectories never finish.
+\paragraph{What roles do instead.} Matched on the feedback each team
+actually receives, the difference vanishes: crediting the role-free team
+with only as many evaluator verdicts as the role-structured team received on
+the same problem, recovery differs by $+0.009$ pooled ($95\%$ CI $-0.014$ to
+$+0.033$), and the same holds against a role-structured re-run made after
+the freeze. Roles add no measurable capacity to use feedback; they change
+how often a team asks for it. The
+role-structured Reviewer withholds approval before any feedback exists ---
+$84$ of gemma-4's $316$ failed trajectories never submit within the six
+cycles --- and, on Omni-MATH, mostly in cycles where no clause forbids
+approval; that team submits $1.27$ times per failed trajectory against
+$3.20$. Against a ground-truth evaluator with a capped number of cycles,
+withheld submissions are lost recoveries. Enforcing the division of labor at
+the interface loosens the gate and raises recovery in every actor ---
+resolvably only for Llama-3.3 --- but does not become end-to-end accuracy,
+because enforcing a schema makes the pipeline brittle and $8$--$17\%$ of its
+trajectories never finish.
 
 \paragraph{Contribution.} An operational definition of load-bearing and a
 budget-matched, two-directional design that applies it per phase; evidence
-across three actors and two domains that, with corrective feedback matched,
-a role-free team recovers more than a role-structured one, so that
-organizational structure and adaptive recovery come apart; an allocation
-account of what roles do after feedback, with its price per verdict; and a
-measurement point that extends a recent separation of reviewer precision
-from critique uptake~\cite{yang2026precise}: properties that look like good
-collaboration --- a precise reviewer, a clean division of labor --- are not
-evidence that corrective information changes the next action
-(\S\ref{sec:discussion}).
+from three actors on competition mathematics and two on college science
+that a role ablation which drops the feedback channel manufactures an
+apparent role effect on repair, and that with feedback matched --- in
+channel and in amount --- roles neither help nor hurt a team's use of it;
+an account, measured from the logs, of what roles do instead: a gate on
+submission; and a measurement point that extends a recent separation of
+reviewer precision from critique uptake~\cite{yang2026precise}: properties
+that look like good collaboration --- a precise reviewer, a clean division
+of labor --- are not evidence that corrective information changes the next
+action (\S\ref{sec:discussion}).

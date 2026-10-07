@@ -4,263 +4,247 @@
 All contrasts are paired at the problem level with bootstrap intervals
 clustered by problem; trajectories never producing a graded answer count as
 incorrect (the first-pass contrast of \S\ref{subsec:collapse} excepted),
-and significance is exact McNemar on discordant pairs.
+and significance is exact McNemar on discordant pairs, with $p$ to two
+significant figures.
 
 \subsection{R1. Removing roles changes the organization, not the first
 answer}
 \label{subsec:collapse}
 
-Removing the role instructions changes nothing else: same three agents,
-same order, same budget, same evaluator. The claim rests on mechanical
-measures that involve no judge. We ask whether \emph{every}
-agent independently asserts its own final answer on the first pass, so the
-measure is not length-confounded (Table~\ref{tab:collapse}); once the
-Planner's \textsc{must not} is gone and every agent is asked for its
-current best answer, it rises from $0.000$--$0.120$ to $0.846$--$0.976$. \textbf{Decomposed by role, the
-planner supplies almost all of the change}: the executor is at ceiling
-either way and the reviewer was already high, while the planner moves
-$0.000$/$0.183$/$0.000$ to $0.979$/$0.898$/$0.889$ (gemma-4 / gpt-oss /
-Llama-3.3) --- a claim about the \emph{change}, not the level.
+Besides deleting the role clauses, the role-free prompt asks every agent
+for its current best answer; agents, order, budget and evaluator are
+unchanged. We ask whether \emph{every} agent asserts its own final answer
+on the first pass, so the measure is not length-confounded
+(Table~\ref{tab:collapse}): it rises from $0.000$--$0.120$ to
+$0.846$--$0.976$. \textbf{Decomposed by role, the planner supplies most of
+the change}: the executor answers in both conditions, while the planner
+moves $0.000$/$0.183$/$0.000$ to $0.979$/$0.898$/$0.889$ (gemma-4 / gpt-oss /
+Llama-3.3), while the reviewer, already high for two actors, rises in all three. Since the footer asks for an answer, this
+measures what a Planner does once its \textsc{must not} is gone, not an
+emergent tendency --- a claim about the \emph{change}, not the level.
 
 \input{tables/main_role_collapse}
-
-\paragraph{Content duplication, against the right null.} gemma-4's and
-Llama-3.3's role-free planners write full independent solutions
-(${\approx}1{,}880$ characters, median) before boxing an answer.
-Numeric-token overlap confirms it, but only against a
-\emph{per-condition} null: pairing planners with executors from different
-problems shows the baseline is itself condition-dependent, so the raw
-difference is invalid. Against each condition's own null the excess shifts
-$+0.290$ and $+0.287$ when roles are removed. gpt-oss cannot be
-read at all: its role-free planner emits a median $37$ visible characters
---- the logging defect below.
-
-\paragraph{A second opinion, and the leak that stops it being blind.} We
-put 171 trajectories to a frontier model against a rubric frozen before
-the first judgement, with actor, condition, correctness and the automated
-label withheld and role words neutralized (Table~\ref{tab:collapse}, last
-column; stability $0.953$). It is model adjudication, not human
-annotation, and outcome-blind but \emph{not} condition-blind: neutralization renamed the role words without
-equalizing their \emph{presence} --- a neutralized token appears in all $42$
-role-structured items and $3$ of $56$ role-free ones (Fisher exact
-$p=1.5\times10^{-24}$) --- so a judge noticing only whether a transcript
-labels its speakers could separate the conditions without reading content.
-Normalizing to a common surface would destroy the differences being judged,
-so we disclose rather than re-run; we do not call it blinded, and the
-collapse claim does not rest on it. Judge stability and the byte metric's precision/recall are
-within-item, so unaffected.
-
-\paragraph{First-pass accuracy does not follow.} The ablation removed the
-organization without crippling the solver, the parity prior role ablations
-report~\cite{dylan2026equal,orogat2026architectural}. On problems graded
-under both conditions ($n=1{,}600$ / $1{,}592$ / $389$) the first-pass
-difference is \emph{identical} for gemma-4 ($+0.0000$,
-$[-0.0156,+0.0150]$) and flat for Llama-3.3 ($+0.0077$), while it
-\emph{improves} for gpt-oss ($+0.0503$, $[+0.0339,+0.0666]$;
-Figure~\ref{fig:dissociation}A). Whatever roles buy, they do not buy the
-first answer.
-
-\paragraph{A logging defect, and its second consequence.}
-\label{subsec:logging}
-Our runner logged each response's \texttt{content}, falling back to
-\texttt{reasoning} only when content was empty; gpt-oss-120b often returns
-a short content string alongside a long hidden trace, so the derivation was
-discarded while the flag documenting the substitution stayed false. The
-same string is what the next agent received, identically in every
-condition: the defect is in the record, not the run.
-$75.7\%$ of gpt-oss role-free messages are affected and $93.4\%$
-of its first passes contain one; the flag reports $5.8\%$, and the other
-two actors are unaffected. Two consequences follow and no third.
-No point estimate of gpt-oss's duplication rate is recoverable,
-and the defect bounds collapse-\emph{mode} interpretation:
-calling that 37-character planner a behavioral mode would attribute our
-defect to the model. \textbf{It does not manufacture the collapse}, the
-one place it could reach a headline measure: restricted to first passes
-with \emph{no} affected message, role-free collapse is $0.821$ ($n=106$)
-against $0.846$ overall and the role-structured rate $0.118$ against
-$0.120$ --- the gap is intact on clean messages.
-
-\subsection{R2. Matched on feedback, roles do not make a team more
-adaptive}
-\label{subsec:recovery}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig1_v3_story.pdf}
-\Description{Three panels. A: first-pass accuracy per actor and domain, about equal for the role-structured team and both role-free teams. B: recovery after a failed first answer; the role-free team with feedback recovers most, the role-structured and enforced teams less, and the role-free team whose feedback is withheld least. C: stacked bars of deliberation cycles spent submitting versus revising for gemma-4 in four conditions.}
+\Description{Three panels. A: first-pass accuracy per actor and domain, about equal for the role-structured team and both role-free teams except gpt-oss, where the role-free teams are higher. B: recovery after a failed first answer; the role-free team with feedback recovers most, the role-structured and enforced teams less, and the role-free team whose feedback is withheld least, tying the role-structured team for Llama-3.3. C: stacked bars of deliberation cycles spent submitting versus revising for gemma-4 in four conditions.}
 \caption{\textbf{Roles organize the team but do not add recovery.}
-\textbf{(A)} Removing roles leaves first-pass accuracy alone.
-\textbf{(B)} Recovery after a failed first answer. Given the same
-feedback, the role-free team recovers more than the role-structured one;
-the role-free baseline with the feedback withheld (hollow) almost never
-recovers. Bars are \emph{marginal} rates over each condition's own
-first-pass-wrong set; brackets give the \emph{paired} exact McNemar $p$,
-role-structured versus role-free with feedback. Enforcement was run on
-Omni-MATH only. \textbf{(C)} How gemma-4's failed trajectories spend the
-six-cycle budget. Pre-registered scoring, bootstrap $95\%$ intervals.}
+\textbf{(A)} Removing roles leaves first-pass accuracy unchanged or higher.
+\textbf{(B)} Recovery after a failed first answer. Given the same feedback
+string, the role-free team recovers more than the role-structured one; the
+role-free team with the feedback withheld (hollow) recovers least, tying the
+role-structured team for Llama-3.3. Bars
+are \emph{marginal} rates over each condition's own first-pass-wrong set;
+brackets give the \emph{paired} exact McNemar $p$, role-structured versus
+role-free with feedback. Enforcement was run on Omni-MATH only.
+\textbf{(C)} How gemma-4's failed Omni-MATH trajectories spend the six-cycle budget:
+cycles ending in a submission (approval) or in a revision (a decline).
+Never-graded trajectories count as incorrect; bootstrap $95\%$ intervals.}
 \label{fig:dissociation}
 \end{figure}
 
-That would be the whole result if performance were a single number, but
-a team that answers also has to repair.
+\paragraph{Content duplication and a second opinion.} gemma-4's and
+Llama-3.3's role-free planners write full independent solutions
+(${\approx}1{,}880$ characters, median) before boxing an answer, and
+numeric-token overlap with the executor exceeds its per-condition null by
+$+0.290$ and $+0.287$. A frontier model judging $171$ trajectories against
+a frozen rubric agrees (Table~\ref{tab:collapse}, last column; stability
+$0.953$), but it is outcome-blind, not condition-blind: role words were
+renamed rather than equalized, and a renamed token appears in all $42$
+role-structured items and $3$ of $56$ role-free ones (Fisher
+$p=1.5\times10^{-24}$). The collapse claim does not rest on it.
+
+\paragraph{First-pass accuracy does not follow.} On problems graded under
+both conditions ($n=1{,}600$ / $1{,}592$ / $389$) the first-pass difference
+is \emph{identical} for gemma-4 ($+0.0000$, $[-0.0156,+0.0150]$) and flat
+for Llama-3.3 ($+0.0077$), while it \emph{improves} for gpt-oss ($+0.0503$,
+$[+0.0339,+0.0666]$; Figure~\ref{fig:dissociation}A). Whatever roles buy,
+they do not buy the first answer.
+
+\paragraph{A logging defect.}
+\label{subsec:logging}
+Our runner logged each response's \texttt{content}, falling back to
+\texttt{reasoning} only when content was empty. gpt-oss-120b often returns
+a short content string beside a long hidden trace, so its derivations are
+missing from the record ($75.7\%$ of its role-free messages, $93.4\%$ of
+its first passes; the flag meant to report this reports $5.8\%$). Agents
+pass content only, by design and in every condition, so the defect is in
+the record: no point estimate of gpt-oss's duplication is recoverable, and
+its $37$-character median planner message is not a behavior. It does not
+manufacture the collapse: on first passes with no affected message,
+role-free collapse is $0.821$ ($n=106$) and role-structured $0.118$.
+
+\subsection{R2. Given the same feedback, the role-free team recovers more}
+\label{subsec:recovery}
+
+
 
 \paragraph{What a cycle is.} The pipeline runs a fixed grid of six
 deliberation cycles --- three outer rounds of two inner rounds --- each one
-pass of Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer, and a further
-cycle runs whether or not the Reviewer approved. The Reviewer decides
-whether a cycle ends in a \emph{submission} or a \emph{revision}. On
-approval the current answer goes to the oracle-gated evaluator, which
-returns PASS --- the trajectory ends --- or FAIL with a non-leaking repair
-hint; without approval nothing is submitted and the next cycle carries the
-Reviewer's critique forward. Every trajectory therefore splits its realized
-cycles into submissions and revisions.
+pass of Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer. The Reviewer
+decides whether a cycle ends in a \emph{submission} or a \emph{revision}.
+On approval the current answer goes to the evaluator, which returns PASS
+--- the trajectory ends --- or FAIL with a repair hint; without approval
+nothing is submitted and the next cycle carries the Reviewer's critique
+forward. A trajectory that never submits is graded once when the budget
+runs out.
+
+\input{tables/main_results}
 
 \paragraph{Recovery and final accuracy.} The role-structured team receives
 the evaluator's feedback, so the matched comparison is with the role-free
-team that receives it too. \textbf{That team recovers more, not less}:
-$0.609$ against $0.222$ (marginal, Figure~\ref{fig:dissociation}B), and on
-the $236$ problems both first answer wrongly, $89$ are recovered only
-without roles and $4$ only with them ($p=6.2\times10^{-22}$). Both reach
-the same first-pass rate and a correct first answer is never lost, so this
-becomes final accuracy: $0.921$ against $0.846$, with $137$ problems
-correct only without roles and $17$ only with them ($p=1.7\times10^{-24}$,
-conditioned on nothing). By first-pass stratum the $+120$ is $+85$ on the
-$236$ problems both miss and $+36$ on the $81+79$ that only one misses,
-less one never-judged trajectory. The recoveries are revisions, not
-re-gradings: in $192$ of the $193$ the passing answer differs from the one
-first rejected ($541$ of $547$ across the five cells with feedback
-matched), and grader noise ($0.0072$, the rate at which identical evaluator
-prompts disagree) is an order of magnitude below the difference.
+team that receives it too (Table~\ref{tab:main}). \textbf{That team
+recovers more, not less}: $0.609$ against $0.222$ (marginal,
+Figure~\ref{fig:dissociation}B), and on the $236$ problems both first
+answer wrongly, $89$ are recovered only without roles and $4$ only with them
+($p=6.2\times10^{-22}$). Both reach the same first-pass rate and a correct
+first answer is never lost, so this becomes final accuracy: $0.921$ against
+$0.846$, with $137$ problems correct only without roles and $17$ only with
+them ($p=1.7\times10^{-24}$, conditioned on nothing). The recoveries are
+revisions, not re-gradings: in $192$ of the $193$ the passing answer
+differs from the one first rejected ($541$ of $547$ across the five cells
+with feedback matched), and repeated identical evaluator prompts disagree
+in only $0.0072$ of cases.
 
 \paragraph{Reproducibility, drift and leakage.} The two gemma-4
-feedback-matched cells, on which the main contrast rests, were run twice,
-independently and with identical code. The second run reproduces the first
-(Omni-MATH recovery $0.586$ against $0.609$, final accuracy $0.922$ against
-$0.921$; SciBench recovery $0.435$ against $0.419$, its paired test at
-$p=0.052$ against $0.013$); we report the first throughout (supplement).
-The feedback-matched condition ran after the freeze, but a re-run of the
-role-structured condition on $400$ frozen problems reproduces its frozen
-cell (\S\ref{sec:experiments}).
-Repair hints contain the gold answer verbatim in $2.3\%$ of failing
-verdicts with roles and $2.2\%$ without; dropping every trajectory that saw
-one leaves $0.599$ against $0.212$.
+feedback-matched cells were run twice, independently and with identical
+code. The second run reproduces the first (Omni-MATH recovery $0.586$
+against $0.609$, final accuracy $0.922$ against $0.921$; SciBench recovery
+$0.435$ against $0.419$, its paired test at $p=0.052$ against $0.013$); we
+report the first throughout (supplement). A re-run of the role-structured
+condition shows no endpoint drift (\S\ref{sec:experiments}). Repair hints
+contain the gold answer verbatim in at most $2.3\%$ of failing verdicts in
+any cell; for gemma-4 on Omni-MATH, dropping every trajectory that saw one
+leaves $0.609$ and $0.222$ at $0.599$ and $0.212$. We did not audit partial
+leakage.
 
-\paragraph{Scope across actors.} Both other actors repeat the ordering, and
-in both the feedback leaves first-pass accuracy where it was ($0.765$ and
-$0.317$, against $0.762$ and $0.315$ with it withheld). gpt-oss recovers
-$0.552$ against $0.324$ with roles (on the $319$ problems both teams first
-answer wrongly, $101$ are recovered only without roles and $17$ only with
-them, $p=1\times10^{-15}$) and reaches $0.894$ final accuracy against
-$0.803$ ($170$ against $24$ problems, $p=3\times10^{-28}$). Llama-3.3
-recovers $0.147$ against $0.014$ ($26$ against $1$ of $250$,
-$p=4\times10^{-7}$) and reaches $0.415$ against $0.315$ ($50$ against $10$,
-$p=1.6\times10^{-7}$); its role-structured team reaches a second verdict in
-only $10$ of $276$ failed trajectories, and there enforcement recovers
-about as much as the role-free team with feedback ($0.139$, paired
-$p=0.17$). Against the feedback-withheld baseline, by contrast, the
-role-structured advantage is clean only for gemma-4, directional for
-gpt-oss ($0.324$ against $0.247$, paired $p=0.208$) and absent for
-Llama-3.3 ($0.014$ against $0.015$).
+\paragraph{Scope across actors.} Both other actors repeat the ordering in
+recovery and in final accuracy (Table~\ref{tab:main}), and in both the
+feedback leaves first-pass accuracy where it was ($0.765$ and $0.317$,
+against $0.762$ and $0.315$ with it withheld). Llama-3.3's role-structured
+team rarely submits at all, and there enforcement recovers about as much
+as the role-free team with feedback ($0.139$ against $0.147$ marginally;
+paired $9$ against $17$ of $219$, $p=0.17$). Against the feedback-withheld
+baseline the role-structured advantage is clean only for gemma-4: it is
+directional for gpt-oss ($0.324$ against $0.247$ marginally; paired $52$
+against $39$ of $327$, $p=0.21$) and absent for Llama-3.3 ($0.014$ against
+$0.015$). gpt-oss recovers without feedback because its answer moves from
+cycle to cycle anyway (one distinct answer in $20.8\%$ of its failed
+trajectories, against $84.5\%$ for gemma-4).
 
-\subsection{R3. Adaptation needs the feedback; roles set the allocation}
+\subsection{R3. Matched on verdicts, recovery is equal; roles gate
+submission}
 \label{subsec:mechanism}
 
 \paragraph{The feedback-withheld baseline.} Without the feedback, the
-role-free team turns nearly its whole budget into submissions. Across
-gemma-4's first-pass-wrong trajectories it submits in $5.80$ of $5.83$ cycles
-(Figure~\ref{fig:dissociation}C), its Reviewer never declines in $98.1\%$
-of them, and in $84.5\%$ the entire transcript contains exactly one
-distinct answer --- against $5.1\%$ and $28.8\%$ with roles. Nothing in its
-prompts carries the feedback (\S\ref{sec:method}): each FAIL is followed
-by another cycle over the same history, so from inside the transcript
-nothing has happened. Given the verdict and hint, the identical prompts
-produce a different team, though not a more organized one --- all three
-agents still assert their own answer on $0.974$ of first passes
-(Table~\ref{tab:collapse}) --- yet the answer moves (one distinct answer in
-$6.6\%$ of failed trajectories) and recovery rises from $16/316=0.051$ to
-$193/317=0.609$: of the $265$ problems both miss first, $139$ are recovered
-only with the feedback and $2$ only without ($p=7\times10^{-39}$). The
-first answer is untouched: first-pass accuracy is $0.802$ in both runs, and
-the first verdict agrees on $1{,}496$ of the $1{,}598$ problems judged in
-both. Of the $16$ recoveries without feedback, $7$ are the same answer
-graded again. \textbf{Adaptation needs the feedback, not the roles.}
+role-free team turns nearly its whole budget into submissions: across
+gemma-4's first-pass-wrong trajectories it submits in $5.80$ of $5.83$
+cycles (Figure~\ref{fig:dissociation}C), its third agent never declines in
+$98.1\%$ of them, and in $84.5\%$ the entire transcript holds exactly one
+distinct answer. Nothing in its prompts carries the feedback: each FAIL is
+followed by another cycle over the same history. Given the verdict and
+hint, the identical prompts produce a different team: the answer moves (one
+distinct answer in $6.6\%$ of failed trajectories) and recovery rises from
+$16/316=0.051$ to $193/317=0.609$; of the $265$ problems both miss first,
+$139$ are recovered only with the feedback and $2$ only without
+($p=7.2\times10^{-39}$). First-pass accuracy is $0.802$ in both conditions.
+Of the $16$ recoveries without feedback, $7$ are the same answer graded
+again. \textbf{Revision needs the feedback, not the roles.}
 
-\paragraph{What roles do instead.} Roles still shape the response to
-feedback, as an allocation of the budget (Figure~\ref{fig:dissociation}C).
-The role-structured team spends $3.98$ of its $5.52$ cycles revising
-internally and submits $1.54$ times per failed trajectory; with the
-feedback but without roles, the split is $0.76$ and $3.20$. Part of this is written into
-the contract: the role-structured Reviewer may not approve in the cycle
-that receives a FAIL. Each allocation buys something. The role-structured
-team's resubmissions are more often right --- its second verdict passes in
-$0.489$ of the trajectories that reach one, against $0.438$, and each
-verdict after the first yields $0.41$ recoveries against $0.28$ --- but only
-$133$ of its $316$ failed trajectories reach a second verdict at all, while
-the role-free team draws more verdicts with \emph{fewer} actor calls
-($11.9$ against $16.6$ per failed trajectory). With an exact oracle and a
-six-verdict cap, verdicts are what pays: counting only the first round of
-feedback, the role-free team still recovers $0.438$ against $0.206$. Across
-the conditions that receive feedback, recovery rises with submissions ---
-$0.222$ at $1.54$, $0.314$ at $2.06$ under enforcement, $0.609$ at $3.20$.
+\paragraph{Matched on verdicts, the two teams recover equally.} The
+role-free team with feedback also receives more of it: each submission
+returns a verdict and, on a FAIL, a hint written with the gold answer in
+view. To compare the two teams at equal exposure, we take the problems both
+first answer wrongly and cut each role-free trajectory off after as many
+verdicts as the role-structured team received on the same problem. The
+difference disappears in every cell (Table~\ref{tab:main}): $0.165$
+against $0.153$ for gemma-4 ($p=0.69$), $0.229$ against $0.216$ for gpt-oss
+($p=0.72$), and $0.230$ against $0.190$ and $0.215$ against $0.247$ on
+SciBench ($p\geq0.48$); Llama-3.3's role-structured team submits so rarely
+that its cell has five events. Pooled and stratified by cell, the
+difference is $+0.009$ in favour of roles ($95\%$ paired bootstrap CI
+$-0.014$ to $+0.033$; $90\%$ CI inside $\pm0.05$, so the two are equivalent
+at that margin), and cutting both trajectories at the smaller of their two
+verdict counts changes no conclusion. The comparison crosses the freeze, so
+we repeat it against the role-structured re-run made after it: on the $65$
+problems both first answer wrongly, recovery is $3$ against $22$ in favour
+of the role-free team unmatched ($p=1.6\times10^{-4}$) and $4$ against $1$
+verdict-matched ($p=0.38$). Verdict for verdict, a team with roles and one
+without make the same use of the feedback; the role-free team recovers more
+because it asks for more verdicts.
+
+\paragraph{What roles do instead: a gate on submission.} The reason is the
+role-structured Reviewer. Across gemma-4's failed trajectories that team
+submits $1.27$ times in $5.52$ cycles, against $3.20$ in $3.96$ without
+roles (Figure~\ref{fig:dissociation}C). Of its declining cycles, $53\%$ come
+before the first submission, when no feedback exists, and $84$ of its $316$
+failed trajectories never submit within the budget: they are graded once at
+the end and never see the feedback. One clause forbids approval in a cycle
+that receives a FAIL, but it covers only $19\%$ of the declines; in the
+later cycles where approval is allowed, the Reviewer still declines $75\%$
+of the time, against $4\%$ for the role-free team's third agent. On
+Omni-MATH the clause covers $37\%$ of gpt-oss's declines and $4\%$ of
+Llama-3.3's, whose role-structured team submits $0.32$ times per failed
+trajectory and never submits in $205$ of $276$; on SciBench it covers $40\%$
+and $60\%$ (supplement). The gate looks like precision --- recoveries per
+verdict after the first are higher with roles ($0.41$ against $0.28$ for
+gemma-4) --- but that compares different trajectories; on the same problem
+and the same number of verdicts, the two teams are equal. Against a
+ground-truth evaluator and six cycles, a withheld submission is a lost
+recovery: across the conditions with feedback, gemma-4's recovery rises
+with submissions --- $0.222$ at $1.27$, $0.314$ at $2.02$ under enforcement,
+$0.609$ at $3.20$.
 
 \subsection{R4. The same ordering in a second domain}
 \label{subsec:xdomain}
 
-Everything so far is competition mathematics, where a wrong answer is a
-discrete object a team can hold or discard. SciBench --- the complete
-$574$-problem matched slice of free-response college science, frozen
-separately --- tests whether the pattern belongs to the organization or to
-the benchmark. The role-free prompt is byte-identical to its Omni-MATH
-form; the role-structured one keeps the same structural contract with
-domain wording adapted, as does the evaluator. For gemma-4 the ordering
-returns (Figure~\ref{fig:dissociation}, right-hand group). First pass is
-flat ($0.794$ with roles; $0.794$ and $0.796$ without). Recovery is
-$0.051$ without feedback, $0.419$ with it and $0.254$ with roles; on the
-$100$ problems both teams with feedback first answer wrongly, $21$ are recovered
-only without roles and $7$ only with them ($p=0.013$), and final accuracy
-is $0.880$ against $0.847$ ($31$ against $12$ problems, $p=0.0054$). One
-part does not transfer: here the role-structured answer does not lock (one
-distinct answer in $7.6\%$ of failed trajectories, against $8.5\%$), and
-with one round of feedback the two recover equally ($0.237$ against
-$0.239$), so on SciBench the difference is entirely the additional
-verdicts. gpt-oss repeats the ordering on SciBench: $0.483$ with feedback
-against $0.315$ with roles and $0.231$ without feedback (paired $18$
-against $7$, $p=0.043$), and final accuracy $0.892$ against $0.852$ ($30$
-against $7$ problems, $p=2\times10^{-4}$).
+SciBench, the complete matched slice of $574$ free-response college
+science problems, frozen separately, tests whether the pattern belongs to
+the organization or to competition mathematics. The role-free prompt is
+byte-identical to its Omni-MATH form; the role-structured one keeps the same
+structural contract with domain wording adapted, as does the evaluator. For
+both actors the ordering returns (Table~\ref{tab:main}): first pass is
+flat, recovery is highest with feedback and no roles ($0.419$ and $0.483$
+against $0.254$ and $0.315$ with roles), and final accuracy is higher
+without roles ($p=0.0054$ and $1.9\times10^{-4}$). The recovery contrast is
+weaker ($p=0.013$ and $0.043$, $p=0.052$ in gemma-4's second run), and as
+on Omni-MATH it vanishes when both teams are credited with the same number
+of verdicts. One part does not transfer: gemma-4's role-structured answer
+does not lock (one distinct answer in $7.6\%$ of failed trajectories,
+against $8.5\%$), and with one round of feedback the two recover equally
+($0.237$ against $0.239$).
 
 \subsection{R5. Structural enforcement shifts the allocation, and
 introduces brittleness}
 \label{subsec:enforce}
 
 Enforced and role-structured prompts carry the same advice slot, so this
-contrast is matched on feedback. Enforcement replaces the request with a constraint, making the
-division of labor unavoidable at the interface, where no wording can talk
-its way around it. The manipulation check
-passes: the planner asserts a final answer in $0.000$ of enforced first
-passes in all three actors against $0.979$/$0.898$/$0.889$ under generic
-prompts, as in \S\ref{subsec:collapse},
-with $838$/$1{,}183$/$395$ role-boundary rejections per cell (formatting
-coercions excluded by a definition fixed in advance). Relative to the
-role-structured team, enforcement \textbf{un-freezes the answer}
-($0.119$/$0.092$/$0.072$ against $0.288$/$0.052$/$0.750$, all but gpt-oss)
-and submits more often ($2.06$/$2.39$/$1.89$ against $1.54$/$2.21$/$1.06$
-per failed trajectory). It does not change what the planner \emph{computes},
-so an agent can be structurally stopped from answering without being
-stopped from doing the work.
+contrast is matched on feedback. Enforcement replaces the request with a
+constraint: the Planner's answer becomes unrepresentable. The manipulation
+check passes: the planner asserts a final answer in $0.000$ of enforced
+first passes in all three actors against $0.979$/$0.898$/$0.889$ without
+roles, with $838$/$1{,}183$/$395$ role-boundary rejections per cell
+(formatting coercions excluded by a definition fixed in advance). It does
+not change what the planner \emph{computes}, which is why the adjudication
+still finds no division in $0.067$--$0.286$ of enforced first passes: an
+agent can be structurally stopped from answering without being stopped
+from doing the work. Relative to the role-structured team, enforcement
+loosens the gate: it submits more often ($2.02$/$2.33$/$1.84$ against
+$1.27$/$2.10$/$0.32$ per failed trajectory) and, for gemma-4 and Llama-3.3,
+\textbf{un-freezes the answer} (one distinct answer in $0.119$ and $0.072$
+of failed trajectories against $0.288$ and $0.750$; for gpt-oss $0.092$
+against $0.052$).
 
-Recovery follows for Llama-3.3; for the other two the direction is
-consistent but not resolvable against attrition. Recovery is computed on
-every trajectory with a recorded incorrect first verdict, including the
-$150$ enforced trajectories that received one then died in regeneration ---
-all necessarily first-pass wrong, since a passing verdict ends the loop,
-and scored $0$ by the preregistration. On that denominator enforcement
-recovers at $0.314$/$0.395$/$0.139$ against $0.222$/$0.324$/$0.014$, but
-the paired contrast survives only for Llama-3.3 ($p=3.8\times10^{-6}$);
-gemma-4 ($p=0.298$) and gpt-oss ($p=0.105$) do not. The direction is the
-one the allocation account of \S\ref{subsec:mechanism} predicts: in every
-actor the condition that submits more recovers more. Conditioning instead on
-successful grading would manufacture significance out of the same one-sided
-attrition we reject for accuracy below.
+Recovery follows most clearly for the weakest actor: Llama-3.3's rises
+about tenfold, from $0.014$ to $0.139$ ($p=3.8\times10^{-6}$); for gemma-4
+($0.314$ against $0.222$, $p=0.30$) and gpt-oss ($0.395$ against $0.324$,
+$p=0.11$) the direction is the same but not resolvable against attrition.
+Recovery is computed on every trajectory with a recorded incorrect first
+verdict, including the $150$ enforced trajectories that received one then
+died in regeneration, scored $0$ by the preregistration; conditioning
+instead on successful grading would manufacture significance out of
+one-sided attrition.
 
 \textbf{Improved revisability does not become end-to-end accuracy, because
 enforcement is brittle.} Under the pre-registered rule the accuracy
@@ -272,12 +256,5 @@ gives $+0.0190$ / $+0.0361$ / $+0.0453$: all positive, all significant,
 ordered by actor weakness, exactly the published capability-equalizer
 direction~\cite{canedo2026architecture}. \textbf{That second reading is
 survivorship}: the preregistration fixed in advance that such trajectories
-count incorrect, and the benefit appears only after conditioning
-on successful parsing. Restoring shared history at fixed enforcement does
-not rescue it either --- attrition, not context. Both scorings with
-intervals are tabulated in the supplement.
-
-The enforced recovery and first-pass rates do not
-compose into that accuracy column --- the never-graded trajectories break
-the shared denominator the accounting of \S\ref{subsec:recovery} needs
-(supplement).
+count incorrect. Restoring shared history at fixed enforcement does not
+rescue it either. Both scorings with intervals are in the supplement.

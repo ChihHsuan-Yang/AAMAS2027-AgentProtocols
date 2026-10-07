@@ -71,11 +71,12 @@ Load-Bearing}
 
 The main paper states every claim it makes and is complete without this
 file. What it cannot carry, at eight pages, is the full numeric backing
-behind five of its sentences. That backing is here, one table per sentence,
-each reproducing the pointer the main text gives.
+behind some of its sentences. That backing is here, each section
+reproducing the pointer the main text gives.
 
-Every table below is \textbf{generated} from one hash-manifested frozen
-snapshot by a single script; no number in either document is hand-typed.
+Every table below is \textbf{generated} by a script from hash-manifested
+data --- the frozen snapshot, or the separately manifested feedback-matched
+runs; no number in a table is hand-typed.
 Each table carries its own provenance header in the source. The tables are
 reproduced here unchanged --- same files, same bytes --- so a number cannot
 drift between the paper and its supplement.
@@ -100,8 +101,10 @@ recomputing from the released data gets the same denominator.
 
 The main paper reports, in its Intervention section, that the pre-registered
 primary endpoint P4 --- the actor~$\times$~intervention interaction on
-accuracy --- is null in all three pairwise difference-in-differences, and
-that the \Pone{} manipulation objective failed. Table~\ref{tab:prereg} is
+accuracy --- is null: none of the three pairwise difference-in-differences
+survives Holm, although before correction the Llama-3.3$-$gemma-4 interval
+narrowly excludes zero. It also reports that the \Pone{} manipulation
+objective failed. Table~\ref{tab:prereg} is
 the complete endpoint table promised there: all five endpoints as written
 before any intervention data existed, what each one returned, and the
 Holm-corrected verdict.
@@ -112,19 +115,22 @@ Llama-3.3 cannot detect an interaction of any plausible size at their
 sample size, and are uninformative rather than evidence of absence.
 Second, the contrast this paper is organized around --- role-structured
 versus role-free --- was pre-registered as \textbf{secondary and
-exploratory}. It is labeled post-hoc in the main paper and is labeled
-post-hoc here.
+exploratory}, and the feedback-matched role-free condition was not
+pre-registered at all. Both are labeled exploratory in the main paper and
+here.
 
 \input{tables/prereg_endpoints}
 
 \clearpage
 \section{First pass and recovery, both populations}
 
-Table~\ref{tab:recovery} gives the per-actor numbers behind the main
-paper's central result, in both populations, so that the marginal rates and
-the paired test can be checked against each other.
+Table~\ref{tab:recovery} gives the frozen comparison between the
+role-structured team and the role-free team with the feedback withheld, in
+both populations, so that the marginal rates and the paired test can be
+checked against each other. (The feedback-matched comparison is in the main
+paper's Table~2.)
 
-The gemma-4 row is the one the paper's headline rests on. Both conditions
+For gemma-4 the accounting closes exactly. Both conditions
 reach a correct first answer on $1{,}284$ of $1{,}600$ problems, and a
 correct first answer is never lost (the loop halts on a passing verdict),
 so the paired final-accuracy difference --- $-54/1{,}600=-0.0338$, exact
@@ -133,14 +139,13 @@ difference in recovery counts, $70$ against $16$. Stratified by the pair of
 first-pass outcomes, counting role-structured minus role-free final
 correct answers: the $1{,}205$ problems both teams answer correctly first
 contribute $0$; the $237$ both miss contribute $38-4=+34$ (discordant
-$37$ versus $3$, the paired test of the main paper); the $79$ only the
+$37$ versus $3$); the $79$ only the
 role-structured team misses contribute $32-79=-47$; and the $79$ only the
 role-free team misses contribute $79-12=+67$. The last two strata
 condition on different problems, so their recovery rates ($32/79$ versus
 $12/79$) are descriptive; together they contribute $+20$, in the same
 direction as the paired stratum. This accounting needs equal first-pass
-counts and does \emph{not} transfer to the other two actors, and the paper
-does not make it there.
+counts and does \emph{not} transfer to the other two actors.
 
 \input{tables/main_recovery}
 
@@ -148,8 +153,8 @@ does not make it there.
 \section{Cross-domain replication}
 
 Table~\ref{tab:scibench} is the SciBench replication in full. The main
-paper carries gemma-4 in Figure~2 and in prose; this is both halves with
-their denominators.
+paper carries both actors in Figure~1 and Table~2; this is the frozen
+comparison with its denominators.
 
 The domain contract is \emph{not} byte-identical to Omni-MATH, and the
 released prompt files make the difference checkable: of the $16$ prompts
@@ -160,9 +165,9 @@ mathematical equivalence. \textbf{All four role-free prompts are
 byte-identical across domains}, as are all six structurally enforced ones.
 
 That asymmetry is worth stating plainly rather than leaving to a diff: the
-condition this paper argues is \emph{better} is the one whose prompts were
-rewritten, and the condition it argues is worse ran identical text in both
-domains. The rewrite is domain wording --- ``algebraic manipulation or
+role-structured prompts, whose team recovers less, are the ones that were
+rewritten, and the role-free prompts ran identical text in both domains.
+The rewrite is domain wording --- ``algebraic manipulation or
 numerical calculation'' where Omni-MATH said ``symbolic manipulation or
 arithmetic'' --- and the structural clauses are unchanged. A reader who
 suspects the adaptation is doing the work can check the released files;
@@ -192,11 +197,70 @@ $p=0.052$ in the second.
 
 \input{tables/bf_replication}
 
+\section{Where the role-structured Reviewer declines}
+\label{sec:gate}
+
+The main paper's account of what roles do after feedback --- a gate on
+submission --- rests on Table~\ref{tab:gate}, computed from the logged route
+of every Reviewer turn. A cycle ends in an approval (a submission) or a
+decline. Declines are split by when they happen: before the first
+submission, when no feedback exists; in a cycle that received a FAIL, the
+only cycle the role-structured clause covers; and in later cycles in which
+no clause forbids approval. Trajectories that never approve in six cycles
+are graded once at the end and never receive feedback; they count as
+first-pass wrong and unrecovered, as the pre-registered scoring requires.
+
+On Omni-MATH the clause covers a minority of the declines of the
+role-structured Reviewer, and in the free cycles it approves far less often than the
+role-free team's third agent; gpt-oss is the closest of the three. On
+SciBench the clause covers more. With at most one round of feedback the
+role-free team recovers as much or more in every cell. Recoveries per
+verdict after the first are higher with roles in every cell, but that ratio
+compares different trajectories: most of the role-free team's later
+verdicts are further attempts on problems it has already failed more than
+once. The like-for-like comparison is the
+verdict-matched one in the main paper (Table~2): on the problems both teams
+first answer wrongly, with each role-free trajectory cut off after as many
+verdicts as the role-structured team received on the same problem, the two
+recover equally in all five cells.
+
+\input{tables/gate_decomposition}
+
+\section{Validation of the measures}
+\label{sec:validation}
+
+Definitions were frozen before the adjudication sheet was opened; $72$
+Planner messages (\Pone{}) and $13$ Executor messages (plan adherence) were
+adjudicated by hand, each with a recorded reason. \Pone{} agrees with the
+hand labels on $0.903$ of messages (Cohen's $\kappa=0.806$; precision
+$0.943$, recall $0.868$); Executor plan adherence on $0.923$
+($\kappa=0.843$), at a sample too small for a narrow interval. Both clear
+the pre-set $0.80$ threshold. \Pone{} agreement fell from $0.967$ at
+$n=30$ as adjudication continued; we report the final figure. Its residual
+errors point in opposite directions --- symbolic results with no digits
+are missed, restated givens are flagged --- so they do not bias the actor
+comparison.
+
+\section{An early campaign stopped for a truncation confound}
+\label{sec:truncation}
+
+The main run was gated on a smoke test requiring non-zero boundary
+rejections with reasons logged, answer-bearing calls equal across
+conditions, and a pinned backend. An early campaign was stopped after $121$
+trajectories when $74\%$ of enforcement rejections proved to be the model
+cut off at the token limit mid-JSON rather than violating a role boundary.
+Truncation was not condition-specific but its \emph{cost} was --- a prose
+condition tolerates a truncated message where the enforced one rejects
+unparseable JSON --- so left alone it would have produced a convincing
+``enforcement lowers accuracy'' artifact. The limit was doubled and the
+pre-fix rows were never pooled.
+
 \section{Structural enforcement: both scorings, and the attrition that
 separates them}
 
-The main paper reports that enforcement un-freezes the answer in all three
-actors but does not become end-to-end accuracy, and that the apparent
+The main paper reports that enforcement loosens the submission gate in all
+three actors (and un-freezes the answer for gemma-4 and Llama-3.3) but does
+not become end-to-end accuracy, and that the apparent
 accuracy benefit is survivorship. Table~\ref{tab:enforcement} is the evidence
 for both halves: the manipulation check, the one-sided attrition, and the
 same accuracy column under both scorings with intervals.
@@ -271,11 +335,11 @@ that model and rubric version are recorded in the released artifact. The
 actor models under study are the experimental subjects, not assistance, and
 are named in the paper.
 
-\paragraph{What the agents did.} The central hypothesis --- that role
-organization is phase-specific, contributing little to first-pass
-generation and materially to post-failure revision --- was formed by an
-agent from observed results and then subjected to pre-registered and
-exploratory tests. An earlier hypothesis was falsified by the agents' own
+\paragraph{What the agents did.} The hypotheses tested here --- whether
+role organization contributes to first-pass generation and to post-failure
+revision, and through which channel --- were formed by agents from observed
+results and then subjected to pre-registered and exploratory tests. An
+earlier hypothesis was falsified by the agents' own
 analysis and retracted; this paper reports that null. Condition design,
 budget matching, the pre-registration and the stopping and exclusion rules
 were drafted by agents under human direction and frozen before confirmatory
@@ -309,8 +373,8 @@ prompts, schemas, configurations, budgets, and the frozen rows themselves
 \paragraph{Errors this process found in its own work.} Agent review found
 several defects in the agents' own instrumentation and analysis. Each is
 disclosed in the paper rather than silently repaired: a logging defect that
-left one actor's planner output uninstrumented; a scoring defect whose
-direction runs \emph{against} this paper's claim; a recovery denominator
+left one actor's planner output uninstrumented; a scoring defect that
+inflates this paper's main contrast, reported with its correction; a recovery denominator
 that excluded valid trajectories, whose repair moved results materially;
 and a blinding leak in the adjudication, which is why this paper does not
 describe its condition-contrastive adjudication as blinded.

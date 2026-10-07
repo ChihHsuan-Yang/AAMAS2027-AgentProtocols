@@ -3,20 +3,30 @@
 
 \paragraph{What roles do after feedback.} Producing a first answer is a
 \emph{generation} problem: three agents reaching the same place by three
-routes cost nothing but tokens, a division of labor has nothing to do that
-redundancy does not already do, and first-pass accuracy is indifferent to
-it in every actor. After a failure the problem changes --- the team must
-produce something unlike an incumbent candidate --- and it can do so only
-if it knows the candidate failed. Given that knowledge, the role contract
-does not supply the capacity to revise; the role-free team has it. What the
-contract decides is how a fixed budget is split between two uses of a
-verdict: internal review before the next submission, or the next
-submission itself. The role-structured contract buys review --- its
-resubmissions pass more often, and each verdict after the first yields
-more recoveries --- and the role-free team buys verdicts. Under an exact
-oracle and a six-verdict cap, verdicts win. Where verification is costly,
-noisy or unavailable, the usual case outside a benchmark, the same contract
-could be the better allocation; this design cannot say which.
+routes cost nothing but tokens, and first-pass accuracy is nearly
+indifferent to the division of labor. After a failure the team must produce
+something unlike an incumbent candidate, and it can do so only if it knows
+the candidate failed. Given that knowledge, the role contract neither
+supplies nor removes the capacity to revise: verdict for verdict, the two
+teams recover alike. What the contract decides is when the team asks: the
+role-structured Reviewer withholds approval until it is satisfied, so the
+team draws fewer verdicts, and sometimes no feedback at all. Under a ground-truth
+evaluator and a fixed cycle budget, fewer verdicts mean fewer recoveries.
+Where verification is costly, noisy or unavailable, the usual case outside
+a benchmark, a team that asks less could be the better design; this
+experiment cannot say. In the terms of \S\ref{sec:related}, the gate lives
+in the deontic part of the role contract --- when the Reviewer may approve
+--- and deleting the roles deleted it together with the functional
+assignment.
+
+\paragraph{What a builder can take from this.} Three things. With a
+cheap, reliable verifier, a Reviewer role that withholds submission costs
+recovery; let the team submit, or gate on the verifier rather than on the
+critic. With a costly or noisy verifier the same gate may pay, and that
+is the experiment this design leaves open. And whatever the roles, route
+the verifier's feedback to every agent that can act on it: in our pipeline
+the gemma-4 and Llama-3.3 teams without that slot almost never recovered,
+and the same prompts with it recovered most.
 
 \paragraph{What a role ablation removes.} In a prompted multi-agent system
 the channels through which agents receive feedback, tool output or a
@@ -27,34 +37,21 @@ simply not shown, and nothing in the budget record, the call counts or the
 accuracy reports its absence. A role ablation therefore needs an
 information audit beside the budget audit --- for each agent and
 condition, the set of runtime inputs its template actually consumes --- and
-a contrast is matched only where those sets agree. Ours differ in exactly
-one input, the feedback, which is why the role-free condition is reported
-both without and with it.
+a contrast is matched only where those sets agree. Ours differ in one
+input, the feedback, which is why the role-free condition is reported both
+without and with it.
 
 \paragraph{What a role diagram is evidence of.} Precise reviewing need
 not mean critique is taken up~\cite{yang2026precise}, and a clean division
 of labor need not mean a team adapts; both are intermediate properties, and
 what matters is whether corrective information changes the next action. A
-diagram is a hypothesis, and task-outcome evaluation --- the only evaluation most
-multi-agent systems receive --- cannot test it: an aggregate score averages
-a stage where the organization is idle with one where it does all its work,
-dominated by whichever has more mass. Our system lost its entire
-organization and moved the headline metric by $-0.034$ with the feedback
-withheld and $+0.075$ with it, both entirely after a first answer had failed. Two cheap additions
-fix most of it: report performance \emph{conditioned on the first attempt
-having failed}, computable from logs any retry-capable system already
-writes, and \emph{measure} the realized organization rather than assume the
-specified one --- indistinguishable by accuracy, trivially distinguishable
-by whether all three agents are writing down answers.
-
-\paragraph{What our own measurement errors imply.} Three instruments here
-reported confidently on what they could not see: an exact-duplication
-metric returned $0.000$ for actors a model judge found collapsed; a
-logging defect reduced one actor's planner to $37$ visible characters,
-which we nearly reported as a behavior; and the adjudication built to
-check the first leaked the condition it was meant to be blind to. Each
-produced a clean, plausible reading while not measuring the thing. A claim
-that a system's structure is intact should therefore state what the
-instrument would have to see to report otherwise --- and a blinding claim
-should be tested on the bytes the judge saw, not the substitution applied
-to them.
+diagram is a hypothesis, and task-outcome evaluation --- the only
+evaluation most multi-agent systems receive --- cannot test it: an
+aggregate score averages a stage where the organization is idle with one
+where it does all its work. Our gemma-4 team lost its division of labor and
+moved final accuracy by $-0.034$ with the feedback withheld and $+0.075$
+with it, both entirely after a first answer had failed. Two cheap
+additions would have exposed this: report performance \emph{conditioned on
+the first attempt having failed}, computable from logs any retry-capable
+system already writes, and \emph{measure} the realized organization rather
+than assume the specified one.

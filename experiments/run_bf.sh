@@ -13,7 +13,7 @@
 #   export AAMAS_AUTH_SCRIPT_DIR=...  AAMAS_PROBLEMS_PARQUET=...
 #   bash experiments/run_bf.sh /Users/lxy/AAMAS/AAMAS2027-AgentProtocols/experiments/results/bf
 #
-# Optional: CONC=20 (per-actor and global concurrency), ONLY=omni|scibench|bridge
+# Optional: CONC=20 (per-actor and global concurrency), ONLY=omni|scibench|bridge|afs
 #           or a comma list such as ONLY=omni,scibench,
 #           DRY=1 (zero API calls: the runner's --dry-run on its 2 stub problems),
 #           WARM=0 (skip the warm-up probe), WARM_MIN=90 (warm-up limit, minutes)
@@ -68,6 +68,10 @@ want scibench && \
   job runner_xdomain.py 574 Bf "$D/bf_scibench_${TAG}.jsonl" "bf-${TAG}-scibench"
 want bridge && \
   job runner.py 400 A "$D/bridgeA_omnimath_${TAG}_n400.jsonl" "bridgeA-${TAG}-n400"
+# Added 2026-10-07 (exploratory): role-structured prompts with FORCED SUBMISSION
+# on the same 400 problems as the bridge. Run alone with ONLY=afs.
+want afs && \
+  job runner.py 400 Afs "$D/afs_omnimath_${TAG}_n400.jsonl" "afs-${TAG}-n400"
 
 echo "[run_bf] $(date '+%F %T') all jobs finished; sha256:"
 shasum -a 256 "$D"/*.jsonl 2>/dev/null || sha256sum "$D"/*.jsonl

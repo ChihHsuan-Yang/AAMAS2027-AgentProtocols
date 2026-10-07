@@ -26,15 +26,13 @@
 % ==========================================================================
 \begin{table}[t]
 \centering
-\caption{\textbf{Functional collapse.} First pipeline passes in which all
-three agents independently assert their own final answer, with exact byte
-duplication as a \emph{lower bound} and the model adjudication beside it.
-Byte duplication has precision $1.000$ but recall $0.262$, so it never
-carries this result alone. The adjudication is outcome-blind but
-\textbf{not} condition-blind and is a second opinion, not ground truth.
-Collapse is not applicable to the structurally enforced conditions, whose
-schema forbids an answer field. The role-free condition with feedback uses
-the role-free prompts unchanged; only its collapse was measured.}
+\caption{\textbf{Functional collapse, Omni-MATH.} First pipeline passes in which all
+three agents assert their own final answer, with exact byte duplication (a
+\emph{lower bound}: precision $1.000$, recall $0.262$) and a model
+adjudication that is outcome-blind but \textbf{not} condition-blind.
+Collapse is not applicable to the enforced conditions, whose schema has no
+answer field; for the role-free condition with feedback only collapse was
+measured.}
 \label{tab:collapse}
 \small
 \begin{tabular}{@{}lccc@{}}
@@ -63,9 +61,12 @@ actor & collapse & duplication & no division \\
 \end{tabular}
 
 \vspace{2pt}
-\footnotesize\emph{Sensitivity.} The feedback-withheld role-free rate is stable across three
-answer-marker definitions ($0.846$--$0.999$, every actor);
-\textbf{the role-structured rate is not} ($0.000$--$0.892$), so
-read that column as ``low,'' not a point estimate. The ordering holds in all
-9 of 9 actor$\times$marker cells. $^{\dagger}$Not interpretable: $80\%$ of this cell's planner messages are under $500$ visible characters (the logging defect, \S\ref{subsec:logging}).
+\footnotesize\emph{Sensitivity.} Across three answer-marker definitions the
+feedback-withheld role-free rate stays at $0.846$--$0.999$ and the
+role-structured rate at $0.000$--$0.238$ under the two answer
+markers; the loosest, which also counts any ``therefore'', ``hence'' or
+``$=$\,number'' --- as in a Planner restating givens --- raises it to
+$0.328$--$0.892$, so read that column as ``low,''
+not a point estimate. The
+ordering holds in all 9 of 9 actor$\times$marker cells. $^{\dagger}$Not interpretable: $80\%$ of this cell's planner messages are under $500$ visible characters (the logging defect, \S\ref{subsec:logging}).
 \end{table}

@@ -1,49 +1,44 @@
 \subsection{Campaign}
 \label{sec:experiments}
 
-\paragraph{Task and problems.} Competition mathematics (Omni-MATH), sampled
-by a deterministic seeded manifest so every prefix of the run is a valid
-random sample; all conditions run the same problems, so every comparison is
-paired. An earlier candidate, a multiple-choice biology benchmark, was
-rejected before launch because on a four-option item ``produce a different
-candidate'' succeeds one time in three by chance, confounding the mechanism
-we measure with guessing.
+\paragraph{Task and problems.} Omni-MATH competition
+mathematics~\cite{gao2025omnimath}, sampled by a deterministic seeded
+manifest so every prefix of the run is a valid random sample; all
+conditions run the same problems, so every comparison is paired. An earlier
+candidate, a multiple-choice biology benchmark, was rejected before launch
+because on a four-option item ``produce a different candidate'' succeeds one
+time in three by chance, confounding the mechanism we measure with guessing.
 
 \paragraph{Actors and scale.} Three actor models served from one pinned
-vLLM endpoint: gpt-oss-120b, gemma-4-31B and
-Llama-3.3-70B. The primary analysis reads a single frozen,
-sha256-manifested snapshot: 11{,}600 trajectories over 83{,}320
-role messages and 17{,}486 gradings, on $1{,}600$ problems sampled
-uniformly at random from the $4{,}181$ available. The three main conditions
-run $n=1{,}600$ per cell for the first two actors and $n=400$ for
-Llama-3.3; the context-restored control covers only the first two
-at $n=400$ each. Every trajectory carries the same budget record and the
-snapshot contains exactly one distinct budget. The evaluator is
-gpt-oss-120b in every cell, itself one of the actors under study
-(\S\ref{sec:limitations}). The single-agent comparator
-(\S\ref{sec:method}) is \emph{not} part of this campaign or its
-snapshot: it is a previously released trace corpus of the same benchmark
-joined by problem identifier, and its two actor arms were produced
-in separate runs. Power was estimated by simulation from
-discordance rates in that corpus: the paired per-actor main effect is well
-powered, the actor~$\times$~intervention interaction needs roughly twice
-the sample (\S\ref{subsec:prereg}). The feedback-matched control
-(\S\ref{sec:method}) was run after the freeze on the same endpoint,
-problems, budget and evaluator, for all three actors on Omni-MATH and for
-gemma-4 and gpt-oss on SciBench ($4{,}748$ trajectories, plus an
-independent second run of the two gemma-4 cells), manifested separately and never pooled into a frozen cell.
-A re-run of the role-structured condition on $400$ frozen problems finds no
-endpoint drift (final accuracy $0.818$ against $0.825$ frozen, paired
-$p=0.75$).
+vLLM endpoint~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
+gemma-4-31B~\cite{gemma2026gemma4} and Llama-3.3-70B~\cite{grattafiori2024llama3}. The primary
+analysis reads a single frozen, sha256-manifested snapshot: 11{,}600
+trajectories over 83{,}320 role messages and 17{,}486 gradings, on
+$1{,}600$ problems sampled uniformly at random from the $4{,}181$
+available. The three main conditions run $n=1{,}600$ per cell for gemma-4
+and gpt-oss and $n=400$ for Llama-3.3; the context-restored control covers
+gemma-4 and gpt-oss at $n=400$ each. Every trajectory carries the same
+budget record. The evaluator is gpt-oss-120b in every cell, itself one of
+the actors under study (\S\ref{sec:limitations}). The single-agent
+comparator is \emph{not} part of this campaign: it is a previously released
+trace corpus of the same benchmark joined by problem identifier. Power was
+estimated by simulation from discordance rates in that corpus: the paired
+per-actor main effect is well powered, the actor~$\times$~intervention
+interaction is not (\S\ref{subsec:prereg}). An early campaign stopped for a
+truncation confound was never pooled (supplement).
 
-\paragraph{A confound caught before it became a result.} The main run was
-gated on a smoke test requiring non-zero boundary rejections with reasons
-logged, answer-bearing calls equal across conditions, and a pinned backend.
-An early campaign was stopped after 121 trajectories when $74\%$ of
-enforcement rejections proved to be the model cut off at the token limit
-mid-JSON rather than violating a role boundary. Truncation was not
-condition-specific but its \emph{cost} was --- a prose condition tolerates
-a truncated message where the enforced one rejects unparseable JSON --- so
-left alone it would have produced a convincing ``enforcement lowers
-accuracy'' artifact. The limit was doubled and the pre-fix rows never
-pooled.
+\paragraph{The feedback-matched condition.} It was run after the freeze on
+the same endpoint, problems, budget and evaluator, for all three actors on
+Omni-MATH and for gemma-4 and gpt-oss on SciBench~\cite{wang2024scibench}
+($4{,}748$ trajectories), manifested separately and never pooled into a
+frozen cell; the two gemma-4 cells were run a second time, independently.
+A re-run of gemma-4's role-structured condition on $400$ frozen problems
+finds no endpoint drift (final accuracy $0.818$ against $0.825$ frozen,
+paired $p=0.75$; recovery $0.198$ against $0.146$). Decoding at temperature
+$0$ is not deterministic on a shared endpoint: the two role-free
+conditions, byte-identical until the first verdict, agree on gemma-4's
+first verdict for $1{,}496$ of $1{,}598$ problems, and their first-pass
+collapse differs by up to $0.04$ (Table~\ref{tab:collapse}). We therefore
+treat a cell as one sample and give the second run, where we have one, in
+the supplement.
+Prompts, runner and analysis scripts are in the supplementary material.
