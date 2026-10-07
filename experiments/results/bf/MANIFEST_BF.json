@@ -119,6 +119,28 @@
    "last_ended": "2026-10-07T02:32:27.524584+00:00",
    "code_commit": "4e50b4c (control-rolefree-feedback)",
    "note": "Arm Bf, gpt-oss-120b, Omni-MATH n=1600."
+  },
+  "bf_scibench_gptoss.jsonl": {
+   "sha256": "e80d5c0928cead1935987d0342507e03c431f2cb3e482b0237a2ae865dab3cdd",
+   "rows": 574,
+   "bytes": 3553135,
+   "cells": {
+    "gpt-oss-120b|Bf": 574
+   },
+   "config_versions": {
+    "d311904cee36c21b": 574
+   },
+   "run_ids": {
+    "bf-gptoss-scibench": 574
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 512,
+    "max_rounds_exhausted_after_fail": 62
+   },
+   "first_started": "2026-10-07T02:32:28.729313+00:00",
+   "last_ended": "2026-10-07T03:25:43.701056+00:00",
+   "code_commit": "4e50b4c (control-rolefree-feedback)",
+   "note": "Arm Bf, gpt-oss-120b, SciBench n=574."
   }
  },
  "excluded": {
