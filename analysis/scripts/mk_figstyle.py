@@ -153,6 +153,82 @@ def apply_rc():
     })
 
 
+PAPER_FONT = "Libertinus Sans"
+
+
+def use_paper_font():
+    """Opt-in: set figure text in Libertinus Sans, the sans companion of the
+    Libertine face the ACM/AAMAS class sets the body in.
+
+    The font is read from the local TeX installation (kpsewhich), never shipped
+    in this repository. Its OpenType files carry CFF outlines, which
+    matplotlib embeds with a font-type mismatch that some PDF tools reject, so
+    each face is converted once to TrueType outlines (fontTools, a matplotlib
+    dependency) in a cache directory outside the repository; the figure PDF
+    then embeds a clean TrueType subset. Conversion is deterministic, so a
+    regenerated figure stays byte-identical. Without the font this falls back
+    to the default face and says so; it never fails the build.
+    Returns the family name in use.
+    """
+    import subprocess, tempfile
+    from matplotlib import font_manager as fm
+    cache = os.path.join(tempfile.gettempdir(), "aamas_fig_fonts")
+    os.makedirs(cache, exist_ok=True)
+    faces = []
+    for face in ("Regular", "Bold", "Italic"):
+        name = f"LibertinusSans-{face}"
+        ttf = os.path.join(cache, name + ".ttf")
+        if not os.path.exists(ttf):
+            try:
+                otf = subprocess.run(["kpsewhich", name + ".otf"], capture_output=True,
+                                     text=True).stdout.strip()
+            except OSError:
+                otf = ""
+            if not otf:
+                print(f"  [font] {name}.otf not found in the TeX tree; using {plt.rcParams['font.sans-serif'][0]}")
+                return plt.rcParams["font.sans-serif"][0]
+            _otf_to_ttf(otf, ttf)
+        faces.append(ttf)
+    for f in faces:
+        fm.fontManager.addfont(f)
+    plt.rcParams.update({
+        "font.sans-serif": [PAPER_FONT, "DejaVu Sans"],
+        "mathtext.fontset": "custom", "mathtext.rm": PAPER_FONT,
+        "mathtext.it": PAPER_FONT + ":italic", "mathtext.bf": PAPER_FONT + ":bold",
+    })
+    return PAPER_FONT
+
+
+def _otf_to_ttf(src, dst):
+    """CFF outlines -> quadratic TrueType outlines (fontTools cu2qu)."""
+    from fontTools.ttLib import TTFont, newTable
+    from fontTools.pens.cu2quPen import Cu2QuPen
+    from fontTools.pens.ttGlyphPen import TTGlyphPen
+    f = TTFont(src, recalcTimestamp=False)   # keep head.modified: byte-identical output
+    order, gset, glyf = f.getGlyphOrder(), f.getGlyphSet(), {}
+    for g in order:
+        pen = TTGlyphPen(gset)
+        gset[g].draw(Cu2QuPen(pen, 1.0, reverse_direction=True))
+        glyf[g] = pen.glyph()
+    f["loca"] = newTable("loca")
+    f["glyf"] = t = newTable("glyf")
+    t.glyphOrder, t.glyphs = order, glyf
+    del f["CFF "]
+    if "VORG" in f:
+        del f["VORG"]
+    f["maxp"] = m = newTable("maxp")
+    m.tableVersion = 0x00010000
+    m.maxZones = 1
+    for k in ("maxTwilightPoints", "maxStorage", "maxFunctionDefs", "maxInstructionDefs",
+              "maxStackElements", "maxSizeOfInstructions", "maxComponentElements"):
+        setattr(m, k, 0)
+    post = f["post"]
+    post.formatType, post.extraNames, post.mapping, post.glyphOrder = 2.0, [], {}, order
+    f["head"].glyphDataFormat = 0
+    f.sfntVersion = "\x00\x01\x00\x00"
+    f.save(dst)
+
+
 def clean(ax, grid_axis="y"):
     """Hairline recessive grid, no top/right spines, grid behind the marks."""
     for s in ("top", "right"):

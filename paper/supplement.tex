@@ -18,7 +18,9 @@
 % bearing for the argument. If you find yourself moving an argument step into
 % this document, move it back.
 %==============================================================================
-\documentclass[sigconf,anonymous]{aamas}
+% balance=false: the class balances the columns of the last page, and doing so
+% printed the last two single-column tables out of numerical order.
+\documentclass[sigconf,anonymous,balance=false]{aamas}
 
 % -- AAMAS-2027 copyright block, verbatim from AAMAS_2027_sample.tex.
 \makeatletter
@@ -55,6 +57,19 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 % The ACM reference line would run the two-line title together; the
 % supplement does not need one.
 \settopmatter{printacmref=false}
+
+% Float placement for this document only (the main paper keeps the class
+% defaults). Most tables here are page-wide; with the defaults LaTeX holds
+% them back and starts float-only pages that are mostly empty. These values
+% let a wide table share its page with text and fill float pages further.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.8}
+\renewcommand{\dblfloatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{dbltopnumber}{3}
+\setcounter{totalnumber}{4}
 
 \begin{document}
 
@@ -127,7 +142,6 @@ existed). All are labeled exploratory in the main paper and here.
 
 \input{tables/prereg_endpoints}
 
-\clearpage
 \section{First pass and recovery, both populations}
 
 Table~\ref{tab:recovery} gives the frozen comparison between the
@@ -155,7 +169,6 @@ counts and does \emph{not} transfer to the other two actors.
 
 \input{tables/main_recovery}
 
-\clearpage
 \section{Cross-domain replication}
 
 Table~\ref{tab:scibench} is the SciBench replication in full. The main
@@ -186,7 +199,6 @@ protocol, not a rerun of identical prompts.
 
 \input{tables/scibench_replication}
 
-\clearpage
 \section{The feedback-matched control, run twice}
 \label{sec:bfreplication}
 
@@ -340,7 +352,6 @@ $[-0.0357,+0.0149]$ ($p=0.65$) as graded (exact McNemar, paired).
 
 \input{tables/structural_enforcement}
 
-\clearpage
 \section{The single-agent comparator}
 
 Table~\ref{tab:singleagent} is the single-agent reference under the same
@@ -356,9 +367,9 @@ single agent, while gemma-4's is significantly worse in both conditions.
 Neither ``multi-agent systems are just single agents'' nor ``more agents
 help'' survives contact with it.
 
+
 \input{tables/single_agent_comparison}
 
-\clearpage
 \section{Accumulated context as a competing explanation}
 
 Accumulated context is a candidate explanation of the role-structured
@@ -377,7 +388,6 @@ Llama-3.3's third).
 
 \input{tables/context_quartiles}
 
-\clearpage
 \section{AI assistance}
 
 Reproduced in full here rather than pointed at. AAMAS requires that
