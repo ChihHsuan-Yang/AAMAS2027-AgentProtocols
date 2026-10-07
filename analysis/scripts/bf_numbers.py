@@ -191,6 +191,7 @@ def features(r, gold):
         evaluator_calls=int(r.get("evaluator_calls") or 0),
         routes=routes(r), frozen=len(set(ansseq(r))) <= 1, collapse=func_collapse(r),
         cand1=nrm(e[0].get("candidate")) if e else None,
+        cand_last=nrm(e[-1].get("candidate")) if e else None,
         fb_msgs=sum(1 for m in msgs if m.get("evaluator_feedback_in_prompt")),
         actor_msgs=sum(1 for m in msgs if m.get("role") in ("planner", "executor", "reviewer")),
         n_fail=len(fails), gold_ok=gold_ok, n_leak=leaks,
@@ -768,6 +769,22 @@ def main():
                           "recovery {} -> if recoded {}".format(
                               DOMAIN_NAME[dom], act, arm, len(fpw), mm / max(len(fpw), 1), uc,
                               fr(rec, len(fpw)), fr(rec + uc, len(fpw))))
+
+    # ------------------------------------------------------------------ B14
+    head("[B14] REVISION, NOT RE-GRADING: recovered trajectories whose passing answer differs from the first failed one")
+    print("  (normalized candidate strings; a recovery that re-submits the same string would be grader noise)")
+    FIG["revision_vs_regrade"] = {}
+    for dom in DOMAINS:
+        for act in ACTORS:
+            if (act, "Bf") not in CELLS[dom]: continue
+            for arm in ARMS:
+                C = CELLS[dom].get((act, arm))
+                if not C: continue
+                rec = [f for f in C.values() if f["judged"] and f["fp"] == 0 and f["fin"] == 1]
+                ch = sum(1 for f in rec if f["cand_last"] != f["cand1"])
+                FIG["revision_vs_regrade"]["{}|{}|{}".format(dom, act, arm)] = dict(recovered=len(rec), changed=ch)
+                print("  {:<9} {:<24}{:<3} recovered {:<4} with a different passing answer {}".format(
+                    DOMAIN_NAME[dom], act, arm, len(rec), fr(ch, len(rec))))
 
     # ------------------------------------------------------------------ B12
     head("[B12] HEADLINE NUMBERS (each traceable to a block above)")

@@ -48,7 +48,7 @@ FOCUS = "gemma-4-31B-it"
 ALPHA = 0.05
 
 # condition styling; "Bf" is the feedback-matched role-free condition
-LONG = {"A": "role-structured", "B": "role-free, no feedback",
+LONG = {"A": "role-structured", "B": "role-free, feedback withheld",
         "Bf": "role-free + feedback", "C": "structurally enforced"}
 COL = {"A": S.ARMC["A"], "B": S.ARMC["B"], "Bf": S.ARMC["B"], "C": S.ARMC["C"]}
 HOLLOW = {"B"}
@@ -95,7 +95,7 @@ def axes_common(ax, ylabel, title):
     S.clean(ax)
     ax.set_ylim(0, 1.0)
     ax.set_yticks(np.arange(0, 1.01, 0.5))
-    ax.set_xlim(-0.55, len(GROUPS) - 0.45)
+    ax.set_xlim(-0.64, len(GROUPS) - 0.45)
     ax.set_xticks(np.arange(len(GROUPS)))
     ax.set_xticklabels([S.ACTOR_SHORT[a] for _, a in GROUPS])
     ax.set_ylabel(ylabel, labelpad=1.5)
@@ -114,7 +114,7 @@ def axes_common(ax, ylabel, title):
 
 
 def panel_A(ax):
-    arms = ("B", "Bf", "A")
+    arms = ("A", "Bf", "B")
     w = 0.25
     for gi, (dom, a) in enumerate(GROUPS):
         for k, arm in enumerate(arms):
@@ -123,7 +123,7 @@ def panel_A(ax):
 
 
 def panel_B(ax):
-    arms = ("B", "Bf", "A", "C")
+    arms = ("A", "Bf", "B", "C")
     w = 0.205
     for gi, (dom, a) in enumerate(GROUPS):
         tops = {}
@@ -132,7 +132,7 @@ def panel_B(ax):
                                  "recovery", w * 0.86, dom)
         pr = DB["paired_recovery"].get(f"{dom}|{a}|A-Bf")
         if pr and tops["Bf"] is not None and tops["A"] is not None:
-            xl, xr = gi - 0.5 * w, gi + 0.5 * w
+            xl, xr = gi - 1.5 * w, gi - 0.5 * w
             yb = max(tops["Bf"], tops["A"]) + 0.045
             ax.plot([xl, xl, xr, xr], [yb, yb + 0.022, yb + 0.022, yb],
                     lw=0.6, color=S.INK2, zorder=5)
@@ -141,7 +141,7 @@ def panel_B(ax):
                     ha="center", va="bottom", fontsize=S.FS_ANNOT,
                     color=S.INK if ok else S.INK3, zorder=5)
     axes_common(ax, "recovery after\na failed answer",
-                "B   Feedback, not roles, drives recovery")
+                "B   Same feedback: roles add no recovery")
 
 
 def panel_C(ax):
@@ -185,11 +185,11 @@ def panel_C(ax):
     ax.set_yticks([])
     S.clean(ax, grid_axis="x")
     ax.spines["left"].set_visible(False)
-    ax.set_xlabel("deliberation cycles, first-pass-wrong only", labelpad=1.5)
+    ax.set_xlabel("cycles per first-pass-wrong trajectory", labelpad=1.5)
 
 
 # Laid out from the bottom up, in inches: panel C's x label needs 0.36in.
-L_AB, L_C, R_EDGE = 0.70, 1.13, 3.27
+L_AB, L_C, R_EDGE = 0.70, 1.38, 3.27
 H_A, H_B, H_C = 0.70, 0.82, 0.70
 Y_C = 0.36
 Y_B = Y_C + H_C + 0.78
@@ -211,7 +211,7 @@ def build(stem="fig1_v3_story"):
              "C   Same budget, different allocation (gemma-4)",
              fontsize=S.FS_TITLE, color=S.INK, ha="left", va="bottom")
     h = []
-    for arm in ("A", "C", "B", "Bf"):
+    for arm in ("A", "Bf", "C", "B"):
         if arm in HOLLOW:
             h.append(Patch(facecolor=S.SURFACE, edgecolor=COL[arm], linewidth=0.9, label=LONG[arm]))
         else:

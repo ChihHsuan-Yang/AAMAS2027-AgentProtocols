@@ -255,6 +255,28 @@ SciBench  gpt-oss-120b            Bf      120    4.54     3.95      0.59   0.925
   SciBench  gpt-oss-120b            B   n_fpw=121  mismatch 0.017  under-credited 0   recovery 28/121 = 0.231 -> if recoded 28/121 = 0.231
   SciBench  gpt-oss-120b            Bf  n_fpw=120  mismatch 0.058  under-credited 0   recovery 58/120 = 0.483 -> if recoded 58/120 = 0.483
 
+[B14] REVISION, NOT RE-GRADING: recovered trajectories whose passing answer differs from the first failed one
+-------------------------------------------------------------------------------------------------------------
+  (normalized candidate strings; a recovery that re-submits the same string would be grader noise)
+  Omni-MATH gemma-4-31B-it          A   recovered 70   with a different passing answer 70/70 = 1.000
+  Omni-MATH gemma-4-31B-it          B   recovered 16   with a different passing answer 9/16 = 0.562
+  Omni-MATH gemma-4-31B-it          Bf  recovered 193  with a different passing answer 192/193 = 0.995
+  Omni-MATH gemma-4-31B-it          C   recovered 108  with a different passing answer 106/108 = 0.981
+  Omni-MATH gpt-oss-120b            A   recovered 150  with a different passing answer 150/150 = 1.000
+  Omni-MATH gpt-oss-120b            B   recovered 94   with a different passing answer 91/94 = 0.968
+  Omni-MATH gpt-oss-120b            Bf  recovered 207  with a different passing answer 206/207 = 0.995
+  Omni-MATH gpt-oss-120b            C   recovered 141  with a different passing answer 141/141 = 1.000
+  Omni-MATH Llama-3.3-70B-Instruct  A   recovered 4    with a different passing answer 4/4 = 1.000
+  Omni-MATH Llama-3.3-70B-Instruct  B   recovered 4    with a different passing answer 3/4 = 0.750
+  Omni-MATH Llama-3.3-70B-Instruct  Bf  recovered 40   with a different passing answer 40/40 = 1.000
+  Omni-MATH Llama-3.3-70B-Instruct  C   recovered 35   with a different passing answer 35/35 = 1.000
+  SciBench  gemma-4-31B-it          A   recovered 30   with a different passing answer 30/30 = 1.000
+  SciBench  gemma-4-31B-it          B   recovered 6    with a different passing answer 0/6 = 0.000
+  SciBench  gemma-4-31B-it          Bf  recovered 49   with a different passing answer 47/49 = 0.959
+  SciBench  gpt-oss-120b            A   recovered 39   with a different passing answer 39/39 = 1.000
+  SciBench  gpt-oss-120b            B   recovered 28   with a different passing answer 19/28 = 0.679
+  SciBench  gpt-oss-120b            Bf  recovered 58   with a different passing answer 56/58 = 0.966
+
 [B12] HEADLINE NUMBERS (each traceable to a block above)
 --------------------------------------------------------
   Omni-MATH / gemma-4-31B-it  [complete]
@@ -293,5 +315,5 @@ SciBench  gpt-oss-120b            Bf      120    4.54     3.95      0.59   0.925
     roles given feedback (A vs Bf, paired): n=93 only A 7, only Bf 18, p=0.043
     final accuracy A vs Bf (paired, all problems): A-only 7 vs 30 -> delta +0.040 [+0.019,+0.061], p=0.00019
 
-wrote analysis/out/FIGDATA_BF.json  sha256[:16] 577032b8e0108238
+wrote analysis/out/FIGDATA_BF.json  sha256[:16] 9053c92b9dc92ef2
 ================================================================================================

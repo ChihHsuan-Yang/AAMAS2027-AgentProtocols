@@ -39,47 +39,40 @@ result: the organization was decorative, and three agents were a more
 expensive way to be one. The rest of this paper is about where to look
 before drawing that conclusion.
 
-\paragraph{The difference appears after feedback --- if the feedback
-arrives.} Once the evaluator rejects a first answer, the useful move is to
-put forward a \emph{different} candidate, and that requires knowing the
-first was rejected. Feedback reaches each agent through its prompt, so a
-role-free prompt with no place for it yields a team that is never told: it
-spends nearly its whole budget resubmitting and recovers from a wrong first
-answer in $0.051$ of cases (gemma-4), against $0.222$ with roles. Given the
-identical feedback string, the same role-free prompts recover in $0.609$;
-on the problems both role-free teams first miss, $139$ are recovered only
-with the feedback and $2$ only without. \textbf{Whether a team can revise
-is decided by whether the feedback reaches it, not by its roles.}
+\paragraph{Organization is not adaptability.} The test is what happens
+after the evaluator rejects a first answer, when the useful move is to put
+forward a \emph{different} candidate. Given the same corrective feedback as
+the role-structured team, the role-free team does not merely keep up. On
+the $236$ problems both first answer wrongly it recovers $89$ the
+role-structured team misses, against $4$ the other way (exact McNemar
+$p=6\times10^{-22}$; gemma-4), its final accuracy is $0.921$ against
+$0.846$, and the ordering returns in both other actors and on $574$
+free-response college-science problems. Its recoveries are revisions: the
+passing answer differs from the rejected one in $541$ of $547$ cases. A
+feedback-withheld baseline --- the same role-free prompts with no slot for
+the evaluator's verdict --- recovers in only $0.051$ of cases, so what a
+team needs in order to adapt is the feedback, not the roles.
+\textbf{The roles organize the team; they do not make it more adaptive.}
 
-\paragraph{With feedback held fixed, removing roles helps.} Matched on
-feedback, the role-free team does not merely catch up with the
-role-structured one. On the $236$ problems both first answer wrongly it
-recovers $89$ the role-structured team misses, against $4$ the other way
-(exact McNemar $p=6\times10^{-22}$), and its final accuracy is $0.921$
-against $0.846$. The ordering returns on $574$ free-response
-college-science problems and in both other actors.
-Roles still change what happens after feedback, as an allocation of the
-six-cycle budget: the role-structured Reviewer may not approve in the
-cycle a FAIL arrives, so that team revises internally and submits $1.54$
-times per failed trajectory against $3.20$. Its resubmissions are more
-often right; there are far fewer of them, and against an exact oracle with
-a capped number of verdicts, verdicts are what pays.
-
-\paragraph{Enforcement points the same way.} Making the division of labor
-unavoidable at the interface, matched on feedback with the role-structured
-team, shifts the allocation toward submission and raises recovery in every
-actor --- resolvably only for Llama-3.3. It does not become end-to-end
-accuracy, because enforcing a schema makes the pipeline brittle and
-$8$--$17\%$ of its trajectories never finish: a mechanism that transfers
-and a deployment recipe that, as implemented here with free-text JSON and
-regeneration, does not.
+\paragraph{What roles do instead.} Roles change how the six-cycle budget
+is spent after a failure: the role-structured Reviewer may not approve in
+the cycle a FAIL arrives, so that team revises internally and submits
+$1.54$ times per failed trajectory against $3.20$. Its resubmissions are
+more often right; there are far fewer of them, and against an exact oracle
+with a capped number of verdicts, verdicts are what pays. Enforcing the
+division of labor at the interface shifts the allocation toward submission
+and raises recovery in every actor --- resolvably only for Llama-3.3 ---
+but does not become end-to-end accuracy, because enforcing a schema makes
+the pipeline brittle and $8$--$17\%$ of its trajectories never finish.
 
 \paragraph{Contribution.} An operational definition of load-bearing and a
 budget-matched, two-directional design that applies it per phase; evidence
-in two domains that recovery is carried by feedback delivery rather than
-role structure, and that with feedback matched a role-free team recovers
-more; an allocation account of what roles do after feedback, with its
-price per verdict; and a methodological point for role ablations
-generally --- feedback slots live inside role text, so an ablation that
-rewrites prompts must audit which inputs each template actually consumes
+across three actors and two domains that, with corrective feedback matched,
+a role-free team recovers more than a role-structured one, so that
+organizational structure and adaptive recovery come apart; an allocation
+account of what roles do after feedback, with its price per verdict; and a
+measurement point that extends a recent separation of reviewer precision
+from critique uptake~\cite{yang2026precise}: properties that look like good
+collaboration --- a precise reviewer, a clean division of labor --- are not
+evidence that corrective information changes the next action
 (\S\ref{sec:discussion}).

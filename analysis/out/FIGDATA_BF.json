@@ -1331,6 +1331,80 @@
   "generated_by": "analysis/scripts/bf_numbers.py",
   "seed": 20261008
  },
+ "revision_vs_regrade": {
+  "omni|Llama-3.3-70B-Instruct|A": {
+   "changed": 4,
+   "recovered": 4
+  },
+  "omni|Llama-3.3-70B-Instruct|B": {
+   "changed": 3,
+   "recovered": 4
+  },
+  "omni|Llama-3.3-70B-Instruct|Bf": {
+   "changed": 40,
+   "recovered": 40
+  },
+  "omni|Llama-3.3-70B-Instruct|C": {
+   "changed": 35,
+   "recovered": 35
+  },
+  "omni|gemma-4-31B-it|A": {
+   "changed": 70,
+   "recovered": 70
+  },
+  "omni|gemma-4-31B-it|B": {
+   "changed": 9,
+   "recovered": 16
+  },
+  "omni|gemma-4-31B-it|Bf": {
+   "changed": 192,
+   "recovered": 193
+  },
+  "omni|gemma-4-31B-it|C": {
+   "changed": 106,
+   "recovered": 108
+  },
+  "omni|gpt-oss-120b|A": {
+   "changed": 150,
+   "recovered": 150
+  },
+  "omni|gpt-oss-120b|B": {
+   "changed": 91,
+   "recovered": 94
+  },
+  "omni|gpt-oss-120b|Bf": {
+   "changed": 206,
+   "recovered": 207
+  },
+  "omni|gpt-oss-120b|C": {
+   "changed": 141,
+   "recovered": 141
+  },
+  "scibench|gemma-4-31B-it|A": {
+   "changed": 30,
+   "recovered": 30
+  },
+  "scibench|gemma-4-31B-it|B": {
+   "changed": 0,
+   "recovered": 6
+  },
+  "scibench|gemma-4-31B-it|Bf": {
+   "changed": 47,
+   "recovered": 49
+  },
+  "scibench|gpt-oss-120b|A": {
+   "changed": 39,
+   "recovered": 39
+  },
+  "scibench|gpt-oss-120b|B": {
+   "changed": 19,
+   "recovered": 28
+  },
+  "scibench|gpt-oss-120b|Bf": {
+   "changed": 56,
+   "recovered": 58
+  }
+ },
  "scoring_defect": {
   "omni|Llama-3.3-70B-Instruct|A": {
    "mismatched": 16,

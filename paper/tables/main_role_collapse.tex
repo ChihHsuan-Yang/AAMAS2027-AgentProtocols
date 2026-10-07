@@ -47,7 +47,7 @@ actor & collapse & duplication & no division \\
 \quad gpt-oss-120b & $0.120$ & $0.000$ & $0.000$ \\
 \quad Llama-3.3-70B & $0.000$ & $0.000$ & $0.000$ \\
 \addlinespace
-\multicolumn{4}{@{}l}{\emph{role-free, without feedback}} \\
+\multicolumn{4}{@{}l}{\emph{role-free, feedback withheld}} \\
 \quad gemma-4-31B & $\mathbf{0.976}$ & $0.000$ & $\mathbf{0.857}$ \\
 \quad gpt-oss-120b & $\mathbf{0.846}$ & $0.680^{\dagger}$ & $\mathbf{1.000}$ \\
 \quad Llama-3.3-70B & $\mathbf{0.872}$ & $0.008$ & $\mathbf{1.000}$ \\
@@ -63,7 +63,7 @@ actor & collapse & duplication & no division \\
 \end{tabular}
 
 \vspace{2pt}
-\footnotesize\emph{Sensitivity.} The role-free rate without feedback is stable across three
+\footnotesize\emph{Sensitivity.} The feedback-withheld role-free rate is stable across three
 answer-marker definitions ($0.846$--$0.999$, every actor);
 \textbf{the role-structured rate is not} ($0.000$--$0.892$), so
 read that column as ``low,'' not a point estimate. The ordering holds in all

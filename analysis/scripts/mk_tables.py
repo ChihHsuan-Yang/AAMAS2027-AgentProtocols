@@ -290,7 +290,7 @@ def t_collapse(S, pv) -> str:
     # The role-free condition is reported with and without the evaluator's
     # feedback (manuscript 4); this table's role-free rows are the frozen
     # condition WITHOUT feedback.
-    LBL = {"A": ARM_LABEL["A"], "B": "role-free, without feedback"}
+    LBL = {"A": ARM_LABEL["A"], "B": "role-free, feedback withheld"}
     for arm in ("A", "B"):
         body.append(f"\\multicolumn{{4}}{{@{{}}l}}{{\\emph{{{LBL[arm]}}}}} \\\\")
         for a in ACTORS:
@@ -380,7 +380,7 @@ actor & collapse & duplication & no division \\\\
 \\end{{tabular}}
 
 \\vspace{{2pt}}
-\\footnotesize\\emph{{Sensitivity.}} The role-free rate without feedback is stable across three
+\\footnotesize\\emph{{Sensitivity.}} The feedback-withheld role-free rate is stable across three
 answer-marker definitions (${b_lo:.3f}$--${b_hi:.3f}$, every actor);
 \\textbf{{the role-structured rate is not}} (${a_lo:.3f}$--${a_hi:.3f}$), so
 read that column as ``low,'' not a point estimate. The ordering holds in all

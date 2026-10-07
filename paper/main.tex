@@ -105,26 +105,23 @@ frozen snapshot, plus a feedback-matched control).
 
 Deleting the role instructions destroys the intended division of labor in
 all three actors --- the rate at which every agent independently asserts its
-own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$ --- while
-first-pass accuracy does not follow. The phases come apart only after a
-rejected first answer, and there the deciding variable is whether the
-verifier's feedback reaches the team. A role-free team whose prompts carry
-no feedback slot almost never recovers ($0.051$ for gemma-4, against
-$0.222$ with roles); given the identical feedback string, the same
-role-free team recovers $0.609$ and reaches $0.921$ final accuracy, above
-the role-structured team's $0.846$. On problems both teams first answer
-wrongly, $89$ are recovered only without roles and $4$ only with them
-(exact McNemar $p=6\times10^{-22}$), and the ordering returns on $574$
-college-science problems ($0.419$ vs.\ $0.254$). The same ordering holds in
-the other two actors (gpt-oss: $0.552$ vs.\ $0.324$; Llama-3.3: $0.147$
-vs.\ $0.014$). Roles still shape what happens after feedback, as a budget
-allocation rather than a capability: the role-structured Reviewer must
-decline after a failure, so that team revises internally and resubmits
-$1.54$ times per failed trajectory against $3.20$. Each of its
-resubmissions is more often right, but there are far fewer of them.
-\textbf{Roles appear load-bearing for revision exactly when their prompts
-are the only channel carrying the feedback}; ablations of agent roles must
-hold information channels, not just budgets, fixed.
+own final answer rises from $0.000$--$0.120$ to $0.846$--$0.976$ --- so the
+roles do organize the team. That organization does not make the team better
+at the task. First-pass accuracy does not follow the collapse, and when the
+verifier's corrective feedback reaches both teams alike, the role-free team
+recovers from a rejected first answer more often, not less: $0.609$ against
+$0.222$ for gemma-4 ($89$ problems recovered only without roles, $4$ only
+with them; exact McNemar $p=6\times10^{-22}$), with the same ordering for
+gpt-oss ($0.552$ vs.\ $0.324$) and Llama-3.3 ($0.147$ vs.\ $0.014$) and on
+$574$ college-science problems. Its recoveries are revised answers, not
+re-graded ones. A role-free baseline from which the feedback is withheld
+almost never recovers ($0.051$), so recovery follows access to corrective
+feedback, not role structure. What roles change is how a team spends its
+budget after a failure: the role-structured Reviewer must decline after a
+FAIL, so that team revises internally and resubmits $1.54$ times per failed
+trajectory against $3.20$. \textbf{Structure is not adaptability}: a clean
+division of labor should not be read as evidence that a team acts on
+corrective information.
 \end{abstract}
 
 % CCS concepts are not part of the AAMAS-2027 sample (AAMAS_2027_sample.tex

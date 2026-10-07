@@ -1,16 +1,13 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Multi-agent roles need not improve what a team knows on its first attempt,
-and in our setting they do not supply the ability to revise after failure
-either: that comes from the feedback reaching the team. Deleting the role
-instructions destroyed the division of labor in all three actors while
-first-pass accuracy held. A role-free team whose prompts carried no
-feedback resubmitted the answer the evaluator had rejected; the same team,
-given the feedback, recovered more than the role-structured one in all three
-actors and in a second domain (paired $p=6\times10^{-22}$ for gemma-4 on
-Omni-MATH). What roles changed was
-how the budget was spent. \textbf{Evaluating agent organization means
-auditing what each agent is told, not only how many calls it gets --- a
-role can look load-bearing simply by being the only place the feedback
-goes.}
+Multi-agent roles organize a team: deleting them destroyed the intended
+division of labor in all three actors. They did not make the team better at
+the task. First-pass accuracy held, and when corrective feedback reached
+both teams alike, the role-free team recovered more than the role-structured
+one in all three actors and in a second domain (paired $p=6\times10^{-22}$
+for gemma-4 on Omni-MATH), while a role-free baseline with the feedback
+withheld almost never recovered. What roles changed was how the budget was
+spent. \textbf{Structure is not adaptability: evaluating agent organization
+means asking not only whether the specified division of labor is realized,
+but whether corrective information changes what the team does next.}

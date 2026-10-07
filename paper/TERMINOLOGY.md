@@ -10,8 +10,8 @@ reproducibility. They must not appear in prose a reviewer reads.
 | internal code | manuscript wording (default in **bold**) |
 |---|---|
 | A | **role-structured** · "soft-role organization" where contrast with C is needed |
-| B | **role-free without feedback** · "role-free" where only first-pass behaviour is at issue. Its template has no slot for the evaluator's verdict or hint. |
-| Bf | **role-free with feedback** · the same role-free prompt plus the evaluator's verdict and hint (post hoc condition, run after the freeze). Figures: "role-free + feedback"; the B condition is drawn hollow as "role-free, no feedback". |
+| B | **role-free, feedback withheld** (the "feedback-withheld baseline") · "role-free" where only first-pass behaviour is at issue. Its template has no slot for the evaluator's verdict or hint. Never "original role-free" in the manuscript. |
+| Bf | **role-free with feedback** · the same role-free prompt plus the evaluator's verdict and hint (post hoc condition, run after the freeze). Figures: "role-free + feedback"; the B condition is drawn hollow as "role-free, feedback withheld". Primary comparison (per Bella, 10-06): role-structured vs role-free with feedback. |
 | C | **structurally enforced** · "interface-enforced organization" |
 | C′ | **context-restored enforcement control** — mention only if it answers a reviewer-relevant alternative explanation |
 
