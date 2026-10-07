@@ -61,8 +61,10 @@ role-structured Reviewer withholds approval before any feedback exists ---
 $84$ of gemma-4's $316$ failed trajectories never submit within the six
 cycles --- and, on Omni-MATH, mostly in cycles where no clause forbids
 approval; that team submits $1.27$ times per failed trajectory against
-$3.20$. Against a ground-truth evaluator with a capped number of cycles,
-withheld submissions are lost recoveries. Enforcing the division of labor at
+$3.20$. Overriding the Reviewer in a post-freeze run, with the role
+prompts unchanged, raises gemma-4's recovery from $0.198$ to $0.613$, as high
+as the role-free team's ($0.549$): against a ground-truth evaluator and a capped budget, withheld
+submissions are lost recoveries. Enforcing the division of labor at
 the interface loosens the gate and raises recovery in every actor ---
 resolvably only for Llama-3.3 --- but does not become end-to-end accuracy,
 because enforcing a schema makes the pipeline brittle and $8$--$17\%$ of its
@@ -74,8 +76,8 @@ from three actors on competition mathematics and two on college science
 that a role ablation which drops the feedback channel manufactures an
 apparent role effect on repair, and that with feedback matched --- in
 channel and in amount --- roles neither help nor hurt a team's use of it;
-an account, measured from the logs, of what roles do instead: a gate on
-submission; and a measurement point that extends a recent separation of
+an account of what roles do instead --- a gate on submission, measured
+from the logs and tested by removing it; and a measurement point that extends a recent separation of
 reviewer precision from critique uptake~\cite{yang2026precise}: properties
 that look like good collaboration --- a precise reviewer, a clean division
 of labor --- are not evidence that corrective information changes the next

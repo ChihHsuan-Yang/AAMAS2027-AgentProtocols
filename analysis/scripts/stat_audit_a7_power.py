@@ -10,7 +10,8 @@
 """
 import pandas as pd, numpy as np
 from math import comb
-AU="/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/analysis/audit/"
+import os
+AU=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "audit") + os.sep
 D=pd.read_csv(AU+"traj.csv"); S=pd.read_csv(AU+"struct.csv")
 ACT=["gemma-4-31B-it","gpt-oss-120b","Llama-3.3-70B-Instruct"]
 

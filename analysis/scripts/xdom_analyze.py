@@ -25,14 +25,14 @@ was domain-adapted, so those clauses differ between domains and scoring
 against them across domains would score an agent on an unreceived clause.
 """
 from __future__ import annotations
-import argparse, collections, io, json, glob, sys
+import argparse, collections, io, json, glob, os, sys
 from contextlib import redirect_stdout
 from math import comb
 from pathlib import Path
 
 import numpy as np
 
-ROOT = Path("/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols")
+ROOT = Path(__file__).resolve().parents[2]   # repo root, wherever it is checked out
 FT = ROOT / "analysis/scripts/FINAL_TABLES.py"
 
 
@@ -47,7 +47,8 @@ def load_defs():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--src", default=str(ROOT / "experiments/results/xdomain/FROZEN_SCIBENCH"),
+    ap.add_argument("--src", default=os.environ.get(
+                        "AAMAS_XDOM_SRC", str(ROOT / "experiments/results/xdomain/FROZEN_SCIBENCH")),
                     help="directory of .jsonl, or a single .jsonl")
     ap.add_argument("--boot", type=int, default=20000)
     args = ap.parse_args()
@@ -296,8 +297,8 @@ def main():
     print("     matches gold after normalization.")
     nrm = ns["nrm"]
     import pandas as pd
-    PQ = ("/Users/bellayang/Documents/note/projects/IEEE-BigData-SciAgentTrace/"
-          "analysis/hf_cache/release/data/problems/part-00000.parquet")
+    PQ = os.environ.get("AAMAS_GOLD_PARQUET",
+                        str(ROOT / "analysis/hf_cache/release/data/problems/part-00000.parquet"))
     try:
         gold = pd.read_parquet(PQ)
         gold = dict(zip(gold.problem_uid, gold.answer))

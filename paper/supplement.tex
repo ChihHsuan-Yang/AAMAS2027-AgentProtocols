@@ -226,6 +226,27 @@ recover equally in all five cells.
 
 \input{tables/gate_decomposition}
 
+\section{Removing the submission gate}
+\label{sec:forced}
+
+The forced-submission run tests the gate directly. It uses the
+role-structured prompts and runner unchanged except for one step: after the
+Reviewer's turn, the pipeline submits the team's current answer to the
+evaluator whatever route the Reviewer chose, and the verdict and hint reach
+the agents through the same role-specific slots as in the role-structured
+condition. The offline test \texttt{test\_afs.py} (supplementary material)
+checks that the prompts are byte-identical to the role-structured ones up to
+the first verdict and that the evaluator is called in every cycle. It was run
+once, after the freeze, for gemma-4 on the $400$ Omni-MATH problems of the
+role-structured re-run, with the same endpoint, budget and evaluator.
+Table~\ref{tab:forced} compares it with that re-run, the frozen
+role-structured cell and the role-free team with feedback, restricted to the
+same problems. Recovery rises to the role-free team's level while first-pass
+accuracy does not move; the Reviewer's logged approvals no longer decide
+anything.
+
+\input{tables/forced_submission}
+
 \section{Validation of the measures}
 \label{sec:validation}
 

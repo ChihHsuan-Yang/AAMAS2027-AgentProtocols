@@ -118,10 +118,13 @@ team is credited with the same number of evaluator verdicts on the same
 problem, recovery no longer differs: pooled over the five cells, by $+0.009$
 ($95\%$ CI $-0.014$ to $+0.033$), within $\pm0.05$ by an equivalence test.
 Roles neither add nor remove the capacity to use feedback. What they change is how often
-the team asks for it. The role-structured Reviewer withholds approval ---
+the team asks for it. The role-structured Reviewer withholds approval:
 on Omni-MATH, gemma-4's team submits $1.27$ times per failed trajectory against $3.20$,
-and $84$ of its $316$ failed trajectories never submit at all --- and
-against a ground-truth evaluator with a fixed budget, that costs recovery.
+and $84$ of its $316$ failed trajectories never submit at all. In a further
+exploratory run, overriding the Reviewer with the role prompts unchanged
+raises gemma-4's recovery
+from $0.198$ to $0.613$, as high as the role-free team's ($0.549$ on the same
+problems).
 \textbf{Structure is not adaptability}: a clean division of labor is not
 evidence that a team acts on corrective information, and role ablations
 must hold information channels fixed, not only budgets.

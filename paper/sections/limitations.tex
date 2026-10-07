@@ -15,12 +15,11 @@ role-structured condition on $400$ problems shows no endpoint drift, but the
 conditions come from separate runs. It matches the role-structured condition on the feedback
 string, not on its framing: role-structured agents receive it inside
 role-specific instructions, role-free agents as a bare
-\texttt{[Evaluator]} entry. Running the role-structured prompts without the
-clause that forbids approval after a FAIL would separate it from the rest
-of the contract; we did not, but on Omni-MATH that clause covers a minority
-of the role-structured Reviewer's declines (\S\ref{subsec:mechanism}). On
-SciBench it was run for gemma-4 and gpt-oss, the two actors with frozen
-SciBench cells.
+\texttt{[Evaluator]} entry. On SciBench it was run for gemma-4 and
+gpt-oss, the two actors with frozen SciBench cells. The forced-submission
+run (\S\ref{subsec:mechanism}) is post-freeze too, covers one actor, one
+domain and one run, and removes the whole gate rather than the one clause
+that forbids approval after a FAIL.
 
 \paragraph{A scoring defect, which narrows the gap.} Beyond the logging
 defect of \S\ref{subsec:logging}, the runner grades the last answer

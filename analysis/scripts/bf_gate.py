@@ -455,6 +455,8 @@ def main():
                   rec, len(fpw), rec / len(fpw) if fpw else float("nan"),
                   sum(d["fin"] for d in D.values()) / n if n else float("nan"), appr, ver, never))
             FIG["afs|" + name] = dict(n=n, n_fpw=len(fpw), recovered=rec,
+                                      firstpass=(sum(1 for d in judged if d["fp"] == 1) / len(judged)
+                                                 if judged else None),
                                       recovery=(rec / len(fpw) if fpw else None),
                                       final=(sum(d["fin"] for d in D.values()) / n if n else None),
                                       approvals=appr, verdicts=ver, never_submits=never)

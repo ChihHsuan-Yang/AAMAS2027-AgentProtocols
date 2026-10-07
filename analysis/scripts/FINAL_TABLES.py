@@ -13,7 +13,11 @@ Scoring conventions, both reported, per PREREGISTRATION.md:
 import json, glob, re, collections, hashlib, os
 import numpy as np
 
-FROZEN = "/Users/bellayang/Documents/note/projects/AAMAS2027-AgentProtocols/experiments/results/FROZEN"
+_REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Inputs are found relative to the checkout; AAMAS_FROZEN_DIR and
+# AAMAS_RELEASE_DIR override them (e.g. a directory holding the dataset copy).
+FROZEN = os.environ.get("AAMAS_FROZEN_DIR", os.path.join(_REPO, "experiments/results/FROZEN"))
+_RELEASE = os.environ.get("AAMAS_RELEASE_DIR", os.path.join(_REPO, "analysis/hf_cache/release"))
 RNG = np.random.default_rng(20261008)
 ACTORS = ["gemma-4-31B-it", "gpt-oss-120b", "Llama-3.3-70B-Instruct"]
 BOX = re.compile(r"\\boxed\s*\{")
@@ -574,8 +578,7 @@ for a in ACTORS:
 print("\n[T17] BUDGET-MATCHED SINGLE-AGENT CONTROL")
 print("  *** NOT IN THE FROZEN SNAPSHOT.  Source: historical released trace corpus,")
 print("      protocol_id='single_agent', benchmark omnimath2, joined by problem_uid. ***")
-SA_PARQUET = ("/Users/bellayang/Documents/note/projects/IEEE-BigData-SciAgentTrace/"
-              "analysis/hf_cache/release/data/trajectories/part-00000.parquet")
+SA_PARQUET = os.path.join(_RELEASE, "data/trajectories/part-00000.parquet")
 try:
     import pyarrow.parquet as pq
     sa = pq.read_table(SA_PARQUET).to_pandas()
@@ -660,8 +663,7 @@ print("  final_answer = the answer the team last held. They can disagree.")
 # under-credited count came out 28 instead of 57. A missing key is not a
 # negative.
 import pandas as _pd
-_PQ = ("/Users/bellayang/Documents/note/projects/IEEE-BigData-SciAgentTrace/"
-       "analysis/hf_cache/release/data/problems/part-00000.parquet")
+_PQ = os.path.join(_RELEASE, "data/problems/part-00000.parquet")
 _df = _pd.read_parquet(_PQ); _df = _df[_df["benchmark_id"] == "omnimath2"]
 GOLD = dict(zip(_df["problem_uid"].astype(str), _df["answer"].astype(str)))
 _missing = sum(1 for r in rows if r["problem_uid"] not in GOLD)
@@ -1186,8 +1188,12 @@ if os.path.isdir(_SB):
               f"   rec paired {_v['recovery_paired_A']:.3f}/{_v['recovery_paired_B']:.3f}"
               f" n={_v['n_paired']} p={_v['mcnemar_p']:.2g}")
 
-with open(_OUT, "w") as _f:
-    json.dump(FIG, _f, indent=1, sort_keys=True)
-print(f"  wrote {_OUT}")
+# Written only when this script is run directly. xdom_analyze.py exec()s it
+# for its definitions; that import must not rewrite the canonical FIGDATA.json
+# (on a machine holding only part of the snapshot it would write a partial one).
+if __name__ == "__main__":
+    with open(_OUT, "w") as _f:
+        json.dump(FIG, _f, indent=1, sort_keys=True)
+    print(f"  wrote {_OUT}")
 print(f"  sha256(FIGDATA.json)[:16] {hashlib.sha256(open(_OUT,'rb').read()).hexdigest()[:16]}")
 print("\n" + "=" * 96)

@@ -190,11 +190,20 @@ trajectory and never submits in $205$ of $276$; on SciBench it covers $40\%$
 and $60\%$ (supplement). The gate looks like precision --- recoveries per
 verdict after the first are higher with roles ($0.41$ against $0.28$ for
 gemma-4) --- but that compares different trajectories; on the same problem
-and the same number of verdicts, the two teams are equal. Against a
+and the same number of verdicts, the two teams are equal.
+
+\paragraph{Removing the gate alone.} The direct test keeps the
+role-structured prompts byte for byte but submits the team's answer in every
+cycle, whatever the Reviewer decides (gemma-4, the $400$ Omni-MATH problems
+of the post-freeze re-run; supplement). First-pass accuracy is unchanged
+($0.767$ against $0.772$), the team draws $4.20$ verdicts per failed trajectory against $1.44$,
+and recovery rises from $0.198$ to $0.613$, as high as the role-free team's
+$0.549$ on the same problems. On problems both first answer wrongly, the
+forced team recovers $26$ that the gated one misses and $2$ the other way
+($p=3.0\times10^{-6}$); against the role-free team the split is $7$ to $7$ ($p=1$).
+With the role contract intact, removing the gate removes the gap: against a
 ground-truth evaluator and six cycles, a withheld submission is a lost
-recovery: across the conditions with feedback, gemma-4's recovery rises
-with submissions --- $0.222$ at $1.27$, $0.314$ at $2.02$ under enforcement,
-$0.609$ at $3.20$.
+recovery.
 
 \subsection{R4. The same ordering in a second domain}
 \label{subsec:xdomain}

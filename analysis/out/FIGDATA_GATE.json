@@ -1,4 +1,84 @@
 {
+ "afs_paired|final|A re-run (bridge) vs Bf": {
+  "first_only": 6,
+  "n": 400,
+  "p": 1.0087482138487758e-07,
+  "second_only": 42
+ },
+ "afs_paired|final|Afs vs A re-run (bridge)": {
+  "first_only": 42,
+  "n": 400,
+  "p": 2.4579776436439715e-08,
+  "second_only": 5
+ },
+ "afs_paired|final|Afs vs Bf": {
+  "first_only": 8,
+  "n": 400,
+  "p": 1.0,
+  "second_only": 7
+ },
+ "afs_paired|rec|A re-run (bridge) vs Bf": {
+  "first_only": 3,
+  "n": 65,
+  "p": 0.00015652179718017578,
+  "second_only": 22
+ },
+ "afs_paired|rec|Afs vs A re-run (bridge)": {
+  "first_only": 26,
+  "n": 72,
+  "p": 3.032386302947998e-06,
+  "second_only": 2
+ },
+ "afs_paired|rec|Afs vs Bf": {
+  "first_only": 7,
+  "n": 70,
+  "p": 1.0,
+  "second_only": 7
+ },
+ "afs|A frozen": {
+  "approvals": 1.146341463414634,
+  "final": 0.825,
+  "firstpass": 0.795,
+  "n": 400,
+  "n_fpw": 82,
+  "never_submits": 22,
+  "recovered": 12,
+  "recovery": 0.14634146341463414,
+  "verdicts": 1.4146341463414633
+ },
+ "afs|A re-run after the freeze (bridge)": {
+  "approvals": 1.1318681318681318,
+  "final": 0.8175,
+  "firstpass": 0.7725,
+  "n": 400,
+  "n_fpw": 91,
+  "never_submits": 28,
+  "recovered": 18,
+  "recovery": 0.1978021978021978,
+  "verdicts": 1.4395604395604396
+ },
+ "afs|Afs (forced submission)": {
+  "approvals": 0.978494623655914,
+  "final": 0.91,
+  "firstpass": 0.7675,
+  "n": 400,
+  "n_fpw": 93,
+  "never_submits": 35,
+  "recovered": 57,
+  "recovery": 0.6129032258064516,
+  "verdicts": 4.204301075268817
+ },
+ "afs|Bf (role-free with feedback)": {
+  "approvals": 3.341463414634146,
+  "final": 0.9075,
+  "firstpass": 0.795,
+  "n": 400,
+  "n_fpw": 82,
+  "never_submits": 0,
+  "recovered": 45,
+  "recovery": 0.5487804878048781,
+  "verdicts": 3.341463414634146
+ },
  "defect_check|gemma-4-31B-it|A": {
   "collapse": 0.0,
   "collapse_clean": 0.0,

@@ -141,6 +141,28 @@
    "last_ended": "2026-10-07T03:25:43.701056+00:00",
    "code_commit": "4e50b4c (control-rolefree-feedback)",
    "note": "Arm Bf, gpt-oss-120b, SciBench n=574."
+  },
+  "afs_omnimath_gemma4_n400.jsonl": {
+   "sha256": "47bed257b8783f9dfae177835b50dfdba19bab920a46d87ebd612f6cc60869cd",
+   "rows": 400,
+   "bytes": 6655595,
+   "cells": {
+    "gemma-4-31B-it|Afs": 400
+   },
+   "config_versions": {
+    "1a5f4fe24f242c80": 400
+   },
+   "run_ids": {
+    "afs-gemma4-n400": 400
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 364,
+    "max_rounds_exhausted_after_fail": 36
+   },
+   "first_started": "2026-10-07T07:36:24.615054+00:00",
+   "last_ended": "2026-10-07T08:25:08.829315+00:00",
+   "code_commit": "267b877 (revision)",
+   "note": "Arm Afs: role-structured prompts byte-identical to arm A, the pipeline submits every cycle (forced submission). gemma-4, Omni-MATH, the 400 problems of bridgeA_omnimath_gemma4_n400.jsonl. Exploratory, post-freeze, one run; analysed by analysis/scripts/bf_gate.py [G5]."
   }
  },
  "excluded": {

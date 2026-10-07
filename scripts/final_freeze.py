@@ -80,6 +80,7 @@ def abstract_plaintext(tex):
         if t == before:
             break
     t = (t.replace(r"\rightarrow", "->").replace(r"\times", "x")
+          .replace(r"\pm", "+/-").replace(r"\geq", ">=").replace(r"\leq", "<=")
           .replace(r"\%", "%").replace(r"\,", " "))
     t = re.sub(r"\$([^$]*)\$", lambda m: m.group(1), t)
     t = t.replace("{,}", ",").replace("^{-8}", "^-8").replace("{-}", "-")
@@ -258,7 +259,12 @@ MUST_BE_TRUE = ["aamas_cls_official", "figures_present",
 
 failed = ([k for k in MUST_BE_ZERO if gates.get(k) != 0]
           + [k for k in MUST_BE_TRUE if not gates.get(k)]
-          + (["main_pages_over_limit"] if gates["main_pages"] > 9 else []))
+)
+# No total-page rule: the AAMAS 2027 instructions allow "at most eight (8)
+# pages long, with any number of additional pages containing bibliographic
+# references". The eight-page limit on the main text is what
+# main_pagecheck_exit (scripts/pagecheck.py) enforces; the reference list may
+# run to as many pages as it needs.
 freeze["FAILED_GATES"] = failed
 freeze["ALL_GATES_PASS"] = not failed
 
