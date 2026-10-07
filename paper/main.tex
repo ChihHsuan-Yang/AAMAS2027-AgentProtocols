@@ -98,29 +98,27 @@ Executor, Reviewer --- and the diagram is read as a mechanism. We ask when
 the roles are load-bearing. Holding agents, topology, call budget, evaluator
 and grading fixed, we delete every role instruction and, separately,
 enforce the same division of labor at the interface, across three actor
-models ($11{,}600$ trajectories from a frozen snapshot), and add an
-exploratory feedback-matched role-free condition after the freeze.
+models ($11{,}600$ frozen trajectories), plus an exploratory post-freeze
+role-free condition that receives the evaluator's feedback.
 
-Deleting the role instructions destroys the intended division of labor on
-Omni-MATH --- the rate at which every agent asserts its own final answer
-rises from $0.000$--$0.120$ to $0.846$--$0.976$ --- while first-pass accuracy
-does not fall. Roles look load-bearing for repairing a rejected answer only against
-a role-free team whose prompts never carried the evaluator's feedback
-(gemma-4 recovers $0.222$ with roles, $0.051$ without). Given the same
-feedback string, the role-free team recovers more: $0.609$ against $0.222$
-for gemma-4 (on problems both first answer wrongly, $89$ recovered only
-without roles and $4$ only with them; exact McNemar $p=6.2\times10^{-22}$),
-with higher final accuracy for every actor on Omni-MATH and on SciBench. Yet when each
-team is credited with the same number of evaluator verdicts on the same
-problem, the role-free advantage disappears: pooled over the five actor--domain
-cells the difference is $+0.009$ in favor of roles ($95\%$ CI $-0.014$ to
-$+0.033$), and no robustness check puts the role-free team significantly ahead. Per verdict, roles add little;
-what they mainly change is how often the team asks for feedback. The role-structured Reviewer withholds approval:
-on Omni-MATH, gemma-4's team submits $1.27$ times per failed trajectory against $3.20$,
-and $84$ of its $316$ failed trajectories never submit at all. In a further
-exploratory run on $400$ problems, overriding the Reviewer with the role
-prompts unchanged raises gemma-4's recovery from $0.198$ (gated re-run) to
-$0.613$, as high as the role-free team's $0.549$.
+Deleting the roles destroys the intended division of labor on Omni-MATH ---
+the rate at which every agent asserts its own final answer rises from
+$0.000$--$0.120$ to $0.846$--$0.976$ --- while first-pass accuracy does not
+fall. Roles look load-bearing for repair only against a role-free team whose
+prompts never carried the evaluator's feedback (gemma-4: $0.222$ with roles,
+$0.051$ without). Given the same feedback string, the role-free team
+recovers more: $0.609$ against $0.222$ for gemma-4 ($89$ jointly failed
+problems recovered only without roles, $4$ only with them; exact McNemar
+$p=6.2\times10^{-22}$), and reaches higher final accuracy in all five
+actor--domain cells. Yet when both teams are credited with the same number of
+verdicts per problem, the role-free advantage disappears: the pooled
+difference is $+0.009$ in favor of roles ($95\%$ CI $-0.014$ to $+0.033$);
+no robustness check favors the role-free team significantly, and one favors
+roles. Roles mainly change how often a team asks for feedback. The role-structured Reviewer withholds approval: on Omni-MATH,
+gemma-4's team submits $1.27$ times per failed trajectory against $3.20$.
+Overriding the Reviewer in an exploratory $400$-problem run, role prompts
+unchanged, raises gemma-4's recovery from $0.198$ (gated re-run) to
+$0.613$, matching the role-free team's $0.549$ on the same problems.
 \textbf{Structure is not adaptability}: a clean division of labor is not
 evidence that a team acts on corrective information, and role ablations
 must hold information channels fixed, not only budgets.

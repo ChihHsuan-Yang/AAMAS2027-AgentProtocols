@@ -151,7 +151,7 @@ $16/316=0.051$ to $193/317=0.609$; of the $265$ problems both miss first,
 $139$ are recovered only with the feedback and $2$ only without
 ($p=7.2\times10^{-39}$). First-pass accuracy is $0.80$ in both conditions.
 Of the $16$ recoveries without feedback, $7$ are the same answer graded
-again. \textbf{Revision needs the feedback, not the roles.}
+again. \textbf{For gemma-4, revision needs the feedback, not the roles.}
 
 \paragraph{Matched on verdicts, the gap closes.} The role-free team with
 feedback also receives more of it: each submission returns a verdict and,
@@ -175,8 +175,9 @@ we repeat it against the role-structured re-run made after it: on the $65$
 problems both first answer wrongly, recovery is $3$ against $22$ in favor
 of the role-free team unmatched ($p=1.6\times10^{-4}$) and $4$ against $1$
 verdict-matched ($p=0.38$). No variant puts the role-free team significantly
-ahead verdict for verdict, and any advantage of roles is small. The
-role-free team recovers more because it asks for more verdicts.
+ahead verdict for verdict; the only significant variant favors roles, by a
+small margin. The role-free team recovers more because it asks for more
+verdicts.
 
 \paragraph{What roles do instead: a gate on submission.} The gap in verdicts
 comes from the role-structured Reviewer. Across gemma-4's failed trajectories that team
@@ -185,9 +186,10 @@ roles (Figure~\ref{fig:dissociation}C). Of its declining cycles, $53\%$ come
 before the first submission, when no feedback exists, and $84$ of its $316$
 failed trajectories never submit within the budget: they are graded once at
 the end and never see the feedback. One clause forbids approval in a cycle
-that receives a FAIL, but it covers only $19\%$ of the declines; in later
-cycles that receive no FAIL ($504$ and $184$), where approval is allowed,
-the Reviewer still declines $75\%$ of the time, against $4\%$ for the role-free team's third agent. On
+that receives a FAIL, but it covers only $19\%$ of the declines; in the later
+cycles that receive no FAIL, where approval is allowed, the Reviewer still
+declines in $75\%$ of $504$ such cycles, against $4\%$ of $184$ for the
+role-free team's third agent. On
 Omni-MATH the clause covers $37\%$ of gpt-oss's declines and $4\%$ of
 Llama-3.3's, whose role-structured team submits $0.32$ times per failed
 trajectory and never submits in $205$ of $276$; on SciBench it covers $40\%$

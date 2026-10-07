@@ -179,7 +179,9 @@ def panel_B(ax):
         yb = max(hl, hr) + 0.04
         ax.plot([xl, xl, xr, xr], [yb, yb + 0.02, yb + 0.02, yb], lw=0.55, color=S.INK2, zorder=5)
         ok = pr["p"] < ALPHA
-        ax.text((xl + xr) / 2, yb + 0.028, pfmt(pr["p"]) if ok else "n.s.", ha="center",
+        # the first group's label is anchored at its bracket so it clears the y axis
+        x_lab, ha = ((xl - 0.04, "left") if gi == 0 else ((xl + xr) / 2, "center"))
+        ax.text(x_lab, yb + 0.028, pfmt(pr["p"]) if ok else "n.s.", ha=ha,
                 va="bottom", fontsize=FS_SMALL, color=S.INK if ok else S.INK3, zorder=6)
     group_labels(ax)
 
@@ -193,14 +195,15 @@ def panel_C(ax):
         if d is None:
             continue
         sub, rev = d["approvals"], d["declines"]
-        ax.barh(yi, sub, 0.58, zorder=3, **bar_kw(arm))
-        ax.barh(yi, rev, 0.58, left=sub + gap, color=TINT[arm], linewidth=0.0, zorder=3)
+        ax.barh(yi, sub, 0.64, zorder=3, **bar_kw(arm))
+        ax.barh(yi, rev, 0.64, left=sub + gap, color=TINT[arm], linewidth=0.0, zorder=3)
         if arm in ("A", "Bf"):
             ax.text(sub / 2, yi, f"{sub:.2f}", ha="center", va="center", fontsize=FS_SMALL,
                     color=S.SURFACE, zorder=6)
         else:
-            # on the hatch, a halo in the bar's own colour keeps the digits clean
-            halo = [pe.withStroke(linewidth=2.2, foreground=COL[arm] if arm in HATCH else S.SURFACE)]
+            # on the hatch, a halo in the bar's own colour keeps the digits clean;
+            # inside the hollow bar the white face already does
+            halo = [pe.withStroke(linewidth=2.8, foreground=COL[arm])] if arm in HATCH else None
             ax.text(sub / 2, yi, f"{sub:.2f}", ha="center", va="center", fontsize=FS_SMALL,
                     color=S.INK, zorder=6, path_effects=halo)
         if rev >= 0.6:
