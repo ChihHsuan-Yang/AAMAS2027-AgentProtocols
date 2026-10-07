@@ -42,6 +42,7 @@ import math
 import os
 import re
 import sys
+import zlib
 from math import comb
 
 import numpy as np
@@ -131,18 +132,27 @@ def mcnemar(b, c):
     return min(1.0, 2 * sum(comb(m, i) for i in range(min(b, c) + 1)) / 2 ** m) if m else 1.0
 
 
-def boot(x, n=20000):                # FINAL_TABLES.boot
+def rng_for(key):
+    """One RNG stream per cell or contrast, seeded from SEED and the key, so an
+    interval does not move when another cell (a run still in progress) is
+    added to or removed from the inputs."""
+    return np.random.default_rng([SEED, zlib.crc32(key.encode())])
+
+
+def boot(x, n=20000, rng=None):      # FINAL_TABLES.boot
+    rng = RNG if rng is None else rng
     x = np.asarray(x, float)
     if len(x) < 5: return (float("nan"), float("nan"))
     return tuple(float(v) for v in
-                 np.percentile([RNG.choice(x, len(x)).mean() for _ in range(n)], [2.5, 97.5]))
+                 np.percentile([rng.choice(x, len(x)).mean() for _ in range(n)], [2.5, 97.5]))
 
 
-def mean_ci(v, n=4000):              # FINAL_TABLES._mean_ci
+def mean_ci(v, n=4000, rng=None):    # FINAL_TABLES._mean_ci
+    rng = RNG if rng is None else rng
     v = np.asarray(v, float)
     if len(v) == 0: return (float("nan"),) * 3
     if len(v) < 5: return (float(v.mean()), float("nan"), float("nan"))
-    b = np.percentile([RNG.choice(v, len(v)).mean() for _ in range(n)], [2.5, 97.5])
+    b = np.percentile([rng.choice(v, len(v)).mean() for _ in range(n)], [2.5, 97.5])
     return float(v.mean()), float(b[0]), float(b[1])
 
 
@@ -229,7 +239,8 @@ def load_gold(parquet):
 # =============================================================================
 # Statistics over feature records (dict uid -> feature)
 # =============================================================================
-def cell_stats(C):
+def cell_stats(C, key=""):
+    rng = rng_for("cell|" + key)
     s = list(C.values())
     j = [f for f in s if f["judged"]]
     fpw = [f for f in s if f["judged"] and f["fp"] == 0]
@@ -237,9 +248,9 @@ def cell_stats(C):
     unj = [f for f in s if not f["judged"]]
     held = sum(f["fin"] for f in fpr)
     rec = sum(f["fin"] for f in fpw)
-    fpm, fplo, fphi = mean_ci([f["fp"] for f in j])
-    rcm, rclo, rchi = mean_ci([f["fin"] for f in fpw])
-    fnm, fnlo, fnhi = mean_ci([f["fin"] for f in s])
+    fpm, fplo, fphi = mean_ci([f["fp"] for f in j], rng=rng)
+    rcm, rclo, rchi = mean_ci([f["fin"] for f in fpw], rng=rng)
+    fnm, fnlo, fnhi = mean_ci([f["fin"] for f in s], rng=rng)
     if j:
         assert abs((1 - fpm) * len(j) - len(fpw)) < 1e-6, "first-pass identity violated"
     fc = [f["collapse"] for f in s if f["collapse"] is not None]
@@ -267,10 +278,10 @@ def cell_stats(C):
     return d
 
 
-def paired_final(X, Y):
+def paired_final(X, Y, key=""):
     cm = sorted(set(X) & set(Y))
     d = np.array([Y[u]["fin"] - X[u]["fin"] for u in cm], float)
-    lo, hi = boot(d)
+    lo, hi = boot(d, rng=rng_for("paired|" + key))
     b, c = int((d == -1).sum()), int((d == 1).sum())
     return dict(n=len(cm), delta=float(d.mean()), lo=lo, hi=hi, x_only=b, y_only=c, p=mcnemar(b, c))
 
@@ -418,6 +429,8 @@ def main():
     for p in sorted(glob.glob(os.path.join(a.bf_dir, "bf_*.jsonl")) +
                     glob.glob(os.path.join(a.bf_dir, "bridgeA_*.jsonl"))):
         name = os.path.basename(p)
+        if name.endswith(".infra_failed.jsonl"):
+            continue     # bf_requeue.py's quarantine of infrastructure failures, never an outcome
         is_bridge = name.startswith("bridgeA_")
         got = sha256(p)
         n = 0
@@ -470,7 +483,7 @@ def main():
                 C = F["omni"].get((act, arm))
                 key = "{}|{}".format(act, arm)
                 if not C or key not in ref["cells"]: continue
-                mine, theirs = cell_stats(C), ref["cells"][key]
+                mine, theirs = cell_stats(C, "omni|" + key), ref["cells"][key]
                 for fld in ("n", "n_fpw", "n_judged", "firstpass", "recovery", "final_prereg",
                             "cycles", "submissions", "revising", "neverrefuse", "frozen_ans"):
                     if fld in theirs:
@@ -483,7 +496,7 @@ def main():
             A, B = F["scibench"].get((act, "A")), F["scibench"].get((act, "B"))
             if not A or not B: continue
             pr = paired_recovery(A, B)
-            sa, sb = cell_stats(A), cell_stats(B)
+            sa, sb = cell_stats(A, "scibench|%s|A" % act), cell_stats(B, "scibench|%s|B" % act)
             assert pr["n"] == v["n_paired"] and pr["x_only"] == v["discordant_A_only"] \
                 and pr["y_only"] == v["discordant_B_only"], ("scibench paired", act)
             assert abs(sa["recovery"] - v["recovery_marginal_A"]) < 1e-12
@@ -547,7 +560,7 @@ def main():
             if "Bf" not in cs: continue
             for arm in ARMS:
                 if arm not in cs: continue
-                d = cell_stats(cs[arm])
+                d = cell_stats(cs[arm], "{}|{}|{}".format(dom, act, arm))
                 d.update(domain=dom, actor=act, arm=arm)
                 FIG["cells"]["{}|{}|{}".format(dom, act, arm)] = d
                 print("{:<9} {:<24}{:<4}{:>6}{:>22}{:>22}{:>30}{:>10}{:>9}".format(
@@ -569,7 +582,7 @@ def main():
             if "Bf" not in cs: continue
             for x, y in PAIRS:
                 if x not in cs or y not in cs: continue
-                r = paired_final(cs[x], cs[y])
+                r = paired_final(cs[x], cs[y], "{}|{}|{}-{}".format(dom, act, x, y))
                 FIG["paired_final"]["{}|{}|{}-{}".format(dom, act, x, y)] = r
                 print("  {:<9} {:<24}{:>3} vs {:<3} n={:<5} {}-only {:>4}  {}-only {:>4}  "
                       "delta {:+.4f} [{:+.4f},{:+.4f}]  p={:.3g}".format(
@@ -675,8 +688,9 @@ def main():
         if not X0: continue
         cm = sorted(set(Y) & set(X0))
         X, Yc = {u: X0[u] for u in cm}, {u: Y[u] for u in cm}
-        sx, sy = cell_stats(X), cell_stats(Yc)
-        pf = paired_final(X, Yc)
+        sx = cell_stats(X, "bridge|frozen|" + act)
+        sy = cell_stats(Yc, "bridge|today|" + act)
+        pf = paired_final(X, Yc, "bridge|" + act)
         j = [u for u in cm if X[u]["judged"] and Yc[u]["judged"]]
         b = sum(1 for u in j if X[u]["fp"] == 1 and Yc[u]["fp"] == 0)
         c = sum(1 for u in j if X[u]["fp"] == 0 and Yc[u]["fp"] == 1)

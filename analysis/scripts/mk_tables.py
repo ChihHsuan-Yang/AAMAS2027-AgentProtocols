@@ -287,8 +287,12 @@ def t_collapse(S, pv) -> str:
     # they push this one-column table ~33pt past the text block.
     body = []
     dagger = []   # (short-message fraction) for cells whose duplication is uninterpretable
+    # The role-free condition is reported with and without the evaluator's
+    # feedback (manuscript 4); this table's role-free rows are the frozen
+    # condition WITHOUT feedback.
+    LBL = {"A": ARM_LABEL["A"], "B": "role-free, without feedback"}
     for arm in ("A", "B"):
-        body.append(f"\\multicolumn{{4}}{{@{{}}l}}{{\\emph{{{ARM_LABEL[arm]}}}}} \\\\")
+        body.append(f"\\multicolumn{{4}}{{@{{}}l}}{{\\emph{{{LBL[arm]}}}}} \\\\")
         for a in ACTORS:
             coll = need(T1, (a, arm), "T1")[5]
             dup = need(T18, (a, arm), "T18")[1]
@@ -305,6 +309,20 @@ def t_collapse(S, pv) -> str:
                 dup_cell = dup_cell[:-1] + "^{\\dagger}$"   # inside the same math group
                 dagger.append(short)
             body.append(f"\\quad {ACTOR_LABEL[a]} & {bold(coll)} & {dup_cell} & {bold(aj)} \\\\")
+        body.append("\\addlinespace")
+
+    # Role-free WITH feedback: same prompts as the role-free rows, run after the
+    # freeze (bf_numbers.py -> FIGDATA_BF.json). Only functional collapse is
+    # reported for it: duplication and adjudication were not run on that
+    # condition. Only cells whose run is complete are printed.
+    _bfd = json.loads((ROOT / "analysis/out/FIGDATA_BF.json").read_text())
+    bf_rows = [(a, _bfd["cells"][f"omni|{a}|Bf"]) for a in ACTORS
+               if _bfd.get("status", {}).get(f"omni|{a}") == "complete"
+               and f"omni|{a}|Bf" in _bfd["cells"]]
+    if bf_rows:
+        body.append("\\multicolumn{4}{@{}l}{\\emph{role-free, with feedback}} \\\\")
+        for a, c in bf_rows:
+            body.append(f"\\quad {ACTOR_LABEL[a]} & $\\mathbf{{{c['collapse']:.3f}}}$ & -- & -- \\\\")
         body.append("\\addlinespace")
 
     # Enforced conditions: collapse is n/a (their schema has no answer field).
@@ -333,7 +351,8 @@ def t_collapse(S, pv) -> str:
                        f" (the logging defect, \\S\\ref{{subsec:logging}}).")
 
     pre = header("Table 1 (manuscript) -- functional collapse per actor", pv,
-                 [f"analysis/out/{CANON.name}  sections T1, T18, T20, T23"],
+                 [f"analysis/out/{CANON.name}  sections T1, T18, T20, T23",
+                  "analysis/out/FIGDATA_BF.json  (role-free with feedback: collapse only)"],
                  ["Byte duplication is a LOWER BOUND (precision 1.000, recall 0.262)",
                   "and never carries the collapse claim alone (APPROVED_CLAIMS A1).",
                   "The adjudication is outcome-blind but NOT condition-blind: do not",
@@ -347,7 +366,8 @@ Byte duplication has precision $1.000$ but recall $0.262$, so it never
 carries this result alone. The adjudication is outcome-blind but
 \\textbf{{not}} condition-blind and is a second opinion, not ground truth.
 Collapse is not applicable to the structurally enforced conditions, whose
-schema forbids an answer field.}}
+schema forbids an answer field. The role-free condition with feedback uses
+the role-free prompts unchanged; only its collapse was measured.}}
 \\label{{tab:collapse}}
 \\small
 \\begin{{tabular}}{{@{{}}lccc@{{}}}}
@@ -360,7 +380,7 @@ actor & collapse & duplication & no division \\\\
 \\end{{tabular}}
 
 \\vspace{{2pt}}
-\\footnotesize\\emph{{Sensitivity.}} The role-free rate is stable across three
+\\footnotesize\\emph{{Sensitivity.}} The role-free rate without feedback is stable across three
 answer-marker definitions (${b_lo:.3f}$--${b_hi:.3f}$, every actor);
 \\textbf{{the role-structured rate is not}} (${a_lo:.3f}$--${a_hi:.3f}$), so
 read that column as ``low,'' not a point estimate. The ordering holds in all

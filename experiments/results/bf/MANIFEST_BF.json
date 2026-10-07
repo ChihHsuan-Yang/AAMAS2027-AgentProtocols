@@ -69,6 +69,56 @@
    "last_ended": "2026-10-06T11:39:48.765979+00:00",
    "code_commit": "0450ac0 (control-rolefree-feedback)",
    "note": "Arm A re-run on 400 frozen problems: endpoint-drift check only, never pooled into any cell"
+  },
+  "bf_omnimath_llama33.jsonl": {
+   "sha256": "42425019a7b44b9acb58dccb8788772e27047c5dbdc625a67f92880aad56de3d",
+   "rows": 400,
+   "bytes": 20289437,
+   "cells": {
+    "Llama-3.3-70B-Instruct|Bf": 400
+   },
+   "config_versions": {
+    "25a04a554afcd006": 400
+   },
+   "run_ids": {
+    "bf-llama33-n400": 400
+   },
+   "stopping_conditions": {
+    "max_rounds_exhausted_after_fail": 205,
+    "reviewer_agree_then_evaluator_pass": 161,
+    "max_rounds_exhausted": 25,
+    "max_rounds_then_evaluator_pass": 5,
+    "runtime_error": 4
+   },
+   "first_started": "2026-10-06T21:05:28.133989+00:00",
+   "last_ended": "2026-10-07T00:58:31.536898+00:00",
+   "code_commit": "4e50b4c (control-rolefree-feedback)",
+   "note": "Arm Bf, Llama-3.3-70B-Instruct, Omni-MATH n=400 (frozen Llama cells are n=400). 4 problems ended in runtime_error after 3 attempts and count incorrect under the pre-fixed rule (D23)."
+  },
+  "bf_omnimath_gptoss.jsonl": {
+   "sha256": "3dbfc93ab919d7c320f00f3c772568e5225d681d49e2863b786008b72fbd828e",
+   "rows": 1600,
+   "bytes": 23796445,
+   "cells": {
+    "gpt-oss-120b|Bf": 1600
+   },
+   "config_versions": {
+    "25a04a554afcd006": 1600
+   },
+   "run_ids": {
+    "bf-gptoss-n1600": 1600
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 1430,
+    "max_rounds_exhausted_after_fail": 164,
+    "max_rounds_exhausted": 4,
+    "no_answer_produced": 1,
+    "max_rounds_then_evaluator_pass": 1
+   },
+   "first_started": "2026-10-06T21:05:24.700627+00:00",
+   "last_ended": "2026-10-07T02:32:27.524584+00:00",
+   "code_commit": "4e50b4c (control-rolefree-feedback)",
+   "note": "Arm Bf, gpt-oss-120b, Omni-MATH n=1600."
   }
  },
  "excluded": {

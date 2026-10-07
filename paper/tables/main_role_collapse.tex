@@ -4,6 +4,7 @@
 % GENERATED FILE -- do not edit by hand. Any edit is overwritten.
 % generating script : analysis/scripts/mk_tables.py
 % canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  sections T1, T18, T20, T23
+%                    analysis/out/FIGDATA_BF.json  (role-free with feedback: collapse only)
 % frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
 %                     11600 trajectories
 %                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
@@ -32,7 +33,8 @@ Byte duplication has precision $1.000$ but recall $0.262$, so it never
 carries this result alone. The adjudication is outcome-blind but
 \textbf{not} condition-blind and is a second opinion, not ground truth.
 Collapse is not applicable to the structurally enforced conditions, whose
-schema forbids an answer field.}
+schema forbids an answer field. The role-free condition with feedback uses
+the role-free prompts unchanged; only its collapse was measured.}
 \label{tab:collapse}
 \small
 \begin{tabular}{@{}lccc@{}}
@@ -45,10 +47,15 @@ actor & collapse & duplication & no division \\
 \quad gpt-oss-120b & $0.120$ & $0.000$ & $0.000$ \\
 \quad Llama-3.3-70B & $0.000$ & $0.000$ & $0.000$ \\
 \addlinespace
-\multicolumn{4}{@{}l}{\emph{role-free}} \\
+\multicolumn{4}{@{}l}{\emph{role-free, without feedback}} \\
 \quad gemma-4-31B & $\mathbf{0.976}$ & $0.000$ & $\mathbf{0.857}$ \\
 \quad gpt-oss-120b & $\mathbf{0.846}$ & $0.680^{\dagger}$ & $\mathbf{1.000}$ \\
 \quad Llama-3.3-70B & $\mathbf{0.872}$ & $0.008$ & $\mathbf{1.000}$ \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{role-free, with feedback}} \\
+\quad gemma-4-31B & $\mathbf{0.974}$ & -- & -- \\
+\quad gpt-oss-120b & $\mathbf{0.883}$ & -- & -- \\
+\quad Llama-3.3-70B & $\mathbf{0.900}$ & -- & -- \\
 \addlinespace
 \multicolumn{4}{@{}l}{\emph{structurally enforced}} \\
 \quad all actors & n/a & $\leq 0.003$ & $0.067$--$0.286$ \\
@@ -56,7 +63,7 @@ actor & collapse & duplication & no division \\
 \end{tabular}
 
 \vspace{2pt}
-\footnotesize\emph{Sensitivity.} The role-free rate is stable across three
+\footnotesize\emph{Sensitivity.} The role-free rate without feedback is stable across three
 answer-marker definitions ($0.846$--$0.999$, every actor);
 \textbf{the role-structured rate is not} ($0.000$--$0.892$), so
 read that column as ``low,'' not a point estimate. The ordering holds in all

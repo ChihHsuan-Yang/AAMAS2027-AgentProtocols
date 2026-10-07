@@ -126,7 +126,9 @@ history, so from inside the transcript nothing has happened, and sending
 the answer back is a reasonable move.
 
 \paragraph{The same team, told.} Given the evaluator's verdict and hint,
-the identical role-free prompts produce a different team. The answer moves
+the identical role-free prompts produce a different team, though not a
+differentiated one: all three agents still assert their own answer on
+$0.974$ of first passes (Table~\ref{tab:collapse}). The answer moves
 (one distinct answer in $6.6\%$ of failed trajectories), the Reviewer
 sometimes declines (never, in $57.4\%$), and recovery rises from
 $16/316=0.051$ to $193/317=0.609$. On the $265$ problems both role-free
@@ -179,20 +181,21 @@ feedback, the role-free team still recovers $0.438$ against $0.206$. Across
 the conditions that receive feedback, recovery rises with submissions ---
 $0.222$ at $1.54$, $0.314$ at $2.06$ under enforcement, $0.609$ at $3.20$.
 
-\paragraph{Scope across actors.} \textbf{[TBD after the gpt-oss and
-Llama-3.3 runs.]} Without feedback, the role-structured advantage is
-clean for gemma-4, directional for gpt-oss ($0.324$ against $0.247$, paired
-$p=0.208$) and absent for Llama-3.3 ($0.014$ against $0.015$).
-
-\paragraph{Is the role-free team just a single agent?}
-\label{subsec:notsingle}
-A budget-matched single-agent comparator from a previously released corpus
-cuts both ways: a role-free gpt-oss team beats its own single agent
-($+0.0294$) while gemma-4's role-structured team and its role-free team
-without feedback are worse than theirs ($-0.0225$, $-0.0563$), so neither ``multi-agent systems
-are just single agents'' nor ``more agents help'' survives. Its two actor
-arms were produced in separate runs, so each direction is a sound guard and
-the gap between actors is not (supplement).
+\paragraph{Scope across actors.} Without feedback, the role-structured
+advantage is clean for gemma-4, directional for gpt-oss ($0.324$ against
+$0.247$, paired $p=0.208$) and absent for Llama-3.3 ($0.014$ against
+$0.015$). With feedback, both repeat gemma-4's ordering, and in both the
+feedback leaves first-pass accuracy where it was ($0.765$ and $0.317$,
+against $0.762$ and $0.315$ without it). gpt-oss recovers $0.552$ against
+$0.324$ with roles (on the $319$ problems both teams first answer wrongly,
+$101$ are recovered only without roles and $17$ only with them,
+$p=1\times10^{-15}$) and reaches $0.894$ final accuracy against $0.803$
+($170$ against $24$ problems, $p=3\times10^{-28}$). Llama-3.3 recovers
+$0.147$ against $0.014$ ($26$ against $1$ of $250$, $p=4\times10^{-7}$) and
+reaches $0.415$ against $0.315$ ($50$ against $10$, $p=1.6\times10^{-7}$);
+its role-structured team reaches a second verdict in only $10$ of $276$
+failed trajectories, and there enforcement recovers about as much as the
+role-free team with feedback ($0.139$, paired $p=0.17$).
 
 \subsection{R4. The same ordering in a second domain}
 \label{subsec:xdomain}

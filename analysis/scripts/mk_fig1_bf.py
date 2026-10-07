@@ -64,6 +64,8 @@ def cell(dom, actor, arm):
     from FIGDATA_BF.json. None if the cell has not been run."""
     if dom == "omni" and arm in ("A", "B", "C"):
         return D["cells"].get(f"{actor}|{arm}")
+    if arm == "Bf" and DB.get("status", {}).get(f"{dom}|{actor}") != "complete":
+        return None          # a run still in progress is drawn as pending, never as a bar
     return DB["cells"].get(f"{dom}|{actor}|{arm}")
 
 
