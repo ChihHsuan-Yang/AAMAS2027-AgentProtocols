@@ -4,10 +4,9 @@
 \paragraph{Task and problems.} Omni-MATH competition
 mathematics~\cite{gao2025omnimath}, sampled by a deterministic seeded
 manifest so every prefix of the run is a valid random sample; all
-conditions run the same problems, so every comparison is paired. An earlier
-candidate, a multiple-choice biology benchmark, was rejected before launch
-because on a four-option item ``produce a different candidate'' succeeds one
-time in three by chance, confounding the mechanism we measure with guessing.
+conditions run the same problems, so every comparison is paired. A multiple-choice
+benchmark was ruled out before launch: on a four-option item ``produce a
+different candidate'' succeeds one time in three by chance.
 
 \paragraph{Actors and scale.} Three actor models served from one pinned
 vLLM endpoint~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
@@ -17,8 +16,7 @@ trajectories over 83{,}320 role messages and 17{,}486 gradings, on
 $1{,}600$ problems sampled uniformly at random from the $4{,}181$
 available. The three main conditions run $n=1{,}600$ per cell for gemma-4
 and gpt-oss and $n=400$ for Llama-3.3; the context-restored control covers
-gemma-4 and gpt-oss at $n=400$ each. Every trajectory carries the same
-budget record. The evaluator is gpt-oss-120b in every cell, itself one of
+gemma-4 and gpt-oss at $n=400$ each. The evaluator is gpt-oss-120b in every cell, itself one of
 the actors under study (\S\ref{sec:limitations}). The single-agent
 comparator is \emph{not} part of this campaign: it is a previously released
 trace corpus of the same benchmark joined by problem identifier. Simulated

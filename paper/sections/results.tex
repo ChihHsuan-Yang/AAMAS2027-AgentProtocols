@@ -13,16 +13,16 @@ answer}
 
 Besides deleting the role clauses, the role-free prompt asks every agent
 for its current best answer; agents, order, budget and evaluator are
-unchanged. We ask whether \emph{every} agent asserts its own final answer
-on the first pass, so the measure is not length-confounded
-(Table~\ref{tab:collapse}): it rises from $0.000$--$0.120$ to
+unchanged. We measure whether \emph{every} agent asserts its own final
+answer on the first pass, where trajectory length cannot confound it
+(Table~\ref{tab:collapse}): the rate rises from $0.000$--$0.120$ to
 $0.846$--$0.976$. \textbf{Decomposed by role, the planner supplies most of
 the change}: the executor answers in both conditions and the reviewer,
 already high for two actors, rises in all three, but the planner moves
 $0.000$/$0.183$/$0.000$ to $0.979$/$0.898$/$0.889$ (gemma-4 / gpt-oss /
 Llama-3.3). Since the footer asks for an answer, this
 measures what a Planner does once its \textsc{must not} is gone, not an
-emergent tendency --- a claim about the \emph{change}, not the level.
+emergent tendency: the claim is about the \emph{change}, not the level.
 
 \input{tables/main_role_collapse}
 
@@ -94,9 +94,9 @@ runs out.
 \input{tables/main_results}
 
 \paragraph{Recovery and final accuracy.} The role-structured team receives
-the evaluator's feedback, so the like-for-like comparison is with the role-free
-team that receives it too (Table~\ref{tab:main}). \textbf{That team
-recovers more, not less}: $0.609$ against $0.222$ (marginal,
+the evaluator's feedback, so the like-for-like comparison is with the
+role-free team that receives it too (Table~\ref{tab:main}). \textbf{That
+team recovers more, not less}: $0.609$ against $0.222$ (marginal,
 Figure~\ref{fig:dissociation}B), and on the $236$ problems both first
 answer wrongly, $89$ are recovered only without roles and $4$ only with them
 ($p=6.2\times10^{-22}$). Both reach the same first-pass rate and a correct
@@ -153,10 +153,9 @@ $139$ are recovered only with the feedback and $2$ only without
 Of the $16$ recoveries without feedback, $7$ are the same answer graded
 again. \textbf{Revision needs the feedback, not the roles.}
 
-\paragraph{Matched on verdicts, the gap closes.} The
-role-free team with feedback also receives more of it: each submission
-returns a verdict and, on a FAIL, a hint written with the gold answer in
-view. To compare the two teams at equal exposure (a post-hoc analysis), we take the problems both
+\paragraph{Matched on verdicts, the gap closes.} The role-free team with
+feedback also receives more of it: each submission returns a verdict and,
+on a FAIL, a hint written with the gold answer in view. To compare the two teams at equal exposure (a post-hoc analysis), we take the problems both
 first answer wrongly and cut each role-free trajectory off after as many
 verdicts as the role-structured team received on the same problem. No cell
 shows a significant difference (Table~\ref{tab:main}): $0.165$
@@ -176,11 +175,11 @@ we repeat it against the role-structured re-run made after it: on the $65$
 problems both first answer wrongly, recovery is $3$ against $22$ in favor
 of the role-free team unmatched ($p=1.6\times10^{-4}$) and $4$ against $1$
 verdict-matched ($p=0.38$). No variant puts the role-free team significantly
-ahead verdict for verdict, and any advantage of roles is small; the role-free team
-recovers more because it asks for more verdicts.
+ahead verdict for verdict, and any advantage of roles is small. The
+role-free team recovers more because it asks for more verdicts.
 
-\paragraph{What roles do instead: a gate on submission.} The reason is the
-role-structured Reviewer. Across gemma-4's failed trajectories that team
+\paragraph{What roles do instead: a gate on submission.} The gap in verdicts
+comes from the role-structured Reviewer. Across gemma-4's failed trajectories that team
 submits $1.27$ times in $5.52$ cycles, against $3.20$ in $3.96$ without
 roles (Figure~\ref{fig:dissociation}C). Of its declining cycles, $53\%$ come
 before the first submission, when no feedback exists, and $84$ of its $316$
@@ -208,7 +207,7 @@ forced team recovers $26$ that the gated one misses and $2$ the other way
 ($p=3.0\times10^{-6}$); against the role-free team the split is $7$ to $7$ ($p=1$).
 With the role contract intact, removing the gate removed the gap: against a
 ground-truth evaluator and six cycles, a withheld submission is a lost
-recovery.
+chance to recover.
 
 \subsection{R4. The same ordering in a second domain}
 \label{subsec:xdomain}

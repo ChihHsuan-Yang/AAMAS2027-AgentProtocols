@@ -1,15 +1,14 @@
 \section{Intervention}
 \label{sec:method}
 
-To ask whether organization is load-bearing we vary it in both directions
-from one baseline: remove it, and enforce it. All conditions share three
-agents, the same interaction order
+We vary organization in both directions from one baseline: we remove it,
+and we enforce it. All conditions share three agents, the same interaction order
 (Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), message-passing
 graph, context visibility (except under enforcement, below), total call
 budget, verifier and verifier prompt, retry budget, decoding parameters
 (temperature $0$, identical \texttt{max\_tokens}), stopping rule (a PASS ends
-the trajectory) and grading; every trajectory in the frozen snapshot carries
-the identical budget record --- a test of organization, not of scale.
+the trajectory) and grading. Every trajectory in the frozen snapshot carries
+the identical budget record: the design tests organization, not scale.
 \textbf{Besides the roles, three things differ.} After a FAIL the evaluator returns a repair hint, written
 with the gold answer in view and instructed not to reveal it; the
 role-structured and enforced templates show it to all three agents in the
@@ -41,9 +40,9 @@ this template carries the evaluator's verdict or hint.
 byte, plus the evaluator's verdict and repair hint --- the string the
 role-structured team receives --- shown to all three agents as an
 \texttt{[Evaluator]} entry after the shared history in the cycle after a
-FAIL, the lifetime the advice slot has. It differs from the role-free
-condition only in feedback, and from the role-structured one in roles, in
-the Reviewer's clauses and in how the feedback is framed.
+FAIL, the lifetime the advice slot has. It differs from the feedback-withheld
+one only in feedback, and from the role-structured one in roles, in the
+Reviewer's clauses and in feedback framing.
 
 \paragraph{Structurally enforced.} Specialization is enforced by the
 interface rather than by wording. The Planner emits JSON against

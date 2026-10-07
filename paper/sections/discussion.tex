@@ -5,12 +5,12 @@
 \emph{generation} problem: three agents reaching the same place by three
 routes cost nothing but tokens, and first-pass accuracy is nearly
 indifferent to the division of labor. After a failure the team must produce
-something unlike an incumbent candidate, and, gpt-oss aside, it rarely
-does so unless it knows the candidate failed. Given that knowledge, the role contract adds
-little capacity to revise: verdict for verdict, the role-free team is no
-better. What the contract decides is when the team asks: the
-role-structured Reviewer withholds approval until it is satisfied, so the
-team draws fewer verdicts, and sometimes no feedback at all; overriding
+something unlike the incumbent candidate, and, gpt-oss aside, it rarely
+does so unless it knows the candidate failed. Given that knowledge, the
+role contract adds little capacity to revise: verdict for verdict, the
+role-free team is no better. What the contract decides is \emph{when} the
+team asks: the role-structured Reviewer withholds approval until it is
+satisfied, so the team draws fewer verdicts, sometimes none. Overriding
 the Reviewer closed the gap for gemma-4. Under a ground-truth
 evaluator and a fixed cycle budget, fewer verdicts mean fewer recoveries.
 Where verification is costly, noisy or unavailable, the usual case outside
@@ -20,11 +20,11 @@ in the deontic part of the role contract --- when the Reviewer may approve
 --- and deleting the roles deleted it together with the functional
 assignment.
 
-\paragraph{What a builder can take from this.} Two things. With a
-cheap, reliable verifier, a Reviewer role that withholds submission costs
-recovery; let the team submit, or gate on the verifier rather than on the
-critic. And whatever the roles, route
-the verifier's feedback to every agent that can act on it: in our pipeline
+\paragraph{What a builder can take from this.} Two things. With a cheap,
+reliable verifier, a Reviewer role that withholds submission costs
+recovery: let the team submit, or gate on the verifier rather than on the
+critic. And whatever the roles, route the verifier's feedback to every
+agent that can act on it: in our pipeline
 the gemma-4 and Llama-3.3 teams without that slot almost never recovered,
 and the same prompts with it recovered most.
 
@@ -37,8 +37,7 @@ reports its absence. A role ablation therefore needs an
 information audit beside the budget audit --- for each agent and
 condition, the set of runtime inputs its template actually consumes --- and
 a contrast is matched only where those sets agree. Ours differ in one
-input, the feedback, which is why the role-free condition is reported both
-without and with it.
+input: the feedback.
 
 \paragraph{What a role diagram is evidence of.} Precise reviewing need
 not mean critique is taken up~\cite{yang2026precise}, and a clean division
@@ -50,6 +49,6 @@ aggregate score averages a stage where the organization is idle with one
 where it does all its work. Our gemma-4 team lost its division of labor and
 moved final accuracy by $-0.034$ with the feedback withheld and $+0.075$
 with it, both almost entirely after a first answer had failed. Two cheap
-additions would have exposed this: report performance \emph{conditioned on
+additions expose this: report performance \emph{conditioned on
 the first attempt having failed}, and \emph{measure} the realized organization rather
 than assume the specified one.

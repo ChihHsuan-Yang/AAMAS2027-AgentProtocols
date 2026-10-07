@@ -10,9 +10,9 @@ explicit social contract~\cite{dignum2004opera}, and electronic
 institutions bind norms through middleware outside the
 agents~\cite{esteva2001formal}, which can regiment a norm (make violation
 impossible) or enforce it (sanction violation)~\cite{grossi2007ubilex}. An
-LLM role prompt is the degenerate case: functional and deontic clauses in
-prose, with no middleware to make them bind and no record of whether they
-did. In these terms our role-free condition keeps the structure --- order,
+LLM role prompt is the degenerate case: functional and deontic clauses
+written in prose, with no middleware to make them bind and no record of
+whether they did. In these terms our role-free condition keeps the structure --- order,
 graph, a positional approver --- and deletes the functional and deontic
 specifications together; our enforced condition regiments the functional
 part at the interface. ``Adaptability'' here means revising an answer
@@ -66,10 +66,9 @@ et al.~\cite{chen2026relabeling}, who hold an erroneous claim
 byte-identical and vary only the \emph{role label} it carries, moving
 explicit-correction rate by $23$--$93$ percentage points --- strong evidence
 that a role label is causal for error correction, but single-agent and
-without budget matching. What we add is the multi-agent case: a role-free
-team largely repeats itself when the verdict does not reach it and revises
-when it does --- the repetition follows the information, not the
-organization.
+without budget matching. We add the multi-agent case: a role-free team largely
+repeats itself when the verdict does not reach it and revises when it does.
+The repetition follows the information, not the organization.
 
 \paragraph{Coordination versus capability.}
 Canedo~\cite{canedo2026architecture} frames structured specification as a
@@ -79,13 +78,6 @@ Dochkina~\cite{dochkina2026drop} the complementary case. Our enforced
 condition reproduces that direction \emph{only under a scoring rule that
 drops $8$--$17\%$ of trajectories}; under our pre-registered rule it
 reverses for gemma-4 and vanishes for the others (\S\ref{subsec:enforce}).
-
-\paragraph{What is open.} These literatures establish that roles are often
-not obeyed, that deleting them leaves first-pass accuracy intact, that
-models fail to revise under external feedback, and that structure tends to
-help weaker models --- each about a \emph{different stage of the work}, and
-the failure to revise almost always measured single-agent, where there is
-no organization to ablate. No study holds them in one frame.
 
 \paragraph{Prior analyses of a released corpus, and critique uptake.}
 Three studies analyze a publicly released multi-agent trace corpus on this
@@ -101,3 +93,10 @@ conditions: with the corrective signal held fixed, does the role structure
 itself make a team more adaptive? \textbf{None of these studies manipulates
 the role structure}, measures whether the specified division of labor is
 realized, or matches feedback access across conditions.
+
+\paragraph{What is open.} These literatures establish that roles are often
+not obeyed, that deleting them leaves first-pass accuracy intact, that
+models fail to revise under external feedback, and that structure tends to
+help weaker models. Each concerns a \emph{different stage of the work}, and
+the failure to revise is almost always measured in a single agent, where
+there is no organization to ablate. No study holds them in one frame.
