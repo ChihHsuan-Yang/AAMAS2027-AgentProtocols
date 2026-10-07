@@ -46,6 +46,10 @@ BUDGET_CYCLES = 6
 
 def actor(r): return r["actor_model"].split("/")[-1]
 def ev(r): return r.get("evaluator_history") or []
+def nrm(s):
+    if s is None: return None
+    s = re.sub(r"\s+", "", str(s)).strip("$").strip(); return s or None
+GOLD = {}    # problem_uid -> normalized gold answer (filled in main from the problems parquet)
 
 
 def sha256(p):
@@ -95,7 +99,15 @@ def feat(r):
         # no-answer FAIL) that the next cycle receives
         fail_cycle = ag
     left = (BUDGET_CYCLES - (first + 1)) if first is not None else 0
-    return dict(uid=r["problem_uid"], stop=r.get("stopping_condition"), verdicts=verdicts,
+    # scoring defect (FINAL_TABLES T19, bf_numbers): the runner grades the last
+    # SUBMITTED answer but records the last HELD one; 'uc' = held answer equals the
+    # gold string while the trajectory is graded 0 (same rule as bf_numbers.py)
+    g = GOLD.get(r["problem_uid"])
+    held = nrm(r.get("final_answer"))
+    last_sub = nrm((e[-1] or {}).get("candidate")) if e else None
+    uc = bool(held is not None and last_sub is not None and held != last_sub
+              and g is not None and held == g and int(r.get("correct") or 0) == 0)
+    return dict(uid=r["problem_uid"], stop=r.get("stopping_condition"), verdicts=verdicts, uc=uc,
                 approvals=sum(1 for x in rt if x == "agree"),
                 cycles=len(rt), subs=len(verdicts), first=(first + 1) if first is not None else None,
                 left=left, resub=len(verdicts) >= 2, rec=1 in verdicts, c=c)
@@ -185,7 +197,19 @@ def main():
         "AAMAS_FROZEN_DIR", os.path.join(ROOT, "experiments/results/hf_frozen/raw")))
     ap.add_argument("--bf-dir", default=os.path.join(ROOT, "experiments/results/bf"))
     ap.add_argument("--out-dir", default=os.path.join(ROOT, "analysis/out"))
+    ap.add_argument("--parquet", default=os.environ.get(
+        "AAMAS_PROBLEMS_PARQUET",
+        os.path.join(ROOT, "analysis/hf_cache/release/data/problems/part-00000.parquet")))
     a = ap.parse_args()
+    if os.path.exists(a.parquet):
+        try:
+            import pyarrow.parquet as pq
+            t = pq.read_table(a.parquet, columns=["problem_uid", "answer"]).to_pydict()
+        except Exception:
+            import pandas as pd
+            t = pd.read_parquet(a.parquet, columns=["problem_uid", "answer"]).to_dict("list")
+        for u, g in zip(t["problem_uid"], t["answer"]):
+            GOLD[str(u)] = nrm(g)
     out = open(os.path.join(a.out_dir, "BF_GATE_OUTPUT.txt"), "w")
 
     def P(*s):
@@ -407,6 +431,114 @@ def main():
         FIG["verdict_matched_bridge|omni|{}".format(act)] = dict(
             n=len(both), unmatched_a_only=ua, unmatched_bf_only=uf, unmatched_p=mcn(ua, uf),
             a_only=a_only, bf_only=f_only, p=mcn(a_only, f_only), diff=e, ci95=[lo, hi])
+    # ------------------------------------------------------------------ G6
+    P("")
+    P("[G6] VERDICT-MATCHED CONTRAST: ROBUSTNESS (mock review round 3)")
+    P("     forced ties = paired problems where A received one verdict (it never submitted, or submitted")
+    P("     once and stopped): Bf truncated to one verdict cannot recover either, so the pair is 0-0 by")
+    P("     construction. informative = A received >= 2 verdicts. symmetric = both cut at min(verdicts).")
+    P("     recoded = scoring defect recoded: an A trajectory whose held answer equals the gold string")
+    P("     counts as recovered; a Bf one only if it was not truncated (its verdicts <= A's).")
+    P("     diff = A - Bf (positive favours roles); 95% and 90% paired bootstrap (numpy, 20,000 draws,")
+    P("     seeded), pooled stratified by cell; TOST at +-0.05 on the 90% interval. gold strings: {} problems".format(len(GOLD)))
+    import numpy as np
+    def nboot(groups, draws=20000, seed=20261008):
+        rng = np.random.default_rng(seed)
+        N = sum(len(g) for g in groups)
+        if N == 0:
+            return None
+        tot = np.zeros(draws)
+        for g in groups:
+            d = np.array([x - y for x, y in g], dtype=float)
+            if len(d) == 0:
+                continue
+            idx = rng.integers(0, len(d), size=(draws, len(d)))
+            tot += d[idx].sum(axis=1)
+        st = np.sort(tot / N)
+        est = sum(x - y for g in groups for x, y in g) / N
+        q = lambda f: float(st[int(f * (draws - 1))])
+        return est, q(0.025), q(0.975), q(0.05), q(0.95), N
+    VAR = ("main", "informative", "symmetric", "symmetric_informative", "recoded", "recoded_informative")
+    G6 = {v: {} for v in VAR}
+    for dom in ("omni", "scibench"):
+        for act in ACTORS:
+            A = {k: v for k, v in cells.get((dom, act, "A"), {}).items() if k != "_all"}
+            F = {k: v for k, v in cells.get((dom, act, "Bf"), {}).items() if k != "_all"}
+            if not A or not F:
+                continue
+            both = sorted(set(A) & set(F))
+            ties = never = ucA = ucF = 0
+            pv = {v: [] for v in VAR}
+            for u in both:
+                kA, kF = len(A[u]["verdicts"]), len(F[u]["verdicts"])
+                ra = int(1 in A[u]["verdicts"])
+                rf = int(1 in F[u]["verdicts"][:kA])
+                k = min(kA, kF)
+                sa, sf = int(1 in A[u]["verdicts"][:k]), int(1 in F[u]["verdicts"][:k])
+                rra = int(ra or A[u]["uc"])
+                rrf = int(rf or (F[u]["uc"] and kF <= kA))
+                ucA += A[u]["uc"]; ucF += F[u]["uc"]
+                inf = kA >= 2
+                ties += (kA <= 1)
+                never += (A[u]["approvals"] == 0)
+                pv["main"].append((ra, rf)); pv["symmetric"].append((sa, sf)); pv["recoded"].append((rra, rrf))
+                if inf:
+                    pv["informative"].append((ra, rf)); pv["symmetric_informative"].append((sa, sf))
+                    pv["recoded_informative"].append((rra, rrf))
+            key = "{}|{}".format(dom, act)
+            P("  {:<9} {:<23} paired n={:<4} forced ties {:<4} ({:.0%})  of which A never submitted {:<4}"
+              "  informative n={:<4}  held-answer recodes A {} Bf {}".format(
+                  DOMAIN_NAME[dom], act, len(both), ties, ties / len(both), never,
+                  len(pv["informative"]), ucA, ucF))
+            for v in VAR:
+                G6[v][key] = pv[v]
+                r = nboot([pv[v]], seed=20261008 ^ (zlib.crc32((key + v).encode()) & 0xffff))
+                if r is None:
+                    continue
+                e, lo, hi, l9, h9, n = r
+                P("      {:<22} n={:<4} A {:<3} Bf {:<3} diff {:+.3f} [{:+.3f},{:+.3f}]  90% [{:+.3f},{:+.3f}]".format(
+                    v, n, sum(x for x, _ in pv[v]), sum(y for _, y in pv[v]), e, lo, hi, l9, h9))
+                FIG["verdict_robust|{}|{}".format(v, key)] = dict(
+                    n=n, events_A=sum(x for x, _ in pv[v]), events_Bf=sum(y for _, y in pv[v]),
+                    diff=e, ci95=[lo, hi], ci90=[l9, h9])
+            FIG["verdict_robust_ties|{}".format(key)] = dict(n=len(both), forced_ties=ties, never_submitted=never,
+                                                            informative=len(pv["informative"]), recodes_A=ucA, recodes_Bf=ucF)
+    P("  pooled (stratified by cell):")
+    for v in VAR:
+        for label, keys in (("all five cells", list(G6[v])),
+                            ("without Llama-3.3", [k for k in G6[v] if not k.endswith("Llama-3.3-70B-Instruct")])):
+            r = nboot([G6[v][k] for k in keys], seed=20261008 ^ (zlib.crc32((v + label).encode()) & 0xffff))
+            e, lo, hi, l9, h9, n = r
+            eq = (l9 > -0.05) and (h9 < 0.05)
+            P("    {:<22} {:<18} n={:<4} diff {:+.4f} [{:+.4f},{:+.4f}]  90% [{:+.4f},{:+.4f}]  equivalent within +-0.05: {}".format(
+                v, label, n, e, lo, hi, l9, h9, "YES" if eq else "NO"))
+            FIG["verdict_robust_pooled|{}|{}".format(v, "all" if label.startswith("all") else "noLlama")] = dict(
+                n=n, diff=e, ci95=[lo, hi], ci90=[l9, h9], equivalent=eq)
+    # per-verdict hazard: P(verdict k+1 is PASS | verdicts 1..k all FAIL and a (k+1)th verdict exists)
+    P("  per-verdict hazard on the paired problems (both first-pass wrong): PASS at verdict k+1 given")
+    P("  k FAILs and a (k+1)th verdict; A vs Bf, pooled over the five cells and for gemma-4 Omni-MATH")
+    for scope in ("pooled", "omni|gemma-4-31B-it"):
+        for kk in (1, 2, 3, 4, 5):
+            num = {"A": 0, "Bf": 0}; den = {"A": 0, "Bf": 0}
+            for dom in ("omni", "scibench"):
+                for act in ACTORS:
+                    key = "{}|{}".format(dom, act)
+                    if scope != "pooled" and key != scope:
+                        continue
+                    A = {k: v for k, v in cells.get((dom, act, "A"), {}).items() if k != "_all"}
+                    F = {k: v for k, v in cells.get((dom, act, "Bf"), {}).items() if k != "_all"}
+                    for u in set(A) & set(F):
+                        for arm, D in (("A", A), ("Bf", F)):
+                            vv = D[u]["verdicts"]
+                            if len(vv) >= kk + 1 and all(x == 0 for x in vv[:kk]):
+                                den[arm] += 1; num[arm] += vv[kk]
+            if den["A"] == 0 and den["Bf"] == 0:
+                continue
+            P("    {:<22} verdict {}: A {:>3}/{:<4} = {}   Bf {:>3}/{:<4} = {}".format(
+                scope, kk + 1, num["A"], den["A"], "{:.3f}".format(num["A"] / den["A"]) if den["A"] else "-",
+                num["Bf"], den["Bf"], "{:.3f}".format(num["Bf"] / den["Bf"]) if den["Bf"] else "-"))
+            FIG["verdict_hazard|{}|{}".format(scope, kk + 1)] = dict(
+                A=[num["A"], den["A"]], Bf=[num["Bf"], den["Bf"]])
     # ------------------------------------------------------------------ G5
     afs_path = os.environ.get("AAMAS_AFS_FILE") or os.path.join(a.bf_dir, "afs_omnimath_gemma4_n400.jsonl")
     if os.path.exists(afs_path):

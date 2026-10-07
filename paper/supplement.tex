@@ -230,10 +230,35 @@ once. The like-for-like comparison is the
 verdict-matched one in the main paper (Table~2): on the problems both teams
 first answer wrongly, with each role-free trajectory cut off after as many
 verdicts as the role-structured team received on the same problem, no cell
-shows a detectable difference, and the pooled difference is equivalent to
-zero within $\pm0.05$.
+shows a detectable difference. Section~\ref{sec:robust} tests how far that
+comparison can be pushed.
 
 \input{tables/gate_decomposition}
+
+\section{Robustness of the verdict-matched comparison}
+\label{sec:robust}
+
+Matching on verdicts is coarse. When the role-structured team received a
+single verdict --- it never submitted and was graded at the end, or it
+submitted once and stopped --- the role-free trajectory cut to one verdict
+cannot recover either, and the pair ties at zero by construction. These
+forced ties are most of the gemma-4 and nearly all of the Llama-3.3 pairs
+(Table~\ref{tab:robust}), so the pooled interval of the main paper is
+narrower than the information behind it. The cut is also one-sided: the
+role-structured count stops at that team's own passing verdict, which can
+only favor it. Table~\ref{tab:robust} therefore gives five variants: the
+problems with at least two role-structured verdicts; both trajectories cut
+at the smaller count; and the scoring defect recoded, each with and
+without Llama-3.3. No variant puts the role-free team ahead. On the
+informative problems the upper bounds reach $+0.065$ in favor of roles
+($+0.073$ with the recoding), and with the recoding on all problems the role-structured team leads by $+0.029$ with an
+interval that excludes zero. The defensible reading is the one the main
+paper gives: matched on verdicts, the role-free advantage disappears, and
+any per-verdict advantage of roles is small. Verdict matching equalizes
+evaluator exposure, not calls: the role-structured team spends more cycles
+per verdict.
+
+\input{tables/verdict_robustness}
 
 \section{Removing the submission gate}
 \label{sec:forced}

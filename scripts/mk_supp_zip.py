@@ -38,6 +38,7 @@ FILES = [
     "analysis/scripts/bf_numbers.py", "analysis/scripts/bf_gate.py",
     "analysis/scripts/mk_tables.py", "analysis/scripts/mk_table_main.py",
     "analysis/scripts/mk_gate_table.py", "analysis/scripts/mk_afs_table.py",
+    "analysis/scripts/mk_robust_table.py",
     "analysis/scripts/mk_bf_replication.py",
     "analysis/scripts/mk_fig1_bf.py", "analysis/scripts/mk_figstyle.py",
     "analysis/scripts/stat_audit_a7_power.py", "analysis/scripts/xdom_analyze.py",

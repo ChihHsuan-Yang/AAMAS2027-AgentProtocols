@@ -133,6 +133,75 @@ end of the budget of a trajectory that never submitted:
   pooled (5 cells, n=998)  diff +0.0090 [-0.0140,+0.0331]  90% [-0.0110,+0.0291]  equivalent within +-0.05: YES
   same window (re-run of A after the freeze, 65 problems both first-pass wrong of 400 re-run): unmatched A-only 3 Bf-only 22 p=0.00016;  verdict-matched A-only 4 Bf-only 1 p=0.38, diff +0.046 [-0.015,+0.123]
 
+[G6] VERDICT-MATCHED CONTRAST: ROBUSTNESS (mock review round 3)
+     forced ties = paired problems where A received one verdict (it never submitted, or submitted
+     once and stopped): Bf truncated to one verdict cannot recover either, so the pair is 0-0 by
+     construction. informative = A received >= 2 verdicts. symmetric = both cut at min(verdicts).
+     recoded = scoring defect recoded: an A trajectory whose held answer equals the gold string
+     counts as recovered; a Bf one only if it was not truncated (its verdicts <= A's).
+     diff = A - Bf (positive favours roles); 95% and 90% paired bootstrap (numpy, 20,000 draws,
+     seeded), pooled stratified by cell; TOST at +-0.05 on the 90% interval. gold strings: 7467 problems
+  Omni-MATH gemma-4-31B-it          paired n=236  forced ties 141  (60%)  of which A never submitted 66    informative n=95    held-answer recodes A 12 Bf 3
+      main                   n=236  A 39  Bf 36  diff +0.013 [-0.030,+0.055]  90% [-0.021,+0.047]
+      informative            n=95   A 39  Bf 36  diff +0.032 [-0.074,+0.137]  90% [-0.053,+0.116]
+      symmetric              n=236  A 38  Bf 36  diff +0.008 [-0.034,+0.051]  90% [-0.025,+0.042]
+      symmetric_informative  n=95   A 38  Bf 36  diff +0.021 [-0.084,+0.126]  90% [-0.063,+0.105]
+      recoded                n=236  A 51  Bf 36  diff +0.064 [+0.017,+0.114]  90% [+0.021,+0.106]
+      recoded_informative    n=95   A 40  Bf 36  diff +0.042 [-0.063,+0.137]  90% [-0.042,+0.126]
+  Omni-MATH gpt-oss-120b            paired n=319  forced ties 84   (26%)  of which A never submitted 36    informative n=235   held-answer recodes A 4 Bf 0
+      main                   n=319  A 73  Bf 69  diff +0.013 [-0.041,+0.066]  90% [-0.031,+0.056]
+      informative            n=235  A 73  Bf 69  diff +0.017 [-0.051,+0.085]  90% [-0.043,+0.077]
+      symmetric              n=319  A 62  Bf 69  diff -0.022 [-0.075,+0.031]  90% [-0.069,+0.022]
+      symmetric_informative  n=235  A 62  Bf 69  diff -0.030 [-0.106,+0.043]  90% [-0.094,+0.034]
+      recoded                n=319  A 77  Bf 69  diff +0.025 [-0.028,+0.078]  90% [-0.019,+0.069]
+      recoded_informative    n=235  A 74  Bf 69  diff +0.021 [-0.047,+0.094]  90% [-0.038,+0.081]
+  Omni-MATH Llama-3.3-70B-Instruct  paired n=250  forced ties 242  (97%)  of which A never submitted 187   informative n=8     held-answer recodes A 2 Bf 1
+      main                   n=250  A 3   Bf 2   diff +0.004 [-0.008,+0.020]  90% [-0.008,+0.016]
+      informative            n=8    A 3   Bf 2   diff +0.125 [-0.250,+0.500]  90% [-0.250,+0.500]
+      symmetric              n=250  A 3   Bf 2   diff +0.004 [-0.008,+0.016]  90% [-0.008,+0.016]
+      symmetric_informative  n=8    A 3   Bf 2   diff +0.125 [-0.250,+0.500]  90% [-0.250,+0.500]
+      recoded                n=250  A 5   Bf 2   diff +0.012 [-0.004,+0.032]  90% [+0.000,+0.028]
+      recoded_informative    n=8    A 3   Bf 2   diff +0.125 [-0.250,+0.500]  90% [-0.250,+0.500]
+  SciBench  gemma-4-31B-it          paired n=100  forced ties 29   (29%)  of which A never submitted 2     informative n=71    held-answer recodes A 2 Bf 0
+      main                   n=100  A 23  Bf 19  diff +0.040 [-0.040,+0.120]  90% [-0.030,+0.110]
+      informative            n=71   A 23  Bf 19  diff +0.056 [-0.056,+0.169]  90% [-0.042,+0.155]
+      symmetric              n=100  A 22  Bf 19  diff +0.030 [-0.050,+0.110]  90% [-0.040,+0.100]
+      symmetric_informative  n=71   A 22  Bf 19  diff +0.042 [-0.070,+0.155]  90% [-0.056,+0.141]
+      recoded                n=100  A 25  Bf 19  diff +0.060 [-0.020,+0.140]  90% [-0.010,+0.130]
+      recoded_informative    n=71   A 25  Bf 19  diff +0.085 [-0.028,+0.197]  90% [-0.014,+0.183]
+  SciBench  gpt-oss-120b            paired n=93   forced ties 11   (12%)  of which A never submitted 1     informative n=82    held-answer recodes A 0 Bf 0
+      main                   n=93   A 20  Bf 23  diff -0.032 [-0.129,+0.065]  90% [-0.118,+0.054]
+      informative            n=82   A 20  Bf 23  diff -0.037 [-0.146,+0.085]  90% [-0.134,+0.061]
+      symmetric              n=93   A 19  Bf 23  diff -0.043 [-0.140,+0.065]  90% [-0.129,+0.043]
+      symmetric_informative  n=82   A 19  Bf 23  diff -0.049 [-0.171,+0.061]  90% [-0.146,+0.049]
+      recoded                n=93   A 20  Bf 23  diff -0.032 [-0.129,+0.065]  90% [-0.118,+0.054]
+      recoded_informative    n=82   A 20  Bf 23  diff -0.037 [-0.146,+0.073]  90% [-0.134,+0.061]
+  pooled (stratified by cell):
+    main                   all five cells     n=998  diff +0.0090 [-0.0140,+0.0321]  90% [-0.0100,+0.0281]  equivalent within +-0.05: YES
+    main                   without Llama-3.3  n=748  diff +0.0107 [-0.0201,+0.0428]  90% [-0.0160,+0.0361]  equivalent within +-0.05: YES
+    informative            all five cells     n=491  diff +0.0183 [-0.0285,+0.0652]  90% [-0.0204,+0.0570]  equivalent within +-0.05: NO
+    informative            without Llama-3.3  n=483  diff +0.0166 [-0.0311,+0.0642]  90% [-0.0228,+0.0559]  equivalent within +-0.05: NO
+    symmetric              all five cells     n=998  diff -0.0050 [-0.0291,+0.0190]  90% [-0.0251,+0.0150]  equivalent within +-0.05: YES
+    symmetric              without Llama-3.3  n=748  diff -0.0080 [-0.0401,+0.0241]  90% [-0.0348,+0.0187]  equivalent within +-0.05: YES
+    symmetric_informative  all five cells     n=491  diff -0.0102 [-0.0591,+0.0387]  90% [-0.0509,+0.0305]  equivalent within +-0.05: NO
+    symmetric_informative  without Llama-3.3  n=483  diff -0.0124 [-0.0621,+0.0373]  90% [-0.0538,+0.0290]  equivalent within +-0.05: NO
+    recoded                all five cells     n=998  diff +0.0291 [+0.0040,+0.0541]  90% [+0.0080,+0.0501]  equivalent within +-0.05: NO
+    recoded                without Llama-3.3  n=748  diff +0.0348 [+0.0027,+0.0668]  90% [+0.0080,+0.0615]  equivalent within +-0.05: NO
+    recoded_informative    all five cells     n=491  diff +0.0265 [-0.0204,+0.0733]  90% [-0.0143,+0.0672]  equivalent within +-0.05: NO
+    recoded_informative    without Llama-3.3  n=483  diff +0.0248 [-0.0228,+0.0725]  90% [-0.0145,+0.0642]  equivalent within +-0.05: NO
+  per-verdict hazard on the paired problems (both first-pass wrong): PASS at verdict k+1 given
+  k FAILs and a (k+1)th verdict; A vs Bf, pooled over the five cells and for gemma-4 Omni-MATH
+    pooled                 verdict 2: A 131/491  = 0.267   Bf 212/946  = 0.224
+    pooled                 verdict 3: A  19/228  = 0.083   Bf  89/700  = 0.127
+    pooled                 verdict 4: A   8/76   = 0.105   Bf  39/439  = 0.089
+    pooled                 verdict 5: A   0/5    = 0.000   Bf  30/253  = 0.119
+    pooled                 verdict 6: A   0/1    = 0.000   Bf   7/139  = 0.050
+    omni|gemma-4-31B-it    verdict 2: A  36/95   = 0.379   Bf  81/236  = 0.343
+    omni|gemma-4-31B-it    verdict 3: A   2/27   = 0.074   Bf  28/155  = 0.181
+    omni|gemma-4-31B-it    verdict 4: A   1/5    = 0.200   Bf   6/103  = 0.058
+    omni|gemma-4-31B-it    verdict 5: A   0/1    = 0.000   Bf   7/58   = 0.121
+    omni|gemma-4-31B-it    verdict 6: A   0/0    = -   Bf   2/24   = 0.083
+
 [G5] FORCED SUBMISSION (arm Afs: role-structured prompts, the pipeline submits every cycle)
      gemma-4, Omni-MATH, the 400 problems of the bridge re-run; Afs file afs_omnimath_gemma4_n400.jsonl sha256 47bed257b8783f9d
   Afs (forced submission)            n=400  infra 0   first pass 0.767  recovery  57/93  = 0.613  final 0.910  approvals 0.98  verdicts 4.20  never submits 35

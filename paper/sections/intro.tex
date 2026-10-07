@@ -41,7 +41,7 @@ $0.222$ of gemma-4's failures, a role-free team $0.051$. But the
 role-structured templates carry the evaluator's verdict and repair hint to
 every agent, and the role-free template has no slot for it. Given the same
 feedback string --- an exploratory condition we added after the snapshot was
-frozen, running its gemma-4 cells twice --- the role-free team recovers
+frozen --- the role-free team recovers
 more: on the $236$ problems both first answer wrongly it recovers $89$ the
 role-structured team misses, against $4$ the other way (exact McNemar
 $p=6.2\times10^{-22}$), and its final accuracy is higher in every actor and
@@ -54,8 +54,8 @@ actually receives, the difference vanishes: crediting the role-free team
 with only as many evaluator verdicts as the role-structured team received on
 the same problem, recovery differs by $+0.009$ pooled ($95\%$ CI $-0.014$ to
 $+0.033$), and a role-structured re-run made after the freeze shows no
-significant difference either. Roles add no measurable capacity to use feedback; they change
-how often a team asks for it. The
+significant difference either. Per verdict, roles add little; what they
+mainly change is how often a team asks for feedback. The
 role-structured Reviewer withholds approval before any feedback exists ---
 $84$ of gemma-4's $316$ failed trajectories never submit within the six-cycle
 budget --- and, on Omni-MATH, mostly in cycles where no clause forbids
@@ -72,8 +72,8 @@ of enforced trajectories never finish.
 budget-matched, two-directional design that applies it per phase; evidence
 from three actors on competition mathematics and two on college science
 that a role ablation which drops the feedback channel can manufacture an
-apparent role effect on repair, and that with feedback matched --- in
-channel and in amount --- roles neither measurably help nor hurt a team's use of it;
+apparent role effect on repair, and that with the feedback string and the
+number of verdicts matched, the role-free advantage disappears;
 an account of what roles do instead --- a gate on submission, measured
 from the logs and tested by removing it; and a measurement point that extends a recent separation of
 reviewer precision from critique uptake~\cite{yang2026precise}: properties

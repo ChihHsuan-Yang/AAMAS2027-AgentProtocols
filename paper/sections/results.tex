@@ -134,7 +134,7 @@ $0.015$). gpt-oss recovers without feedback, consistent with its answer
 moving from cycle to cycle anyway (one distinct answer in $20.8\%$ of its failed
 trajectories, against $84.5\%$ for gemma-4).
 
-\subsection{R3. Matched on verdicts, recovery is equivalent; roles gate
+\subsection{R3. Matched on verdicts, the gap closes; roles gate
 submission}
 \label{subsec:mechanism}
 
@@ -153,27 +153,31 @@ $139$ are recovered only with the feedback and $2$ only without
 Of the $16$ recoveries without feedback, $7$ are the same answer graded
 again. \textbf{Revision needs the feedback, not the roles.}
 
-\paragraph{Matched on verdicts, the two teams recover alike.} The
+\paragraph{Matched on verdicts, the gap closes.} The
 role-free team with feedback also receives more of it: each submission
 returns a verdict and, on a FAIL, a hint written with the gold answer in
 view. To compare the two teams at equal exposure (a post-hoc analysis), we take the problems both
 first answer wrongly and cut each role-free trajectory off after as many
-verdicts as the role-structured team received on the same problem. The
-difference disappears in every cell (Table~\ref{tab:main}): $0.165$
+verdicts as the role-structured team received on the same problem. No cell
+shows a significant difference (Table~\ref{tab:main}): $0.165$
 against $0.153$ for gemma-4 ($p=0.69$), $0.229$ against $0.216$ for gpt-oss
 ($p=0.72$), and $0.230$ against $0.190$ and $0.215$ against $0.247$ on
 SciBench ($p\geq0.48$); Llama-3.3's role-structured team submits so rarely
 that its cell has five events. Pooled and stratified by cell, the
 difference is $+0.009$ in favor of roles ($95\%$ paired bootstrap CI
-$-0.014$ to $+0.033$; $90\%$ CI inside $\pm0.05$, so the two are equivalent
-at that margin), and cutting both trajectories at the smaller of their two
-verdict counts changes no conclusion. The comparison crosses the freeze, so
+$-0.014$ to $+0.033$). The match is coarse: where the role-structured team
+received one verdict the pair ties at zero by construction ($141$ of
+gemma-4's $236$ pairs). Restricted to problems where it received at least
+two, the difference is $+0.018$ ($-0.029$ to $+0.065$); cutting both
+trajectories at the smaller verdict count gives $-0.005$; recoding the
+scoring defect of \S\ref{sec:limitations} gives $+0.029$ ($+0.004$ to
+$+0.054$; supplement). The comparison crosses the freeze, so
 we repeat it against the role-structured re-run made after it: on the $65$
 problems both first answer wrongly, recovery is $3$ against $22$ in favor
 of the role-free team unmatched ($p=1.6\times10^{-4}$) and $4$ against $1$
-verdict-matched ($p=0.38$). Verdict for verdict, a team with roles and one
-without make equivalent use of the feedback; the role-free team recovers more
-because it asks for more verdicts.
+verdict-matched ($p=0.38$). No variant puts the role-free team ahead verdict
+for verdict, and any advantage of roles is small; the role-free team
+recovers more because it asks for more verdicts.
 
 \paragraph{What roles do instead: a gate on submission.} The reason is the
 role-structured Reviewer. Across gemma-4's failed trajectories that team
@@ -191,7 +195,7 @@ trajectory and never submits in $205$ of $276$; on SciBench it covers $40\%$
 and $60\%$ (supplement). The gate looks like precision --- recoveries per
 verdict after the first are higher with roles ($0.41$ against $0.28$ for
 gemma-4) --- but that compares different trajectories; on the same problem
-and the same number of verdicts, the two teams are equivalent.
+and the same number of verdicts, the role-free team is no better.
 
 \paragraph{Removing the gate alone.} The direct test keeps the
 role-structured prompts byte for byte but submits the team's answer in every
