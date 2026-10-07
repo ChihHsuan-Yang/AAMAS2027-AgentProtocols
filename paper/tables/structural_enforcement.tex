@@ -34,11 +34,12 @@
 \centering
 \caption{\textbf{Structural enforcement.} Enforcing the division of labor
 at the interface. \emph{Manipulation check:} the rate at which the planner
-authors an answer, under enforcement and (in parentheses) when roles are
-merely deleted --- enforcement drives it to zero in all three actors, so the
-intervention engaged. \emph{Frozen answer:} the team never changed its
-answer string, among first-pass-wrong trajectories (role-free/role-structured
-in parentheses). \emph{Recovery:} role-structured in parentheses, on the
+authors an answer, over all planner messages, under enforcement and (in
+parentheses) when roles are merely deleted --- enforcement drives it to zero
+in all three actors, so the intervention engaged (the main paper's R5 gives
+the first-pass rate). \emph{Locked answer:} the team never changed its
+answer string, among first-pass-wrong trajectories (role-free, feedback
+withheld / role-structured in parentheses). \emph{Recovery:} role-structured in parentheses, on the
 denominator of Table~\ref{tab:recovery}. \textbf{The two accuracy columns
 are different populations, and the attrition column is why they disagree.}
 The pre-registered rule scores never-graded trajectories incorrect; the
@@ -52,7 +53,7 @@ attrition.}}
 \small
 \begin{tabular}{lccccccc}
 \toprule
- & planner authors & frozen answer & recovery & &
+ & planner authors & locked answer & recovery & &
  \multicolumn{2}{c}{final accuracy, enforced $-$ role-structured} \\
 \cmidrule(lr){6-7}
 actor & answer (role-free) & (r-f./r-s.) & (role-str.) & attrition
@@ -68,8 +69,8 @@ Llama-3.3-70B & $0.000$ (0.958) & $0.072$ (0.806/0.750) & $0.139$ (0.014) & $17.
 \end{tabular}
 
 \vspace{2pt}
-\footnotesize Attrition elsewhere is negligible: $0.0$--$0.7\%$ with roles,
-$0.0$--$2.5\%$ with roles removed. The as-graded column turns every sign
+\footnotesize Attrition elsewhere is negligible: $0.0$--$0.8\%$ with roles,
+$0.0$--$2.5\%$ without. The as-graded column turns every sign
 positive; the pre-registration fixed in advance that unparseable
 trajectories count incorrect, and \textbf{the benefit appears only after
 conditioning on successful parsing.}

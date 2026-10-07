@@ -168,7 +168,7 @@ def panel_C(ax):
         tc = S.INK if (arm in HOLLOW or arm == "C") else S.SURFACE
         ax.text(sub / 2 if rev >= 0.6 else sub * 0.30, yi, f"{sub:.2f}",
                 ha="center", va="center", fontsize=S.FS_ANNOT, color=tc, zorder=6,
-                bbox=(dict(facecolor=S.SURFACE, edgecolor="none", pad=0.4, alpha=0.9)
+                bbox=(dict(facecolor=S.SURFACE, edgecolor="none", pad=1.6, alpha=1.0)
                       if arm == "C" else None))
         if rev >= 0.6:
             ax.text(sub + gap + rev / 2, yi, f"{rev:.2f}", ha="center", va="center",

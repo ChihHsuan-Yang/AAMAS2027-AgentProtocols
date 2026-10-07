@@ -37,6 +37,15 @@ def pv(p):
     return "${:.1f}{{\\times}}10^{{{}}}$".format(m, e)
 
 
+from decimal import Decimal, ROUND_HALF_UP
+
+
+def r(x, q="0.001"):
+    """Round half-up from the shortest decimal repr: 307/400 = 0.7675 -> 0.768
+    (plain '{:.3f}' gives 0.767 for this value and 0.818 for 0.8175)."""
+    return str(Decimal(repr(x)).quantize(Decimal(q), rounding=ROUND_HALF_UP))
+
+
 ns = {G["afs|" + k]["n"] for k, _ in ROWS}
 assert len(ns) == 1, ("the four rows must cover the same problems", ns)
 n = ns.pop()
@@ -45,11 +54,11 @@ for key, label in ROWS:
     d = G["afs|" + key]
     body.append(" & ".join([
         label,
-        "${:.3f}$".format(d["firstpass"]),
-        "${}/{}={:.3f}$".format(d["recovered"], d["n_fpw"], d["recovery"]),
-        "${:.3f}$".format(d["final"]),
-        "${:.2f}$".format(d["verdicts"]),
-        "${:.2f}$".format(d["approvals"]),
+        "${}$".format(r(d["firstpass"])),
+        "${}/{}={}$".format(d["recovered"], d["n_fpw"], r(d["recovery"])),
+        "${}$".format(r(d["final"])),
+        "${}$".format(r(d["verdicts"], "0.01")),
+        "${}$".format(r(d["approvals"], "0.01")),
     ]) + r" \\")
 pair = []
 for key, label in PAIRS:

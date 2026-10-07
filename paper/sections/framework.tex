@@ -15,8 +15,8 @@ guaranteed to match it, and nothing records which clauses were honored.
 \textbf{Definition.} A component of an organization is
 \textbf{load-bearing} if removing or altering it reproducibly degrades
 task performance \emph{under matched call and information budgets}. The
-budget clause is what makes it usable: removing role instructions
-\emph{and} agents, calls or context tests scale, not organization. Because
+budget clause is what makes it usable: removing roles together with
+agents, calls or context tests scale, not organization. Because
 performance itself decomposes --- producing a first answer, repairing a
 wrong one --- the definition is applied \emph{per phase}. The information
 clause covers every channel through which a signal reaches an agent; in a
@@ -53,7 +53,8 @@ the first answer submitted to the evaluator --- for the role-structured team
 possibly after internal revision, never after external feedback; a
 trajectory that never submits is graded once, on its final answer, when the
 budget runs out, and that grade is its first pass. \emph{Recovery} is the
-fraction of trajectories whose first graded answer was wrong that
-nonetheless finish correct. It conditions on a post-treatment variable, so
-recovery contrasts are descriptive; every claim they support is also made
-on the unconditional final-accuracy contrast (\S\ref{subsec:recovery}).
+fraction of trajectories whose first graded answer was wrong (\emph{failed}
+trajectories) that nonetheless finish correct. It conditions on a post-treatment variable, so
+recovery contrasts are descriptive; every claim they support about the
+feedback-matched contrast is also made on the unconditional final-accuracy
+contrast (\S\ref{subsec:recovery}).

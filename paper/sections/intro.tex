@@ -31,9 +31,8 @@ budget and evaluator held fixed --- destroys the division of labor in all
 three actors: on Omni-MATH the rate at which every agent asserts its own
 final answer goes from $0.000$--$0.120$ to $0.846$--$0.976$ (the role-free
 prompt asks each agent for its current answer). First-pass accuracy does not
-fall (it is unchanged for gemma-4 and rises by $0.05$ for gpt-oss), the
-parity prior role ablations
-report~\cite{dylan2026equal,orogat2026architectural}. Read alone, this is
+fall (unchanged for gemma-4, $+0.05$ for gpt-oss), in line with prior role
+ablations~\cite{dylan2026equal,orogat2026architectural}. Read alone, this is
 the familiar negative result: the organization was decorative.
 
 \paragraph{When roles look load-bearing, and why.} After a rejected first
@@ -47,35 +46,34 @@ more: on the $236$ problems both first answer wrongly it recovers $89$ the
 role-structured team misses, against $4$ the other way (exact McNemar
 $p=6.2\times10^{-22}$), and its final accuracy is higher in every actor and
 on $574$ free-response college-science problems. \textbf{Roles appear
-load-bearing for repair exactly when their prompts are the only channel
+load-bearing for repair only when their prompts are the only channel
 carrying the feedback.}
 
 \paragraph{What roles do instead.} Matched on the feedback each team
 actually receives, the difference vanishes: crediting the role-free team
 with only as many evaluator verdicts as the role-structured team received on
 the same problem, recovery differs by $+0.009$ pooled ($95\%$ CI $-0.014$ to
-$+0.033$), and the same holds against a role-structured re-run made after
-the freeze. Roles add no measurable capacity to use feedback; they change
+$+0.033$), and a role-structured re-run made after the freeze shows no
+significant difference either. Roles add no measurable capacity to use feedback; they change
 how often a team asks for it. The
 role-structured Reviewer withholds approval before any feedback exists ---
-$84$ of gemma-4's $316$ failed trajectories never submit within the six
-cycles --- and, on Omni-MATH, mostly in cycles where no clause forbids
+$84$ of gemma-4's $316$ failed trajectories never submit within the six-cycle
+budget --- and, on Omni-MATH, mostly in cycles where no clause forbids
 approval; that team submits $1.27$ times per failed trajectory against
-$3.20$. Overriding the Reviewer in a post-freeze run, with the role
-prompts unchanged, raises gemma-4's recovery from $0.198$ to $0.613$, as high
+$3.20$. Overriding the Reviewer in a post-freeze run on $400$ problems, with the
+role prompts unchanged, raises gemma-4's recovery from $0.198$ (gated re-run) to $0.613$, as high
 as the role-free team's ($0.549$): against a ground-truth evaluator and a capped budget, withheld
 submissions are lost recoveries. Enforcing the division of labor at
-the interface loosens the gate and raises recovery in every actor ---
-resolvably only for Llama-3.3 --- but does not become end-to-end accuracy,
-because enforcing a schema makes the pipeline brittle and $8$--$17\%$ of its
-trajectories never finish.
+the interface loosens the gate and raises recovery in every actor
+(resolvably only for Llama-3.3), but not end-to-end accuracy: $8$--$17\%$
+of enforced trajectories never finish.
 
 \paragraph{Contribution.} An operational definition of load-bearing and a
 budget-matched, two-directional design that applies it per phase; evidence
 from three actors on competition mathematics and two on college science
-that a role ablation which drops the feedback channel manufactures an
+that a role ablation which drops the feedback channel can manufacture an
 apparent role effect on repair, and that with feedback matched --- in
-channel and in amount --- roles neither help nor hurt a team's use of it;
+channel and in amount --- roles neither measurably help nor hurt a team's use of it;
 an account of what roles do instead --- a gate on submission, measured
 from the logs and tested by removing it; and a measurement point that extends a recent separation of
 reviewer precision from critique uptake~\cite{yang2026precise}: properties

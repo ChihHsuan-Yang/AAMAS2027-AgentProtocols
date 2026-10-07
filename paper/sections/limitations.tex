@@ -10,13 +10,13 @@ it most; matched on verdicts, the two teams recover alike
 (\S\ref{subsec:mechanism}).
 
 \paragraph{The feedback-matched condition.} It was added after the
-snapshot was frozen and is not pre-registered; a re-run of gemma-4's
-role-structured condition on $400$ problems shows no endpoint drift, but the
+snapshot was frozen and is outside the pre-registration; a re-run of
+gemma-4's role-structured condition on $400$ problems shows no detectable
+drift in final accuracy, but the
 conditions come from separate runs. It matches the role-structured condition on the feedback
 string, not on its framing: role-structured agents receive it inside
 role-specific instructions, role-free agents as a bare
-\texttt{[Evaluator]} entry. On SciBench it was run for gemma-4 and
-gpt-oss, the two actors with frozen SciBench cells. The forced-submission
+\texttt{[Evaluator]} entry. The forced-submission
 run (\S\ref{subsec:mechanism}) is post-freeze too, covers one actor, one
 domain and one run, and removes the whole gate rather than the one clause
 that forbids approval after a FAIL.
@@ -28,8 +28,8 @@ disagree on $17\%$ of role-structured, $0\%$ of feedback-withheld and $13\%$
 of feedback-matched role-free first-pass-wrong trajectories (gpt-oss
 $16\%$/$7\%$, Llama-3.3 $6\%$/$0.4\%$, role-structured/feedback-withheld).
 Recoding the trajectories whose held answer matched the key but was graded
-wrong ($62$ in the nine frozen Omni-MATH cells, positive control $0$ of
-$10{,}734$; $3$ in gemma-4's feedback-matched run) moves gemma-4's
+wrong ($62$ in the nine main frozen Omni-MATH cells, against $0$ of
+$10{,}734$ whose two answers agree; $3$ in gemma-4's feedback-matched run) moves gemma-4's
 role-structured recovery to $0.275$ and the feedback-matched role-free one
 to $0.618$: the gap narrows from $0.387$ to $0.343$. We keep the scoring
 rule fixed before the data as primary.
@@ -38,8 +38,6 @@ rule fixed before the data as primary.
 one-sided attrition (\S\ref{subsec:enforce}) is why its as-graded gain is
 survivorship and why the context-restored condition is only a
 \emph{partial} control. We test one \PER{} organization, with an evaluator
-that is itself one of the actors under study; the second domain keeps the
-role-free prompt byte-identical but adapts the role-structured and
-\emph{evaluator} prompts, so it replicates the mechanism under a matched
-protocol, not identical text. The functional measure detects that every
+that is itself one of the actors under study, and the second domain adapts
+the role-structured and evaluator prompts (\S\ref{subsec:xdomain}). The functional measure detects that every
 agent asserted an answer, not that their reasoning was the same.

@@ -28,18 +28,19 @@
 % ==========================================================================
 \begin{table}[t]
 \centering
-\caption{\textbf{Against a budget-matched single agent.} Both directions,
-which must be read together. A collapsed gpt-oss team beats its own single
-agent, so three agents emitting one answer is not functionally one agent;
-\textbf{but gemma-4's team is worse than its own single agent in both
-conditions} --- and gemma-4 carries the recovery result.
+\caption{\textbf{Against a single agent under the same call cap.} Both
+directions, which must be read together. A collapsed gpt-oss team beats its
+own single agent, so three agents emitting one answer is not functionally one
+agent; \textbf{but gemma-4's team is worse than its own single agent in both
+conditions}. Role-free here is the feedback-withheld condition.
 \textbf{Provenance: this panel is not from the frozen snapshot}; it comes
 from a previously released trace corpus, joined by problem. \textbf{Its two
 actor arms were produced in separate runs}, so each direction is a
 sound directional guard while \emph{the gap between actors is not} --- no
-statement about relative magnitude across actors is supported here. The
-comparison is conservative on the decisive axis: the single agent draws
-\emph{more} oracle feedback and about half the actor calls.}
+statement about relative magnitude across actors is supported here. Realized
+budgets differ: the single agent makes about half the actor calls, and more
+evaluator calls than the role-structured team but fewer than the role-free
+one.}
 \label{tab:singleagent}
 \small
 \begin{tabular}{@{}lccc@{}}

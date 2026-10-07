@@ -46,8 +46,7 @@ for this project is wrong.
 ```bash
 python3 analysis/scripts/FINAL_TABLES.py > analysis/out/FINAL_TABLES_OUTPUT.txt
 python3 analysis/scripts/mk_tables.py              # -> paper/tables/*.tex
-python3 analysis/scripts/mk_fig1_story.py          # -> figures/ AND paper/figures/
-python3 analysis/scripts/mk_fig2_xdomain.py
+python3 analysis/scripts/mk_fig1_bf.py             # -> figures/ AND paper/figures/
 python3 scripts/mk_artifact_map.py                 # -> docs/PAPER_ARTIFACT_MAP.md
 python3 scripts/mk_trace_availability.py           # -> docs/TRACE_AVAILABILITY.md
 ```
@@ -56,8 +55,7 @@ python3 scripts/mk_trace_availability.py           # -> docs/TRACE_AVAILABILITY.
 |---|---|---|---|---|
 | all numbers | `python3 analysis/scripts/FINAL_TABLES.py` | `experiments/results/FROZEN/` | `analysis/out/FINAL_TABLES_OUTPUT.txt` (~22 s) | re-running is **byte-identical** — RNG seeded `20261008` |
 | all 7 tables | `python3 analysis/scripts/mk_tables.py` | the canonical output above | `paper/tables/*.tex` | `mk_tables.py --check` → exit 0 |
-| Figure 1 | `python3 analysis/scripts/mk_fig1_story.py` | `analysis/out/FIGDATA.json` | `paper/figures/fig1_v1_story.pdf` | hash stable across runs |
-| Figure 2 | `python3 analysis/scripts/mk_fig2_xdomain.py` | same | `paper/figures/fig2_v2_xdomain.pdf` | hash stable across runs |
+| Figure 1 | `python3 analysis/scripts/mk_fig1_bf.py` | `analysis/out/FIGDATA.json`, `FIGDATA_BF.json`, `FIGDATA_GATE.json` | `paper/figures/fig1_v3_story.pdf` | hash stable across runs |
 | both PDFs | `cd paper && for d in main supplement; do pdflatex -interaction=nonstopmode $d; bibtex $d; pdflatex -interaction=nonstopmode $d; pdflatex -interaction=nonstopmode $d; done` | `paper/` | `main.pdf` (9 pp), `supplement.pdf` (11 pp) | see the one-command gate below |
 
 The figure generators copy into `paper/figures/` themselves — LaTeX resolves

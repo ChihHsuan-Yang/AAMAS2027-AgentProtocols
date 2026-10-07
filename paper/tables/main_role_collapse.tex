@@ -56,17 +56,17 @@ actor & collapse & duplication & no division \\
 \quad Llama-3.3-70B & $\mathbf{0.900}$ & -- & -- \\
 \addlinespace
 \multicolumn{4}{@{}l}{\emph{structurally enforced}} \\
-\quad all actors & n/a & $\leq 0.003$ & $0.067$--$0.286$ \\
+\quad all actors & n/a & $\leq 0.001$ & $0.071$--$0.188$ \\
 \bottomrule
 \end{tabular}
 
 \vspace{2pt}
-\footnotesize\emph{Sensitivity.} Across three answer-marker definitions the
-feedback-withheld role-free rate stays at $0.846$--$0.999$ and the
-role-structured rate at $0.000$--$0.238$ under the two answer
-markers; the loosest, which also counts any ``therefore'', ``hence'' or
-``$=$\,number'' --- as in a Planner restating givens --- raises it to
-$0.328$--$0.892$, so read that column as ``low,''
-not a point estimate. The
-ordering holds in all 9 of 9 actor$\times$marker cells. $^{\dagger}$Not interpretable: $80\%$ of this cell's planner messages are under $500$ visible characters (the logging defect, \S\ref{subsec:logging}).
+\footnotesize\emph{Sensitivity.} Under three answer-marker definitions the
+feedback-withheld role-free rate is $0.846$--$0.999$; the
+role-structured rate is $0.000$--$0.238$ under the two stricter
+markers and $0.328$--$0.892$ under the loosest, which
+also counts any ``therefore'', ``hence'' or ``$=$\,number'' (as when a
+Planner restates givens), so read the role-structured level as ``low,'' not
+a point estimate. The ordering holds in all 9 of 9
+actor$\times$marker cells. $^{\dagger}$Not interpretable: $80\%$ of this cell's planner messages are under $500$ visible characters (the logging defect, \S\ref{subsec:logging}).
 \end{table}

@@ -325,10 +325,12 @@ def t_collapse(S, pv) -> str:
             body.append(f"\\quad {ACTOR_LABEL[a]} & $\\mathbf{{{c['collapse']:.3f}}}$ & -- & -- \\\\")
         body.append("\\addlinespace")
 
-    # Enforced conditions: collapse is n/a (their schema has no answer field).
+    # Enforced condition: collapse is n/a (its schema has no answer field).
+    # The row reports the structurally enforced arm only; the context-restored
+    # control (Cp) is a different condition and is not pooled into it.
     dups = [float(need(T18, (a, arm), "T18")[1])
-            for a in ACTORS for arm in ("C", "Cp") if (a, arm) in T18]
-    ajs = [float(v[1]) for (a, arm), v in adj.items() if arm in ("C", "Cp")]
+            for a in ACTORS for arm in ("C",) if (a, arm) in T18]
+    ajs = [float(v[1]) for (a, arm), v in adj.items() if arm == "C"]
     body.append("\\multicolumn{4}{@{}l}{\\emph{structurally enforced}} \\\\")
     body.append(f"\\quad all actors & n/a & $\\leq {max(dups):.3f}$ & "
                 f"${min(ajs):.3f}$--${max(ajs):.3f}$ \\\\")
@@ -343,6 +345,7 @@ def t_collapse(S, pv) -> str:
     # "therefore"/"hence"/"= <digit>" (FINAL_TABLES.py LOOSE), which a Planner
     # restating givens produces.
     a_hi2 = max(float(x) for a in ACTORS for x in need(T20, (a, "A"), "T20")[1:3])
+    a_lo2 = min(float(x) for a in ACTORS for x in need(T20, (a, "A"), "T20")[1:3])
     a_loose = [float(need(T20, (a, "A"), "T20")[3]) for a in ACTORS]
     ncells = sum(1 for a in ACTORS for _ in range(3))
     # Ordering check: role-free exceeds role-structured in every actor x marker cell.
@@ -383,14 +386,14 @@ actor & collapse & duplication & no division \\\\
 \\end{{tabular}}
 
 \\vspace{{2pt}}
-\\footnotesize\\emph{{Sensitivity.}} Across three answer-marker definitions the
-feedback-withheld role-free rate stays at ${b_lo:.3f}$--${b_hi:.3f}$ and the
-role-structured rate at ${a_lo:.3f}$--${a_hi2:.3f}$ under the two answer
-markers; the loosest, which also counts any ``therefore'', ``hence'' or
-``$=$\\,number'' --- as in a Planner restating givens --- raises it to
-${min(a_loose):.3f}$--${max(a_loose):.3f}$, so read that column as ``low,''
-not a point estimate. The
-ordering holds in all {ok} of {ncells} actor$\\times$marker cells.{dagger_note}
+\\footnotesize\\emph{{Sensitivity.}} Under three answer-marker definitions the
+feedback-withheld role-free rate is ${b_lo:.3f}$--${b_hi:.3f}$; the
+role-structured rate is ${a_lo2:.3f}$--${a_hi2:.3f}$ under the two stricter
+markers and ${min(a_loose):.3f}$--${max(a_loose):.3f}$ under the loosest, which
+also counts any ``therefore'', ``hence'' or ``$=$\\,number'' (as when a
+Planner restates givens), so read the role-structured level as ``low,'' not
+a point estimate. The ordering holds in all {ok} of {ncells}
+actor$\\times$marker cells.{dagger_note}
 \\end{{table}}
 """
 
@@ -451,12 +454,12 @@ def t_recovery(S, pv) -> str:
     return pre + f"""\\begin{{table*}}[t]
 \\centering
 \\caption{{\\textbf{{First-pass accuracy and recovery, role-structured versus
-role-free.}} \\textbf{{The two panels have different denominators and must not
-be read across.}} \\emph{{Upper:}} the marginal population --- every
-trajectory in the cell, first pass over those receiving an evaluator verdict,
-recovery over those whose \\emph{{first}} verdict was incorrect
-($n_{{\\mathrm{{fpw}}}}$ in parentheses, computed per condition and therefore
-\\emph{{not}} a shared denominator). \\emph{{Lower:}} the paired population
+role-free (feedback withheld).}} \\textbf{{The two panels have different
+denominators and must not be read across.}} \\emph{{Upper:}} first pass over
+the problems graded under both conditions (paired, as in the main paper's
+first-pass contrast); recovery over each condition's own trajectories whose
+\\emph{{first}} verdict was incorrect ($n_{{\\mathrm{{fpw}}}}$ in parentheses,
+computed per condition and therefore \\emph{{not}} a shared denominator). \\emph{{Lower:}} the paired population
 --- only problems first-pass wrong under \\emph{{both}} conditions, one shared
 denominator $n_{{\\mathrm{{both}}}}$, which is the actual test. The recovery
 denominator counts every trajectory with a recorded incorrect first verdict,
@@ -467,8 +470,8 @@ on discordant pairs.}}
 \\small
 \\begin{{tabular}}{{lcccccc}}
 \\toprule
-\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{Marginal population}} --- each condition on
-its own denominator}} \\\\
+\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{First pass paired; recovery on each condition's
+own denominator}}}} \\\\
 \\midrule
  & \\multicolumn{{3}}{{c}}{{first pass}}
  & \\multicolumn{{3}}{{c}}{{recovery $\\mid$ first verdict wrong}} \\\\
@@ -558,7 +561,7 @@ def t_scibench(pv) -> str:
     return pre + f"""\\begin{{table*}}[t]
 \\centering
 \\caption{{\\textbf{{The dissociation replicates out of domain.}} SciBench,
-the complete $574$-problem matched slice of free-response college science;
+the complete $574$-problem text-only slice of free-response college science;
 two actors, {pv['sci_rows']} trajectories, frozen separately from the
 Omni-MATH snapshot. \\textbf{{The two panels have different populations.}}
 First pass is paired over all $574$ problems; paired recovery is over only
@@ -566,9 +569,10 @@ those first-pass wrong under \\emph{{both}} conditions
 ($n_{{\\mathrm{{both}}}}$), which is why its $n$ is roughly a sixth the size.
 Pre-registered scoring; $p$ is exact McNemar on discordant pairs. gpt-oss's
 recovery cell \\textbf{{cannot resolve its own effect}} at the realized
-$n_{{\\mathrm{{both}}}}$ --- its point estimate is in the same direction and
-nearly the same size as Omni-MATH's, so it is underpowered rather than a
-non-replication. Llama-3.3 was not run in this domain.}}
+$n_{{\\mathrm{{both}}}}$ --- its point estimate is in the same direction as
+Omni-MATH's, so it is underpowered rather than a non-replication. Role-free
+here is the feedback-withheld condition; the feedback-matched contrast is in
+the main paper's Table~2. Llama-3.3 was not run in this domain.}}
 \\label{{tab:scibench}}
 \\small
 \\begin{{tabular}}{{lccccc@{{\\hspace{{1.4em}}}}ccccccc}}
@@ -635,6 +639,17 @@ def t_enforcement(S, pv) -> str:
             f"{m(pp[0])} {{\\footnotesize [{pp[1]}]}} & "
             f"{m(ag[0])} {{\\footnotesize [{ag[1]}]}} \\\\")
 
+    # Attrition of the prose conditions, from T0's census (ungraded / done),
+    # rounded half-up: T7 prints only three decimals.
+    from decimal import Decimal, ROUND_HALF_UP
+    t0 = rowmap(S["T0"], 7)   # planned done graded ungraded hardfail retries evalcalls
+    def _att(arm):
+        v = [100.0 * int(need(t0, (a, arm), "T0")[3]) / int(need(t0, (a, arm), "T0")[1])
+             for a in ACTORS]
+        q = lambda x: str(Decimal(repr(x)).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
+        return f"${q(min(v))}$--${q(max(v))}\\%$"
+    att_a, att_b = _att("A"), _att("B")
+
     pre = header("Table 4 (manuscript) -- structural enforcement", pv,
                  [f"analysis/out/{CANON.name}  sections T1, T2, T7, T11"],
                  ["The manipulation-check column is ANSWER AUTHORSHIP = 1 minus",
@@ -652,11 +667,12 @@ def t_enforcement(S, pv) -> str:
 \\centering
 \\caption{{\\textbf{{Structural enforcement.}} Enforcing the division of labor
 at the interface. \\emph{{Manipulation check:}} the rate at which the planner
-authors an answer, under enforcement and (in parentheses) when roles are
-merely deleted --- enforcement drives it to zero in all three actors, so the
-intervention engaged. \\emph{{Frozen answer:}} the team never changed its
-answer string, among first-pass-wrong trajectories (role-free/role-structured
-in parentheses). \\emph{{Recovery:}} role-structured in parentheses, on the
+authors an answer, over all planner messages, under enforcement and (in
+parentheses) when roles are merely deleted --- enforcement drives it to zero
+in all three actors, so the intervention engaged (the main paper's R5 gives
+the first-pass rate). \\emph{{Locked answer:}} the team never changed its
+answer string, among first-pass-wrong trajectories (role-free, feedback
+withheld / role-structured in parentheses). \\emph{{Recovery:}} role-structured in parentheses, on the
 denominator of Table~\\ref{{tab:recovery}}. \\textbf{{The two accuracy columns
 are different populations, and the attrition column is why they disagree.}}
 The pre-registered rule scores never-graded trajectories incorrect; the
@@ -670,7 +686,7 @@ attrition.}}}}
 \\small
 \\begin{{tabular}}{{lccccccc}}
 \\toprule
- & planner authors & frozen answer & recovery & &
+ & planner authors & locked answer & recovery & &
  \\multicolumn{{2}}{{c}}{{final accuracy, enforced $-$ role-structured}} \\\\
 \\cmidrule(lr){{6-7}}
 actor & answer (role-free) & (r-f./r-s.) & (role-str.) & attrition
@@ -684,8 +700,8 @@ actor & answer (role-free) & (r-f./r-s.) & (role-str.) & attrition
 \\end{{tabular}}
 
 \\vspace{{2pt}}
-\\footnotesize Attrition elsewhere is negligible: $0.0$--$0.7\\%$ with roles,
-$0.0$--$2.5\\%$ with roles removed. The as-graded column turns every sign
+\\footnotesize Attrition elsewhere is negligible: {att_a} with roles,
+{att_b} without. The as-graded column turns every sign
 positive; the pre-registration fixed in advance that unparseable
 trajectories count incorrect, and \\textbf{{the benefit appears only after
 conditioning on successful parsing.}}
@@ -756,18 +772,19 @@ def t_single_agent(S, pv) -> str:
                   "each direction is a sound guard; the GAP BETWEEN ACTORS is not."])
     return pre + f"""\\begin{{table}}[t]
 \\centering
-\\caption{{\\textbf{{Against a budget-matched single agent.}} Both directions,
-which must be read together. A collapsed gpt-oss team beats its own single
-agent, so three agents emitting one answer is not functionally one agent;
-\\textbf{{but gemma-4's team is worse than its own single agent in both
-conditions}} --- and gemma-4 carries the recovery result.
+\\caption{{\\textbf{{Against a single agent under the same call cap.}} Both
+directions, which must be read together. A collapsed gpt-oss team beats its
+own single agent, so three agents emitting one answer is not functionally one
+agent; \\textbf{{but gemma-4's team is worse than its own single agent in both
+conditions}}. Role-free here is the feedback-withheld condition.
 \\textbf{{Provenance: this panel is not from the frozen snapshot}}; it comes
 from a previously released trace corpus, joined by problem. \\textbf{{Its two
 actor arms were produced in separate runs}}, so each direction is a
 sound directional guard while \\emph{{the gap between actors is not}} --- no
-statement about relative magnitude across actors is supported here. The
-comparison is conservative on the decisive axis: the single agent draws
-\\emph{{more}} oracle feedback and about half the actor calls.}}
+statement about relative magnitude across actors is supported here. Realized
+budgets differ: the single agent makes about half the actor calls, and more
+evaluator calls than the role-structured team but fewer than the role-free
+one.}}
 \\label{{tab:singleagent}}
 \\small
 \\begin{{tabular}}{{@{{}}lccc@{{}}}}
@@ -838,11 +855,55 @@ def t_prereg(S, pv) -> str:
                 f"(parsed keys: {sorted(mde)})")
         return hits[0]
 
+    # P3 as pre-registered: exact McNemar on the per-actor enforced-minus-
+    # role-structured contrast (T2, pre-registered scoring), Holm across the
+    # three actors, computed here from T2's p values.
+    mc, scoring, contrast = {}, None, None
+    for line in S["T2"]:
+        if "--- PREREG" in line:
+            scoring = "prereg"
+        elif "--- AS-GRADED" in line:
+            scoring = "asgraded"
+        mm = re.match(r"^\s*([BC])-A:\s*$", line)
+        if mm:
+            contrast = mm.group(1)
+            continue
+        mm = re.match(r"^\s*(\S+)\s+([+-][0-9.]+)\s+\[([^\]]+)\]\s+n=(\d+)\s+"
+                      r"McNemar p=(\S+)\s*(SIG)?\s*$", line)
+        if mm and mm.group(1) in ACTORS and contrast == "C" and scoring == "prereg":
+            mc[mm.group(1)] = mm.group(5)
+    if len(mc) != 3:
+        raise SourceMissing(f"T2: parsed {len(mc)} pre-registered C-A McNemar rows, expected 3")
+
+    def holm_adj(pvals):
+        """Holm step-down adjusted p values, in the input order."""
+        order = sorted(range(len(pvals)), key=lambda i: pvals[i])
+        adj, run = [0.0] * len(pvals), 0.0
+        for rank, i in enumerate(order):
+            run = max(run, min(1.0, (len(pvals) - rank) * pvals[i]))
+            adj[i] = run
+        return adj
+
+    def p2(x):
+        return f"{x:#.2g}" if x >= 0.001 else f"{x:.1e}"   # '#' keeps 0.60, not 0.6
+
+    p3raw = [float(mc[a]) for a in ACTORS]
+    p3adj = holm_adj(p3raw)
     p3 = []
-    for a in ACTORS:
-        g = need(holm, ("P3 C-A", a), "T29 P3")
-        p3.append(f"\\quad {ACTOR_LABEL[a]} & ${g[0]}$ & ${g[1]}$ & "
-                  f"{'reject' if g[2].startswith('REJECT') else 'retain'} \\\\")
+    for a, r, h in zip(ACTORS, p3raw, p3adj):
+        p3.append(f"\\quad {ACTOR_LABEL[a]} & ${p2(r)}$ & ${p2(h)}$ & "
+                  f"{'reject' if h < 0.05 else 'retain'} \\\\")
+    # The pre-registration names Holm across the primary endpoints. Applied
+    # across all six testable contrasts (P3's three, P4's three) it must give
+    # the same verdicts as the within-family correction printed here; the
+    # caption says so only because this check passes.
+    p4raw = [float(v[0]) for (fam, _), v in holm.items() if fam == "P4 DiD"]
+    p4adj_fam = [float(v[1]) for (fam, _), v in holm.items() if fam == "P4 DiD"]
+    all6 = holm_adj(p3raw + p4raw)
+    same = ([x < 0.05 for x in all6[:3]] == [x < 0.05 for x in p3adj]
+            and [x < 0.05 for x in all6[3:]] == [x < 0.05 for x in p4adj_fam])
+    if not same:
+        raise SourceMissing("Holm across all six contrasts changes a verdict: rewrite the caption")
 
     p4 = []
     for (x, y), g in did.items():
@@ -891,14 +952,18 @@ def t_prereg(S, pv) -> str:
 \\centering
 \\caption{{\\textbf{{Every pre-registered endpoint, and what became of it.}}
 Fixed in writing before any intervention data existed. \\textbf{{P4 --- the
-pre-registered primary test --- is null, before and after the pre-registered
-Holm correction}}, and we report it as the failure of the thesis it was
-written to test. P1 failed \\emph{{as written}} and was re-designated rather
+pre-registered primary test --- is null, before and after Holm
+correction}}, and we report that null. P1 failed \\emph{{as written}} and was re-designated rather
 than dropped: the interface forbids the planner emitting an \\emph{{answer}},
 and nothing in it stops the planner \\emph{{computing}} --- a dissociation we
 report as a finding. P2 and P5 are reported as effects and associations and
-carry no $p$-value, so the correctable family is P3's three contrasts and
-P4's three difference-in-differences. \\textbf{{The MDE column is a
+carry no $p$-value, so the testable contrasts are P3's three (exact McNemar,
+as pre-registered) and P4's three difference-in-differences (bootstrap). Holm
+is applied within each family of three; applied across all six, as the
+pre-registration's ``Holm correction across P1--P5'' would read, it changes
+no verdict. P4's intervals and $p$ values come from two separately seeded
+bootstrap runs, so an interval can exclude zero while $p$ is just above
+$0.05$. \\textbf{{The MDE column is a
 detectability scale on a different population from the effect column}} ---
 it is computed on problems shared by both actors, while each
 difference-in-difference uses each actor's own problem set; neither can be
@@ -1215,18 +1280,20 @@ def t_context(S, pv) -> str:
                   "suppressed here rather than being recomputed at low n."])
     return pre + f"""\\begin{{table}}[t]
 \\centering
-\\caption{{\\textbf{{Recovery by pooled accumulated-context quartile}}
-(supplement; the panel behind the context caveat in R2). Denominator is the
-first-pass-wrong population. Context is the total character count of all
+\\caption{{\\textbf{{Recovery by pooled accumulated-context quartile,
+role-structured versus role-free (feedback withheld).}} Denominator is the
+first-pass-wrong population; the difference is role-structured minus
+role-free. Context is the total character count of all
 planner, executor and reviewer messages in the trajectory; quartile cut
 points are computed \\emph{{once per actor over both conditions pooled}}.
 \\textbf{{This is directional only.}} Accumulated context is nearly a
 function of condition --- the role-free team talks less because it stops
 reworking --- so the strata are not balanced and this comparison cannot
-separate context from condition. It is reported because it is the obvious
-competing explanation and because \\textbf{{it does not behave uniformly}}:
+separate context from condition. It is reported because accumulated context
+is a candidate explanation of the role-structured team's advantage over the
+feedback-withheld team, and because \\textbf{{it does not behave uniformly}}:
 the gap survives in the lower quartiles, but in gpt-oss's top quartile the
-ordering reverses.}}
+ordering reverses (as, on a handful of events, in Llama-3.3's third).}}
 \\label{{tab:context}}
 \\small
 \\begin{{tabular}}{{@{{}}lccccc@{{}}}}

@@ -28,18 +28,20 @@
 % ==========================================================================
 \begin{table}[t]
 \centering
-\caption{\textbf{Recovery by pooled accumulated-context quartile}
-(supplement; the panel behind the context caveat in R2). Denominator is the
-first-pass-wrong population. Context is the total character count of all
+\caption{\textbf{Recovery by pooled accumulated-context quartile,
+role-structured versus role-free (feedback withheld).} Denominator is the
+first-pass-wrong population; the difference is role-structured minus
+role-free. Context is the total character count of all
 planner, executor and reviewer messages in the trajectory; quartile cut
 points are computed \emph{once per actor over both conditions pooled}.
 \textbf{This is directional only.} Accumulated context is nearly a
 function of condition --- the role-free team talks less because it stops
 reworking --- so the strata are not balanced and this comparison cannot
-separate context from condition. It is reported because it is the obvious
-competing explanation and because \textbf{it does not behave uniformly}:
+separate context from condition. It is reported because accumulated context
+is a candidate explanation of the role-structured team's advantage over the
+feedback-withheld team, and because \textbf{it does not behave uniformly}:
 the gap survives in the lower quartiles, but in gpt-oss's top quartile the
-ordering reverses.}
+ordering reverses (as, on a handful of events, in Llama-3.3's third).}
 \label{tab:context}
 \small
 \begin{tabular}{@{}lccccc@{}}

@@ -157,8 +157,8 @@ Field-by-field, measured from the rows:
 
 | Item | Scientific role | Canonical output | Status | Full provenance |
 |---|---|---|---|---|
-| Figure 1 | roles do not buy the first answer; the gap opens after failure; same budget, opposite use | `paper/figures/fig1_v1_story.pdf` | **CANONICAL** | [map](docs/PAPER_ARTIFACT_MAP.md) |
-| Figure 2 | the same dissociation in a second domain | `paper/figures/fig2_v2_xdomain.pdf` | **CANONICAL** | [map](docs/PAPER_ARTIFACT_MAP.md) |
+| Figure 1 | roles do not buy the first answer; recovery depends on whether feedback reaches the team; same budget, different allocation | `paper/figures/fig1_v3_story.pdf` | **CANONICAL** | [map](docs/PAPER_ARTIFACT_MAP.md) |
+| (former Figure 2) | the same dissociation in a second domain; superseded, SciBench is now in Figure 1 and Table 2 | `figures/fig2_v2_xdomain.pdf` | not in the paper | [map](docs/PAPER_ARTIFACT_MAP.md) |
 | Table 1 | functional collapse per actor | `paper/tables/main_role_collapse.tex` | **CANONICAL** — main paper | [map](docs/PAPER_ARTIFACT_MAP.md) |
 | 6 further tables | recovery, SciBench, enforcement, single-agent, pre-registered endpoints, context quartiles | `paper/tables/*.tex` | **CANONICAL** — supplement | [map](docs/PAPER_ARTIFACT_MAP.md) |
 

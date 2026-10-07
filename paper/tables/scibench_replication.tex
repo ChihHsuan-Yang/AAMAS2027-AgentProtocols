@@ -32,7 +32,7 @@
 \begin{table*}[t]
 \centering
 \caption{\textbf{The dissociation replicates out of domain.} SciBench,
-the complete $574$-problem matched slice of free-response college science;
+the complete $574$-problem text-only slice of free-response college science;
 two actors, 2296 trajectories, frozen separately from the
 Omni-MATH snapshot. \textbf{The two panels have different populations.}
 First pass is paired over all $574$ problems; paired recovery is over only
@@ -40,9 +40,10 @@ those first-pass wrong under \emph{both} conditions
 ($n_{\mathrm{both}}$), which is why its $n$ is roughly a sixth the size.
 Pre-registered scoring; $p$ is exact McNemar on discordant pairs. gpt-oss's
 recovery cell \textbf{cannot resolve its own effect} at the realized
-$n_{\mathrm{both}}$ --- its point estimate is in the same direction and
-nearly the same size as Omni-MATH's, so it is underpowered rather than a
-non-replication. Llama-3.3 was not run in this domain.}
+$n_{\mathrm{both}}$ --- its point estimate is in the same direction as
+Omni-MATH's, so it is underpowered rather than a non-replication. Role-free
+here is the feedback-withheld condition; the feedback-matched contrast is in
+the main paper's Table~2. Llama-3.3 was not run in this domain.}
 \label{tab:scibench}
 \small
 \begin{tabular}{lccccc@{\hspace{1.4em}}ccccccc}

@@ -5,13 +5,13 @@
 \emph{generation} problem: three agents reaching the same place by three
 routes cost nothing but tokens, and first-pass accuracy is nearly
 indifferent to the division of labor. After a failure the team must produce
-something unlike an incumbent candidate, and it can do so only if it knows
-the candidate failed. Given that knowledge, the role contract neither
-supplies nor removes the capacity to revise: verdict for verdict, the two
+something unlike an incumbent candidate, and, gpt-oss aside, it rarely
+does so unless it knows the candidate failed. Given that knowledge, the role contract neither
+measurably supplies nor removes the capacity to revise: verdict for verdict, the two
 teams recover alike. What the contract decides is when the team asks: the
 role-structured Reviewer withholds approval until it is satisfied, so the
 team draws fewer verdicts, and sometimes no feedback at all; overriding
-the Reviewer closes the gap. Under a ground-truth
+the Reviewer closed the gap for gemma-4. Under a ground-truth
 evaluator and a fixed cycle budget, fewer verdicts mean fewer recoveries.
 Where verification is costly, noisy or unavailable, the usual case outside
 a benchmark, a team that asks less could be the better design; this
@@ -20,11 +20,10 @@ in the deontic part of the role contract --- when the Reviewer may approve
 --- and deleting the roles deleted it together with the functional
 assignment.
 
-\paragraph{What a builder can take from this.} Three things. With a
+\paragraph{What a builder can take from this.} Two things. With a
 cheap, reliable verifier, a Reviewer role that withholds submission costs
 recovery; let the team submit, or gate on the verifier rather than on the
-critic. With a costly or noisy verifier the same gate may pay, and that
-is the experiment this design leaves open. And whatever the roles, route
+critic. And whatever the roles, route
 the verifier's feedback to every agent that can act on it: in our pipeline
 the gemma-4 and Llama-3.3 teams without that slot almost never recovered,
 and the same prompts with it recovered most.
@@ -32,10 +31,9 @@ and the same prompts with it recovered most.
 \paragraph{What a role ablation removes.} In a prompted multi-agent system
 the channels through which agents receive feedback, tool output or a
 verifier's verdict are slots in the same templates that carry the roles.
-Rewriting the templates to remove the roles can remove a channel with
-them, and silently: a runtime input a template does not reference is
-simply not shown, and nothing in the budget record, the call counts or the
-accuracy reports its absence. A role ablation therefore needs an
+Rewriting the templates to remove the roles can silently remove a channel
+with them: nothing in the budget record, the call counts or the accuracy
+reports its absence. A role ablation therefore needs an
 information audit beside the budget audit --- for each agent and
 condition, the set of runtime inputs its template actually consumes --- and
 a contrast is matched only where those sets agree. Ours differ in one
@@ -51,8 +49,7 @@ evaluation most multi-agent systems receive --- cannot test it: an
 aggregate score averages a stage where the organization is idle with one
 where it does all its work. Our gemma-4 team lost its division of labor and
 moved final accuracy by $-0.034$ with the feedback withheld and $+0.075$
-with it, both entirely after a first answer had failed. Two cheap
+with it, both almost entirely after a first answer had failed. Two cheap
 additions would have exposed this: report performance \emph{conditioned on
-the first attempt having failed}, computable from logs any retry-capable
-system already writes, and \emph{measure} the realized organization rather
+the first attempt having failed}, and \emph{measure} the realized organization rather
 than assume the specified one.

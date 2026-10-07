@@ -36,8 +36,8 @@ a value this project reports.
 
 | Figure | Claim it supports | Output | Generator | Intermediate | Frozen data | Unit | Population | Status |
 |---|---|---|---|---|---|---|---|---|
-| **1** (main paper) | Roles do not buy the first answer; the gap opens after failure; both teams spend the same budget differently | `paper/figures/fig1_v1_story.pdf`<br>sha256 `3c91da3e3ab4…` | `analysis/scripts/mk_fig1_story.py` | `analysis/out/FIGDATA.json` | `experiments/results/FROZEN/` | panels A/B: trajectory, per (actor, condition). panel C: deliberation cycle, gemma-4 first-pass-wrong trajectories only | A/B marginal (each condition on its own denominator); the paired form of panel B is in Figure 2 | canonical |
-| **2** (main paper) | The same dissociation in a second, free-response science domain | `paper/figures/fig2_v2_xdomain.pdf`<br>sha256 `4525bb027304…` | `analysis/scripts/mk_fig2_xdomain.py` | `analysis/out/FIGDATA.json` | `experiments/results/FROZEN/` + `…/FROZEN_SCIBENCH/` | trajectory; bottom row counts PROBLEMS first-pass-wrong under both conditions | top row marginal, bottom row paired -- labelled in the figure | canonical |
+| **1** (main paper) | Roles do not buy the first answer; recovery depends on whether the evaluator's feedback reaches the team; the teams spend the six-cycle budget differently | `paper/figures/fig1_v3_story.pdf` | `analysis/scripts/mk_fig1_bf.py` (reads `analysis/out/FIGDATA.json`, `FIGDATA_BF.json`, `FIGDATA_GATE.json`) | | | | | |
+| (former 2) | Superseded: the SciBench cells are now groups in Figure 1 and rows of Table 2 | `figures/fig2_v2_xdomain.pdf` (not in the paper) | `analysis/scripts/mk_fig2_xdomain.py` | | | | | |
 
 **Both figures draw from the same `FIGDATA.json`**, so they cannot disagree about a shared quantity. Figure 1B and Figure 2's Omni-MATH column show the *same cell* in different populations (marginal vs paired); each figure says which. They are different numbers and not a contradiction.
 
@@ -78,8 +78,7 @@ Text hashes, not byte hashes: pdflatex embeds a wall-clock timestamp, so a PDF's
 ```bash
 python3 analysis/scripts/FINAL_TABLES.py > analysis/out/FINAL_TABLES_OUTPUT.txt
 python3 analysis/scripts/mk_tables.py        # -> paper/tables/*.tex
-python3 analysis/scripts/mk_fig1_story.py    # -> figures/ and paper/figures/
-python3 analysis/scripts/mk_fig2_xdomain.py
+python3 analysis/scripts/mk_fig1_bf.py       # -> figures/ and paper/figures/
 python3 scripts/mk_artifact_map.py           # -> this file
 python3 scripts/final_freeze.py              # every gate, both documents
 ```
