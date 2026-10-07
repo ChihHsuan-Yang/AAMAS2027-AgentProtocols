@@ -13,7 +13,7 @@ fails.
 
 ## Title
 
-**From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing**
+**From Feedback to Revision: When Do Multi-Agent Roles Look Load-Bearing?**
 
 Set 2026-10-01 with the narrative rewrite, replacing *When Is Multi-Agent
 Organization Load-Bearing?*. The earlier short form named the question;
@@ -109,7 +109,7 @@ instructions if they exist.
 
 | | |
 |---|---|
-| title | From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing |
+| title | From Feedback to Revision: When Do Multi-Agent Roles Look Load-Bearing? |
 | GitHub HEAD | `57daaaf2c8cd` |
 | Overleaf HEAD | **UNREACHABLE (access blocked)** — git access off, see `HANDOFF_CURRENT.md` |
 | main text sha256 | `3cb9712a40d2176034a309a4…` (640,245 bytes) |

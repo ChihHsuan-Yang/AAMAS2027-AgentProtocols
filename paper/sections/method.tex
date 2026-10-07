@@ -10,14 +10,13 @@ budget, verifier and verifier prompt, retry budget, decoding parameters
 (temperature $0$, identical \texttt{max\_tokens}), stopping rule (a PASS ends
 the trajectory) and grading; every trajectory in the frozen snapshot carries
 the identical budget record --- a test of organization, not of scale.
-\textbf{Besides the roles, two things differ, and we report them rather
-than hide them.} After a FAIL the evaluator returns a repair hint, written
+\textbf{Besides the roles, three things differ.} After a FAIL the evaluator returns a repair hint, written
 with the gold answer in view and instructed not to reveal it; the
 role-structured and enforced templates show it to all three agents in the
 next cycle, each through its role's advice slot. The role-free template has
 no such slot, so the role-free condition is reported both without and with
-the feedback. And the role-structured Reviewer carries one clause the
-role-free prompt lacks (below).
+the feedback. The role-free footer asks every agent for an answer, and the
+role-structured Reviewer carries two clauses the role-free prompt lacks (below).
 
 \paragraph{Role-structured \PER{} (baseline).} Role prompts as ordinarily
 written: the organization as specified, including a Reviewer told to
@@ -85,8 +84,8 @@ the same problems, so every test is paired with bootstrap clustering by
 problem. \textbf{The pre-registered primary endpoint is null}: no pairwise
 difference-in-differences of P4 --- whether enforcement's effect on accuracy
 differs by actor --- survives Holm (smallest adjusted $p=0.17$;
-before correction the Llama-3.3$-$gemma-4 interval narrowly excludes zero,
-$+0.040$ $[+0.001,+0.080]$), and only the gpt-oss$-$gemma-4 contrast was
+before correction the Llama-3.3$-$gemma-4 interval, $+0.040$ $[+0.001,+0.080]$,
+sits on zero, and a separate resample gives $p=0.055$), and only the gpt-oss$-$gemma-4 contrast was
 powered for an interaction of plausible size. The \Pone{} manipulation
 objective --- enforcement driving Planner computation-abstention to
 ${\approx}1.0$ --- also failed: the schema forbids an \emph{answer}, not a

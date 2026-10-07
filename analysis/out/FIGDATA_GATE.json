@@ -5,6 +5,12 @@
   "p": 1.0087482138487758e-07,
   "second_only": 42
  },
+ "afs_paired|final|Afs vs A frozen": {
+  "first_only": 36,
+  "n": 400,
+  "p": 5.398760549724102e-09,
+  "second_only": 2
+ },
  "afs_paired|final|Afs vs A re-run (bridge)": {
   "first_only": 42,
   "n": 400,
@@ -22,6 +28,12 @@
   "n": 65,
   "p": 0.00015652179718017578,
   "second_only": 22
+ },
+ "afs_paired|rec|Afs vs A frozen": {
+  "first_only": 27,
+  "n": 68,
+  "p": 1.4901161193847656e-08,
+  "second_only": 0
  },
  "afs_paired|rec|Afs vs A re-run (bridge)": {
   "first_only": 26,

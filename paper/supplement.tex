@@ -59,8 +59,8 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 \begin{document}
 
 \title{Supplementary Material\\
-\large From Feedback to Revision: When Multi-Agent Roles Become
-Load-Bearing}
+\large From Feedback to Revision: When Do Multi-Agent Roles Look
+Load-Bearing?}
 
 \author{Anonymous Author(s)}
 \affiliation{%
@@ -107,8 +107,8 @@ a reader recomputing from the trajectories gets the same denominator.
 The main paper reports, in its Intervention section, that the pre-registered
 primary endpoint P4 --- whether enforcement's effect on accuracy differs by
 actor --- is null: none of the three pairwise difference-in-differences
-survives Holm, although before correction the Llama-3.3$-$gemma-4 interval
-narrowly excludes zero. It also reports that the \Pone{} manipulation
+survives Holm; before correction the Llama-3.3$-$gemma-4 interval sits on
+zero, and a separate resample gives $p=0.055$. It also reports that the \Pone{} manipulation
 objective failed. Table~\ref{tab:prereg} is
 the complete endpoint table promised there: all five endpoints as written
 before any intervention data existed, what each one returned, and the
@@ -249,7 +249,9 @@ role-structured count stops at that team's own passing verdict, which can
 only favor it. Table~\ref{tab:robust} therefore gives five variants: the
 problems with at least two role-structured verdicts; both trajectories cut
 at the smaller count; and the scoring defect recoded, each with and
-without Llama-3.3. No variant puts the role-free team ahead. On the
+without Llama-3.3. No variant puts the role-free team significantly ahead:
+the two symmetric cuts favor it by $0.005$ and $0.010$, with intervals
+that include zero. On the
 informative problems the upper bounds reach $+0.065$ in favor of roles
 ($+0.073$ with the recoding), and with the recoding on all problems the role-structured team leads by $+0.029$ with an
 interval that excludes zero. The defensible reading is the one the main

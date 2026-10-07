@@ -77,15 +77,13 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 
 \begin{document}
 
-% CANONICAL TITLE, set 2026-10-01 with the narrative rewrite.
-% The earlier short form "When Is Multi-Agent Organization Load-Bearing?"
-% named the question; this one names the answer, which is what the Results
-% now march toward. A two-line title costs vertical space and the page
-% budget has roughly a one-sentence margin, so the rewrite paid for it with
-% prose cuts rather than with typesetting. scripts/pagecheck.py keys its
-% running-head word list on the title and was updated with it.
-\title{From Feedback to Revision: When Multi-Agent Roles Become
-Load-Bearing}
+% CANONICAL TITLE, revised 2026-10-07. The question form matches the
+% conditional answer: roles look load-bearing for repair only when the
+% ablation also removes the feedback channel, and matched on verdicts the
+% gap closes. scripts/pagecheck.py derives its running-head word list from
+% the PDF's own /Title, so it follows the title automatically.
+\title{From Feedback to Revision: When Do Multi-Agent Roles Look
+Load-Bearing?}
 
 % Anonymous mode suppresses this block; it is required for the class to build.
 \author{Anonymous Author(s)}
@@ -115,8 +113,8 @@ without roles and $4$ only with them; exact McNemar $p=6.2\times10^{-22}$),
 with higher final accuracy for every actor on Omni-MATH and on SciBench. Yet when each
 team is credited with the same number of evaluator verdicts on the same
 problem, the role-free advantage disappears: pooled over the five actor--domain
-cells the difference is $+0.009$ ($95\%$ CI $-0.014$ to $+0.033$), and no
-robustness check puts the role-free team ahead. Per verdict, roles add little;
+cells the difference is $+0.009$ in favor of roles ($95\%$ CI $-0.014$ to
+$+0.033$), and no robustness check puts the role-free team significantly ahead. Per verdict, roles add little;
 what they mainly change is how often the team asks for feedback. The role-structured Reviewer withholds approval:
 on Omni-MATH, gemma-4's team submits $1.27$ times per failed trajectory against $3.20$,
 and $84$ of its $316$ failed trajectories never submit at all. In a further

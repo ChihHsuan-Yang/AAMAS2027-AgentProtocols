@@ -1,4 +1,4 @@
-# From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing
+# From Feedback to Revision: When Do Multi-Agent Roles Look Load-Bearing?
 
 > **Roles do not primarily help a team produce its first answer. They help it
 > turn an external "your answer is wrong" signal into a revision rather than a

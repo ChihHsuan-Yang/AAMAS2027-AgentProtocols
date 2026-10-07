@@ -2,7 +2,7 @@
 
 ## Current title
 
-**From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing**
+**From Feedback to Revision: When Do Multi-Agent Roles Look Load-Bearing?**
 
 ## Current story
 

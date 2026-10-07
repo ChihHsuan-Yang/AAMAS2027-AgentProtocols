@@ -540,18 +540,34 @@ def main():
             FIG["verdict_hazard|{}|{}".format(scope, kk + 1)] = dict(
                 A=[num["A"], den["A"]], Bf=[num["Bf"], den["Bf"]])
     # ------------------------------------------------------------------ G5
-    afs_path = os.environ.get("AAMAS_AFS_FILE") or os.path.join(a.bf_dir, "afs_omnimath_gemma4_n400.jsonl")
-    if os.path.exists(afs_path):
+    # Forced submission (arm Afs), per actor, on the 400 Omni-MATH problems of the
+    # post-freeze bridge re-run. gemma-4 keeps its original FIG keys ("afs|...",
+    # "afs_paired|..."); every other actor's keys carry its file tag
+    # ("afs_llama33|...", "afs_llama33_paired|...").
+    AFS_CELLS = [  # actor, file tag, frozen file holding its arm-A cell
+        ("gemma-4-31B-it", "gemma4", "campaign_v2.jsonl"),
+        ("Llama-3.3-70B-Instruct", "llama33", "actor3.jsonl"),
+    ]
+    for act_name, tag, frozen_name in AFS_CELLS:
+        afs_path = os.path.join(a.bf_dir, "afs_omnimath_{}_n400.jsonl".format(tag))
+        if tag == "gemma4":
+            afs_path = os.environ.get("AAMAS_AFS_FILE") or afs_path
+        if not os.path.exists(afs_path):
+            continue
+        pfx = "afs" if tag == "gemma4" else "afs_" + tag
         P("")
         P("[G5] FORCED SUBMISSION (arm Afs: role-structured prompts, the pipeline submits every cycle)")
-        P("     gemma-4, Omni-MATH, the 400 problems of the bridge re-run; Afs file {} sha256 {}".format(
-            os.path.basename(afs_path), sha256(afs_path)[:16]))
-        def outcomes(path, arm, keep=None):
+        P("     {}, Omni-MATH, the 400 problems of the bridge re-run; Afs file {} sha256 {}".format(
+            act_name, os.path.basename(afs_path), sha256(afs_path)[:16]))
+
+        def outcomes(path, arm, keep=None, act_name=act_name):
             out = {}
+            if not os.path.exists(path):
+                return out
             for r in rows(path):
                 if r.get("arm") != arm or r.get("stopping_condition") == "model_unavailable":
                     continue
-                if not str(r.get("actor_model", "")).endswith("gemma-4-31B-it"):
+                if not str(r.get("actor_model", "")).endswith(act_name):
                     continue
                 u = r["problem_uid"]
                 if keep is not None and u not in keep:
@@ -569,10 +585,10 @@ def main():
             return out
         X = outcomes(afs_path, "Afs")
         keep = set(X)
-        bridge_path = sorted(glob.glob(os.path.join(a.bf_dir, "bridgeA_omnimath_gemma4_n400.jsonl")))
-        BA = outcomes(bridge_path[0], "A", keep) if bridge_path else {}
-        BF = outcomes(os.path.join(a.bf_dir, "bf_omnimath_gemma4.jsonl"), "Bf", keep)
-        FA = outcomes(os.path.join(a.frozen_dir, "campaign_v2.jsonl"), "A", keep)
+        BA = outcomes(os.path.join(a.bf_dir, "bridgeA_omnimath_{}_n400.jsonl".format(tag)), "A", keep)
+        BF = outcomes(os.path.join(a.bf_dir, "bf_omnimath_{}.jsonl".format(tag)), "Bf", keep)
+        FA = outcomes(os.path.join(a.frozen_dir, frozen_name), "A", keep)
+
         def summ(name, D):
             n = len(D); judged = [d for d in D.values() if d["fp"] is not None]
             fpw = [d for d in judged if d["fp"] == 0]
@@ -586,16 +602,18 @@ def main():
                   sum(1 for d in judged if d["fp"] == 1) / len(judged) if judged else float("nan"),
                   rec, len(fpw), rec / len(fpw) if fpw else float("nan"),
                   sum(d["fin"] for d in D.values()) / n if n else float("nan"), appr, ver, never))
-            FIG["afs|" + name] = dict(n=n, n_fpw=len(fpw), recovered=rec,
-                                      firstpass=(sum(1 for d in judged if d["fp"] == 1) / len(judged)
-                                                 if judged else None),
-                                      recovery=(rec / len(fpw) if fpw else None),
-                                      final=(sum(d["fin"] for d in D.values()) / n if n else None),
-                                      approvals=appr, verdicts=ver, never_submits=never)
+            FIG[pfx + "|" + name] = dict(n=n, n_fpw=len(fpw), recovered=rec,
+                                         firstpass=(sum(1 for d in judged if d["fp"] == 1) / len(judged)
+                                                    if judged else None),
+                                         recovery=(rec / len(fpw) if fpw else None),
+                                         final=(sum(d["fin"] for d in D.values()) / n if n else None),
+                                         approvals=appr, verdicts=ver, never_submits=never)
         summ("Afs (forced submission)", X)
-        summ("A re-run after the freeze (bridge)", BA)
+        if BA:
+            summ("A re-run after the freeze (bridge)", BA)
         summ("A frozen", FA)
         summ("Bf (role-free with feedback)", BF)
+
         def paired(name, Y, Z, key):
             both = sorted(set(Y) & set(Z))
             if key == "rec":
@@ -607,12 +625,15 @@ def main():
             z_only = sum(1 for u in both if f(Z[u]) and not f(Y[u]))
             P("  paired {:<6} {:<44} n={:<4} first-only {:<3} second-only {:<3} p={:.2g}".format(
                 key, name, len(both), y_only, z_only, mcn(y_only, z_only)))
-            FIG["afs_paired|{}|{}".format(key, name)] = dict(n=len(both), first_only=y_only,
-                                                             second_only=z_only, p=mcn(y_only, z_only))
+            FIG["{}_paired|{}|{}".format(pfx, key, name)] = dict(n=len(both), first_only=y_only,
+                                                                 second_only=z_only, p=mcn(y_only, z_only))
         for key in ("rec", "final"):
-            paired("Afs vs A re-run (bridge)", X, BA, key)
+            if BA:
+                paired("Afs vs A re-run (bridge)", X, BA, key)
+            paired("Afs vs A frozen", X, FA, key)
             paired("Afs vs Bf", X, BF, key)
-            paired("A re-run (bridge) vs Bf", BA, BF, key)
+            if BA:
+                paired("A re-run (bridge) vs Bf", BA, BF, key)
     P("")
     P("[G2] LOGGING-DEFECT CHECK (Omni-MATH frozen campaign): functional collapse on all first")
     P("     passes and on clean ones (no message under 10 visible characters per second, T26)")

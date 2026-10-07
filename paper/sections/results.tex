@@ -30,7 +30,7 @@ emergent tendency --- a claim about the \emph{change}, not the level.
 \centering
 \includegraphics[width=\columnwidth]{figures/fig1_v3_story.pdf}
 \Description{Three panels. A: first-pass accuracy per actor and domain, about equal for the role-structured team and both role-free teams except gpt-oss on Omni-MATH, where the role-free teams are higher. B: recovery after a failed first answer; the role-free team with feedback recovers most, the role-structured and enforced teams less, and the role-free team whose feedback is withheld least, tying the role-structured team for Llama-3.3. C: stacked bars of deliberation cycles spent submitting versus revising for gemma-4 in four conditions.}
-\caption{\textbf{Roles organize the team but do not add recovery.}
+\caption{\textbf{Roles organize the team; given the same feedback, they do not add recovery.}
 \textbf{(A)} Removing roles leaves first-pass accuracy unchanged or higher.
 \textbf{(B)} Recovery after a failed first answer. Given the same feedback
 string, the role-free team recovers more than the role-structured one; the
@@ -94,7 +94,7 @@ runs out.
 \input{tables/main_results}
 
 \paragraph{Recovery and final accuracy.} The role-structured team receives
-the evaluator's feedback, so the matched comparison is with the role-free
+the evaluator's feedback, so the like-for-like comparison is with the role-free
 team that receives it too (Table~\ref{tab:main}). \textbf{That team
 recovers more, not less}: $0.609$ against $0.222$ (marginal,
 Figure~\ref{fig:dissociation}B), and on the $236$ problems both first
@@ -110,10 +110,10 @@ in only $0.0072$ of cases.
 
 \paragraph{Reproducibility, drift and leakage.} The two gemma-4
 feedback-matched cells were run twice, independently and with identical
-code. The second run reproduces the first (Omni-MATH recovery $0.586$
+code. The second run is close to the first (Omni-MATH recovery $0.586$
 against $0.609$, final accuracy $0.922$ against $0.921$; SciBench recovery
-$0.435$ against $0.419$, its paired test at $p=0.052$ against $0.013$); we
-report the first throughout (supplement). A re-run of the role-structured
+$0.435$ against $0.419$), but SciBench's paired test weakens from $p=0.013$
+to $0.052$; we report the first throughout (supplement). A re-run of the role-structured
 condition shows no detectable drift in final accuracy (\S\ref{sec:experiments}). Repair hints
 contain the gold answer verbatim in at most $2.3\%$ of failing verdicts in
 any cell; for gemma-4 on Omni-MATH, dropping every trajectory that saw one
@@ -175,8 +175,8 @@ $+0.054$; supplement). The comparison crosses the freeze, so
 we repeat it against the role-structured re-run made after it: on the $65$
 problems both first answer wrongly, recovery is $3$ against $22$ in favor
 of the role-free team unmatched ($p=1.6\times10^{-4}$) and $4$ against $1$
-verdict-matched ($p=0.38$). No variant puts the role-free team ahead verdict
-for verdict, and any advantage of roles is small; the role-free team
+verdict-matched ($p=0.38$). No variant puts the role-free team significantly
+ahead verdict for verdict, and any advantage of roles is small; the role-free team
 recovers more because it asks for more verdicts.
 
 \paragraph{What roles do instead: a gate on submission.} The reason is the
@@ -186,9 +186,9 @@ roles (Figure~\ref{fig:dissociation}C). Of its declining cycles, $53\%$ come
 before the first submission, when no feedback exists, and $84$ of its $316$
 failed trajectories never submit within the budget: they are graded once at
 the end and never see the feedback. One clause forbids approval in a cycle
-that receives a FAIL, but it covers only $19\%$ of the declines; in the
-later cycles where approval is allowed, the Reviewer still declines $75\%$
-of the time, against $4\%$ for the role-free team's third agent. On
+that receives a FAIL, but it covers only $19\%$ of the declines; in later
+cycles that receive no FAIL ($504$ and $184$), where approval is allowed,
+the Reviewer still declines $75\%$ of the time, against $4\%$ for the role-free team's third agent. On
 Omni-MATH the clause covers $37\%$ of gpt-oss's declines and $4\%$ of
 Llama-3.3's, whose role-structured team submits $0.32$ times per failed
 trajectory and never submits in $205$ of $276$; on SciBench it covers $40\%$

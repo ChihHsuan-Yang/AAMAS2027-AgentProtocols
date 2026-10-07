@@ -30,7 +30,7 @@ hostnames failed to resolve. Reported as access failures, not as findings.
 | # | item | status |
 |---|---|---|
 | 1 | Final anonymized AAMAS PDF | **DONE** — official class, **8 main-text pages + references on 9**, every gate passing |
-| 2 | Final title | **DONE** — *From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing* |
+| 2 | Final title | **DONE** — *From Feedback to Revision: When Do Multi-Agent Roles Look Load-Bearing?* |
 | 3 | Final abstract | **DONE** — ~294 words, generated to `paper/ABSTRACT_SUBMIT.txt` from `main.tex`; paste the file rather than retyping |
 | 4 | Submission metadata to paste | **DONE** — `SUBMISSION_PACKAGE.md` (title, abstract, area, keywords) |
 | 5 | Supplementary material | **DONE** — `paper/supplement.pdf`, 11 pp, anonymous, gated. Ships **inside** the submission; the paper contains no pointer to it |

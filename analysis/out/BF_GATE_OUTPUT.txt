@@ -203,15 +203,17 @@ end of the budget of a trajectory that never submitted:
     omni|gemma-4-31B-it    verdict 6: A   0/0    = -   Bf   2/24   = 0.083
 
 [G5] FORCED SUBMISSION (arm Afs: role-structured prompts, the pipeline submits every cycle)
-     gemma-4, Omni-MATH, the 400 problems of the bridge re-run; Afs file afs_omnimath_gemma4_n400.jsonl sha256 47bed257b8783f9d
+     gemma-4-31B-it, Omni-MATH, the 400 problems of the bridge re-run; Afs file afs_omnimath_gemma4_n400.jsonl sha256 47bed257b8783f9d
   Afs (forced submission)            n=400  infra 0   first pass 0.767  recovery  57/93  = 0.613  final 0.910  approvals 0.98  verdicts 4.20  never submits 35
   A re-run after the freeze (bridge) n=400  infra 0   first pass 0.772  recovery  18/91  = 0.198  final 0.818  approvals 1.13  verdicts 1.44  never submits 28
   A frozen                           n=400  infra 0   first pass 0.795  recovery  12/82  = 0.146  final 0.825  approvals 1.15  verdicts 1.41  never submits 22
   Bf (role-free with feedback)       n=400  infra 0   first pass 0.795  recovery  45/82  = 0.549  final 0.907  approvals 3.34  verdicts 3.34  never submits 0
   paired rec    Afs vs A re-run (bridge)                     n=72   first-only 26  second-only 2   p=3e-06
+  paired rec    Afs vs A frozen                              n=68   first-only 27  second-only 0   p=1.5e-08
   paired rec    Afs vs Bf                                    n=70   first-only 7   second-only 7   p=1
   paired rec    A re-run (bridge) vs Bf                      n=65   first-only 3   second-only 22  p=0.00016
   paired final  Afs vs A re-run (bridge)                     n=400  first-only 42  second-only 5   p=2.5e-08
+  paired final  Afs vs A frozen                              n=400  first-only 36  second-only 2   p=5.4e-09
   paired final  Afs vs Bf                                    n=400  first-only 8   second-only 7   p=1
   paired final  A re-run (bridge) vs Bf                      n=400  first-only 6   second-only 42  p=1e-07
 
