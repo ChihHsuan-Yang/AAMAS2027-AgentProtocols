@@ -32,14 +32,14 @@ channel. A contrast is matched only when it changes one of them
 pass of Planner, Executor and Reviewer) \emph{collapses} if \emph{all three}
 agents independently assert their own final answers. The pipeline then runs
 as three solvers in sequence rather than a division of labor. This metric
-targets the property the diagram asserts rather than what a hash can see. We
+targets the property the diagram asserts, not textual overlap. We
 measure it on the first cycle so it is not confounded with trajectory
 length. It is not applicable to the structurally enforced conditions because
 their schema forbids an answer field.
 
 \paragraph{Exact output duplication (secondary, a lower bound).} This occurs
-when two or more role messages are byte-identical, based on a
-\texttt{sha256} hash (a cryptographic digest) of the raw completion. It
+when two or more role messages are byte-identical, that is, the same raw
+completion character for character. It
 bounds collapse from below (supplement) and is never used to compare actors.
 
 \paragraph{Answer authorship, and computation.} We measure whether a Planner

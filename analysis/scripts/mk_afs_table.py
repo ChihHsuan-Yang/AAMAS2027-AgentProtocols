@@ -76,28 +76,8 @@ def build(pfx, actor_label, label, rows_, pairs_):
 %% (bf_gate.py [G5]) -- do not edit by hand.
 \begin{table*}[t]
 \centering
-\caption{\textbf{Removing the submission gate""" + ("" if pfx == "afs" else ", " + actor_label) + r""".} """ + actor_label + r""" (the model
-playing all three agents) on the Omni-MATH benchmark, the same """ + "${}$".format(n) + r""" problems in
-every row. Role-structured: Planner, Executor and Reviewer prompts, in the
-frozen snapshot and in a re-run after the freeze; role-free with feedback:
-one generic prompt for all three agents, with the evaluator's feedback
-shown. The forced-submission run (``every cycle submitted'') uses the
-role-structured prompts byte for byte, but the pipeline submits the team's
-answer to the evaluator in every cycle (one pass of the three agents),
-whatever the Reviewer decides; its approvals are logged but do not decide
-submission. A trajectory is one problem's run; it is first-pass wrong when
-its first submitted answer is graded wrong. \emph{First pass}: share of
-trajectories whose first submitted answer is correct. \emph{Recovery}:
-first-pass-wrong trajectories that finish correct, over each row's own
-first-pass-wrong set (count / denominator). \emph{Final accuracy}: over all
-problems, never-graded trajectories counted as incorrect. \emph{Verdicts}
-and \emph{Reviewer approvals}: per first-pass-wrong trajectory, including
-the first. The lower block pairs two conditions on the problems both first
-answer wrongly (recovery) and on all problems (final accuracy): problems
-solved only by the first condition / only by the second, with the exact
-McNemar $p$ for the two counts.}
+\caption{Removing the submission gate: """ + actor_label + r""" on the same """ + "${}$".format(n) + r""" Omni-MATH problems in every row.}
 \label{""" + label + r"""}
-\footnotesize
 \begin{tabular}{@{}l ccccc@{}}
 \toprule
 condition & first pass & recovery & final accuracy & verdicts & Reviewer approvals \\
@@ -116,11 +96,12 @@ pair & $n$ & first / second only & $p$ & first / second only & $p$ \\
 """ + "\n".join(pair) + r"""
 \bottomrule
 \end{tabular}
+\tabnote{Role-structured: Planner, Executor and Reviewer prompts, in the frozen snapshot and in a re-run after the freeze; role-free with feedback: one generic prompt for all three agents, with the evaluator's feedback shown. The forced-submission run (``every cycle submitted'') uses the role-structured prompts byte for byte, but the pipeline submits the team's answer in every cycle whatever the Reviewer decides; its approvals are logged but do not decide submission. First pass: the share of trajectories whose first submitted answer is correct. Recovery: first-pass-wrong trajectories that finish correct, over each row's own first-pass-wrong set (count / denominator). Final accuracy: over all problems, never-graded trajectories counted as incorrect. Verdicts and Reviewer approvals: per first-pass-wrong trajectory, including the first. The lower block pairs two conditions on the problems both first answer wrongly (recovery) and on all problems (final accuracy): problems solved only by the first / only by the second, with the exact McNemar $p$ for the two counts.}
 \end{table*}
 """
 
 
-open(DST, "w").write(build("afs", "gemma-4", "tab:forced", ROWS, PAIRS))
+open(DST, "w").write(build("afs", "gemma-4-31B-it", "tab:forced", ROWS, PAIRS))
 print("wrote", DST)
 
 # Llama-3.3 (exploratory, post-freeze), written only once bf_gate.py [G5] has its rows.
@@ -132,5 +113,5 @@ if L + "|Afs (forced submission)" in G:
     order = ["Afs vs A re-run (bridge)", "Afs vs A frozen", "Afs vs Bf", "A re-run (bridge) vs Bf"]
     pairs_l.sort(key=lambda kl: order.index(kl[0]))
     dst_l = DST.replace("forced_submission.tex", "forced_submission_llama33.tex")
-    open(dst_l, "w").write(build(L, "Llama-3.3", "tab:forced_llama", rows_l, pairs_l))
+    open(dst_l, "w").write(build(L, "Llama-3.3-70B-Instruct", "tab:forced_llama", rows_l, pairs_l))
     print("wrote", dst_l)

@@ -26,38 +26,17 @@
 % codes are deliberately absent and their absence is asserted at
 % generation time.
 % ==========================================================================
-\begin{table}[t]
+\begin{table}[htb]
 \centering
-\caption{\textbf{Recovery by pooled accumulated-context quartile,
-role-structured versus role-free (feedback withheld).} Conditions:
-role-structured (Planner, Executor and Reviewer prompts) and role-free (one
-generic prompt for all three agents) with the evaluator's feedback
-withheld; per actor (the model playing all three agents) on the Omni-MATH
-benchmark. \emph{Recovery}: the share of first-pass-wrong trajectories (one
-problem's run whose first submitted answer was graded wrong) that finish
-correct, with $n$ the number of such trajectories in the quartile; the
-difference is role-structured minus role-free. \emph{Context} is the total
-character count of all Planner, Executor and Reviewer messages in the
-trajectory; quartile cut points are computed \emph{once per actor over both
-conditions pooled}. \textbf{This is directional only.} Accumulated context
-is nearly a function of condition (the role-free team talks less because
-it stops reworking), so the strata are not balanced and this comparison
-cannot separate context from condition. It is reported because accumulated
-context is a candidate explanation of the role-structured team's advantage
-over the feedback-withheld team, and because \textbf{it does not behave
-uniformly}: the gap survives in the lower quartiles, but in gpt-oss's top
-quartile the ordering reverses (as, on a handful of events, in
-Llama-3.3's third).}
+\caption{Recovery by accumulated-context quartile, with roles and without them (feedback withheld), on the Omni-MATH benchmark; directional only.}
 \label{tab:context}
-\small
 \begin{tabular}{@{}lccccc@{}}
 \toprule
- & \multicolumn{2}{c}{role-structured}
- & \multicolumn{2}{c}{role-free} & \\
+ & \multicolumn{2}{c}{RS} & \multicolumn{2}{c}{RF$^{-}$} & \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
 context quartile & recovery & $n$ & recovery & $n$ & difference \\
 \midrule
-\multicolumn{5}{@{}l}{\emph{gemma-4-31B}} \\
+\multicolumn{5}{@{}l}{\emph{gemma-4-31B-it}} \\
 \quad Q1 (least context) & $0.662$ & $65$ & $0.151$ & $93$ & $+0.511$ \\
 \quad Q2 & $0.280$ & $50$ & $0.009$ & $108$ & $+0.271$ \\
 \quad Q3 & $0.047$ & $85$ & $0.014$ & $73$ & $+0.033$ \\
@@ -69,7 +48,7 @@ context quartile & recovery & $n$ & recovery & $n$ & difference \\
 \quad Q3 & $0.262$ & $164$ & $0.191$ & $47$ & $+0.071$ \\
 \quad Q4 (most) & $0.070$ & $158$ & $0.189$ & $53$ & ${-}0.119$ \\
 \addlinespace
-\multicolumn{5}{@{}l}{\emph{Llama-3.3-70B}} \\
+\multicolumn{5}{@{}l}{\emph{Llama-3.3-70B-Instruct}} \\
 \quad Q1 (least context) & $0.100$ & $40$ & $0.031$ & $96$ & $+0.069$ \\
 \quad Q2 & $0.000$ & $86$ & $0.000$ & $50$ & $+0.000$ \\
 \quad Q3 & $0.000$ & $103$ & $0.030$ & $33$ & ${-}0.030$ \\
@@ -77,4 +56,5 @@ context quartile & recovery & $n$ & recovery & $n$ & difference \\
 \addlinespace
 \bottomrule
 \end{tabular}
+\tabnote{RS: role-structured; RF$^{-}$: role-free with the evaluator's feedback withheld. Recovery: the share of first-pass-wrong trajectories that finish correct, with $n$ the number of such trajectories in the quartile; the difference is RS minus RF$^{-}$. Context is the total character count of all agent messages in the trajectory; quartile cut points are computed once per actor over both conditions pooled. Because accumulated context is nearly a function of condition (the RF$^{-}$ team writes less because it stops reworking), the strata are not balanced and the comparison cannot separate context from condition.}
 \end{table}

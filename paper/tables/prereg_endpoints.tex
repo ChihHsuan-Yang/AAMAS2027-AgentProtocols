@@ -43,39 +43,8 @@
 % ==========================================================================
 \begin{table*}[t]
 \centering
-\caption{\textbf{Every pre-registered endpoint, and what became of it.} The
-five endpoints (pre-specified analyses) were fixed in writing before any
-intervention data existed. The intervention is structural enforcement
-(roles imposed by typed message formats) against the role-structured
-baseline (Planner, Executor and Reviewer prompts), per actor (the model
-playing all three agents); \emph{fidelity} is whether the Planner abstains
-from computing (the \Pone{} measure); \emph{accuracy} is final accuracy over
-all problems with never-graded trajectories counted as incorrect. P3 tests,
-per actor, whether enforcement changes accuracy (exact McNemar test on the
-problems that exactly one condition gets right; the raw $p$, the $p$ after
-Holm's step-down correction across the three actors, and the verdict at
-$\alpha=0.05$). P4, the pre-registered primary, tests whether the
-enforcement effect differs between actors: each difference-in-differences
-is the effect in one actor minus the effect in another, with its $95\%$
-bootstrap confidence interval (resampling problems), the raw and
-Holm-corrected $p$, and MDE$_{80\%}$, the smallest interaction detectable
-with $80\%$ power at the realized sample; a null is \emph{informative} only
-where the MDE is below a plausible effect. \textbf{P4 is null before and
-after Holm correction}, and we report that null. P1 failed as written and
-was re-designated rather than dropped: the interface forbids the planner
-emitting an \emph{answer}, and nothing in it stops the planner
-\emph{computing}, a dissociation we report as a finding. P2 and P5 are
-reported as effects and associations and carry no $p$-value, so the
-testable contrasts are P3's three and P4's three. Holm is applied within
-each family of three; applied across all six, as the pre-registration's
-``Holm correction across P1--P5'' would read, it changes no verdict. P4's
-intervals and $p$ values come from two separately seeded bootstrap runs, so
-an interval can exclude zero while $p$ is just above $0.05$. The MDE is
-computed on problems shared by both actors, while each
-difference-in-differences uses each actor's own problem set, so neither can
-be derived from the other.}
+\caption{The five pre-registered endpoints and what each returned. P4, the primary, is null before and after Holm correction.}
 \label{tab:prereg}
-\small
 \begin{tabular}{@{}llllll@{}}
 \toprule
 endpoint & \multicolumn{5}{l}{disposition} \\
@@ -98,16 +67,16 @@ endpoint & \multicolumn{5}{l}{disposition} \\
 \multicolumn{6}{@{}l}{\textbf{P3} intervention $\rightarrow$ accuracy
   (enforced $-$ role-structured), Holm across three:} \\
  & raw $p$ & Holm $p$ & verdict & & \\
-\quad gemma-4-31B & $0.0078$ & $0.023$ & reject \\
+\quad gemma-4-31B-it & $0.0078$ & $0.023$ & reject \\
 \quad gpt-oss-120b & $0.60$ & $0.85$ & retain \\
-\quad Llama-3.3-70B & $0.43$ & $0.85$ & retain \\
+\quad Llama-3.3-70B-Instruct & $0.43$ & $0.85$ & retain \\
 \addlinespace
 \multicolumn{6}{@{}l}{\textbf{P4} actor $\times$ intervention on
-  accuracy --- \emph{the pre-registered primary}, Holm across three:} \\
+  accuracy (the pre-registered primary), Holm across three:} \\
  & difference-in-diff.\ [CI] & raw $p$ & Holm $p$ & MDE$_{80\%}$ & null is \\
-\quad gpt-oss-120b $-$ gemma-4-31B & $+0.0175$ {\footnotesize [-0.0050,+0.0406]} & $0.145$ & $0.29$ & $0.0325$ & informative \\
-\quad Llama-3.3-70B $-$ gemma-4-31B & $+0.0400$ {\footnotesize [+0.0006,+0.0800]} & $0.0553$ & $0.166$ & $0.0693$ & uninformative \\
-\quad Llama-3.3-70B $-$ gpt-oss-120b & $+0.0225$ {\footnotesize [-0.0181,+0.0631]} & $0.286$ & $0.29$ & $0.0748$ & uninformative \\
+\quad gpt-oss-120b $-$ gemma-4-31B-it & $+0.0175$ {\footnotesize [-0.0050,+0.0406]} & $0.145$ & $0.29$ & $0.0325$ & informative \\
+\quad Llama-3.3-70B-Instruct $-$ gemma-4-31B-it & $+0.0400$ {\footnotesize [+0.0006,+0.0800]} & $0.0553$ & $0.166$ & $0.0693$ & uninformative \\
+\quad Llama-3.3-70B-Instruct $-$ gpt-oss-120b & $+0.0225$ {\footnotesize [-0.0181,+0.0631]} & $0.286$ & $0.29$ & $0.0748$ & uninformative \\
 \addlinespace
 \textbf{P5} $\Delta$fidelity vs $\Delta$outcome
  & \multicolumn{5}{l}{association only, pre-declared as non-causal: both
@@ -117,11 +86,10 @@ endpoint & \multicolumn{5}{l}{disposition} \\
 \bottomrule
 \end{tabular}
 
-\vspace{2pt}
-\footnotesize \textbf{Only one of the three P4 nulls is informative.} The
+\tabnote{The endpoints were fixed in writing before any intervention data existed. The intervention is structural enforcement against the role-structured baseline, per actor. Fidelity: whether the Planner abstains from computing (\Pone{}). Accuracy: final accuracy over all problems, never-graded trajectories counted as incorrect. P3: exact McNemar test per actor, with the raw $p$, the $p$ after Holm's step-down correction across the three actors, and the verdict at $\alpha=0.05$. P4: each difference-in-differences is enforcement's effect in one actor minus its effect in another, with its 95\% bootstrap interval over problems, the raw and Holm-corrected $p$, and MDE$_{80\%}$, the smallest interaction detectable with 80\% power at the realized sample; a null is informative only where the MDE is below a plausible effect. P2 and P5 carry no $p$ value, so the testable contrasts are P3's three and P4's three; Holm across all six changes no verdict. P4's intervals and $p$ values come from two separately seeded bootstrap runs, so an interval can exclude zero while $p$ is just above 0.05; the MDE is computed on problems shared by both actors while each difference-in-differences uses each actor's own problems, so neither can be derived from the other. \textbf{Only one of the three P4 nulls is informative.} The
 largest per-actor main effect is small enough that a true interaction is
 plausibly ${\leq}0.040$; only the gpt-oss/gemma-4 contrast can see an
 effect that size. The two Llama-3.3 contrasts cannot detect an interaction of
 any plausible magnitude and are uninformative rather than evidence of
-absence.
+absence.}
 \end{table*}

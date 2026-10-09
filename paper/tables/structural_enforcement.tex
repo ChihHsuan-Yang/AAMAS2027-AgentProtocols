@@ -32,57 +32,25 @@
 % ==========================================================================
 \begin{table*}[t]
 \centering
-\caption{\textbf{Structural enforcement: roles imposed by typed message
-formats.} Enforced against role-structured (Planner, Executor and Reviewer
-prompts) and, where stated, role-free (one generic prompt for all three
-agents, feedback withheld), per actor (the model playing all three agents)
-on the Omni-MATH benchmark. A trajectory is one problem's run through the
-pipeline; it is first-pass wrong when its first submitted answer is graded
-wrong. \emph{Planner authors answer}: the share of planner messages that
-state a final answer, under enforcement and (in parentheses) when roles are
-merely deleted; enforcement drives it to zero in all three actors, so the
-intervention engaged (this is the manipulation check; the main paper's R5
-gives the first-cycle rate). \emph{Locked answer}: the share of
-first-pass-wrong trajectories whose answer string never changed, enforced
-and (in parentheses) role-free / role-structured. \emph{Recovery}: the share
-of first-pass-wrong trajectories that finish correct, enforced and
-(role-structured in parentheses), on the denominator of
-Table~\ref{tab:recovery}. \emph{Attrition}: the share of enforced
-trajectories that never finish (a malformed output exhausted its
-regeneration budget). \emph{Final accuracy, enforced $-$ role-structured}:
-the difference in accuracy over all problems, with $95\%$ bootstrap
-confidence intervals; \textbf{the two accuracy columns are different
-populations, and the attrition column is why they disagree.} The
-pre-registered rule scores never-graded trajectories incorrect; the
-as-graded column drops them and is a \emph{sensitivity analysis only}: its
-gains are conditional on parsing successfully, and enforcement is the only
-condition where that removes a material fraction of the data.
-\textbf{Enforcement restores recovery for Llama-3.3; for the other two
-actors the direction is consistent but not resolvable against that
-attrition.}}
+\caption{Structural enforcement against the role-structured baseline on the Omni-MATH benchmark: the manipulation check, attrition, and final accuracy under both scorings.}
 \label{tab:enforcement}
-\small
 \begin{tabular}{lccccccc}
 \toprule
- & planner authors & locked answer & recovery & &
- \multicolumn{2}{c}{final accuracy, enforced $-$ role-structured} \\
+ & Planner authors & locked answer & recovery & &
+ \multicolumn{2}{c}{final accuracy, SE $-$ RS} \\
 \cmidrule(lr){6-7}
-actor & answer (role-free) & (r-f./r-s.) & (role-str.) & attrition
-      & pre-registered & as-graded \\
- & \footnotesize manipulation check & \footnotesize first-pass wrong
- & \footnotesize first-pass wrong & & \footnotesize (primary)
- & \footnotesize (sensitivity) \\
+actor & answer (RF$^{-}$) & (RF$^{-}$ / RS) & (RS) & attrition
+      & pre-registered & as graded \\
 \midrule
-gemma-4-31B & $0.000$ (0.986) & $0.119$ (0.845/0.288) & $0.314$ (0.222) & $8.0\%$ & ${-}0.0225$ {\footnotesize [-0.0387,-0.0063]} & $+0.0190$ {\footnotesize [+0.0054,+0.0333]} \\
+gemma-4-31B-it & $0.000$ (0.986) & $0.119$ (0.845/0.288) & $0.314$ (0.222) & $8.0\%$ & ${-}0.0225$ {\footnotesize [-0.0387,-0.0063]} & $+0.0190$ {\footnotesize [+0.0054,+0.0333]} \\
 gpt-oss-120b & $0.000$ (0.916) & $0.092$ (0.208/0.052) & $0.395$ (0.324) & $9.9\%$ & ${-}0.0050$ {\footnotesize [-0.0219,+0.0112]} & $+0.0361$ {\footnotesize [+0.0215,+0.0507]} \\
-Llama-3.3-70B & $0.000$ (0.958) & $0.072$ (0.806/0.750) & $0.139$ (0.014) & $17.0\%$ & $+0.0175$ {\footnotesize [-0.0200,+0.0550]} & $+0.0453$ {\footnotesize [+0.0030,+0.0876]} \\
+Llama-3.3-70B-Instruct & $0.000$ (0.958) & $0.072$ (0.806/0.750) & $0.139$ (0.014) & $17.0\%$ & $+0.0175$ {\footnotesize [-0.0200,+0.0550]} & $+0.0453$ {\footnotesize [+0.0030,+0.0876]} \\
 \bottomrule
 \end{tabular}
 
-\vspace{2pt}
-\footnotesize Attrition elsewhere is negligible: $0.0$--$0.8\%$ with roles,
+\tabnote{SE: structurally enforced; RS: role-structured; RF$^{-}$: role-free with the evaluator's feedback withheld. Planner authors answer: the share of Planner messages that state a final answer, under SE and (in parentheses) under RF$^{-}$; SE drives it to zero in all three actors, so the intervention engaged (the manipulation check). Locked answer: the share of first-pass-wrong trajectories whose answer string never changed, under SE and (in parentheses) RF$^{-}$ / RS. Recovery: the share of first-pass-wrong trajectories that finish correct, under SE and (in parentheses) RS, on the denominator of Table~\ref{tab:recovery}. Attrition: the share of SE trajectories that never finish because a malformed output exhausted its regeneration budget. Final accuracy: the difference over all problems with 95\% bootstrap intervals, under the pre-registered scoring (never-graded trajectories count as incorrect) and as graded (they are dropped); the two columns are different populations and the attrition column is why they disagree. Attrition elsewhere is negligible: $0.0$--$0.8\%$ with roles,
 $0.0$--$2.5\%$ without. The as-graded column turns every sign
 positive; the pre-registration fixed in advance that unparseable
 trajectories count incorrect, and \textbf{the benefit appears only after
-conditioning on successful parsing.}
+conditioning on successful parsing.}}
 \end{table*}

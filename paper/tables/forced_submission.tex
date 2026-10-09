@@ -2,28 +2,8 @@
 %% (bf_gate.py [G5]) -- do not edit by hand.
 \begin{table*}[t]
 \centering
-\caption{\textbf{Removing the submission gate.} gemma-4 (the model
-playing all three agents) on the Omni-MATH benchmark, the same $400$ problems in
-every row. Role-structured: Planner, Executor and Reviewer prompts, in the
-frozen snapshot and in a re-run after the freeze; role-free with feedback:
-one generic prompt for all three agents, with the evaluator's feedback
-shown. The forced-submission run (``every cycle submitted'') uses the
-role-structured prompts byte for byte, but the pipeline submits the team's
-answer to the evaluator in every cycle (one pass of the three agents),
-whatever the Reviewer decides; its approvals are logged but do not decide
-submission. A trajectory is one problem's run; it is first-pass wrong when
-its first submitted answer is graded wrong. \emph{First pass}: share of
-trajectories whose first submitted answer is correct. \emph{Recovery}:
-first-pass-wrong trajectories that finish correct, over each row's own
-first-pass-wrong set (count / denominator). \emph{Final accuracy}: over all
-problems, never-graded trajectories counted as incorrect. \emph{Verdicts}
-and \emph{Reviewer approvals}: per first-pass-wrong trajectory, including
-the first. The lower block pairs two conditions on the problems both first
-answer wrongly (recovery) and on all problems (final accuracy): problems
-solved only by the first condition / only by the second, with the exact
-McNemar $p$ for the two counts.}
+\caption{Removing the submission gate: gemma-4-31B-it on the same $400$ Omni-MATH problems in every row.}
 \label{tab:forced}
-\footnotesize
 \begin{tabular}{@{}l ccccc@{}}
 \toprule
 condition & first pass & recovery & final accuracy & verdicts & Reviewer approvals \\
@@ -47,4 +27,5 @@ every cycle submitted vs.\ role-free with feedback & $70$ & $7$ / $7$ & $1$ & $8
 re-run vs.\ role-free with feedback & $65$ & $3$ / $22$ & $1.6{\times}10^{-4}$ & $6$ / $42$ & $1.0{\times}10^{-7}$ \\
 \bottomrule
 \end{tabular}
+\tabnote{Role-structured: Planner, Executor and Reviewer prompts, in the frozen snapshot and in a re-run after the freeze; role-free with feedback: one generic prompt for all three agents, with the evaluator's feedback shown. The forced-submission run (``every cycle submitted'') uses the role-structured prompts byte for byte, but the pipeline submits the team's answer in every cycle whatever the Reviewer decides; its approvals are logged but do not decide submission. First pass: the share of trajectories whose first submitted answer is correct. Recovery: first-pass-wrong trajectories that finish correct, over each row's own first-pass-wrong set (count / denominator). Final accuracy: over all problems, never-graded trajectories counted as incorrect. Verdicts and Reviewer approvals: per first-pass-wrong trajectory, including the first. The lower block pairs two conditions on the problems both first answer wrongly (recovery) and on all problems (final accuracy): problems solved only by the first / only by the second, with the exact McNemar $p$ for the two counts.}
 \end{table*}

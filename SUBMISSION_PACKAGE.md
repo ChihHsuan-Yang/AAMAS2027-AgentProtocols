@@ -1,10 +1,10 @@
 # Submission Package — upload checklist
 
-**Status 2026-10-08, 20:00 CT.** Built from `revision` at 4db8242 plus the
-reference audit and the submission files regenerated on top of it (this
-file, the abstract text, the two PDFs and the zip). Upload the files exactly as committed here rather
-than rebuilding them: a rebuild on another TeX installation is a different
-file.
+**Status 2026-10-08, 23:30 CT.** Built from `revision` at 3dc579b plus the
+rewritten Results section, the polished supplement and the submission files
+regenerated on top of it (this file, the two PDFs and the zip). Upload the
+files exactly as committed here rather than rebuilding them: a rebuild on
+another TeX installation is a different file.
 
 ## Deadline
 
@@ -16,12 +16,21 @@ OpenReview accepts revisions until the deadline, so submit early.
 
 | item | file | check |
 |---|---|---|
-| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8, references on pp. 9–10; sha256 `518a6ada9047008e…` |
-| supplementary material | `submission/supplementary_material.zip` | one zip, 804 KB (limit 25 MB), 45 files: `supplement.pdf` (9 pages, 11 tables) + prompts, runner, analysis scripts (now including `mk_fig_pipeline.py`), outputs, manifests; anonymity gate passed; sha256 `9be41667dd0caf7d…` |
+| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8 (3.9 lines spare), references on pp. 9–10; sha256 `ee32030009f54046…` |
+| supplementary material | `submission/supplementary_material.zip` | one zip, 838 KB (limit 25 MB), 59 files: `supplement.pdf` (9 pages, 11 tables, 4 figures, AI use statement) + prompts, runner, analysis scripts (including `mk_fig_pipeline.py` and `mk_fig_supp.py`), table sources, outputs, manifests, README with requirements; anonymity gate passed; sha256 `9963ad52d03fbd55…` |
 | abstract (plain text) | `paper/ABSTRACT_SUBMIT.txt` | 263 words (the CFP asks for about 100–300); generated from the abstract in `main.tex`, paste it, do not retype |
 
-`submission/supplement.pdf` (sha256 `461a181f8558b669…`) is the same file
-that is inside the zip, kept beside it for reference.
+`submission/supplement.pdf` (sha256 `7f2ec4343769e8ae…`) is the same file
+that is inside the zip, kept beside it for reference. It is the Overleaf
+build; `paper/supplement.tex` reproduces its text exactly (only one
+line-end hyphen differs on this TeX installation). The Overleaf build of the
+main paper (sha256 `495d166b238ae283…`) has the same text as
+`submission/main.pdf`; either may be uploaded. Overleaf names its downloads
+after the project, so rename a downloaded PDF (for example to `main.pdf`)
+before uploading it.
+
+Zip tooling: `scripts/mk_supp_zip.py` sha256 `c6fbd33a5b7174cd…`,
+`analysis/scripts/mk_fig_supp.py` sha256 `d393c0121f37c19a…`.
 
 ## Title
 
@@ -34,15 +43,22 @@ verdicts, the gap closes), so the question form fits the claims.
 
 ## Decisions to make on OpenReview
 
-1. **Title and abstract versus the registered ones.** Both changed after
-   abstract registration (new results: the feedback-matched control, the
-   verdict-matched analysis and the forced-submission run). The CFP page does
-   not say whether changes are allowed; if in doubt, ask the PC chairs, or
-   revert the `\title{...}` command in `paper/main.tex` and rebuild.
+1. **Title and abstract versus the registered ones.** The Q&A page (Q11)
+   says the title and abstract "should not be changed in any substantive way
+   after the abstract deadline"; minor editorial corrections are permitted.
+   Registered on OpenReview: *From Feedback to Revision: When Multi-Agent
+   Roles Become Load-Bearing*, with an abstract on the same experiments that
+   concluded roles help revision. The title change is editorial; the
+   abstract's conclusion changed (new results: the feedback-matched control,
+   the verdict-matched analysis and the forced-submission run). The
+   OpenReview fields must match the PDF; decide whether to also send the PC
+   chairs a short note.
 2. **Findings.** Earlier mock reviews converged on "Findings or reject";
    do not opt out of Findings unless you have a reason.
-3. **Reciprocal reviewer** and **OpenReview profiles for every author** —
-   check both on the 2027 pages.
+3. **Reciprocal reviewer:** at least one designated reciprocal reviewer
+   must have accepted the reviewer invitation in OpenReview by Oct 8 AoE.
+   **Every author must have an OpenReview account** (one author chip on the
+   form showed no linked profile; check it).
 4. **"Primary author is a student"** box on OpenReview, if it applies (used
    only for the best-student-paper award).
 
@@ -65,7 +81,37 @@ verdicts, the gap closes), so the question form fits the claims.
   sentences with what the cited papers say. The single-agent corpus is now
   described neutrally as "an earlier, separately collected corpus" in the
   paper, the supplement, the table caption and the zip.
+- Results (Section 5) rewritten to explain each finding rather than list
+  numbers: every paragraph now states the result, the reason (marked as
+  untested where it is a candidate explanation) and what it implies. About
+  half of the numbers in the section moved to the tables or to the
+  supplement, which gained short paragraphs with the per-role answer rates,
+  the numeric overlap, the judge's stability, the logging-defect detail,
+  the revision and leakage checks, the freeze-crossing verdict-matched check,
+  the enforced submission and rejection counts, and the SciBench answer-lock
+  rates. The main text now ends 3.9 lines short of the end of page 8.
+- The main text no longer mentions sha256 or hashing (three sentences in
+  Sections 3 and 4 reworded; the manifests are still in the zip).
+- Supplement rewritten and reordered to follow the main paper's R1--R5, with a
+  glossary up front, short captions with the column definitions in a note
+  under each table, one table style, full model ids, and four new figures
+  (`analysis/scripts/mk_fig_supp.py`; byte-reproducible).
+- Supplementary zip rebuilt with the table sources and `mk_fig_supp.py`, a
+  requirements paragraph in its README, and stricter redaction and gate rules
+  (internal paths, gateway names, commit and branch ids, US time-zone offsets
+  in timestamps). An independent scan of the unpacked zip found nothing
+  identifying; `mk_fig_supp.py` reproduces the four figures byte for byte
+  from the unpacked zip.
 - No number changed. The abstract is a new one-paragraph version (263 words).
+
+## Overleaf
+
+The Overleaf project was created from a sources-only zip (`main.tex`,
+`supplement.tex`, class, bst, bib, `by.pdf`, `sections/`, `tables/`,
+`figures/`), which is not committed. The authors then wrote the AI use
+statement there; `paper/supplement.tex` carries the same text. Overleaf's
+TeX Live breaks one line of the main text differently from the build here;
+the page layout and the 3.9 lines of slack on page 8 are unchanged.
 
 ## Anonymity
 
@@ -77,9 +123,12 @@ matches the paper's numbers would de-anonymize it.
 
 ## AI use
 
-The supplement's "AI assistance" section discloses the tools used for
-experimental design, analysis and writing, as the CFP requires when AI
-contributed to methodology.
+The AAMAS 2027 submission instructions require detailed disclosure "in the
+paper or in the supplementary material" when AI-assisted technologies
+contribute to hypotheses or methodology, including the tool and version; the
+Q&A page asks authors to state plainly what was not retained. The
+supplement's Section 8, "AI use statement", was written by the authors. The
+main text carries no pointer to it.
 
 ## Not done
 
@@ -98,7 +147,7 @@ for d in main supplement; do
 done
 python3 ../scripts/pagecheck.py main.pdf          # must exit 0
 python3 ../scripts/check_terminology_pdfs.py      # must pass
-cd .. && python3 scripts/mk_supp_zip.py --pdf paper/supplement.pdf   # anonymity gate must pass
+cd .. && python3 scripts/mk_supp_zip.py --pdf submission/supplement.pdf   # anonymity gate must pass
 ```
 
 `scripts/final_freeze.py` additionally needs the raw trajectory files

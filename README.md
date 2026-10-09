@@ -159,6 +159,7 @@ Field-by-field, measured from the rows:
 |---|---|---|---|---|
 | Figure 1 | one cycle, the submission gate, and where the feedback enters in each condition (schematic, no data) | `paper/figures/fig_pipeline.pdf` | **CANONICAL** | `paper/figures/README.md` |
 | Figure 2 | roles do not buy the first answer; recovery depends on whether feedback reaches the team; same budget, different allocation | `paper/figures/fig1_v3_story.pdf` | **CANONICAL** | [map](docs/PAPER_ARTIFACT_MAP.md) |
+| Supplement Figures 1--4 | which agent changes without roles; recovery follows exposure to the evaluator; verdict-matched robustness and the P4 interaction against its detectable size; enforcement under both scorings | `paper/figures/fig_supp_*.pdf` | **CANONICAL** | `paper/figures/README.md` |
 | (former Figure 2) | the same dissociation in a second domain; superseded, SciBench is now in Figure 2 and Table 2 | `figures/fig2_v2_xdomain.pdf` | not in the paper | [map](docs/PAPER_ARTIFACT_MAP.md) |
 | Table 1 | functional collapse per actor | `paper/tables/main_role_collapse.tex` | **CANONICAL** — main paper | [map](docs/PAPER_ARTIFACT_MAP.md) |
 | 6 further tables | recovery, SciBench, enforcement, single-agent, pre-registered endpoints, context quartiles | `paper/tables/*.tex` | **CANONICAL** — supplement | [map](docs/PAPER_ARTIFACT_MAP.md) |

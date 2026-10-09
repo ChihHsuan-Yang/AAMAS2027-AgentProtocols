@@ -29,59 +29,30 @@
 % ==========================================================================
 \begin{table*}[t]
 \centering
-\caption{\textbf{First-pass accuracy and recovery, role-structured versus
-role-free (feedback withheld), on the Omni-MATH benchmark.} Conditions:
-role-structured (Planner, Executor and Reviewer prompts) and role-free (one
-generic prompt for all three agents) with the evaluator's feedback
-withheld; per actor (the model playing all three agents). A trajectory is
-one problem's run through the pipeline; \emph{first pass} is whether its
-first submitted answer is correct, and \emph{recovery} is the share of
-first-pass-wrong trajectories (first verdict incorrect) that finish
-correct. \textbf{The two panels have different denominators and must not
-be read across.} \emph{Upper:} first pass over the problems graded under
-both conditions (paired, as in the main paper); recovery over each
-condition's own first-pass-wrong trajectories ($n$ in parentheses,
-computed per condition and therefore \emph{not} a shared denominator);
-differences are role-free minus role-structured, with $95\%$ bootstrap
-confidence intervals that resample problems. \emph{Lower:} the paired
-population, only problems first-pass wrong under \emph{both} conditions,
-one shared denominator $n_{\mathrm{both}}$, which is the actual test;
-``role-struct.\ only'' and ``role-free only'' count problems recovered
-under one condition and not the other, and the exact McNemar $p$ tests
-whether those two counts differ. The recovery denominator counts every
-trajectory with a recorded incorrect first verdict, including those that
-later died in regeneration (a malformed output exhausted its regeneration
-budget); these score $0$ under the pre-registered rule, used throughout.}
+\caption{First-pass accuracy and recovery with roles and without them (feedback withheld) on the Omni-MATH benchmark, on both populations.}
 \label{tab:recovery}
-\small
 \begin{tabular}{lcccccc}
 \toprule
-\multicolumn{7}{@{}l}{\emph{First pass paired; recovery on each condition's
-own denominator}} \\
+\multicolumn{7}{@{}l}{\emph{Marginal population: first pass paired; recovery on each condition's own denominator}} \\
 \midrule
  & \multicolumn{3}{c}{first pass}
  & \multicolumn{3}{c}{recovery $\mid$ first verdict wrong} \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}
-actor & role-struct. & role-free & difference
-      & role-struct. ($n$) & role-free ($n$) & difference \\
+actor & RS & RF$^{-}$ & difference & RS ($n$) & RF$^{-}$ ($n$) & difference \\
 \midrule
-gemma-4-31B & $0.802$ & $0.802$ & $+0.0000$ {\footnotesize $[{-}0.0156,\,+0.0150]$} & $0.222$ (316) & $0.051$ (316) & ${-}0.1709$ {\footnotesize $[{-}0.2247,\,{-}0.1171]$} \\
+gemma-4-31B-it & $0.802$ & $0.802$ & $+0.0000$ {\footnotesize $[{-}0.0156,\,+0.0150]$} & $0.222$ (316) & $0.051$ (316) & ${-}0.1709$ {\footnotesize $[{-}0.2247,\,{-}0.1171]$} \\
 gpt-oss-120b & $0.713$ & $0.763$ & $+0.0503$ {\footnotesize $[+0.0339,\,+0.0666]$} & $0.324$ (463) & $0.247$ (380) & ${-}0.0766$ {\footnotesize $[{-}0.1361,\,{-}0.0153]$} \\
-Llama-3.3-70B & $0.308$ & $0.316$ & $+0.0077$ {\footnotesize $[{-}0.0283,\,+0.0437]$} & $0.014$ (276) & $0.015$ (268) & $+0.0004$ {\footnotesize $[{-}0.0214,\,+0.0192]$} \\
+Llama-3.3-70B-Instruct & $0.308$ & $0.316$ & $+0.0077$ {\footnotesize $[{-}0.0283,\,+0.0437]$} & $0.014$ (276) & $0.015$ (268) & $+0.0004$ {\footnotesize $[{-}0.0214,\,+0.0192]$} \\
 \midrule
-\multicolumn{7}{@{}l}{\emph{Paired population} --- problems first-pass
-wrong under \textbf{both} conditions; one shared denominator} \\
+\multicolumn{7}{@{}l}{\emph{Paired population: problems first-pass wrong under both conditions; one shared denominator}} \\
 \midrule
-actor & $n_{\mathrm{both}}$ & role-struct. & role-free
-      & role-struct.\ only & role-free only & exact $p$ \\
+actor & $n_{\mathrm{both}}$ & RS & RF$^{-}$ & RS only & RF$^{-}$ only & exact $p$ \\
 \midrule
-gemma-4-31B & $237$ & $0.160$ & $0.017$ & $37$ & $3$ & $1.95\times 10^{-8}$ \\
+gemma-4-31B-it & $237$ & $0.160$ & $0.017$ & $37$ & $3$ & $1.95\times 10^{-8}$ \\
 gpt-oss-120b & $327$ & $0.242$ & $0.202$ & $52$ & $39$ & $0.208$ \\
-Llama-3.3-70B & $245$ & $0.004$ & $0.016$ & $1$ & $4$ & $0.375$ \\
+Llama-3.3-70B-Instruct & $245$ & $0.004$ & $0.016$ & $1$ & $4$ & $0.375$ \\
 \bottomrule
 \end{tabular}
 
-\vspace{2pt}
-\footnotesize Recovery conditions on a post-treatment variable and is
-descriptive, never causal. No cell recovers before its first oracle verdict.
+\tabnote{RS: role-structured; RF$^{-}$: role-free with the evaluator's feedback withheld. First pass: whether a trajectory's first submitted answer is correct. Recovery: the share of first-pass-wrong trajectories that finish correct. Upper block: first pass over the problems graded under both conditions; recovery over each condition's own first-pass-wrong trajectories ($n$ in parentheses, not a shared denominator); differences are RF$^{-}$ minus RS, with 95\% bootstrap intervals over problems. Lower block: only the problems first-pass wrong under both conditions ($n_{\mathrm{both}}$), which is the actual test; ``RS only'' and ``RF$^{-}$ only'' count problems recovered under one condition and not the other, with the exact McNemar $p$ for the two counts. The two blocks have different denominators and must not be read across. Recovery conditions on a post-treatment variable and is descriptive rather than causal; no cell recovers before its first evaluator verdict.}
 \end{table*}

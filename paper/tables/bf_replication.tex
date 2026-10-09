@@ -2,36 +2,23 @@
 %% FIGDATA_BF_chain2.json -- do not edit by hand.
 \begin{table*}[t]
 \centering
-\caption{\textbf{The gemma-4 feedback-matched cells, run twice.}
-Role-structured: Planner, Executor and Reviewer prompts (the frozen run).
-Role-free + feedback: one generic prompt for all three agents, with the
-evaluator's verdict and repair hint shown; both runs use byte-identical
-runner and prompt code, and the main text reports run 1. \emph{First
-pass}: whether a trajectory's (one problem's run) first submitted answer is
-correct. \emph{Recovery}: first-pass-wrong trajectories that finish
-correct, over each condition's own first-pass-wrong set (count /
-denominator). \emph{Final}: accuracy at the end over all problems,
-never-graded trajectories counted as incorrect. The \emph{paired} columns
-compare each role-free run with the role-structured run on problems
-first-pass wrong under both (recovery) or on all problems (final): problems
-recovered, or finally correct, only without roles versus only with them,
-with the exact McNemar $p$ for the two counts.}
+\caption{The two gemma-4-31B-it cells of the role-free condition with feedback, run twice, against the frozen role-structured cell.}
 \label{tab:bfreplication}
-\small
 \begin{tabular}{@{}lccccc@{}}
 \toprule
  & first pass & recovery & paired recovery & final & paired final \\
 \midrule
 \multicolumn{6}{@{}l}{\emph{Omni-MATH}} \\
 \quad role-structured (frozen) & $0.802$ & $70/316=0.222$ & -- & $0.846$ & -- \\
-\quad role-free + feedback, run 1 & $0.802$ & $193/317=0.609$ & $89$ vs $4$, $p=6.2\times10^{-22}$ & $0.921$ & $137$ vs $17$, $p=1.7\times10^{-24}$ \\
-\quad role-free + feedback, run 2 & $0.811$ & $177/302=0.586$ & $95$ vs $7$, $p=7.8\times10^{-21}$ & $0.922$ & $139$ vs $18$, $p=2.4\times10^{-24}$ \\
+\quad role-free, with feedback, run 1 & $0.802$ & $193/317=0.609$ & $89$ vs $4$, $p=6.2\times10^{-22}$ & $0.921$ & $137$ vs $17$, $p=1.7\times10^{-24}$ \\
+\quad role-free, with feedback, run 2 & $0.811$ & $177/302=0.586$ & $95$ vs $7$, $p=7.8\times10^{-21}$ & $0.922$ & $139$ vs $18$, $p=2.4\times10^{-24}$ \\
 \addlinespace
 \multicolumn{6}{@{}l}{\emph{SciBench}} \\
 \quad role-structured (frozen) & $0.794$ & $30/118=0.254$ & -- & $0.847$ & -- \\
-\quad role-free + feedback, run 1 & $0.796$ & $49/117=0.419$ & $21$ vs $7$, $p=0.013$ & $0.880$ & $31$ vs $12$, $p=0.0054$ \\
-\quad role-free + feedback, run 2 & $0.784$ & $54/124=0.435$ & $19$ vs $8$, $p=0.052$ & $0.878$ & $29$ vs $11$, $p=0.0064$ \\
+\quad role-free, with feedback, run 1 & $0.796$ & $49/117=0.419$ & $21$ vs $7$, $p=0.013$ & $0.880$ & $31$ vs $12$, $p=0.0054$ \\
+\quad role-free, with feedback, run 2 & $0.784$ & $54/124=0.435$ & $19$ vs $8$, $p=0.052$ & $0.878$ & $29$ vs $11$, $p=0.0064$ \\
 \addlinespace
 \bottomrule
 \end{tabular}
+\tabnote{Both runs use byte-identical runner and prompt code; the main text reports run 1. First pass: whether a trajectory's first submitted answer is correct. Recovery: first-pass-wrong trajectories that finish correct, over each condition's own first-pass-wrong set (count / denominator). Final: accuracy at the end over all problems, never-graded trajectories counted as incorrect. The paired columns compare each role-free run with the role-structured run on the problems first-pass wrong under both (recovery) or on all problems (final): problems recovered, or finally correct, only without roles versus only with them, with the exact McNemar $p$ for the two counts.}
 \end{table*}

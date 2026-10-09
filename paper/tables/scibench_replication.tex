@@ -31,41 +31,20 @@
 % ==========================================================================
 \begin{table*}[t]
 \centering
-\caption{\textbf{The dissociation replicates out of domain: the SciBench
-benchmark.} The complete $574$-problem text-only slice of free-response
-college science, two actors (the model playing all three agents), 2296
-trajectories, frozen separately from the Omni-MATH snapshot. Conditions:
-role-structured (Planner, Executor and Reviewer prompts) and role-free (one
-generic prompt for all three agents) with the evaluator's feedback
-withheld; the feedback-matched contrast is in the main paper's Table~2.
-\emph{First pass}: whether a trajectory's (one problem's run) first
-submitted answer is correct, paired over all $574$ problems; the exact
-McNemar $p$ tests whether the problems right under only one condition
-outnumber those right under only the other. \emph{Recovery}: the share of
-first-pass-wrong trajectories (first verdict incorrect) that finish
-correct, paired over only the problems first-pass wrong under \emph{both}
-conditions ($n_{\mathrm{both}}$), which is why its $n$ is roughly a sixth
-the size; ``r-s.\ only'' and ``r-f.\ only'' count problems recovered under
-one condition and not the other. \textbf{The two panels have different
-populations.} Differences are role-free minus role-structured;
-pre-registered scoring (never-graded trajectories count as incorrect).
-gpt-oss's recovery cell \textbf{cannot resolve its own effect} at the
-realized $n_{\mathrm{both}}$: its point estimate is in the same direction
-as Omni-MATH's, so it is underpowered rather than a non-replication.
-Llama-3.3 was not run in this domain.}
+\caption{The SciBench benchmark: first pass and recovery with roles and without them (feedback withheld), two actors, frozen separately.}
 \label{tab:scibench}
-\small
 \begin{tabular}{lccccc@{\hspace{1.4em}}ccccccc}
 \toprule
  & \multicolumn{5}{c}{first pass (paired, all problems)}
  & \multicolumn{7}{c}{recovery (paired on first-pass wrong under both)} \\
 \cmidrule(lr){2-6}\cmidrule(lr){7-13}
-actor & $n$ & role-str. & role-free & diff. & exact $p$
-      & $n_{\mathrm{both}}$ & role-str. & role-free & diff.
-      & r-s.\ only & r-f.\ only & exact $p$ \\
+actor & $n$ & RS & RF$^{-}$ & diff. & exact $p$
+      & $n_{\mathrm{both}}$ & RS & RF$^{-}$ & diff.
+      & RS only & RF$^{-}$ only & exact $p$ \\
 \midrule
-gemma-4-31B & $574$ & $0.794$ & $0.794$ & $+0.0000$ & $1$ & $99$ & $0.212$ & $0.020$ & ${-}0.1919$ & $21$ & $2$ & $6.60\times 10^{-5}$ \\
+gemma-4-31B-it & $574$ & $0.794$ & $0.794$ & $+0.0000$ & $1$ & $99$ & $0.212$ & $0.020$ & ${-}0.1919$ & $21$ & $2$ & $6.60\times 10^{-5}$ \\
 gpt-oss-120b & $574$ & $0.784$ & $0.789$ & $+0.0052$ & $0.784$ & $96$ & $0.219$ & $0.135$ & ${-}0.0833$ & $17$ & $9$ & $0.169$ \\
 \bottomrule
 \end{tabular}
+\tabnote{The complete 574-problem text-only slice of free-response college science, 2,296 trajectories. RS: role-structured; RF$^{-}$: role-free with the evaluator's feedback withheld; the contrast with feedback shown is in the main paper's Table~2. First pass is paired over all 574 problems, with the exact McNemar $p$ for the problems right under only one condition. Recovery is paired over only the problems first-pass wrong under both conditions ($n_{\mathrm{both}}$); ``RS only'' and ``RF$^{-}$ only'' count problems recovered under one condition and not the other. Differences are RF$^{-}$ minus RS under the pre-registered scoring (never-graded trajectories count as incorrect). gpt-oss-120b's recovery cell is underpowered at its $n_{\mathrm{both}}$ rather than a non-replication: its estimate points the same way as on Omni-MATH. Llama-3.3-70B-Instruct was not run in this domain.}
 \end{table*}

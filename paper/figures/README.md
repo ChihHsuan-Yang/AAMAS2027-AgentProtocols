@@ -50,6 +50,19 @@ predate the feedback-matched condition and are kept under `figures/` only.
 
 ---
 
+## Supplement figures (four, one script)
+
+| | |
+|---|---|
+| **document** | `paper/supplement.tex`, Figures 1--4 (`fig:roles`, `fig:verdicts`, `fig:robustness`, `fig:enforcement`) |
+| **purpose** | which agent changes when the role clauses are deleted; recovery follows exposure to the evaluator; the verdict-matched contrast under six definitions and the pre-registered interaction against its detectable size; enforcement's accuracy effect under both scorings |
+| **source script** | `analysis/scripts/mk_fig_supp.py` |
+| **intermediate data** | `analysis/out/FINAL_TABLES_OUTPUT.txt` sections T2, T7, T8, T14 (read as `mk_tables.py` reads them), `analysis/out/FIGDATA_BF.json` (`verdict_curve`), `analysis/out/FIGDATA_GATE.json` (`verdict_robust_pooled`), and the MDE column of the generated `paper/tables/prereg_endpoints.tex` |
+| **output** | `paper/figures/fig_supp_{roles,verdicts,robustness,enforcement}.pdf` (root copies with `.png` previews under `figures/`) |
+| **regenerate** | `python3 analysis/scripts/mk_fig_supp.py` (places a new file in `paper/figures/` once, then `mk_figstyle.save()` keeps it in sync); regeneration is byte-identical |
+
+---
+
 ## Not in the manuscript
 
 | file | status |

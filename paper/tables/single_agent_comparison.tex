@@ -26,34 +26,15 @@
 % codes are deliberately absent and their absence is asserted at
 % generation time.
 % ==========================================================================
-\begin{table}[t]
+\begin{table}[htb]
 \centering
-\caption{\textbf{Against a single agent under the same call cap.} Final
-accuracy over all problems ($n$) of each three-agent team, role-structured
-(Planner, Executor and Reviewer prompts) or role-free (one generic prompt
-for all three agents, feedback withheld), against a single agent of the
-same actor (the model playing all three agents) solving the same problems
-under the same cap on model calls; the difference is team minus single
-agent, with its $95\%$ bootstrap confidence interval (resampling problems)
-and exact McNemar $p$. Both directions must be read together: a collapsed
-gpt-oss team beats its own single agent, so three agents emitting one
-answer is not functionally one agent; \textbf{but gemma-4's team is worse
-than its own single agent in both conditions}. \textbf{Provenance: this
-panel is not from the frozen snapshot}; the single-agent trajectories come
-from an earlier, separately collected trace corpus, joined by problem. \textbf{Its two
-actor arms were produced in separate runs}, so each direction is a sound
-directional guard while \emph{the gap between actors is not}; no statement
-about relative magnitude across actors is supported here. \emph{Realized
-call budget}: calls per problem to the evaluator and to the actor; the
-single agent makes about half the actor calls, and more evaluator calls
-than the role-structured team but fewer than the role-free one.}
+\caption{Each three-agent team against a single agent of the same actor under the same call cap, on the Omni-MATH benchmark.}
 \label{tab:singleagent}
-\small
 \begin{tabular}{@{}lccc@{}}
 \toprule
 organization & team & single agent & difference \\
 \midrule
-\multicolumn{4}{@{}l}{\emph{gemma-4-31B}} \\
+\multicolumn{4}{@{}l}{\emph{gemma-4-31B-it}} \\
 \quad role-structured & $0.8462$ & $0.8688$ & ${-}0.0225$ \\
  & \multicolumn{3}{r}{\footnotesize $[{-}0.0400,\,{-}0.0056]$, $p=0.0122$, $n=1600$} \\
 \quad role-free & $0.8125$ & $0.8688$ & ${-}0.0563$ \\
@@ -70,12 +51,13 @@ organization & team & single agent & difference \\
 \midrule
 actor & protocol & evaluator & actor \\
 \midrule
-gemma-4-31B & single agent & $1.66$ & $3.16$ \\
-gemma-4-31B & role-structured team & $1.11$ & $6.76$ \\
-gemma-4-31B & role-free team & $1.95$ & $5.87$ \\
+gemma-4-31B-it & single agent & $1.66$ & $3.16$ \\
+gemma-4-31B-it & role-structured team & $1.11$ & $6.76$ \\
+gemma-4-31B-it & role-free team & $1.95$ & $5.87$ \\
 gpt-oss-120b & single agent & $1.69$ & $3.40$ \\
 gpt-oss-120b & role-structured team & $1.35$ & $7.54$ \\
 gpt-oss-120b & role-free team & $1.85$ & $6.25$ \\
 \bottomrule
 \end{tabular}
+\tabnote{Final accuracy over all problems ($n$) of the role-structured (RS) and role-free, feedback-withheld (RF$^{-}$) teams against a single agent of the same actor solving the same problems under the same cap on model calls; the difference is team minus single agent, with its 95\% bootstrap interval over problems and the exact McNemar $p$. The single-agent trajectories come from an earlier, separately collected trace corpus, joined by problem, and its two actor arms were produced in separate runs: each direction within an actor is a sound guard, the gap between actors is not. Realized call budget: calls per problem to the evaluator and to the actor.}
 \end{table}

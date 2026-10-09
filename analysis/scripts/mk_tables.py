@@ -97,6 +97,8 @@ ACTOR_LABEL = {
     "Llama-3.3-70B-Instruct": "Llama-3.3-70B",
 }
 ACTORS = ["gemma-4-31B-it", "gpt-oss-120b", "Llama-3.3-70B-Instruct"]
+# The supplement prints the full model ids; the main paper's Table 1 keeps the short form.
+ACTOR_FULL = {a: a for a in ACTORS}
 
 # A bare internal arm code must not survive into a rendered table.
 FORBIDDEN = re.compile(
@@ -363,7 +365,7 @@ def t_collapse_full(S, pv) -> str:
     # The role-free condition is reported with and without the evaluator's
     # feedback (manuscript 4); this table's role-free rows are the frozen
     # condition WITHOUT feedback.
-    LBL = {"A": ARM_LABEL["A"], "B": "role-free, feedback withheld"}
+    LBL = {"A": ARM_LABEL["A"] + " (RS)", "B": "role-free, feedback withheld (RF$^{-}$)"}
     for arm in ("A", "B"):
         body.append(f"\\multicolumn{{4}}{{@{{}}l}}{{\\emph{{{LBL[arm]}}}}} \\\\")
         for a in ACTORS:
@@ -381,7 +383,7 @@ def t_collapse_full(S, pv) -> str:
             if short > 0.5:
                 dup_cell = dup_cell[:-1] + "^{\\dagger}$"   # inside the same math group
                 dagger.append(short)
-            body.append(f"\\quad {ACTOR_LABEL[a]} & {bold(coll)} & {dup_cell} & {bold(aj)} \\\\")
+            body.append(f"\\quad {ACTOR_FULL[a]} & {bold(coll)} & {dup_cell} & {bold(aj)} \\\\")
         body.append("\\addlinespace")
 
     # Role-free WITH feedback: same prompts as the role-free rows, run after the
@@ -390,9 +392,9 @@ def t_collapse_full(S, pv) -> str:
     # condition. Only cells whose run is complete are printed.
     bf_rows = list(_bf_collapse().items())
     if bf_rows:
-        body.append("\\multicolumn{4}{@{}l}{\\emph{role-free, with feedback}} \\\\")
+        body.append("\\multicolumn{4}{@{}l}{\\emph{role-free, with feedback (RF)}} \\\\")
         for a, c in bf_rows:
-            body.append(f"\\quad {ACTOR_LABEL[a]} & $\\mathbf{{{c['collapse']:.3f}}}$ & -- & -- \\\\")
+            body.append(f"\\quad {ACTOR_FULL[a]} & $\\mathbf{{{c['collapse']:.3f}}}$ & -- & -- \\\\")
         body.append("\\addlinespace")
 
     # Enforced condition: collapse is n/a (its schema has no answer field).
@@ -401,7 +403,7 @@ def t_collapse_full(S, pv) -> str:
     dups = [float(need(T18, (a, arm), "T18")[1])
             for a in ACTORS for arm in ("C",) if (a, arm) in T18]
     ajs = [float(v[1]) for (a, arm), v in adj.items() if arm == "C"]
-    body.append("\\multicolumn{4}{@{}l}{\\emph{structurally enforced}} \\\\")
+    body.append("\\multicolumn{4}{@{}l}{\\emph{structurally enforced (SE)}} \\\\")
     body.append(f"\\quad all actors & n/a & $\\leq {max(dups):.3f}$ & "
                 f"${min(ajs):.3f}$--${max(ajs):.3f}$ \\\\")
 
@@ -437,26 +439,8 @@ def t_collapse_full(S, pv) -> str:
                   "describe it as blinded (APPROVED_CLAIMS A1 / DEAD list)."])
     return pre + f"""\\begin{{table}}[t]
 \\centering
-\\caption{{\\textbf{{Functional collapse on the Omni-MATH benchmark, all three
-measures.}} The full form of the main paper's Table~1. Rows: the three
-actors (the model playing all three agents) under role-structured prompts
-(Planner, Executor and Reviewer), under role-free prompts (one generic
-prompt for all three agents) with the evaluator's feedback withheld, under
-the same role-free prompts with the feedback shown (run after the freeze),
-and under structural enforcement (roles imposed by typed message formats).
-\\emph{{Functional collapse}}: share of first cycles (one pass of the three
-agents) in which all three agents assert their own final answer.
-\\emph{{Exact byte duplication}}: share of first cycles in which two or more
-of the three messages are byte-identical, a lower bound on collapse
-(precision $1.000$, recall $0.262$ against the adjudication) that is never
-used to compare actors. \\emph{{Adjudicated no division}}: share of a judged
-sample of first cycles in which a model judge with a fixed rubric finds no
-division of labor; the judge did not see the grade but could infer the
-condition. Collapse is not applicable to the enforced condition, whose
-Planner schema has no answer field; for the role-free condition with
-feedback only functional collapse was measured.}}
+\\caption{{Functional collapse on the Omni-MATH benchmark under three measures, with the structurally enforced condition and a sensitivity analysis over answer markers.}}
 \\label{{tab:collapse_full}}
-\\small
 \\begin{{tabular}}{{@{{}}lccc@{{}}}}
 \\toprule
  & functional & exact byte & adjudicated \\\\
@@ -466,15 +450,14 @@ actor & collapse & duplication & no division \\\\
 \\bottomrule
 \\end{{tabular}}
 
-\\vspace{{2pt}}
-\\footnotesize\\emph{{Sensitivity.}} Under three answer-marker definitions the
+\\tabnote{{RS: role-structured prompts; RF$^{{-}}$ and RF: role-free prompts with the evaluator's feedback withheld or shown (RF was run after the freeze); SE: structural enforcement. Functional collapse: share of first cycles in which all three agents assert their own final answer. Exact byte duplication: share of first cycles in which two or more of the three messages are identical character for character, a lower bound on collapse that is never used to compare actors. Adjudicated no division: share of a judged sample of first cycles in which a model judge with a fixed rubric finds no division of labor; the judge did not see the grade but could infer the condition. Collapse is not applicable under SE, whose Planner schema has no answer field; for RF only functional collapse was measured. \\emph{{Sensitivity.}} Under three answer-marker definitions the
 feedback-withheld role-free rate is ${b_lo:.3f}$--${b_hi:.3f}$; the
 role-structured rate is ${a_lo2:.3f}$--${a_hi2:.3f}$ under the two stricter
 markers and ${min(a_loose):.3f}$--${max(a_loose):.3f}$ under the loosest, which
 also counts any ``therefore'', ``hence'' or ``$=$\\,number'' (as when a
 Planner restates givens), so read the role-structured level as ``low,'' not
 a point estimate. The ordering holds in all {ok} of {ncells}
-actor$\\times$marker cells.{dagger_note}
+actor$\\times$marker cells.{dagger_note}}}
 \\end{{table}}
 """
 
@@ -515,11 +498,11 @@ def t_recovery(S, pv) -> str:
         rA = need(T1, (a, "A"), "T1")
         rB = need(T1, (a, "B"), "T1")
         marg.append(
-            f"{ACTOR_LABEL[a]} & {m(g[0])} & {m(g[1])} & {m(g[2])} {ci(g[3])} & "
+            f"{ACTOR_FULL[a]} & {m(g[0])} & {m(g[1])} & {m(g[2])} {ci(g[3])} & "
             f"{m(g[4])} ({rA[4]}) & {m(g[5])} ({rB[4]}) & {m(g[6])} {ci(g[7])} \\\\")
         p = t4[(a, "B")]
         pair.append(
-            f"{ACTOR_LABEL[a]} & ${p[3]}$ & {m(p[9])} & {m(p[10])} & "
+            f"{ACTOR_FULL[a]} & ${p[3]}$ & {m(p[9])} & {m(p[10])} & "
             f"${p[5]}$ & ${p[7]}$ & {sci(p[11])} \\\\")
 
     pre = header("Table 2 (manuscript) -- first pass and recovery", pv,
@@ -534,57 +517,28 @@ def t_recovery(S, pv) -> str:
                   "bootstrap CI bound (that label was seed-dependent)."])
     return pre + f"""\\begin{{table*}}[t]
 \\centering
-\\caption{{\\textbf{{First-pass accuracy and recovery, role-structured versus
-role-free (feedback withheld), on the Omni-MATH benchmark.}} Conditions:
-role-structured (Planner, Executor and Reviewer prompts) and role-free (one
-generic prompt for all three agents) with the evaluator's feedback
-withheld; per actor (the model playing all three agents). A trajectory is
-one problem's run through the pipeline; \\emph{{first pass}} is whether its
-first submitted answer is correct, and \\emph{{recovery}} is the share of
-first-pass-wrong trajectories (first verdict incorrect) that finish
-correct. \\textbf{{The two panels have different denominators and must not
-be read across.}} \\emph{{Upper:}} first pass over the problems graded under
-both conditions (paired, as in the main paper); recovery over each
-condition's own first-pass-wrong trajectories ($n$ in parentheses,
-computed per condition and therefore \\emph{{not}} a shared denominator);
-differences are role-free minus role-structured, with $95\\%$ bootstrap
-confidence intervals that resample problems. \\emph{{Lower:}} the paired
-population, only problems first-pass wrong under \\emph{{both}} conditions,
-one shared denominator $n_{{\\mathrm{{both}}}}$, which is the actual test;
-``role-struct.\\ only'' and ``role-free only'' count problems recovered
-under one condition and not the other, and the exact McNemar $p$ tests
-whether those two counts differ. The recovery denominator counts every
-trajectory with a recorded incorrect first verdict, including those that
-later died in regeneration (a malformed output exhausted its regeneration
-budget); these score $0$ under the pre-registered rule, used throughout.}}
+\\caption{{First-pass accuracy and recovery with roles and without them (feedback withheld) on the Omni-MATH benchmark, on both populations.}}
 \\label{{tab:recovery}}
-\\small
 \\begin{{tabular}}{{lcccccc}}
 \\toprule
-\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{First pass paired; recovery on each condition's
-own denominator}}}} \\\\
+\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{Marginal population: first pass paired; recovery on each condition's own denominator}}}} \\\\
 \\midrule
  & \\multicolumn{{3}}{{c}}{{first pass}}
  & \\multicolumn{{3}}{{c}}{{recovery $\\mid$ first verdict wrong}} \\\\
 \\cmidrule(lr){{2-4}}\\cmidrule(lr){{5-7}}
-actor & role-struct. & role-free & difference
-      & role-struct. ($n$) & role-free ($n$) & difference \\\\
+actor & RS & RF$^{{-}}$ & difference & RS ($n$) & RF$^{{-}}$ ($n$) & difference \\\\
 \\midrule
 {chr(10).join(marg)}
 \\midrule
-\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{Paired population}} --- problems first-pass
-wrong under \\textbf{{both}} conditions; one shared denominator}} \\\\
+\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{Paired population: problems first-pass wrong under both conditions; one shared denominator}}}} \\\\
 \\midrule
-actor & $n_{{\\mathrm{{both}}}}$ & role-struct. & role-free
-      & role-struct.\\ only & role-free only & exact $p$ \\\\
+actor & $n_{{\\mathrm{{both}}}}$ & RS & RF$^{{-}}$ & RS only & RF$^{{-}}$ only & exact $p$ \\\\
 \\midrule
 {chr(10).join(pair)}
 \\bottomrule
 \\end{{tabular}}
 
-\\vspace{{2pt}}
-\\footnotesize Recovery conditions on a post-treatment variable and is
-descriptive, never causal. No cell recovers before its first oracle verdict.
+\\tabnote{{RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld. First pass: whether a trajectory's first submitted answer is correct. Recovery: the share of first-pass-wrong trajectories that finish correct. Upper block: first pass over the problems graded under both conditions; recovery over each condition's own first-pass-wrong trajectories ($n$ in parentheses, not a shared denominator); differences are RF$^{{-}}$ minus RS, with 95\\% bootstrap intervals over problems. Lower block: only the problems first-pass wrong under both conditions ($n_{{\\mathrm{{both}}}}$), which is the actual test; ``RS only'' and ``RF$^{{-}}$ only'' count problems recovered under one condition and not the other, with the exact McNemar $p$ for the two counts. The two blocks have different denominators and must not be read across. Recovery conditions on a post-treatment variable and is descriptive rather than causal; no cell recovers before its first evaluator verdict.}}
 \\end{{table*}}
 """
 
@@ -634,7 +588,7 @@ def t_scibench(pv) -> str:
             continue
         g, r = q1[a], need(q2, a, "xdom Q2")
         body.append(
-            f"{ACTOR_LABEL[a]} & ${g[0]}$ & {m(g[1])} & {m(g[2])} & {m(g[3])} & {sci(g[7])} & "
+            f"{ACTOR_FULL[a]} & ${g[0]}$ & {m(g[1])} & {m(g[2])} & {m(g[3])} & {sci(g[7])} & "
             f"${r[0]}$ & {m(r[1])} & {m(r[2])} & {m(r[3])} & ${r[5]}$ & ${r[6]}$ & {sci(r[7])} \\\\")
 
     pre = header("Table 3 (manuscript) -- SciBench cross-domain replication", pv,
@@ -651,42 +605,21 @@ def t_scibench(pv) -> str:
                   "contract was domain-adapted), so none is reported here."])
     return pre + f"""\\begin{{table*}}[t]
 \\centering
-\\caption{{\\textbf{{The dissociation replicates out of domain: the SciBench
-benchmark.}} The complete $574$-problem text-only slice of free-response
-college science, two actors (the model playing all three agents), 2296
-trajectories, frozen separately from the Omni-MATH snapshot. Conditions:
-role-structured (Planner, Executor and Reviewer prompts) and role-free (one
-generic prompt for all three agents) with the evaluator's feedback
-withheld; the feedback-matched contrast is in the main paper's Table~2.
-\\emph{{First pass}}: whether a trajectory's (one problem's run) first
-submitted answer is correct, paired over all $574$ problems; the exact
-McNemar $p$ tests whether the problems right under only one condition
-outnumber those right under only the other. \\emph{{Recovery}}: the share of
-first-pass-wrong trajectories (first verdict incorrect) that finish
-correct, paired over only the problems first-pass wrong under \\emph{{both}}
-conditions ($n_{{\\mathrm{{both}}}}$), which is why its $n$ is roughly a sixth
-the size; ``r-s.\\ only'' and ``r-f.\\ only'' count problems recovered under
-one condition and not the other. \\textbf{{The two panels have different
-populations.}} Differences are role-free minus role-structured;
-pre-registered scoring (never-graded trajectories count as incorrect).
-gpt-oss's recovery cell \\textbf{{cannot resolve its own effect}} at the
-realized $n_{{\\mathrm{{both}}}}$: its point estimate is in the same direction
-as Omni-MATH's, so it is underpowered rather than a non-replication.
-Llama-3.3 was not run in this domain.}}
+\\caption{{The SciBench benchmark: first pass and recovery with roles and without them (feedback withheld), two actors, frozen separately.}}
 \\label{{tab:scibench}}
-\\small
 \\begin{{tabular}}{{lccccc@{{\\hspace{{1.4em}}}}ccccccc}}
 \\toprule
  & \\multicolumn{{5}}{{c}}{{first pass (paired, all problems)}}
  & \\multicolumn{{7}}{{c}}{{recovery (paired on first-pass wrong under both)}} \\\\
 \\cmidrule(lr){{2-6}}\\cmidrule(lr){{7-13}}
-actor & $n$ & role-str. & role-free & diff. & exact $p$
-      & $n_{{\\mathrm{{both}}}}$ & role-str. & role-free & diff.
-      & r-s.\\ only & r-f.\\ only & exact $p$ \\\\
+actor & $n$ & RS & RF$^{{-}}$ & diff. & exact $p$
+      & $n_{{\\mathrm{{both}}}}$ & RS & RF$^{{-}}$ & diff.
+      & RS only & RF$^{{-}}$ only & exact $p$ \\\\
 \\midrule
 {chr(10).join(body)}
 \\bottomrule
 \\end{{tabular}}
+\\tabnote{{The complete 574-problem text-only slice of free-response college science, 2,296 trajectories. RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld; the contrast with feedback shown is in the main paper's Table~2. First pass is paired over all 574 problems, with the exact McNemar $p$ for the problems right under only one condition. Recovery is paired over only the problems first-pass wrong under both conditions ($n_{{\\mathrm{{both}}}}$); ``RS only'' and ``RF$^{{-}}$ only'' count problems recovered under one condition and not the other. Differences are RF$^{{-}}$ minus RS under the pre-registered scoring (never-graded trajectories count as incorrect). gpt-oss-120b's recovery cell is underpowered at its $n_{{\\mathrm{{both}}}}$ rather than a non-replication: its estimate points the same way as on Omni-MATH. Llama-3.3-70B-Instruct was not run in this domain.}}
 \\end{{table*}}
 """
 
@@ -734,7 +667,7 @@ def t_enforcement(S, pv) -> str:
         pp = need(ca, ("prereg", a), "T2 prereg")
         ag = need(ca, ("asgraded", a), "T2 as-graded")
         body.append(
-            f"{ACTOR_LABEL[a]} & ${auth_c:.3f}$ ({auth_b:.3f}) & {m(rc[7])} "
+            f"{ACTOR_FULL[a]} & ${auth_c:.3f}$ ({auth_b:.3f}) & {m(rc[7])} "
             f"({rb[7]}/{ra[7]}) & {m(rc[3])} ({ra[3]}) & {pct(at[3])} & "
             f"{m(pp[0])} {{\\footnotesize [{pp[1]}]}} & "
             f"{m(ag[0])} {{\\footnotesize [{ag[1]}]}} \\\\")
@@ -765,57 +698,25 @@ def t_enforcement(S, pv) -> str:
                   "survivorship reading, which is why attrition sits beside it."])
     return pre + f"""\\begin{{table*}}[t]
 \\centering
-\\caption{{\\textbf{{Structural enforcement: roles imposed by typed message
-formats.}} Enforced against role-structured (Planner, Executor and Reviewer
-prompts) and, where stated, role-free (one generic prompt for all three
-agents, feedback withheld), per actor (the model playing all three agents)
-on the Omni-MATH benchmark. A trajectory is one problem's run through the
-pipeline; it is first-pass wrong when its first submitted answer is graded
-wrong. \\emph{{Planner authors answer}}: the share of planner messages that
-state a final answer, under enforcement and (in parentheses) when roles are
-merely deleted; enforcement drives it to zero in all three actors, so the
-intervention engaged (this is the manipulation check; the main paper's R5
-gives the first-cycle rate). \\emph{{Locked answer}}: the share of
-first-pass-wrong trajectories whose answer string never changed, enforced
-and (in parentheses) role-free / role-structured. \\emph{{Recovery}}: the share
-of first-pass-wrong trajectories that finish correct, enforced and
-(role-structured in parentheses), on the denominator of
-Table~\\ref{{tab:recovery}}. \\emph{{Attrition}}: the share of enforced
-trajectories that never finish (a malformed output exhausted its
-regeneration budget). \\emph{{Final accuracy, enforced $-$ role-structured}}:
-the difference in accuracy over all problems, with $95\\%$ bootstrap
-confidence intervals; \\textbf{{the two accuracy columns are different
-populations, and the attrition column is why they disagree.}} The
-pre-registered rule scores never-graded trajectories incorrect; the
-as-graded column drops them and is a \\emph{{sensitivity analysis only}}: its
-gains are conditional on parsing successfully, and enforcement is the only
-condition where that removes a material fraction of the data.
-\\textbf{{Enforcement restores recovery for Llama-3.3; for the other two
-actors the direction is consistent but not resolvable against that
-attrition.}}}}
+\\caption{{Structural enforcement against the role-structured baseline on the Omni-MATH benchmark: the manipulation check, attrition, and final accuracy under both scorings.}}
 \\label{{tab:enforcement}}
-\\small
 \\begin{{tabular}}{{lccccccc}}
 \\toprule
- & planner authors & locked answer & recovery & &
- \\multicolumn{{2}}{{c}}{{final accuracy, enforced $-$ role-structured}} \\\\
+ & Planner authors & locked answer & recovery & &
+ \\multicolumn{{2}}{{c}}{{final accuracy, SE $-$ RS}} \\\\
 \\cmidrule(lr){{6-7}}
-actor & answer (role-free) & (r-f./r-s.) & (role-str.) & attrition
-      & pre-registered & as-graded \\\\
- & \\footnotesize manipulation check & \\footnotesize first-pass wrong
- & \\footnotesize first-pass wrong & & \\footnotesize (primary)
- & \\footnotesize (sensitivity) \\\\
+actor & answer (RF$^{{-}}$) & (RF$^{{-}}$ / RS) & (RS) & attrition
+      & pre-registered & as graded \\\\
 \\midrule
 {chr(10).join(body)}
 \\bottomrule
 \\end{{tabular}}
 
-\\vspace{{2pt}}
-\\footnotesize Attrition elsewhere is negligible: {att_a} with roles,
+\\tabnote{{SE: structurally enforced; RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld. Planner authors answer: the share of Planner messages that state a final answer, under SE and (in parentheses) under RF$^{{-}}$; SE drives it to zero in all three actors, so the intervention engaged (the manipulation check). Locked answer: the share of first-pass-wrong trajectories whose answer string never changed, under SE and (in parentheses) RF$^{{-}}$ / RS. Recovery: the share of first-pass-wrong trajectories that finish correct, under SE and (in parentheses) RS, on the denominator of Table~\\ref{{tab:recovery}}. Attrition: the share of SE trajectories that never finish because a malformed output exhausted its regeneration budget. Final accuracy: the difference over all problems with 95\\% bootstrap intervals, under the pre-registered scoring (never-graded trajectories count as incorrect) and as graded (they are dropped); the two columns are different populations and the attrition column is why they disagree. Attrition elsewhere is negligible: {att_a} with roles,
 {att_b} without. The as-graded column turns every sign
 positive; the pre-registration fixed in advance that unparseable
 trajectories count incorrect, and \\textbf{{the benefit appears only after
-conditioning on successful parsing.}}
+conditioning on successful parsing.}}}}
 \\end{{table*}}
 """
 
@@ -849,7 +750,7 @@ def t_single_agent(S, pv) -> str:
     for a in ACTORS:
         if (a, "A") not in sa:
             continue
-        body.append(f"\\multicolumn{{4}}{{@{{}}l}}{{\\emph{{{ACTOR_LABEL[a]}}}}} \\\\")
+        body.append(f"\\multicolumn{{4}}{{@{{}}l}}{{\\emph{{{ACTOR_FULL[a]}}}}} \\\\")
         for arm in ("A", "B"):
             if (a, arm) not in sa:
                 continue
@@ -870,7 +771,7 @@ def t_single_agent(S, pv) -> str:
                          ("our Arm B", "role-free team")):
             if (a, key) in calls:
                 v = calls[(a, key)]
-                cb.append(f"{ACTOR_LABEL[a]} & {lab} & ${v[0]}$ & ${v[1]}$ \\\\")
+                cb.append(f"{ACTOR_FULL[a]} & {lab} & ${v[0]}$ & ${v[1]}$ \\\\")
 
     pre = header("Table 5 (manuscript) -- budget-matched single-agent control", pv,
                  [f"analysis/out/{CANON.name}  section T17"],
@@ -881,29 +782,10 @@ def t_single_agent(S, pv) -> str:
                   "BOTH DIRECTIONS, ALWAYS TOGETHER. Never quote gpt-oss alone.",
                   "The two actor arms were produced in SEPARATE RUNS:",
                   "each direction is a sound guard; the GAP BETWEEN ACTORS is not."])
-    return pre + f"""\\begin{{table}}[t]
+    return pre + f"""\\begin{{table}}[htb]
 \\centering
-\\caption{{\\textbf{{Against a single agent under the same call cap.}} Final
-accuracy over all problems ($n$) of each three-agent team, role-structured
-(Planner, Executor and Reviewer prompts) or role-free (one generic prompt
-for all three agents, feedback withheld), against a single agent of the
-same actor (the model playing all three agents) solving the same problems
-under the same cap on model calls; the difference is team minus single
-agent, with its $95\\%$ bootstrap confidence interval (resampling problems)
-and exact McNemar $p$. Both directions must be read together: a collapsed
-gpt-oss team beats its own single agent, so three agents emitting one
-answer is not functionally one agent; \\textbf{{but gemma-4's team is worse
-than its own single agent in both conditions}}. \\textbf{{Provenance: this
-panel is not from the frozen snapshot}}; the single-agent trajectories come
-from an earlier, separately collected trace corpus, joined by problem. \\textbf{{Its two
-actor arms were produced in separate runs}}, so each direction is a sound
-directional guard while \\emph{{the gap between actors is not}}; no statement
-about relative magnitude across actors is supported here. \\emph{{Realized
-call budget}}: calls per problem to the evaluator and to the actor; the
-single agent makes about half the actor calls, and more evaluator calls
-than the role-structured team but fewer than the role-free one.}}
+\\caption{{Each three-agent team against a single agent of the same actor under the same call cap, on the Omni-MATH benchmark.}}
 \\label{{tab:singleagent}}
-\\small
 \\begin{{tabular}}{{@{{}}lccc@{{}}}}
 \\toprule
 organization & team & single agent & difference \\\\
@@ -917,6 +799,7 @@ actor & protocol & evaluator & actor \\\\
 {chr(10).join(cb)}
 \\bottomrule
 \\end{{tabular}}
+\\tabnote{{Final accuracy over all problems ($n$) of the role-structured (RS) and role-free, feedback-withheld (RF$^{{-}}$) teams against a single agent of the same actor solving the same problems under the same cap on model calls; the difference is team minus single agent, with its 95\\% bootstrap interval over problems and the exact McNemar $p$. The single-agent trajectories come from an earlier, separately collected trace corpus, joined by problem, and its two actor arms were produced in separate runs: each direction within an actor is a sound guard, the gap between actors is not. Realized call budget: calls per problem to the evaluator and to the actor.}}
 \\end{{table}}
 """
 
@@ -1008,7 +891,7 @@ def t_prereg(S, pv) -> str:
     p3adj = holm_adj(p3raw)
     p3 = []
     for a, r, h in zip(ACTORS, p3raw, p3adj):
-        p3.append(f"\\quad {ACTOR_LABEL[a]} & ${p2(r)}$ & ${p2(h)}$ & "
+        p3.append(f"\\quad {ACTOR_FULL[a]} & ${p2(r)}$ & ${p2(h)}$ & "
                   f"{'reject' if h < 0.05 else 'retain'} \\\\")
     # The pre-registration names Holm across the primary endpoints. Applied
     # across all six testable contrasts (P3's three, P4's three) it must give
@@ -1037,7 +920,7 @@ def t_prereg(S, pv) -> str:
             raise SourceMissing(f"T29 P4: no Holm row for {x} vs {y}")
         md, verdict = mde_for(y, x)
         p4.append(
-            f"\\quad {ACTOR_LABEL[x]} $-$ {ACTOR_LABEL[y]} & {m(g[0])} "
+            f"\\quad {ACTOR_FULL[x]} $-$ {ACTOR_FULL[y]} & {m(g[0])} "
             f"{{\\footnotesize [{g[1]}]}} & ${hm[0]}$ & ${hm[1]}$ & ${md}$ & "
             f"{'informative' if verdict == 'CAN' else 'uninformative'} \\\\")
 
@@ -1067,39 +950,8 @@ def t_prereg(S, pv) -> str:
                   "recompute one from the other."])
     return pre + f"""\\begin{{table*}}[t]
 \\centering
-\\caption{{\\textbf{{Every pre-registered endpoint, and what became of it.}} The
-five endpoints (pre-specified analyses) were fixed in writing before any
-intervention data existed. The intervention is structural enforcement
-(roles imposed by typed message formats) against the role-structured
-baseline (Planner, Executor and Reviewer prompts), per actor (the model
-playing all three agents); \\emph{{fidelity}} is whether the Planner abstains
-from computing (the \\Pone{{}} measure); \\emph{{accuracy}} is final accuracy over
-all problems with never-graded trajectories counted as incorrect. P3 tests,
-per actor, whether enforcement changes accuracy (exact McNemar test on the
-problems that exactly one condition gets right; the raw $p$, the $p$ after
-Holm's step-down correction across the three actors, and the verdict at
-$\\alpha=0.05$). P4, the pre-registered primary, tests whether the
-enforcement effect differs between actors: each difference-in-differences
-is the effect in one actor minus the effect in another, with its $95\\%$
-bootstrap confidence interval (resampling problems), the raw and
-Holm-corrected $p$, and MDE$_{{80\\%}}$, the smallest interaction detectable
-with $80\\%$ power at the realized sample; a null is \\emph{{informative}} only
-where the MDE is below a plausible effect. \\textbf{{P4 is null before and
-after Holm correction}}, and we report that null. P1 failed as written and
-was re-designated rather than dropped: the interface forbids the planner
-emitting an \\emph{{answer}}, and nothing in it stops the planner
-\\emph{{computing}}, a dissociation we report as a finding. P2 and P5 are
-reported as effects and associations and carry no $p$-value, so the
-testable contrasts are P3's three and P4's three. Holm is applied within
-each family of three; applied across all six, as the pre-registration's
-``Holm correction across P1--P5'' would read, it changes no verdict. P4's
-intervals and $p$ values come from two separately seeded bootstrap runs, so
-an interval can exclude zero while $p$ is just above $0.05$. The MDE is
-computed on problems shared by both actors, while each
-difference-in-differences uses each actor's own problem set, so neither can
-be derived from the other.}}
+\\caption{{The five pre-registered endpoints and what each returned. P4, the primary, is null before and after Holm correction.}}
 \\label{{tab:prereg}}
-\\small
 \\begin{{tabular}}{{@{{}}llllll@{{}}}}
 \\toprule
 endpoint & \\multicolumn{{5}}{{l}}{{disposition}} \\\\
@@ -1125,7 +977,7 @@ endpoint & \\multicolumn{{5}}{{l}}{{disposition}} \\\\
 {chr(10).join(p3)}
 \\addlinespace
 \\multicolumn{{6}}{{@{{}}l}}{{\\textbf{{P4}} actor $\\times$ intervention on
-  accuracy --- \\emph{{the pre-registered primary}}, Holm across three:}} \\\\
+  accuracy (the pre-registered primary), Holm across three:}} \\\\
  & difference-in-diff.\\ [CI] & raw $p$ & Holm $p$ & MDE$_{{80\\%}}$ & null is \\\\
 {chr(10).join(p4)}
 \\addlinespace
@@ -1137,13 +989,12 @@ endpoint & \\multicolumn{{5}}{{l}}{{disposition}} \\\\
 \\bottomrule
 \\end{{tabular}}
 
-\\vspace{{2pt}}
-\\footnotesize \\textbf{{Only one of the three P4 nulls is informative.}} The
+\\tabnote{{The endpoints were fixed in writing before any intervention data existed. The intervention is structural enforcement against the role-structured baseline, per actor. Fidelity: whether the Planner abstains from computing (\\Pone{{}}). Accuracy: final accuracy over all problems, never-graded trajectories counted as incorrect. P3: exact McNemar test per actor, with the raw $p$, the $p$ after Holm's step-down correction across the three actors, and the verdict at $\\alpha=0.05$. P4: each difference-in-differences is enforcement's effect in one actor minus its effect in another, with its 95\\% bootstrap interval over problems, the raw and Holm-corrected $p$, and MDE$_{{80\\%}}$, the smallest interaction detectable with 80\\% power at the realized sample; a null is informative only where the MDE is below a plausible effect. P2 and P5 carry no $p$ value, so the testable contrasts are P3's three and P4's three; Holm across all six changes no verdict. P4's intervals and $p$ values come from two separately seeded bootstrap runs, so an interval can exclude zero while $p$ is just above 0.05; the MDE is computed on problems shared by both actors while each difference-in-differences uses each actor's own problems, so neither can be derived from the other. \\textbf{{Only one of the three P4 nulls is informative.}} The
 largest per-actor main effect is small enough that a true interaction is
 plausibly ${{\\leq}}0.040$; only the gpt-oss/gemma-4 contrast can see an
 effect that size. The two Llama-3.3 contrasts cannot detect an interaction of
 any plausible magnitude and are uninformative rather than evidence of
-absence.
+absence.}}
 \\end{{table*}}
 """
 
@@ -1388,7 +1239,7 @@ def t_context(S, pv) -> str:
     QLAB = {"Q1": "Q1 (least context)", "Q2": "Q2", "Q3": "Q3", "Q4": "Q4 (most)"}
     body = []
     for a in ACTORS:
-        body.append(f"\\multicolumn{{5}}{{@{{}}l}}{{\\emph{{{ACTOR_LABEL[a]}}}}} \\\\")
+        body.append(f"\\multicolumn{{5}}{{@{{}}l}}{{\\emph{{{ACTOR_FULL[a]}}}}} \\\\")
         for q in ("Q1", "Q2", "Q3", "Q4"):
             rA, nA, rB, nB = need(rows, (a, q), "T22")
             # A cell the canonical output suppressed for n<8 stays suppressed.
@@ -1408,40 +1259,20 @@ def t_context(S, pv) -> str:
                   "as a controlled comparison or a mediation analysis.",
                   "Cells with n<8 print '--' in the canonical output and stay",
                   "suppressed here rather than being recomputed at low n."])
-    return pre + f"""\\begin{{table}}[t]
+    return pre + f"""\\begin{{table}}[htb]
 \\centering
-\\caption{{\\textbf{{Recovery by pooled accumulated-context quartile,
-role-structured versus role-free (feedback withheld).}} Conditions:
-role-structured (Planner, Executor and Reviewer prompts) and role-free (one
-generic prompt for all three agents) with the evaluator's feedback
-withheld; per actor (the model playing all three agents) on the Omni-MATH
-benchmark. \\emph{{Recovery}}: the share of first-pass-wrong trajectories (one
-problem's run whose first submitted answer was graded wrong) that finish
-correct, with $n$ the number of such trajectories in the quartile; the
-difference is role-structured minus role-free. \\emph{{Context}} is the total
-character count of all Planner, Executor and Reviewer messages in the
-trajectory; quartile cut points are computed \\emph{{once per actor over both
-conditions pooled}}. \\textbf{{This is directional only.}} Accumulated context
-is nearly a function of condition (the role-free team talks less because
-it stops reworking), so the strata are not balanced and this comparison
-cannot separate context from condition. It is reported because accumulated
-context is a candidate explanation of the role-structured team's advantage
-over the feedback-withheld team, and because \\textbf{{it does not behave
-uniformly}}: the gap survives in the lower quartiles, but in gpt-oss's top
-quartile the ordering reverses (as, on a handful of events, in
-Llama-3.3's third).}}
+\\caption{{Recovery by accumulated-context quartile, with roles and without them (feedback withheld), on the Omni-MATH benchmark; directional only.}}
 \\label{{tab:context}}
-\\small
 \\begin{{tabular}}{{@{{}}lccccc@{{}}}}
 \\toprule
- & \\multicolumn{{2}}{{c}}{{role-structured}}
- & \\multicolumn{{2}}{{c}}{{role-free}} & \\\\
+ & \\multicolumn{{2}}{{c}}{{RS}} & \\multicolumn{{2}}{{c}}{{RF$^{{-}}$}} & \\\\
 \\cmidrule(lr){{2-3}}\\cmidrule(lr){{4-5}}
 context quartile & recovery & $n$ & recovery & $n$ & difference \\\\
 \\midrule
 {chr(10).join(body)}
 \\bottomrule
 \\end{{tabular}}
+\\tabnote{{RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld. Recovery: the share of first-pass-wrong trajectories that finish correct, with $n$ the number of such trajectories in the quartile; the difference is RS minus RF$^{{-}}$. Context is the total character count of all agent messages in the trajectory; quartile cut points are computed once per actor over both conditions pooled. Because accumulated context is nearly a function of condition (the RF$^{{-}}$ team writes less because it stops reworking), the strata are not balanced and the comparison cannot separate context from condition.}}
 \\end{{table}}
 """
 

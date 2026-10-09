@@ -26,58 +26,39 @@
 % ==========================================================================
 \begin{table}[t]
 \centering
-\caption{\textbf{Functional collapse on the Omni-MATH benchmark, all three
-measures.} The full form of the main paper's Table~1. Rows: the three
-actors (the model playing all three agents) under role-structured prompts
-(Planner, Executor and Reviewer), under role-free prompts (one generic
-prompt for all three agents) with the evaluator's feedback withheld, under
-the same role-free prompts with the feedback shown (run after the freeze),
-and under structural enforcement (roles imposed by typed message formats).
-\emph{Functional collapse}: share of first cycles (one pass of the three
-agents) in which all three agents assert their own final answer.
-\emph{Exact byte duplication}: share of first cycles in which two or more
-of the three messages are byte-identical, a lower bound on collapse
-(precision $1.000$, recall $0.262$ against the adjudication) that is never
-used to compare actors. \emph{Adjudicated no division}: share of a judged
-sample of first cycles in which a model judge with a fixed rubric finds no
-division of labor; the judge did not see the grade but could infer the
-condition. Collapse is not applicable to the enforced condition, whose
-Planner schema has no answer field; for the role-free condition with
-feedback only functional collapse was measured.}
+\caption{Functional collapse on the Omni-MATH benchmark under three measures, with the structurally enforced condition and a sensitivity analysis over answer markers.}
 \label{tab:collapse_full}
-\small
 \begin{tabular}{@{}lccc@{}}
 \toprule
  & functional & exact byte & adjudicated \\
 actor & collapse & duplication & no division \\
 \midrule
-\multicolumn{4}{@{}l}{\emph{role-structured}} \\
-\quad gemma-4-31B & $0.000$ & $0.000$ & $0.000$ \\
+\multicolumn{4}{@{}l}{\emph{role-structured (RS)}} \\
+\quad gemma-4-31B-it & $0.000$ & $0.000$ & $0.000$ \\
 \quad gpt-oss-120b & $0.120$ & $0.000$ & $0.000$ \\
-\quad Llama-3.3-70B & $0.000$ & $0.000$ & $0.000$ \\
+\quad Llama-3.3-70B-Instruct & $0.000$ & $0.000$ & $0.000$ \\
 \addlinespace
-\multicolumn{4}{@{}l}{\emph{role-free, feedback withheld}} \\
-\quad gemma-4-31B & $\mathbf{0.976}$ & $0.000$ & $\mathbf{0.857}$ \\
+\multicolumn{4}{@{}l}{\emph{role-free, feedback withheld (RF$^{-}$)}} \\
+\quad gemma-4-31B-it & $\mathbf{0.976}$ & $0.000$ & $\mathbf{0.857}$ \\
 \quad gpt-oss-120b & $\mathbf{0.846}$ & $0.680^{\dagger}$ & $\mathbf{1.000}$ \\
-\quad Llama-3.3-70B & $\mathbf{0.872}$ & $0.008$ & $\mathbf{1.000}$ \\
+\quad Llama-3.3-70B-Instruct & $\mathbf{0.872}$ & $0.008$ & $\mathbf{1.000}$ \\
 \addlinespace
-\multicolumn{4}{@{}l}{\emph{role-free, with feedback}} \\
-\quad gemma-4-31B & $\mathbf{0.974}$ & -- & -- \\
+\multicolumn{4}{@{}l}{\emph{role-free, with feedback (RF)}} \\
+\quad gemma-4-31B-it & $\mathbf{0.974}$ & -- & -- \\
 \quad gpt-oss-120b & $\mathbf{0.883}$ & -- & -- \\
-\quad Llama-3.3-70B & $\mathbf{0.900}$ & -- & -- \\
+\quad Llama-3.3-70B-Instruct & $\mathbf{0.900}$ & -- & -- \\
 \addlinespace
-\multicolumn{4}{@{}l}{\emph{structurally enforced}} \\
+\multicolumn{4}{@{}l}{\emph{structurally enforced (SE)}} \\
 \quad all actors & n/a & $\leq 0.001$ & $0.071$--$0.188$ \\
 \bottomrule
 \end{tabular}
 
-\vspace{2pt}
-\footnotesize\emph{Sensitivity.} Under three answer-marker definitions the
+\tabnote{RS: role-structured prompts; RF$^{-}$ and RF: role-free prompts with the evaluator's feedback withheld or shown (RF was run after the freeze); SE: structural enforcement. Functional collapse: share of first cycles in which all three agents assert their own final answer. Exact byte duplication: share of first cycles in which two or more of the three messages are identical character for character, a lower bound on collapse that is never used to compare actors. Adjudicated no division: share of a judged sample of first cycles in which a model judge with a fixed rubric finds no division of labor; the judge did not see the grade but could infer the condition. Collapse is not applicable under SE, whose Planner schema has no answer field; for RF only functional collapse was measured. \emph{Sensitivity.} Under three answer-marker definitions the
 feedback-withheld role-free rate is $0.846$--$0.999$; the
 role-structured rate is $0.000$--$0.238$ under the two stricter
 markers and $0.328$--$0.892$ under the loosest, which
 also counts any ``therefore'', ``hence'' or ``$=$\,number'' (as when a
 Planner restates givens), so read the role-structured level as ``low,'' not
 a point estimate. The ordering holds in all 9 of 9
-actor$\times$marker cells. $^{\dagger}$Not interpretable: $80\%$ of this cell's planner messages are under $500$ visible characters (the main paper's logging defect).
+actor$\times$marker cells. $^{\dagger}$Not interpretable: $80\%$ of this cell's planner messages are under $500$ visible characters (the main paper's logging defect).}
 \end{table}

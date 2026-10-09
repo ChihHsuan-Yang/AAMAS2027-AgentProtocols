@@ -15,7 +15,7 @@ vLLM server~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
 gemma-4-31B~\cite{gemma2026gemma4} and
 Llama-3.3-70B~\cite{grattafiori2024llama3}. The primary analysis reads one
 frozen snapshot of $11{,}600$ trajectories, $83{,}320$ role messages and
-$17{,}486$ gradings, listed in a sha256 manifest, on $1{,}600$ problems
+$17{,}486$ gradings on $1{,}600$ problems
 sampled uniformly at random from the $4{,}181$ available. The three main
 conditions run $1{,}600$ problems per cell (one actor in one condition on
 one domain) for gemma-4 and gpt-oss and $400$ for Llama-3.3. The
@@ -42,5 +42,5 @@ shared server. The two role-free conditions are byte-identical until the
 first verdict, yet they agree on gemma-4's first verdict for $1{,}496$ of
 $1{,}598$ problems, and their first-cycle collapse differs by up to $0.04$
 (Table~\ref{tab:collapse}). We therefore treat a cell as one sample and give
-the second run, where we have one, in the supplement. Prompts, runner and
-analysis scripts are in the supplementary material.
+the second run, where we have one, in the supplement. Prompts, runner,
+analysis scripts and data manifests are in the supplementary material.
