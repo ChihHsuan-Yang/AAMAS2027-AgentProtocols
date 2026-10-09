@@ -895,7 +895,7 @@ gpt-oss team beats its own single agent, so three agents emitting one
 answer is not functionally one agent; \\textbf{{but gemma-4's team is worse
 than its own single agent in both conditions}}. \\textbf{{Provenance: this
 panel is not from the frozen snapshot}}; the single-agent trajectories come
-from a previously released trace corpus, joined by problem. \\textbf{{Its two
+from an earlier, separately collected trace corpus, joined by problem. \\textbf{{Its two
 actor arms were produced in separate runs}}, so each direction is a sound
 directional guard while \\emph{{the gap between actors is not}}; no statement
 about relative magnitude across actors is supported here. \\emph{{Realized
@@ -1305,7 +1305,7 @@ reason.
 - **Status.** Exploratory; responds to a standing objection.
 - **Appears.** Results, final subsection, one column.
 - **Carry these caveats.** **Not from the frozen snapshot** --- it is a
-  previously released trace corpus, and that must be said wherever the
+  earlier, separately collected trace corpus, and that must be said wherever the
   numbers appear. **Both directions, always together**; never quote gpt-oss
   alone. **The two actor arms were produced in separate runs**, so
   each direction is a sound guard and *the gap between actors is not*. The

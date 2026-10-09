@@ -40,7 +40,8 @@ FILES = [
     "analysis/scripts/mk_gate_table.py", "analysis/scripts/mk_afs_table.py",
     "analysis/scripts/mk_robust_table.py",
     "analysis/scripts/mk_bf_replication.py",
-    "analysis/scripts/mk_fig1_bf.py", "analysis/scripts/mk_figstyle.py",
+    "analysis/scripts/mk_fig1_bf.py", "analysis/scripts/mk_fig_pipeline.py",
+    "analysis/scripts/mk_figstyle.py",
     "analysis/scripts/stat_audit_a7_power.py", "analysis/scripts/xdom_analyze.py",
     "analysis/scripts/r15_p1a_final.py",
     "analysis/out/FINAL_TABLES_OUTPUT.txt", "analysis/out/INDEPENDENT_AUDIT_OUTPUT.txt",
@@ -65,7 +66,7 @@ REDACT = [
     (r"(?i)\bsophia\b", "CLUSTER"),
     (r"IEEE2026_BigData_MAS-4-Science-Matching", "PRIOR-CORPUS"),
     (r"IEEE-BigData-SciAgentTrace", "PRIOR-CORPUS-REPO"),
-    (r"IEEE-BigData corpus", "previously released corpus"),
+    (r"IEEE-BigData corpus", "earlier, separately collected corpus"),
     (r"IEEE-BigData", "PRIOR-CORPUS"),
     (r"(?i)AgentsSci", "ANON-ORG"),
     (r"AAMAS2027-Roles", "ANON-DATASET"),
@@ -97,7 +98,7 @@ README = """# Supplementary material (anonymous)
   `FINAL_TABLES.py` (frozen snapshot), `INDEPENDENT_AUDIT.py` (an independent
   re-implementation), `bf_numbers.py` (the feedback-matched condition),
   `bf_gate.py` (submission gate, verdict-matched recovery, the forced-submission
-  run), `mk_*.py` (tables and Figure 1).
+  run), `mk_*.py` (tables and Figures 1 and 2).
 * `code/analysis/out/` -- the canonical outputs those scripts write; every number
   in the paper and in `supplement.pdf` can be found in them.
 * `code/experiments/results/**/MANIFEST*.json` -- sha256 manifests of the frozen
