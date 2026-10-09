@@ -1,99 +1,124 @@
 \section{Intervention}
 \label{sec:method}
 
-We vary organization in both directions from one baseline: we remove it,
-and we enforce it. All conditions share three agents, the same interaction order
-(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), message-passing
-graph, context visibility (except under enforcement, below), total call
-budget, verifier and verifier prompt, retry budget, decoding parameters
-(temperature $0$, identical \texttt{max\_tokens}), stopping rule (a PASS ends
-the trajectory) and grading. Every trajectory in the frozen snapshot carries
-the identical budget record: the design tests organization, not scale.
-\textbf{Besides the roles, three things differ.} After a FAIL the evaluator returns a repair hint, written
-with the gold answer in view and instructed not to reveal it; the
-role-structured and enforced templates show it to all three agents in the
-next cycle, each through its role's advice slot. The role-free template has
-no such slot, so the role-free condition is reported both without and with
-the feedback. The role-free footer asks every agent for an answer, and the
-role-structured Reviewer carries two clauses the role-free prompt lacks (below).
+We vary organization in both directions from one baseline: we remove it, and
+we enforce it. All conditions share three agents, one interaction order
+(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), the message-passing
+graph, context visibility (except under enforcement, below) and the total
+call budget. They also use the same verifier and prompt, retry budget,
+decoding parameters (temperature $0$, that is, greedy decoding, and
+identical \texttt{max\_tokens}), stopping rule (a PASS ends the trajectory)
+and grading. Every trajectory in the frozen snapshot carries the identical
+budget record, so the design tests organization, not scale. Besides the
+roles, three things differ. After a FAIL, the evaluator returns a repair
+hint, written with the gold answer (the reference solution) in view and
+instructed not to reveal it. The role-structured and enforced templates show
+the hint to all three agents in the next cycle, each through its role's
+advice slot, the template field reserved for the evaluator's feedback
+(Figure~\ref{fig:pipeline}). The role-free template has no such slot, so we
+report the role-free condition both without and with the feedback. The
+role-free footer (the closing instruction of the prompt) also asks every
+agent for an answer, and the role-structured Reviewer carries two clauses
+the role-free prompt lacks.
 
-\paragraph{Role-structured \PER{} (baseline).} Role prompts as ordinarily
-written: the organization as specified, including a Reviewer told to
-approve only a complete answer of the right shape and, in a cycle that
-receives a FAIL, to route the work back to the Planner or Executor rather
-than approve.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_pipeline.pdf}
+\Description{A diagram of one deliberation cycle: Planner, Executor and Reviewer in sequence, then an arrow marked approve and submit to the Evaluator. A line from the Evaluator returns the FAIL verdict and repair hint to all three agents in the next cycle; a dashed line from the Reviewer back to the Planner marks a cycle without approval, in which nothing is submitted. Below, a table lists for each of the four conditions who approves submission and through which channel the feedback reaches the agents.}
+\caption{\textbf{One deliberation cycle and where the feedback enters.}
+A trajectory (one problem's run, at most six cycles) advances one cycle per
+pass of Planner, Executor and Reviewer. The third agent's approval (the bar
+marks this gate) is the only route to the evaluator, which knows the
+reference answer and returns PASS, ending the trajectory, or FAIL with a
+repair hint; without approval nothing is submitted and the next cycle
+revises. The key gives where the feedback enters per condition: the advice
+slot of each role prompt for the role-structured team (Planner, Executor
+and Reviewer prompts) and the structurally enforced one (the same roles
+imposed by typed message formats); for the role-free team (one generic
+prompt for all three agents, with no slot), either nowhere or as an
+\texttt{[Evaluator]} entry in the shared history. A trajectory that never
+submits is graded once when the budget runs out.}
+\label{fig:pipeline}
+\end{figure}
 
-\paragraph{Role-free, feedback withheld.} Identical topology and
-budget; all three agents get one byte-identical prompt: ``You are one of
-three agents collaboratively solving this problem. Continue the work,''
-the problem, the shared history, the agent's slot number, and a footer
-asking for its current best answer in \texttt{\textbackslash boxed\{\}} and
-a closing \texttt{[Agree]} (ready to submit) or \texttt{[Continue]} ---
-the conventions the role-structured Executor and Reviewer use. Removed is
-every clause saying who does what, above all the Planner's \textsc{must
-not}s on computing and answering. In every prose condition the third
-agent's \texttt{[Agree]} is approval (untagged counts as
-\texttt{[Continue]}) and the latest boxed answer is submitted. Nothing in
-this template carries the evaluator's verdict or hint.
+\paragraph{Role-structured \PER{} (baseline).} Role prompts are as
+ordinarily written. The Reviewer is told to approve only a complete answer
+of the right shape. In a cycle that receives a FAIL, it is told to route the
+work back to the Planner or Executor rather than approve.
 
-\paragraph{Role-free with feedback.} The same role-free prompt, byte for
-byte, plus the evaluator's verdict and repair hint --- the string the
-role-structured team receives --- shown to all three agents as an
+\paragraph{Role-free, feedback withheld.} All three agents receive one
+byte-identical prompt, ``You are one of three agents collaboratively solving
+this problem. Continue the work.'', followed by the problem, the shared
+history and the agent's slot number (its position, first to third). A footer
+asks for the agent's current best answer in \texttt{\textbackslash
+boxed\{\}} and a closing \texttt{[Agree]} (ready to submit) or
+\texttt{[Continue]}, the conventions the role-structured Executor and
+Reviewer use. Every clause saying who does what is removed, above all the
+Planner's \textsc{must not}s on computing and answering. In every prose
+condition, the third agent's \texttt{[Agree]} is approval (a message with
+neither tag counts as \texttt{[Continue]}), and the latest boxed answer is
+submitted. Nothing in this template carries the evaluator's verdict or hint.
+
+\paragraph{Role-free with feedback.} This condition uses the same role-free
+prompt, byte for byte, plus the evaluator's verdict and repair hint, the
+string the role-structured team receives. All three agents see it as an
 \texttt{[Evaluator]} entry after the shared history in the cycle after a
-FAIL, the lifetime the advice slot has. It differs from the feedback-withheld
-one only in feedback, and from the role-structured one in roles, in the
-Reviewer's clauses and in feedback framing.
+FAIL, so it stays visible for one cycle, as the advice slot does. It differs
+from the feedback-withheld condition only in the feedback.
 
-\paragraph{Structurally enforced.} Specialization is enforced by the
-interface rather than by wording. The Planner emits JSON against
-a schema with \emph{no answer field}, so a final answer is
-unrepresentable; the Executor receives the parsed plan object and
-the problem --- never the Planner's raw text --- and emits
-\texttt{\{derivation, answer\}}; the Reviewer emits
-\texttt{\{verdict, target\_span, critique\}}, and \texttt{accept}
-promotes the Executor's answer verbatim \emph{by reference}, having no
-field in which to \emph{author} one. Each function stays with one agent
-under the same budget, but the Executor sees less context and a rejected
-emission can exhaust the regeneration budget. A \emph{context-restored
-control} repeats it with shared history restored.
+\paragraph{Structurally enforced.} The interface, not the wording, enforces
+specialization. The Planner emits JSON (a typed output format) against a
+schema with \emph{no answer field}, so a final answer is unrepresentable.
+The Executor receives the parsed plan object and the problem, never the
+Planner's raw text, and emits a derivation and an answer. The Reviewer emits
+a verdict, a target span and a critique. Its \texttt{accept} promotes the
+Executor's answer verbatim \emph{by reference}, because it has no field in
+which to \emph{author} one. Each function stays with one agent under the
+same budget, but the Executor sees less context, and a rejected output can
+exhaust the regeneration budget (the number of times a malformed output may
+be regenerated). A \emph{context-restored control} repeats this condition
+with the shared history restored.
 
 \paragraph{Single-agent reference.} A budget-matched single-agent protocol
-on the same problems, from a previously released corpus rather than this
-campaign (\S\ref{sec:experiments}), guards against ``the system was one
-agent all along''~\cite{zhang2026rethinking}. It cuts both ways: gemma-4's
-role-structured and feedback-withheld role-free teams finish below their
-single agent ($-0.0225$, $-0.0563$) and gpt-oss's feedback-withheld
-role-free team above it ($+0.0294$); the arms come from separate runs
+on the same problems guards against multi-agent gains that merely mimic a
+single capable agent~\cite{zhang2026rethinking}. It comes from a previously
+released corpus rather than this campaign (\S\ref{sec:experiments}). The
+comparison cuts both ways, and the arms come from separate runs
 (supplement).
 
 \subsection{Instrumentation and pre-registered analyses}
 \label{subsec:prereg}
 
-An intervention that never engaged cannot explain an outcome, so
-engagement is measured rather than assumed: every
-rejected-and-regenerated emission is logged with its reason, the
-enforcement rate counts role-boundary violations only, and
-answer-bearing calls are counted per condition. One instrumentation gap
-escaped this discipline (\S\ref{subsec:logging}).
+An intervention that never engages cannot explain an outcome, so we measure
+engagement. We log every rejected-and-regenerated output with its reason,
+count only role-boundary violations in the enforcement rate, and count
+answer-bearing calls per condition. One logging gap slipped through
+(\S\ref{subsec:logging}).
 
-All five endpoints were fixed in writing and committed before any
-intervention data existed; the full table, with what happened to each, is
-in the supplement. Units are (problem, actor) pairs and all conditions run
-the same problems, so every test is paired with bootstrap clustering by
-problem. \textbf{The pre-registered primary endpoint is null}: no pairwise
-difference-in-differences of P4 --- whether enforcement's effect on accuracy
-differs by actor --- survives Holm (smallest adjusted $p=0.17$;
-before correction the Llama-3.3$-$gemma-4 interval, $+0.040$ $[+0.001,+0.080]$,
-only just excludes zero, and a separate resample gives $p=0.055$), and only the gpt-oss$-$gemma-4 contrast was
-powered for an interaction of plausible size. The \Pone{} manipulation
-objective --- enforcement driving Planner computation-abstention to
-${\approx}1.0$ --- also failed: the schema forbids an \emph{answer}, not a
-computation. It was re-designated to answer authorship. \textbf{The
-role-structured-versus-role-free contrast this paper is organized around
-was pre-registered as a secondary, exploratory replication of a published
-null}; splitting it into phases is post hoc, and the role-free condition
-with feedback was added after the snapshot was frozen, with its design and
-primary analysis committed in writing before any of its data existed. Its results
-are exploratory. Exclusions were
-fixed in advance, including the rule that decides \S\ref{subsec:enforce}:
-\emph{unparseable trajectories count as incorrect rather than dropped}.
+All five endpoints (the pre-specified analyses) were fixed in writing and
+committed before any intervention data existed. The full table, with the
+outcome for each, is in the supplement. Units are (problem, actor) pairs,
+and all conditions run the same problems, so every test is paired, with
+bootstrap intervals that resample whole problems~\cite{efron1979bootstrap}.
+The pre-registered primary endpoint, P4, asks whether enforcement's effect
+on accuracy differs by actor. It is null: no pairwise
+difference-in-differences (enforcement's effect in one actor minus its
+effect in another) survives Holm's correction for multiple
+comparisons~\cite{holm1979simple} (smallest adjusted $p=0.17$). Before
+correction, the interval for the Llama-3.3 model against gemma-4, $+0.040$
+$[+0.001,+0.080]$, only just excludes zero, and a separate resample gives
+$p=0.055$. Only the gpt-oss against gemma-4 contrast had adequate
+statistical power for an interaction of plausible size.
+
+The \Pone{} manipulation objective also failed. It required enforcement to
+drive Planner computation-abstention to ${\approx}1.0$, but the schema
+forbids an \emph{answer}, not a computation. It was re-designated to answer
+authorship. The role-structured versus role-free contrast this paper is
+organized around was pre-registered as a secondary, exploratory replication
+of a published null, and splitting it into phases is post hoc. The role-free
+condition with feedback was added after the freeze (when the dataset and
+analysis plan were fixed). Its design and primary analysis were committed in
+writing before any of its data existed, but its results are exploratory.
+Exclusions were fixed in advance, including the rule that decides
+\S\ref{subsec:enforce}: \emph{unparseable trajectories count as incorrect
+rather than dropped}.

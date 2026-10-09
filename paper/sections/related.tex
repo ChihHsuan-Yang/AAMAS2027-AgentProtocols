@@ -1,102 +1,89 @@
 \section{Related Work}
 \label{sec:related}
 
-\textbf{The question predates the LLM literature that reopened it.}
-Organization-centered multi-agent systems gave roles a formal existence independent of
-their occupants: Moise$^+$ separates a structural, a functional and a
-\emph{deontic} specification --- what a role-filler is obliged and
-permitted to do~\cite{hubner2002moise} --- OperA makes role adoption an
-explicit social contract~\cite{dignum2004opera}, and electronic
-institutions bind norms through middleware outside the
-agents~\cite{esteva2001formal}, which can regiment a norm (make violation
-impossible) or enforce it (sanction violation)~\cite{grossi2007ubilex}. An
-LLM role prompt is the degenerate case: functional and deontic clauses
-written in prose, with no middleware to make them bind and no record of
-whether they did. In these terms our role-free condition keeps the structure --- order,
-graph, a positional approver --- and deletes the functional and deontic
-specifications together; our enforced condition regiments the functional
-part at the interface. ``Adaptability'' here means revising an answer
-within an episode, not organizational
-reorganization~\cite{horling2004survey}; teamwork models treat repair of a
-failed joint plan as an obligation of the team~\cite{tambe1997flexible},
+\paragraph{Roles in organizational models.} Organization-centered
+multi-agent systems give roles a formal existence independent of their
+occupants. Moise$^+$ separates structural, functional and \emph{deontic}
+specifications~\cite{hubner2002moise}. OperA makes role adoption an explicit
+social contract~\cite{dignum2004opera}, and electronic institutions bind
+norms through middleware outside the agents~\cite{esteva2001formal}, which
+can regiment a norm (make violation impossible) or sanction
+it~\cite{grossi2007ubilex}. An LLM role prompt is the degenerate case:
+functional and deontic clauses in prose, with nothing to make them bind. Our
+role-free condition keeps the positions, the communication graph and the
+turn order, but deletes these clauses. Conversely, our enforced condition
+regiments the functional part at the interface. In this paper, adaptability
+means revising an answer across attempts on the same problem, not
+reorganizing the team~\cite{horling2004survey}. Teamwork models make
+repairing a failed joint plan a team obligation~\cite{tambe1997flexible},
 which a prompt can state but not secure.
 
-\paragraph{Role specialization and role drift.} That prompted roles are not
-reliably obeyed is established: Cemri et al.~\cite{cemri2025why} name
-disobeying the role specification a failure mode across 1{,}600+ annotated
-traces, Cao et al.~\cite{cao2026modules} give the training-time account of
-\emph{role drift}, Orogat et al.~\cite{orogat2026architectural} find
-role-label conditioning does not induce the intended
-specialization, Patel~\cite{patel2026representational} measures collapse
-as near-identical rationales, Kandoussi~\cite{kandoussi2026whoami} reports
-differentiation arising \emph{without} assigned roles, and
-enforcement-side work makes role scope structural rather than
-advisory~\cite{stettler2026progressive,ge2026roles}. Role collapse, and
-the decoupling of role quality from task performance, are
-known~\cite{cao2026modules,yang2026precise}; we measure them under a
-controlled ablation.
+\paragraph{Role specialization and role drift.} Prompted roles are known to
+be unreliable. Agents disobey the role specification across annotated
+traces~\cite{cemri2025why}, and \emph{role drift} has a training-time
+account~\cite{cao2026modules}. Role-label conditioning fails to induce the
+intended specialization~\cite{orogat2026architectural}, and agents collapse
+into near-identical rationales~\cite{patel2026representational}.
+Differentiation can even arise \emph{without} assigned
+roles~\cite{kandoussi2026whoami}. Recent enforcement-side work makes role
+scope part of the system structure rather than advice in the
+prompt~\cite{stettler2026progressive,ge2026roles}.
+While role collapse and the decoupling of role quality from task
+performance are known~\cite{cao2026modules,yang2026precise}, we measure them
+under a controlled ablation.
 
 \paragraph{Redundancy and parity.} Dylan et al.~\cite{dylan2026equal} hold
-total LLM calls fixed and find an evolved Planner--Executor--Critic team no
-better than an evolved single agent ($p=0.80$). We replicate first-pass
-parity only in part: gpt-oss \emph{improves} by $+0.0503$ with an interval
-excluding zero. Zhang et al.~\cite{zhang2026rethinking} argue that gains of
-multi-agent efficiency methods often arise where one agent suffices --- an
-objection aimed at our role-free condition, which is why we report a
-single-agent reference (\S\ref{sec:method}); Chen et
-al.~\cite{chen2026agentslimming} prune redundant agents on the same premise.
+total LLM calls fixed and find an evolved Planner, Executor and Critic team
+no better than an evolved single agent. Zhang et
+al.~\cite{zhang2026rethinking} argue that multi-agent gains often arise
+where one agent suffices. This objection is why we report a single-agent
+reference (\S\ref{sec:method}). On the same premise, Chen et
+al.~\cite{chen2026agentslimming} prune redundant agents.
 
-\paragraph{Feedback, revision and answer lock-in.} Iterative refinement
-with self-generated or tool feedback is a standard
-pattern~\cite{madaan2023selfrefine,shinn2023reflexion,gou2024critic}, as
-is multi-agent debate~\cite{du2024debate,liang2024divergent}. That models
-repeat earlier outputs under exact verifier feedback is
-established~\cite{jiang2026exactfeedback}; under self-reflection the
-failure has a name, Degeneration-of-Thought~\cite{liang2024divergent}, and
-belief entrenchment is studied directly~\cite{oh2026entrenchment}. Huang et
-al.~\cite{huang2024selfcorrect} are frequently misread here: their
-\emph{oracle} condition, which uses the correct label as a stopping rule,
-\emph{improves} accuracy ($75.9 \to 84.3$ on GSM8K) and only the
-\emph{intrinsic} condition
-degrades~\cite[see also][]{stechly2024selfverification,kamoi2024when}. Our
-loop is oracle-gated like theirs, and with a verifier in the loop more
-attempts buy more coverage~\cite{brown2024monkeys} --- the regime in which
-our role-structured team's restraint costs it. Closest to our lever is Chen
-et al.~\cite{chen2026relabeling}, who hold an erroneous claim
-byte-identical and vary only the \emph{role label} it carries, moving
-explicit-correction rate by $23$--$93$ percentage points --- strong evidence
-that a role label is causal for error correction, but single-agent and
-without budget matching. We add the multi-agent case: a role-free team largely
-repeats itself when the verdict does not reach it and revises when it does.
-The repetition follows the information, not the organization.
+\paragraph{Feedback, revision and answer lock-in.} Iterative refinement with
+self-generated or tool
+feedback~\cite{madaan2023selfrefine,shinn2023reflexion,gou2024critic} and
+multi-agent debate~\cite{du2024debate,liang2024divergent} are standard
+patterns. Models often repeat earlier outputs under exact verifier
+feedback~\cite{jiang2026exactfeedback}. Under self-reflection, this failure
+is called Degeneration-of-Thought~\cite{liang2024divergent}, and belief
+entrenchment is studied directly~\cite{oh2026entrenchment}. Huang et
+al.~\cite{huang2024selfcorrect} report that self-correction degrades
+accuracy only in the \emph{intrinsic} setting, where the model judges its
+own answer, and improves it when the correct label serves as a stopping
+rule~\cite[see also][]{stechly2024selfverification,kamoi2024when}. Our loop
+is gated by such an oracle (an evaluator that knows the correct answer),
+where more attempts buy more coverage, the share of problems solved by at
+least one attempt~\cite{brown2024monkeys}. This is the regime in which the
+role-structured team's restraint costs it. Closest to our lever, Chen et
+al.~\cite{chen2026relabeling} vary only the \emph{role label} on a
+byte-identical erroneous claim and move explicit-correction rates by $23$ to
+$93$ percentage points. However, they do so in a single agent without budget
+matching.
 
 \paragraph{Coordination versus capability.}
 Canedo~\cite{canedo2026architecture} frames structured specification as a
-\emph{capability equalizer} whose value falls with model strength;
-\cite{yu2026bottleneck} reaches the same prediction from theory and
-Dochkina~\cite{dochkina2026drop} the complementary case. Our enforced
-condition reproduces that direction \emph{only under a scoring rule that
-drops $8$--$17\%$ of trajectories}; under our pre-registered rule it
-reverses for gemma-4 and vanishes for the others (\S\ref{subsec:enforce}).
+\emph{capability equalizer} whose value falls with model strength.
+Theoretical~\cite{yu2026bottleneck} and
+complementary~\cite{dochkina2026drop} accounts agree. Our enforced condition
+reproduces that direction only under a scoring rule that drops the
+trajectories that never finish. Under our pre-registered rule (fixed in
+writing before the data existed), it reverses for the gemma-4 model and
+vanishes for the other actors (\S\ref{subsec:enforce}).
 
-\paragraph{Prior analyses of a released corpus, and critique uptake.}
-Three studies analyze a publicly released multi-agent trace corpus on this
-benchmark~\cite{jiang2026confidence,yang2026protocol,yang2026precise},
-from which our single-agent comparator is also drawn. The closest separates
+\paragraph{Prior analyses of a released corpus, and critique uptake.} Three
+studies analyze a publicly released multi-agent trace corpus on the
+Omni-MATH
+benchmark~\cite{jiang2026confidence,yang2026protocol,yang2026precise}, from
+which our single-agent comparator is also drawn. The closest study separates
 reviewer \emph{precision} from critique
-\emph{uptake}~\cite{yang2026precise}: a planner--executor--reviewer
-pipeline's reviewer flags real errors more precisely than broadcast-style
-peer discussion does, yet its correct critique far less often changes the
-next candidate, and uptake improves when critique is placed in the solver's
-working context. We ask the organizational counterpart under controlled
-conditions: with the corrective signal held fixed, does the role structure
-itself make a team more adaptive? \textbf{None of these studies manipulates
-the role structure}, measures whether the specified division of labor is
-realized, or matches feedback access across conditions.
-
-\paragraph{What is open.} These literatures establish that roles are often
-not obeyed, that deleting them leaves first-pass accuracy intact, that
-models fail to revise under external feedback, and that structure tends to
-help weaker models. Each concerns a \emph{different stage of the work}, and
-the failure to revise is almost always measured in a single agent, where
-there is no organization to ablate. No study holds them in one frame.
+\emph{uptake}~\cite{yang2026precise}. It finds that a pipeline reviewer
+flags real errors more precisely than broadcast-style peer discussion does.
+Yet its correct critique far less often changes the next candidate, and
+uptake improves when the critique is placed in the solver's working context.
+We ask the organizational counterpart: with the corrective signal held
+fixed, does the role structure itself make a team more adaptive? None of
+these studies manipulates the role structure, checks that the specified
+division of labor is realized, or matches feedback access across conditions.
+Elsewhere, the failure to revise is almost always measured in a single
+agent, leaving no organization to ablate.

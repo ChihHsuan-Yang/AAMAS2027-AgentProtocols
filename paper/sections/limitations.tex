@@ -1,43 +1,38 @@
 \section{Limitations}
 \label{sec:limitations}
 
-\paragraph{The recovery loop is oracle-gated.} The evaluator triggering
-retries sees ground truth, so every recovery number is recovery
-\emph{given} a ground-truth-informed failure signal: not unaided
-self-correction, and stop-on-correct censors destructive revision. An
-evaluator that can be queried up to six times favors the team that queries
-it most; matched on verdicts, the role-free advantage disappears
-(\S\ref{subsec:mechanism}).
+\paragraph{Evaluation paradigm and oracle-gated recovery.} The recovery loop
+in our experiments is gated by an oracle. The evaluator triggering retries
+sees the ground truth, so every reported recovery rests on a
+ground-truth-informed failure signal rather than unaided self-correction.
+Stopping at the correct answer also hides revisions that would have turned a
+correct answer into a wrong one. An evaluator that can be queried multiple
+times favors the team that queries it most. As shown in
+\S\ref{subsec:mechanism}, when matched on the number of verdicts, the
+role-free advantage disappears.
 
-\paragraph{The feedback-matched condition.} It was added after the
-snapshot was frozen and is outside the pre-registration; a re-run of
-gemma-4's role-structured condition on $400$ problems shows no detectable
-drift in final accuracy, but the
-conditions come from separate runs. It matches the role-structured condition on the feedback
-string, not on its framing: role-structured agents receive it inside
-role-specific instructions, role-free agents as a bare
-\texttt{[Evaluator]} entry. The forced-submission
-run (\S\ref{subsec:mechanism}) is post-freeze too, covers one actor, one
-domain and one run, and removes the whole gate rather than the one clause
-that forbids approval after a FAIL.
+\paragraph{Scope, provenance, and experimental disclosures.} We test one
+\PER{} organization, with an evaluator that is itself one of the models
+under study. While the ordering returns across a second domain of college
+science problems, the findings are limited to text-based reasoning tasks.
+The feedback-matched condition and the forced-submission run were added
+after the freeze and are outside the pre-registration. The forced-submission
+run covers only one actor, one domain, and a single run, and it removes the
+entire gate rather than only the clause forbidding approval after a failure.
+The feedback-matched condition also differs in feedback presentation:
+role-structured agents receive feedback inside role-specific instructions,
+whereas role-free agents view it as a bare \texttt{[Evaluator]} entry.
+Finally, the context-restored control is only a \emph{partial} control due
+to one-sided attrition (\S\ref{subsec:enforce}), and our functional measure
+only detects whether every agent asserted an answer, not whether their
+reasoning was identical.
 
-\paragraph{A scoring defect, which narrows the gap.} Beyond the logging
-defect of \S\ref{subsec:logging}, the runner grades the last answer
-\emph{submitted} but records the last answer \emph{held}; for gemma-4 these
-disagree on $17\%$ of role-structured, $0\%$ of feedback-withheld and $13\%$
-of feedback-matched role-free first-pass-wrong trajectories (gpt-oss
-$16\%$/$7\%$, Llama-3.3 $6\%$/$0.4\%$, role-structured/feedback-withheld).
-Recoding the trajectories whose held answer matched the key but was graded
-wrong ($62$ in the nine main frozen Omni-MATH cells, against $0$ of the
-snapshot's $10{,}734$ graded trajectories whose two answers agree; $3$ in gemma-4's feedback-matched run) moves gemma-4's
-role-structured recovery to $0.275$ and the feedback-matched role-free one
-to $0.618$: the gap narrows from $0.387$ to $0.343$. We keep the scoring
-rule fixed before the data as primary.
-
-\paragraph{Scope, provenance, and blind spots.} Enforcement's $8$--$17\%$
-one-sided attrition (\S\ref{subsec:enforce}) is why its as-graded gain is
-survivorship and why the context-restored condition is only a
-\emph{partial} control. We test one \PER{} organization, with an evaluator
-that is itself one of the actors under study, and the second domain adapts
-the role-structured and evaluator prompts (\S\ref{subsec:xdomain}). The functional measure detects that every
-agent asserted an answer, not that their reasoning was the same.
+\paragraph{A scoring defect.} The automated runner graded the last
+\emph{submitted} answer but recorded the last \emph{held} answer. For the
+gemma-4 model on the Omni-MATH benchmark, the two disagree on $17\%$ of
+role-structured first-pass-wrong trajectories, and on more in some other
+cells (per-cell rates in the supplement). Recoding the affected trajectories
+narrows the unadjusted recovery gap and shifts the pooled verdict-matched
+difference to $+0.029$ $[+0.004,+0.054]$, which significantly favors the
+role-structured team (\S\ref{subsec:mechanism}). The primary analysis keeps
+the scoring rule that was fixed before the data were collected.

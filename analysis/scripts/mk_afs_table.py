@@ -76,16 +76,26 @@ def build(pfx, actor_label, label, rows_, pairs_):
 %% (bf_gate.py [G5]) -- do not edit by hand.
 \begin{table*}[t]
 \centering
-\caption{\textbf{Removing the submission gate""" + ("" if pfx == "afs" else ", " + actor_label) + r""".} """ + actor_label + r""", Omni-MATH, the
-same """ + "${}$".format(n) + r""" problems in every row. The forced-submission run uses the
-role-structured prompts byte for byte; the pipeline submits the team's answer
-to the evaluator in every cycle, whatever the Reviewer decides. Recovery is
-over each row's own first-pass-wrong trajectories; verdicts and Reviewer
-approvals are per first-pass-wrong trajectory and include the first. In the
-forced-submission run approvals are logged but do not decide submission. The
-lower block pairs the conditions on the problems both first answer wrongly
-(recovery) and on all problems (final accuracy): problems solved only by the
-first condition / only by the second, exact McNemar $p$.}
+\caption{\textbf{Removing the submission gate""" + ("" if pfx == "afs" else ", " + actor_label) + r""".} """ + actor_label + r""" (the model
+playing all three agents) on the Omni-MATH benchmark, the same """ + "${}$".format(n) + r""" problems in
+every row. Role-structured: Planner, Executor and Reviewer prompts, in the
+frozen snapshot and in a re-run after the freeze; role-free with feedback:
+one generic prompt for all three agents, with the evaluator's feedback
+shown. The forced-submission run (``every cycle submitted'') uses the
+role-structured prompts byte for byte, but the pipeline submits the team's
+answer to the evaluator in every cycle (one pass of the three agents),
+whatever the Reviewer decides; its approvals are logged but do not decide
+submission. A trajectory is one problem's run; it is first-pass wrong when
+its first submitted answer is graded wrong. \emph{First pass}: share of
+trajectories whose first submitted answer is correct. \emph{Recovery}:
+first-pass-wrong trajectories that finish correct, over each row's own
+first-pass-wrong set (count / denominator). \emph{Final accuracy}: over all
+problems, never-graded trajectories counted as incorrect. \emph{Verdicts}
+and \emph{Reviewer approvals}: per first-pass-wrong trajectory, including
+the first. The lower block pairs two conditions on the problems both first
+answer wrongly (recovery) and on all problems (final accuracy): problems
+solved only by the first condition / only by the second, with the exact
+McNemar $p$ for the two counts.}
 \label{""" + label + r"""}
 \footnotesize
 \begin{tabular}{@{}l ccccc@{}}

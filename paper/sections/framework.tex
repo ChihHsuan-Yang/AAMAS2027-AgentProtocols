@@ -5,58 +5,62 @@
 
 An organization is specified by a tuple: agents, an interaction order, a
 message-passing graph, a context-visibility policy, and a \emph{role
-contract} per agent. A contract asserts that an agent performs some
-function (\textsc{must} decompose the problem) or that it does not
-(\textsc{must not} state a final answer); clauses of the second kind make
-the specification a \emph{division} of labor. Because a clause is prose
-handed to a language model, the \emph{realized} organization is not
-guaranteed to match it, and nothing records which clauses were honored.
+contract} per agent. A contract asserts that an agent performs some function
+(\textsc{must} decompose the problem) or that it does not (\textsc{must not}
+state a final answer). Clauses of the second kind make the specification a
+\emph{division} of labor. Because a clause is prose handed to a language
+model, the \emph{realized} organization is not guaranteed to match it.
+Nothing records which clauses were honored.
 
-\textbf{Definition.} A component of an organization is
-\textbf{load-bearing} if removing or altering it reproducibly degrades
-task performance \emph{under matched call and information budgets}. The
-budget clause is what makes it usable: removing roles together with
-agents, calls or context tests scale, not organization. Because
-performance itself decomposes --- producing a first answer, repairing a
-wrong one --- the definition is applied \emph{per phase}. The information
-clause covers every channel through which a signal reaches an agent; in a
-prompted system feedback arrives through the same templates that carry the
-roles, so a role ablation can change both, and a contrast is matched only
-where it changes one (\S\ref{sec:method}).
+\textbf{Definition.} A component of an organization is \textbf{load-bearing}
+if removing or altering it reproducibly degrades task performance
+\emph{under matched call and information budgets}.
+
+The budget clause ensures we test organization rather than scale. Removing
+roles alongside agents, calls or context confounds the evaluation. We apply
+this definition \emph{per phase}, because a team must first produce an
+answer and then repair it if it is wrong. The information clause covers
+every channel through which a signal reaches an agent. In a prompted system,
+feedback arrives through the same templates that carry the roles.
+Consequently, a role ablation can change both the roles and the feedback
+channel. A contrast is matched only when it changes one of them
+(\S\ref{sec:method}).
 
 \subsection{Measuring the realized organization}
 
-\paragraph{Functional collapse (primary).} A first pipeline pass
-\emph{collapses} if \emph{all three} agents independently assert their own
-final answer, making the pipeline three solvers rather than a division of
-labor. It targets the property the diagram asserts rather than what a hash
-can see, is measured on the first pass so it is not confounded with
-trajectory length, and is not applicable to the structurally
-enforced conditions, whose schema forbids an answer field.
+\paragraph{Functional collapse (primary).} The first deliberation cycle (one
+pass of Planner, Executor and Reviewer) \emph{collapses} if \emph{all three}
+agents independently assert their own final answers. The pipeline then runs
+as three solvers in sequence rather than a division of labor. This metric
+targets the property the diagram asserts rather than what a hash can see. We
+measure it on the first cycle so it is not confounded with trajectory
+length. It is not applicable to the structurally enforced conditions because
+their schema forbids an answer field.
 
-\paragraph{Exact output duplication (secondary, a lower bound).} Two or
-more role messages byte-identical, as \texttt{sha256} of the raw
-completion. Precision $1.000$, recall $0.262$ against the model
-adjudication (\S\ref{subsec:collapse}): it shows that at least a given
-amount of collapse occurred and is never used to compare actors.
+\paragraph{Exact output duplication (secondary, a lower bound).} This occurs
+when two or more role messages are byte-identical, based on a
+\texttt{sha256} hash (a cryptographic digest) of the raw completion. It
+bounds collapse from below (supplement) and is never used to compare actors.
 
-\paragraph{Answer authorship, and computation.} Whether a Planner authors
-a final answer --- the clause structural enforcement makes
-unrepresentable, and the manipulation check. Separately, whether a Planner
-abstains from \emph{computing}, scored as containing no evaluated numeric
-equality (\textbf{\Pone{}}, pre-registered). Being the absence of a
-pattern, \Pone{} rewards short messages, so it cannot measure a division
-of labor and we use it only as a fidelity check (\S\ref{subsec:prereg}).
+\paragraph{Answer authorship, and computation.} We measure whether a Planner
+authors a final answer. Structural enforcement leaves the Planner no field
+in which to write one, so this measure serves as the manipulation check.
+Separately, we track whether a Planner abstains from \emph{computing},
+scored as containing no evaluated numeric equality (\textbf{\Pone{}},
+pre-registered). Because \Pone{} scores the absence of a pattern, it rewards
+short messages. Therefore, it cannot reliably measure a division of labor,
+and we use it only as a fidelity check (\S\ref{subsec:prereg}).
 
-\paragraph{First pass and recovery.} \emph{First-pass} accuracy grades
-the first answer submitted to the evaluator, which need not come from the
-first pipeline pass: for the role-structured team it may follow internal
-revision, never external feedback; a
-trajectory that never submits is graded once, on its final answer, when the
-budget runs out, and that grade is its first pass. \emph{Recovery} is the
-fraction of trajectories whose first graded answer was wrong (\emph{failed}
-trajectories) that nonetheless finish correct. It conditions on a post-treatment variable, so
-recovery contrasts are descriptive. The feedback-matched contrast is also
-reported on unconditional final accuracy (\S\ref{subsec:recovery}); the
-verdict-matched analysis (\S\ref{subsec:mechanism}) is conditional by
-construction.
+\paragraph{First pass and recovery.} \emph{First-pass} accuracy grades the
+first answer submitted to the evaluator. It need not come from the first
+cycle: for the role-structured team, it may follow internal revision without
+external feedback. If a trajectory never submits an answer before the budget
+runs out, it is graded once on its final answer, and that grade is its first
+pass. \emph{Recovery} is the fraction of \emph{failed} trajectories, those
+whose first graded answer was wrong, that nonetheless finish correct.
+Because recovery conditions on a post-treatment variable (whether the first
+answer failed, which the intervention can change), recovery contrasts are
+descriptive~\cite{montgomery2018conditioning}. We also report the
+feedback-matched contrast on unconditional final accuracy
+(\S\ref{subsec:recovery}). The verdict-matched analysis
+(\S\ref{subsec:mechanism}) is conditional by construction.

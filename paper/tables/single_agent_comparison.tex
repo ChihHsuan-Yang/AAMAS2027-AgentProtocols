@@ -28,19 +28,25 @@
 % ==========================================================================
 \begin{table}[t]
 \centering
-\caption{\textbf{Against a single agent under the same call cap.} Both
-directions, which must be read together. A collapsed gpt-oss team beats its
-own single agent, so three agents emitting one answer is not functionally one
-agent; \textbf{but gemma-4's team is worse than its own single agent in both
-conditions}. Role-free here is the feedback-withheld condition.
-\textbf{Provenance: this panel is not from the frozen snapshot}; it comes
+\caption{\textbf{Against a single agent under the same call cap.} Final
+accuracy over all problems ($n$) of each three-agent team, role-structured
+(Planner, Executor and Reviewer prompts) or role-free (one generic prompt
+for all three agents, feedback withheld), against a single agent of the
+same actor (the model playing all three agents) solving the same problems
+under the same cap on model calls; the difference is team minus single
+agent, with its $95\%$ bootstrap confidence interval (resampling problems)
+and exact McNemar $p$. Both directions must be read together: a collapsed
+gpt-oss team beats its own single agent, so three agents emitting one
+answer is not functionally one agent; \textbf{but gemma-4's team is worse
+than its own single agent in both conditions}. \textbf{Provenance: this
+panel is not from the frozen snapshot}; the single-agent trajectories come
 from a previously released trace corpus, joined by problem. \textbf{Its two
-actor arms were produced in separate runs}, so each direction is a
-sound directional guard while \emph{the gap between actors is not} --- no
-statement about relative magnitude across actors is supported here. Realized
-budgets differ: the single agent makes about half the actor calls, and more
-evaluator calls than the role-structured team but fewer than the role-free
-one.}
+actor arms were produced in separate runs}, so each direction is a sound
+directional guard while \emph{the gap between actors is not}; no statement
+about relative magnitude across actors is supported here. \emph{Realized
+call budget}: calls per problem to the evaluator and to the actor; the
+single agent makes about half the actor calls, and more evaluator calls
+than the role-structured team but fewer than the role-free one.}
 \label{tab:singleagent}
 \small
 \begin{tabular}{@{}lccc@{}}

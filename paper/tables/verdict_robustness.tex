@@ -2,21 +2,27 @@
 %% (bf_gate.py [G4], [G6]) -- do not edit by hand.
 \begin{table*}[t]
 \centering
-\caption{\textbf{Robustness of the verdict-matched recovery contrast.} Problems
-both teams first answer wrongly; the role-free trajectory with feedback is cut
-after as many evaluator verdicts as the role-structured one received. Where
-the role-structured team received a single verdict (it never submitted, or
-submitted once and stopped), the cut role-free trajectory cannot recover
-either, so the pair ties at zero by construction. Upper block: such forced
-ties per cell, how many of them never submitted, the problems left, and the
-trajectories whose held answer matched the key but were graded wrong (the
-scoring defect of the main paper's Limitations). Middle block: the pooled
-difference (role-structured minus role-free, stratified by cell, 95\%
-bootstrap interval) under six definitions, with and without Llama-3.3;
-``equivalent'' means the 90\% interval lies inside $\pm0.05$. Recoding counts
-a role-structured trajectory with a correct held answer as recovered, and a
-role-free one only if it was not cut. Lower block: per-verdict pass rates
-after all earlier verdicts failed, pooled over the five cells.}
+\caption{\textbf{Robustness of the verdict-matched recovery contrast.} RS:
+role-structured (Planner, Executor and Reviewer prompts); RF: role-free
+(one generic prompt for all three agents) with the evaluator's feedback
+shown; a cell is one actor (the model playing all three agents) on one
+benchmark. The contrast takes the problems both teams first answer wrongly
+and cuts the RF trajectory (one problem's run) after as many evaluator
+verdicts (PASS or FAIL decisions) as the RS trajectory received on that
+problem, then compares recovery (finishing correct). Where RS received a
+single verdict (it never submitted again, or submitted once and stopped),
+the cut RF trajectory cannot recover either, so the pair ties at zero by
+construction. \emph{Upper block}: such forced ties per cell, how many of
+them never submitted, the problems left, and the trajectories whose held
+answer matched the key but were graded wrong (the scoring defect of the
+main paper's Limitations). \emph{Middle block}: the pooled difference (RS
+minus RF, stratified by cell, $95\%$ bootstrap confidence interval
+resampling problems) under six definitions, with and without Llama-3.3;
+\emph{equivalent} means the $90\%$ interval lies inside $\pm0.05$. Recoding
+counts an RS trajectory with a correct held answer as recovered, and an RF
+one only if it was not cut. \emph{Lower block}: per-verdict pass rates, the
+share of trajectories whose $k$-th verdict is PASS among those whose
+earlier verdicts all failed, pooled over the five cells.}
 \label{tab:robust}
 \footnotesize
 \begin{tabular}{@{}l ccccc@{}}

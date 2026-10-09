@@ -1,43 +1,46 @@
 \subsection{Campaign}
 \label{sec:experiments}
 
-\paragraph{Task and problems.} Omni-MATH competition
+\paragraph{Task and problems.} We use the Omni-MATH benchmark of competition
 mathematics~\cite{gao2025omnimath}, sampled by a deterministic seeded
-manifest so every prefix of the run is a valid random sample; all
-conditions run the same problems, so every comparison is paired. A multiple-choice
-benchmark was ruled out before launch: on a four-option item ``produce a
-different candidate'' succeeds one time in three by chance.
+manifest (a fixed, reproducible list of problem identifiers) so that every
+prefix of the run is a valid random sample. All conditions run the same
+problems, so every comparison is paired. A multiple-choice benchmark was
+ruled out before launch: on a four-option item, producing a different
+candidate succeeds one time in three by chance, which would inflate
+recovery.
 
-\paragraph{Actors and scale.} Three actor models served from one pinned
-vLLM endpoint~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
-gemma-4-31B~\cite{gemma2026gemma4} and Llama-3.3-70B~\cite{grattafiori2024llama3}. The primary
-analysis reads a single frozen, sha256-manifested snapshot: 11{,}600
-trajectories over 83{,}320 role messages and 17{,}486 gradings, on
-$1{,}600$ problems sampled uniformly at random from the $4{,}181$
-available. The three main conditions run $n=1{,}600$ per cell for gemma-4
-and gpt-oss and $n=400$ for Llama-3.3; the context-restored control covers
-gemma-4 and gpt-oss at $n=400$ each. The evaluator is gpt-oss-120b in every cell, itself one of
-the actors under study (\S\ref{sec:limitations}). The single-agent
-comparator is \emph{not} part of this campaign: it is a previously released
-trace corpus of the same benchmark joined by problem identifier. Simulated
-from discordance rates in that corpus, the paired per-actor main effect is
-well powered; a post-hoc detectability analysis finds the
-actor~$\times$~intervention interaction powered only for gpt-oss against
-gemma-4 (\S\ref{subsec:prereg}). An early campaign stopped for a
-truncation confound was never pooled (supplement).
+\paragraph{Actors and scale.} Three actor models are served from one pinned
+vLLM server~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
+gemma-4-31B~\cite{gemma2026gemma4} and
+Llama-3.3-70B~\cite{grattafiori2024llama3}. The primary analysis reads one
+frozen snapshot of $11{,}600$ trajectories, $83{,}320$ role messages and
+$17{,}486$ gradings, listed in a sha256 manifest, on $1{,}600$ problems
+sampled uniformly at random from the $4{,}181$ available. The three main
+conditions run $1{,}600$ problems per cell (one actor in one condition on
+one domain) for gemma-4 and gpt-oss and $400$ for Llama-3.3. The
+context-restored control covers gemma-4 and gpt-oss at $400$ each. The
+evaluator is gpt-oss-120b in every cell, itself one of the actors under
+study (\S\ref{sec:limitations}). The single-agent comparator is \emph{not}
+part of this campaign. It is a previously released corpus of the same
+benchmark, joined by problem identifier. Power simulated from that corpus is
+high for the paired per-actor main effect (\S\ref{subsec:prereg} for the
+interaction). An early campaign, stopped when outputs cut off at the token
+limit were counted as role-boundary rejections, was never pooled
+(supplement).
 
 \paragraph{The feedback-matched condition.} It was run after the freeze
-($4{,}748$ trajectories) on the same endpoint, problems, budget and
-evaluator, for all three actors on Omni-MATH and for gemma-4 and gpt-oss on
-SciBench~\cite{wang2024scibench}, manifested separately and never pooled into a
-frozen cell; the two gemma-4 cells were run a second time, independently.
-A re-run of gemma-4's role-structured condition on $400$ frozen problems
-finds no detectable drift in final accuracy ($0.818$ against $0.825$ frozen,
-paired $p=0.75$; recovery $0.198$ against $0.146$). Decoding at temperature
-$0$ is not deterministic on a shared endpoint: the two role-free
-conditions, byte-identical until the first verdict, agree on gemma-4's
-first verdict for $1{,}496$ of $1{,}598$ problems, and their first-pass
-collapse differs by up to $0.04$ (Table~\ref{tab:collapse}). We therefore
-treat a cell as one sample and give the second run, where we have one, in
-the supplement.
-Prompts, runner and analysis scripts are in the supplementary material.
+($4{,}748$ trajectories) on the same server, problems, budget and evaluator,
+for all three actors on Omni-MATH and for gemma-4 and gpt-oss on the
+SciBench benchmark~\cite{wang2024scibench}. Its data are manifested
+separately and never pooled into a frozen cell. The two gemma-4 cells were
+run a second time, independently. A re-run of gemma-4's role-structured
+condition on $400$ frozen problems shows no detectable drift in final
+accuracy ($0.818$ against $0.825$ frozen, paired $p=0.75$; recovery $0.198$
+against $0.146$). Decoding at temperature $0$ is not deterministic on a
+shared server. The two role-free conditions are byte-identical until the
+first verdict, yet they agree on gemma-4's first verdict for $1{,}496$ of
+$1{,}598$ problems, and their first-cycle collapse differs by up to $0.04$
+(Table~\ref{tab:collapse}). We therefore treat a cell as one sample and give
+the second run, where we have one, in the supplement. Prompts, runner and
+analysis scripts are in the supplementary material.

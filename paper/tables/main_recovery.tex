@@ -30,18 +30,28 @@
 \begin{table*}[t]
 \centering
 \caption{\textbf{First-pass accuracy and recovery, role-structured versus
-role-free (feedback withheld).} \textbf{The two panels have different
-denominators and must not be read across.} \emph{Upper:} first pass over
-the problems graded under both conditions (paired, as in the main paper's
-first-pass contrast); recovery over each condition's own trajectories whose
-\emph{first} verdict was incorrect ($n_{\mathrm{fpw}}$ in parentheses,
-computed per condition and therefore \emph{not} a shared denominator). \emph{Lower:} the paired population
---- only problems first-pass wrong under \emph{both} conditions, one shared
-denominator $n_{\mathrm{both}}$, which is the actual test. The recovery
-denominator counts every trajectory with a recorded incorrect first verdict,
-including those that later died in regeneration; these score $0$ under the
-pre-registered rule. Pre-registered scoring throughout; $p$ is exact McNemar
-on discordant pairs.}
+role-free (feedback withheld), on the Omni-MATH benchmark.} Conditions:
+role-structured (Planner, Executor and Reviewer prompts) and role-free (one
+generic prompt for all three agents) with the evaluator's feedback
+withheld; per actor (the model playing all three agents). A trajectory is
+one problem's run through the pipeline; \emph{first pass} is whether its
+first submitted answer is correct, and \emph{recovery} is the share of
+first-pass-wrong trajectories (first verdict incorrect) that finish
+correct. \textbf{The two panels have different denominators and must not
+be read across.} \emph{Upper:} first pass over the problems graded under
+both conditions (paired, as in the main paper); recovery over each
+condition's own first-pass-wrong trajectories ($n$ in parentheses,
+computed per condition and therefore \emph{not} a shared denominator);
+differences are role-free minus role-structured, with $95\%$ bootstrap
+confidence intervals that resample problems. \emph{Lower:} the paired
+population, only problems first-pass wrong under \emph{both} conditions,
+one shared denominator $n_{\mathrm{both}}$, which is the actual test;
+``role-struct.\ only'' and ``role-free only'' count problems recovered
+under one condition and not the other, and the exact McNemar $p$ tests
+whether those two counts differ. The recovery denominator counts every
+trajectory with a recorded incorrect first verdict, including those that
+later died in regeneration (a malformed output exhausted its regeneration
+budget); these score $0$ under the pre-registered rule, used throughout.}
 \label{tab:recovery}
 \small
 \begin{tabular}{lcccccc}

@@ -29,19 +29,25 @@
 \begin{table}[t]
 \centering
 \caption{\textbf{Recovery by pooled accumulated-context quartile,
-role-structured versus role-free (feedback withheld).} Denominator is the
-first-pass-wrong population; the difference is role-structured minus
-role-free. Context is the total character count of all
-planner, executor and reviewer messages in the trajectory; quartile cut
-points are computed \emph{once per actor over both conditions pooled}.
-\textbf{This is directional only.} Accumulated context is nearly a
-function of condition --- the role-free team talks less because it stops
-reworking --- so the strata are not balanced and this comparison cannot
-separate context from condition. It is reported because accumulated context
-is a candidate explanation of the role-structured team's advantage over the
-feedback-withheld team, and because \textbf{it does not behave uniformly}:
-the gap survives in the lower quartiles, but in gpt-oss's top quartile the
-ordering reverses (as, on a handful of events, in Llama-3.3's third).}
+role-structured versus role-free (feedback withheld).} Conditions:
+role-structured (Planner, Executor and Reviewer prompts) and role-free (one
+generic prompt for all three agents) with the evaluator's feedback
+withheld; per actor (the model playing all three agents) on the Omni-MATH
+benchmark. \emph{Recovery}: the share of first-pass-wrong trajectories (one
+problem's run whose first submitted answer was graded wrong) that finish
+correct, with $n$ the number of such trajectories in the quartile; the
+difference is role-structured minus role-free. \emph{Context} is the total
+character count of all Planner, Executor and Reviewer messages in the
+trajectory; quartile cut points are computed \emph{once per actor over both
+conditions pooled}. \textbf{This is directional only.} Accumulated context
+is nearly a function of condition (the role-free team talks less because
+it stops reworking), so the strata are not balanced and this comparison
+cannot separate context from condition. It is reported because accumulated
+context is a candidate explanation of the role-structured team's advantage
+over the feedback-withheld team, and because \textbf{it does not behave
+uniformly}: the gap survives in the lower quartiles, but in gpt-oss's top
+quartile the ordering reverses (as, on a handful of events, in
+Llama-3.3's third).}
 \label{tab:context}
 \small
 \begin{tabular}{@{}lccccc@{}}

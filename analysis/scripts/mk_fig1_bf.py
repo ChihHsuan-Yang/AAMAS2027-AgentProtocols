@@ -129,8 +129,10 @@ def frame(ax, ylabel, title, ymax, yticks):
     ax.set_yticklabels([f"{v:g}" for v in yticks])
     ax.set_xlim(-0.55, len(GROUPS) - 0.45)
     ax.set_ylabel(ylabel, labelpad=2)
-    ax.text(0.0, 1.0, title, transform=ax.transAxes, ha="left", va="bottom",
-            fontsize=S.FS_TITLE, fontweight="bold", color=S.INK)
+    ax.annotate(title, xy=(0.0, 1.0), xycoords="axes fraction",
+                xytext=(0, TITLE_PAD_PT), textcoords="offset points",
+                ha="left", va="bottom", fontsize=S.FS_TITLE, fontweight="bold",
+                color=S.INK)
     doms = [d for d, _ in GROUPS]
     for i in range(1, len(doms)):
         if doms[i] != doms[i - 1]:
@@ -161,7 +163,7 @@ def group_labels(ax):
 def panel_A(ax):
     draw_bars(ax, "firstpass", ("A", "Bf", "B"), 0.26)
     frame(ax, "first-pass\naccuracy", "A  First answer: no worse without roles",
-          1.0, [0, 0.5, 1.0])
+          1.08, [0, 0.5, 1.0])
     plt.setp(ax.get_xticklabels(), visible=False)
     ax.tick_params(axis="x", length=0)
 
@@ -169,7 +171,7 @@ def panel_A(ax):
 def panel_B(ax):
     tops = draw_bars(ax, "recovery", ("A", "Bf", "B", "C"), 0.205)
     frame(ax, "recovery after\na failed answer", "B  Recovery after a failed first answer",
-          0.8, [0, 0.25, 0.5, 0.75])
+          0.82, [0, 0.25, 0.5, 0.75])
     for gi, (dom, a) in enumerate(GROUPS):
         pr = DB["paired_recovery"].get(f"{dom}|{a}|A-Bf")
         t = tops[gi]
@@ -224,6 +226,13 @@ def panel_C(ax):
             fontsize=FS_SMALL, color=S.INK2)
     ax.set_xlim(0, MAXCYC + 0.1)
     ax.set_ylim(-0.5, len(arms) - 0.25)
+    # the axes top is raised to the top of the row of annotations above the
+    # first bar, so the panel title clears the panel's ink by TITLE_PAD like A and B
+    ax.figure.canvas.draw()
+    inv = ax.transData.inverted()
+    top = max(inv.transform((0, t.get_window_extent().y1))[1]
+              for t in ax.texts if t.get_position()[1] > ys[0])
+    ax.set_ylim(-0.5, top)
     ax.set_yticks([])
     ax.set_xticks(range(0, MAXCYC + 1, 2))
     S.clean(ax, grid_axis="x")
@@ -235,10 +244,17 @@ def panel_C(ax):
 # actor names are set once, under B.
 L_AB, L_C, R_EDGE = 0.50, 1.30, 3.28
 H_A, H_B, H_C = 0.62, 0.86, 0.62
+# Every panel title sits the same distance above its axes: TITLE_PAD above
+# the top spine (A, B) or above the top of the bar area (C).  The gap between
+# B's actor labels and C's title is set separately, so C's title belongs to C.
+TITLE_PAD = 0.05                       # inches, between the panel's top ink and its title
+TITLE_PAD_PT = TITLE_PAD * 72
+TITLE_H = 0.12                         # the 8pt bold title line
+LABELS_B = 0.42                        # actor and domain labels below B
 Y_C = 0.34
-Y_B = Y_C + H_C + 0.70
-Y_A = Y_B + H_B + 0.22
-FIG_H = Y_A + H_A + 0.50
+Y_B = Y_C + H_C + TITLE_PAD + TITLE_H + 0.10 + LABELS_B
+Y_A = Y_B + H_B + TITLE_PAD + TITLE_H + 0.06
+FIG_H = Y_A + H_A + TITLE_PAD + TITLE_H + 0.34
 
 
 def _rect(l, b, r, h):
@@ -252,7 +268,7 @@ def build(stem="fig1_v3_story"):
     panel_A(axA)
     panel_B(axB)
     axC = fig.add_axes(_rect(L_C, Y_C, R_EDGE, H_C)); panel_C(axC)
-    fig.text(0.04 / S.COLWIDTH_IN, (Y_C + H_C + 0.18) / FIG_H,
+    fig.text(0.04 / S.COLWIDTH_IN, (Y_C + H_C + TITLE_PAD) / FIG_H,
              f"C  Same budget, spent differently ({S.ACTOR_SHORT[FOCUS].split(chr(10))[0]}, Omni-MATH)",
              fontsize=S.FS_TITLE, fontweight="bold", color=S.INK, ha="left", va="bottom")
     h = []

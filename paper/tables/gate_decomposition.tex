@@ -3,18 +3,26 @@
 \begin{table*}[t]
 \centering
 \caption{\textbf{Where the role-structured Reviewer declines, and what each
-allocation buys.} First-pass-wrong trajectories. Declining cycles per
-trajectory, split into those before the first submission (no feedback yet),
-those that received a FAIL (where the role-structured clause forbids
-approval) and later ``free'' cycles; the clause share is the second as a
-fraction of all three. ``Never submits'': trajectories with no approval in
-six cycles, graded once at the end. Free-cycle approval: share of free
-cycles ending in approval, role-structured (RS) against role-free with
-feedback (RF). Recovered by the second verdict: with at most one round of
-feedback, over all first-pass-wrong trajectories. Per later verdict:
+allocation buys.} RS: role-structured (Planner, Executor and Reviewer
+prompts); RF: role-free (one generic prompt for all three agents) with the
+evaluator's feedback shown. Every column is over first-pass-wrong
+trajectories (one problem's run whose first submitted answer was graded
+wrong), per actor (the model playing all three agents) and benchmark. A
+cycle is one pass of the three agents; it ends in a submission to the
+evaluator when the third agent approves and in a decline otherwise.
+\emph{RS declining cycles} per trajectory, split into those before the
+first submission (no feedback yet), those in a cycle that received a FAIL
+verdict (where the role-structured clause forbids approval) and the
+remaining ``free'' cycles; \emph{clause share} is the FAIL column as a
+fraction of all three. \emph{RS never submits}: trajectories with no
+approval in six cycles, graded once at the end. \emph{Free-cycle approval}:
+the share of free cycles ending in approval. \emph{By 2nd verdict}: the
+share recovered (finishing correct) with at most one round of feedback,
+over all first-pass-wrong trajectories. \emph{Per later verdict}:
 recoveries per verdict after the first, a ratio over different trajectories
 in the two conditions (the verdict-matched comparison of the main paper's
-Table~2 is the like-for-like one). Approvals: submissions per trajectory.}
+Table~2 is the like-for-like one). \emph{Approvals}: submissions per
+trajectory.}
 \label{tab:gate}
 \footnotesize
 \setlength{\tabcolsep}{3.0pt}

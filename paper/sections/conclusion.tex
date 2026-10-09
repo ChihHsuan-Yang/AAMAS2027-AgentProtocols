@@ -1,18 +1,18 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Multi-agent roles organize a team: deleting them destroyed the intended
-division of labor in all three actors on Omni-MATH, while first-pass
-accuracy did not fall. They looked load-bearing for repairing a rejected answer only against
-a role-free team that never received the evaluator's feedback. Given the
-same feedback, the role-free team recovered more in every cell (paired
-$p=6.2\times10^{-22}$ for gemma-4 on Omni-MATH); matched on the number of
-verdicts, that advantage disappeared (pooled difference $+0.009$ in favor of
-roles, $95\%$ CI $-0.014$ to $+0.033$). Roles changed little in how a team
-uses corrective feedback and much in how often it asks for it. In one
-exploratory gemma-4 run, submitting in every cycle gave the role-structured
-team a recovery as high as the role-free team's.
-\textbf{Structure is not adaptability: evaluating agent organization means
-asking not only whether the specified division of labor is realized, but
-whether corrective information reaches the team and changes what it does
-next.}
+Multi-agent roles organize a team into a structured workflow. Deleting these
+roles destroyed the intended division of labor across all tested models, but
+first-pass accuracy did not fall. Roles only appeared load-bearing for
+repairing rejected answers when compared against a role-free team that never
+received the evaluator's feedback. When both teams received the identical
+feedback string, the role-free team recovered more trajectories across every
+tested configuration. When matched on the number of evaluator verdicts, this
+advantage disappeared.
+
+These findings suggest that roles change little about how a team uses
+corrective feedback but substantially alter how often the team asks for it.
+Structure is not adaptability. Evaluating agent organization therefore
+requires checking both whether the specified division of labor is realized
+and whether corrective information reaches the team and changes its next
+actions.

@@ -12,11 +12,24 @@ or the PDF builds locally and breaks on Overleaf.
 
 ---
 
-## Figure 1 — Feedback to revision
+## Figure 1 — Pipeline and feedback channels
 
 | | |
 |---|---|
-| **manuscript** | Figure 1, `fig:dissociation`, `results.tex` §R1 |
+| **manuscript** | Figure 1, `fig:pipeline`, `method.tex` §4 |
+| **purpose** | One deliberation cycle, the submission gate, and the channel through which a FAIL verdict and repair hint reach the agents in each condition |
+| **source script** | `analysis/scripts/mk_fig_pipeline.py` |
+| **intermediate data** | none: a schematic of design facts (templates and runner), no measured value and no number |
+| **output** | `paper/figures/fig_pipeline.pdf` (root copy `figures/fig_pipeline.pdf`) |
+| **regenerate** | `python3 analysis/scripts/mk_fig_pipeline.py` (`mk_figstyle.save()` syncs `paper/figures/`) |
+
+---
+
+## Figure 2 — Feedback to revision
+
+| | |
+|---|---|
+| **manuscript** | Figure 2, `fig:dissociation`, `results.tex` §R1 |
 | **purpose** | Removing roles leaves the first answer alone; recovery after a failed first answer depends on whether the evaluator's feedback reaches the team; and the two teams spend the six-cycle budget differently |
 | **source script** | `analysis/scripts/mk_fig1_bf.py` |
 | **intermediate data** | `analysis/out/FIGDATA.json` (frozen snapshot), `analysis/out/FIGDATA_BF.json` (feedback-matched cells, paired p), `analysis/out/FIGDATA_GATE.json` (Panel C: approvals and revisions) |
@@ -41,7 +54,7 @@ predate the feedback-matched condition and are kept under `figures/` only.
 
 | file | status |
 |---|---|
-| `figures/fig2_v2_xdomain.pdf` | **removed from the manuscript** with the feedback-matched revision: the SciBench cells are now groups in Figure 1 and rows of Table 2. Kept under `figures/` only. |
+| `figures/fig2_v2_xdomain.pdf` | **removed from the manuscript** with the feedback-matched revision: the SciBench cells are now groups in Figure 2 and rows of Table 2. Kept under `figures/` only. |
 | `figures/fig1_v1_story.pdf` | superseded by `fig1_v3_story`; kept under `figures/` only. |
 | `figures/figS1_conditions.pdf` | supplement candidate — the three conditions as pipelines |
 | `figures/fig1_v1_grouped.pdf` | **superseded** by `fig1_v1_story`, and **deleted from `paper/figures/` on 2026-10-02**. Leaving it there was not harmless: the copy in `paper/figures/` was the *uncorrected* one, still printing `A soft roles / B no roles / C enforced`, and it sat in the Overleaf-bound directory for a day while the terminology gate reported clean --- the gate was reading `figures/`, where the corrected copy lives. It survives only under `figures/`, where it is a draft variant. |

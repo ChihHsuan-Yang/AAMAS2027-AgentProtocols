@@ -32,20 +32,31 @@
 % ==========================================================================
 \begin{table*}[t]
 \centering
-\caption{\textbf{Structural enforcement.} Enforcing the division of labor
-at the interface. \emph{Manipulation check:} the rate at which the planner
-authors an answer, over all planner messages, under enforcement and (in
-parentheses) when roles are merely deleted --- enforcement drives it to zero
-in all three actors, so the intervention engaged (the main paper's R5 gives
-the first-pass rate). \emph{Locked answer:} the team never changed its
-answer string, among first-pass-wrong trajectories (role-free, feedback
-withheld / role-structured in parentheses). \emph{Recovery:} role-structured in parentheses, on the
-denominator of Table~\ref{tab:recovery}. \textbf{The two accuracy columns
-are different populations, and the attrition column is why they disagree.}
-The pre-registered rule scores never-graded trajectories incorrect; the
-as-graded column drops them and is a \emph{sensitivity analysis only} ---
-its gains are conditional on parsing successfully, and enforcement is the
-only condition where that removes a material fraction of the data.
+\caption{\textbf{Structural enforcement: roles imposed by typed message
+formats.} Enforced against role-structured (Planner, Executor and Reviewer
+prompts) and, where stated, role-free (one generic prompt for all three
+agents, feedback withheld), per actor (the model playing all three agents)
+on the Omni-MATH benchmark. A trajectory is one problem's run through the
+pipeline; it is first-pass wrong when its first submitted answer is graded
+wrong. \emph{Planner authors answer}: the share of planner messages that
+state a final answer, under enforcement and (in parentheses) when roles are
+merely deleted; enforcement drives it to zero in all three actors, so the
+intervention engaged (this is the manipulation check; the main paper's R5
+gives the first-cycle rate). \emph{Locked answer}: the share of
+first-pass-wrong trajectories whose answer string never changed, enforced
+and (in parentheses) role-free / role-structured. \emph{Recovery}: the share
+of first-pass-wrong trajectories that finish correct, enforced and
+(role-structured in parentheses), on the denominator of
+Table~\ref{tab:recovery}. \emph{Attrition}: the share of enforced
+trajectories that never finish (a malformed output exhausted its
+regeneration budget). \emph{Final accuracy, enforced $-$ role-structured}:
+the difference in accuracy over all problems, with $95\%$ bootstrap
+confidence intervals; \textbf{the two accuracy columns are different
+populations, and the attrition column is why they disagree.} The
+pre-registered rule scores never-graded trajectories incorrect; the
+as-graded column drops them and is a \emph{sensitivity analysis only}: its
+gains are conditional on parsing successfully, and enforcement is the only
+condition where that removes a material fraction of the data.
 \textbf{Enforcement restores recovery for Llama-3.3; for the other two
 actors the direction is consistent but not resolvable against that
 attrition.}}

@@ -93,35 +93,27 @@ Load-Bearing?}
 }
 
 \begin{abstract}
-Multi-agent LLM systems are specified as role diagrams --- Planner,
-Executor, Reviewer --- and the diagram is read as a mechanism. We ask when
-the roles are load-bearing. Holding agents, topology, call budget, evaluator
-and grading fixed, we delete every role instruction and, separately,
-enforce the same division of labor at the interface, across three actor
-models ($11{,}600$ frozen trajectories), plus an exploratory post-freeze
-role-free condition that receives the evaluator's feedback.
-
-Deleting the roles destroys the intended division of labor on Omni-MATH ---
-the rate at which every agent asserts its own final answer rises from
-$0.000$--$0.120$ to $0.846$--$0.976$ --- while first-pass accuracy does not
-fall. Roles look load-bearing for repair only against a role-free team whose
-prompts never carried the evaluator's feedback (gemma-4: $0.222$ with roles,
-$0.051$ without). Given the same feedback string, the role-free team
-recovers more: $0.609$ against $0.222$ for gemma-4 ($89$ jointly failed
-problems recovered only without roles, $4$ only with them; exact McNemar
-$p=6.2\times10^{-22}$), and reaches higher final accuracy in all five
-actor--domain cells. Yet when both teams are credited with the same number of
-verdicts per problem, the role-free advantage disappears: the pooled
-difference is $+0.009$ in favor of roles ($95\%$ CI $-0.014$ to $+0.033$);
-no robustness check favors the role-free team significantly, and one favors
-roles. Roles mainly change how often a team asks for feedback. The role-structured Reviewer withholds approval: on Omni-MATH,
-gemma-4's team submits $1.27$ times per failed trajectory against $3.20$.
-Overriding the Reviewer in an exploratory $400$-problem run, role prompts
-unchanged, raises gemma-4's recovery from $0.198$ (gated re-run) to
-$0.613$, matching the role-free team's $0.549$ on the same problems.
-\textbf{Structure is not adaptability}: a clean division of labor is not
-evidence that a team acts on corrective information, and role ablations
-must hold information channels fixed, not only budgets.
+Multi-agent large language model (LLM) systems usually assign roles such as Planner, Executor and
+Reviewer. We ask when these roles are load-bearing, that is, when removing
+them lowers performance while call and information budgets stay the same. We
+test three open-weight models on competition mathematics and two of them on
+college science. Keeping the agents, topology and budgets unchanged, we
+delete every role instruction. This deletion largely destroys the intended
+division of labor, yet first-pass accuracy does not drop. Roles appear useful for repairing rejected answers, clearly for the gemma-4
+model and directionally for the gpt-oss model. But this advantage appears only when the role-free team never
+receives the evaluator's feedback. In an exploratory condition, we give the
+role-free team the same feedback string. It then recovers from failures more
+often than the role-structured team (recovery $0.609$ against $0.222$ for
+gemma-4 on competition mathematics) and reaches higher final accuracy in
+every setting. However, the advantage disappears when both teams are
+credited with the same number of evaluator verdicts, and one robustness
+check even favors roles. The difference in recovery mainly reflects how
+often each team submits. The role-structured Reviewer often withholds
+approval, so its team receives fewer verdicts. In a single exploratory
+$400$-problem run for gemma-4, we submitted the team's answer in every cycle (one pass of the three agents) regardless of the Reviewer, leaving the role prompts unchanged. The
+role-structured team then recovered as well as the role-free team. We
+conclude that a clean division of labor is not evidence of adaptability.
+Role ablations must hold information channels fixed, not only budgets.
 \end{abstract}
 
 % CCS concepts are not part of the AAMAS-2027 sample (AAMAS_2027_sample.tex
