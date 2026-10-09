@@ -1,18 +1,18 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Multi-agent roles organize a team into a structured workflow. Deleting these
-roles destroyed the intended division of labor across all tested models, but
-first-pass accuracy did not fall. Roles only appeared load-bearing for
-repairing rejected answers when compared against a role-free team that never
-received the evaluator's feedback. When both teams received the identical
-feedback string, the role-free team recovered more trajectories across every
-tested configuration. When matched on the number of evaluator verdicts, this
-advantage disappeared.
-
-These findings suggest that roles change little about how a team uses
-corrective feedback but substantially alter how often the team asks for it.
-Structure is not adaptability. Evaluating agent organization therefore
-requires checking both whether the specified division of labor is realized
-and whether corrective information reaches the team and changes its next
-actions.
+Deleting multi-agent roles largely eliminated the intended division of
+labor in every tested model, yet first-pass accuracy did not fall. Roles do
+more than allocate work: they also allocate decisions. A role-structured
+Reviewer controls when the team submits to the external evaluator, and it
+frequently withholds approval. In exploratory comparisons with feedback
+available to both teams, the role-free team recovered more often in every
+tested setting. In a post hoc comparison at equal numbers of verdicts the advantage
+disappeared,
+and for gemma-4, forcing a submission in every cycle with the role prompts
+kept raised the role-structured team's recovery to the same level. Roles do
+not just assign responsibilities; they also govern decisions and
+information flow, which shape how a team recovers from failure. Building an
+effective multi-agent organization therefore goes beyond assigning roles
+correctly. It requires designing decision rights and information pathways
+that support the desired system behavior.

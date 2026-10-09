@@ -1,48 +1,53 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{Function of roles: gating submission vs.\ driving revision.}
-Producing a first answer is a \emph{generation} problem. Having three agents
-reach the same place by three routes costs nothing but tokens, and
-first-pass accuracy is nearly indifferent to the division of labor. After a
-failure, the team must produce something unlike the answer that just failed.
-Except for the gpt-oss model, teams rarely do so unless told that the
-candidate failed. Given that knowledge, the role contract adds little
-capacity to revise. When matched on the number of verdicts, the two teams
-differ little. The role contract primarily decides \emph{when} the team asks
-for evaluation. The role-structured Reviewer withholds approval until it is
-satisfied, so the team draws fewer verdicts and sometimes none at all.
-Overriding the Reviewer closed the gap for the gemma-4 model. Under a
-ground-truth evaluator and a fixed cycle budget, fewer verdicts mean fewer
-recoveries. Where verification is costly, noisy, or unavailable, a team that
-asks less often could be the better design; this experiment cannot tell.
+\paragraph{Roles allocate decisions as well as work.} Generating a first
+answer is a generation problem. Three agents reaching the same conclusion
+by different routes cost only tokens, so first-pass accuracy remains
+largely unaffected by the division of labor. After a failure, however, the
+team must produce something distinct from the rejected answer, and except
+for the gpt-oss model, teams rarely change their answer unless told it
+failed. Once this failure signal is provided, the role contract adds little
+capacity for revision: matched on the number of verdicts, the difference
+between the two teams nearly vanishes. The role contract primarily dictates
+when the team asks for external evaluation. A role-structured Reviewer
+withholds approval until it is satisfied, so its team draws fewer verdicts,
+sometimes none. In one exploratory run, overriding this Reviewer closed the
+gap for the gemma-4 model.
 
-\paragraph{Practical implications for multi-agent system design.} First, if
-a cheap and reliable verifier is available, a Reviewer role that withholds
-submission can cost recoveries. It is better to let the team submit and gate
-on the verifier rather than on an internal critic. Second, regardless of the
-role structure, the verifier's feedback must be routed to every agent that
-can act on it. In our pipeline, the teams of the gemma-4 and Llama-3.3
-models without a feedback slot almost never recovered, whereas the same
-prompts recovered far more often once the feedback was added.
+\paragraph{A design trade-off, not a defect.} A Reviewer that withholds
+approval conserves external evaluations, which is valuable when evaluations
+are costly, noisy or unavailable. In our setting, with a ground-truth
+evaluator and a fixed cycle budget, a strict Reviewer instead limits the
+team's opportunities to obtain corrective feedback, and fewer verdicts mean
+fewer recoveries. We measure this side of the trade-off, not the full cost
+and performance balance. Two design implications follow for similar settings.
+First, if a cheap and reliable verifier is available, let the team submit
+frequently and gate on the verifier rather than on an internal critic.
+Second, whatever the role structure, route the verifier's feedback to every
+agent that can act on it, as the feedback-withheld diagnostic shows
+(\S\ref{subsec:mechanism}).
 
-\paragraph{Methodological pitfalls: the necessity of information audits.} In
-a prompted multi-agent system, feedback, tool outputs and verifier verdicts
-reach the agents through slots in the same templates that carry the role
-instructions, so rewriting those templates can silently remove a channel.
-Nothing in the budget record, call counts or accuracy metrics reports the
-absence. A role ablation therefore needs an information audit alongside the
-budget audit: the runtime inputs each template consumes must be documented,
-and a contrast is matched only when those input sets are identical. Our
-role-structured and feedback-withheld conditions differ in one such input,
-the feedback itself.
+\paragraph{Information audits.} In a prompted multi-agent system, feedback,
+tool outputs and verifier verdicts reach the agents through slots in the
+same templates that carry the role instructions. Rewriting these templates
+during an ablation can therefore silently remove a channel, and no budget
+record, call count or accuracy metric reports the absence. A role ablation
+thus requires an information audit alongside the budget audit: the runtime
+inputs each template consumes must be documented, and a contrast is matched
+only when these input sets are identical. Even with matched access, the
+realized use can differ, because the organization decides how often the
+channels are used.
 
-\paragraph{Reassessing the value of role diagrams.} Precise reviewing does
-not necessarily mean the critique is adopted~\cite{yang2026precise}.
-Similarly, a clean division of labor does not guarantee that a team adapts.
-What matters is whether corrective information changes the next action taken
-by the system. Task-outcome evaluation alone cannot test this because an
-aggregate score averages stages where the organization is idle with stages
-where it does all its work. We recommend two additions to standard
-evaluations: report performance conditioned on a failed first attempt, and
-measure the realized organization rather than assume the specified one.
+\paragraph{Decision rights and information pathways.} Prior work shows that
+precise reviewing does not guarantee that a critique is
+adopted~\cite{yang2026precise}. Similarly, a clean division of labor does
+not guarantee that a team recovers from errors. The critical factor is
+whether corrective information reaches the team and changes its next
+actions. A task-outcome evaluation alone cannot reveal this, because an
+aggregate score averages the stages where the organization sits idle with
+those where it does its work. We recommend reporting performance
+conditioned on a failed first attempt, measuring the realized organization
+instead of assuming the specified one, and treating who may submit and
+which agents see the feedback as core parts of the organization's
+specification.

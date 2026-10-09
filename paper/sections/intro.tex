@@ -15,70 +15,75 @@ cannot distinguish between these scenarios. A pipeline whose agents have
 quietly collapsed into identical solvers returns the same final score as an
 organization that works exactly as drawn.
 
-This ambiguity raises a critical question about which phases of the
-problem-solving process, and under what conditions, genuinely rely on
-multi-agent organization. A team must first produce an answer and, if that
-answer is rejected, produce a different one. We ask when the assigned roles
-are truly load-bearing during these distinct phases. We define a component
-as load-bearing if removing or altering it reproducibly degrades task
-performance under matched call and information budgets
-(\S\ref{sec:framework}). Matching the information budget is subtle because
-feedback reaches each agent through its prompt, and a role ablation
-inherently rewrites those exact channels. To test this, we hold the
-topology, actor model (the language model that plays all three agents),
-retry budget and evaluator fixed, and we vary the organization in both
-directions: we delete every role instruction and, separately, we enforce the
-division of labor at the interface, through typed message formats. Deleting
-the roles largely destroys the intended division of labor (aided by the fact
-that the role-free prompt asks each agent for its current answer). Yet,
-consistent with prior role
-ablations~\cite{dylan2026equal,orogat2026architectural}, this functional
-collapse does not degrade first-pass accuracy.
+Beyond merely dividing work, roles also dictate critical decisions. In a
+\PER{} team, the Reviewer does not just check the answer. It also decides
+when the candidate is ready for submission to an external evaluator. This
+decision is crucial because the evaluator provides corrective information,
+namely a verdict and a repair hint, which internal deliberation cannot
+generate. A conservative Reviewer saves evaluations. This behavior is
+practical when evaluations are expensive. However, every withheld
+submission is a missed opportunity to discover that an answer is incorrect.
+Therefore, we investigate what roles alter in a multi-agent system beyond
+the intended division of labor. We specifically examine how roles govern
+the team's access to external corrective information and how this access
+impacts recovery from failure.
 
-After a rejected first answer, roles do seem to matter. The role-structured
-team recovers more failed trajectories, runs on a problem whose first answer
-was rejected, than a role-free baseline team, clearly for the gemma-4 model
-and directionally for the gpt-oss model. However, this difference is
-manufactured by uneven information access. The role-structured templates
-carry the evaluator's verdict (PASS or FAIL) and repair hint (a correction
-that must not reveal the answer) to every agent. In contrast, the role-free
-baseline template has no place for feedback, so those agents never see the
-verdict or the hint. Roles appear load-bearing for repair only when their
-prompts are the only channel carrying the feedback. When we introduce an
-exploratory condition where the role-free team also receives the same
-feedback string, that team actually recovers more failed trajectories than
-the role-structured team and achieves higher final accuracy across
-competition mathematics and, for two of the models, college science.
+To isolate the effect of roles, we fix the agent topology, the actor model
+(the language model that plays all three agents), the call budget, and the
+ground-truth evaluator. We then vary the organization in two directions.
+First, we completely delete every role instruction. Second, we strictly
+enforce the division of labor at the interface using typed message formats.
+Because feedback typically reaches each agent through its prompt, a role
+ablation also rewrites the feedback channel. We therefore carefully record
+the exact information each condition receives (\S\ref{sec:method}). In our
+main comparison, both teams have equal access to the evaluator's verdict
+and hint. While access is matched, the realized number and content of
+verdicts differ. This difference is what roles control.
 
-However, when both teams are credited with the same number of evaluator
-verdicts per problem, the role-free advantage disappears, and one robustness
-check favors roles. Roles mainly change how often the team asks for external
-feedback, rather than how well it adapts. Specifically, the role-structured
-Reviewer withholds approval even before any feedback exists and, on
-competition mathematics, mostly where no clause forbids approval, so the
-team submits fewer attempts. Against a ground-truth evaluator and a capped
-budget, a withheld submission is a lost chance to recover. Overriding this
-Reviewer in a single exploratory $400$-problem run for gemma-4, with the
-role prompts unchanged, raises the role-structured team's recovery to match
-the role-free team's on the same problems. Enforcing the division of labor
-at the interface also loosens the gate and raises recovery (resolvably only
-for the Llama-3.3 model), but $8\%$ to $17\%$ of enforced trajectories never
-finish, so end-to-end accuracy does not improve. These results show that a
-clean division of labor does not guarantee that a team acts on corrective
-information. Evaluating agent organization requires holding information
-channels fixed alongside budgets.
+Deleting roles largely dismantles the intended division of labor (aided by
+the fact that the role-free prompt asks each agent for its current answer).
+However, consistent with prior role
+ablations~\cite{dylan2026equal,orogat2026architectural}, the team's
+first-pass accuracy does not decline. The crucial difference emerges only
+after a rejected first answer. In an exploratory comparison where feedback
+is available to both teams, the role-free team successfully recovers more
+of its failed trajectories (runs on a problem whose first answer was
+rejected) across all five actor and domain settings. This leads to a higher
+final accuracy. The evidence points to the Reviewer's decision rights. A
+role-structured Reviewer frequently withholds approval, often even before
+any feedback exists. Consequently, the role-structured team submits less
+often and receives fewer verdicts. Under a capped budget, a withheld
+submission is a lost chance to recover. A post hoc comparison at equal
+numbers of evaluator verdicts removes the role-free advantage.
+Furthermore, an exploratory intervention for the gemma-4 model on $400$
+problems keeps the role prompts intact but forces the team to submit an
+answer in every cycle. This intervention raises the role-structured team's
+recovery to the role-free team's level on the same problems. Enforcing the
+division of labor at the interface also loosens this Reviewer gate and
+raises recovery, though resolvably only for the Llama-3.3 model. However,
+$8\%$ to $17\%$ of enforced trajectories never finish, because malformed or
+boundary-violating outputs use up the allowed regenerations, so end-to-end
+accuracy does not improve. Ultimately, roles shape two distinct factors
+simultaneously. They determine who does which work, and they dictate when
+the team asks for correction. These two factors affect system performance
+in different ways.
 
 We summarize our contributions as follows:
 \begin{itemize}
-\item[(1)] An operational definition of load-bearing multi-agent components,
-  applied per phase through a budget-matched design that varies organization
-  in both directions.
-\item[(2)] Evidence that a role ablation which drops the feedback channel
-  can manufacture an apparent role effect on repair (clearly for gemma-4,
-  directionally for gpt-oss), and that the role-free advantage disappears
-  once the feedback string and the number of verdicts are matched.
-\item[(3)] An account of what roles do instead: they mainly act as a gate on
-  submission, measured from the logs and tested by removing the gate in one
-  exploratory run.
-\item[(4)] A measurement point extending a recent separation of reviewer precision from critique uptake~\cite{yang2026precise}: properties resembling good collaboration do not guarantee that corrective information changes the system's next action (\S\ref{sec:discussion}).
+\item[(1)] We introduce a budget-matched design that varies organization in
+  two directions and strictly documents the information each condition
+  receives. This includes a feedback-withheld diagnostic that shows what a
+  role ablation measures when it also removes the feedback channel.
+\item[(2)] We provide empirical evidence across three actors and two
+  domains that roles successfully induce functional specialization without
+  improving first-pass accuracy.
+\item[(3)] We provide evidence that the Reviewer's approval governs the
+  team's feedback opportunities. We support this claim using submission
+  logs, a post hoc verdict-matched comparison, and an exploratory
+  intervention that removes the submission gate while keeping role prompts
+  intact.
+\item[(4)] We outline implications for evaluating multi-agent
+  organizations. We recommend reporting recovery rates after a failed first
+  attempt and treating decision rights and information pathways as core
+  components of the organizational structure (\S\ref{sec:discussion}).
 \end{itemize}

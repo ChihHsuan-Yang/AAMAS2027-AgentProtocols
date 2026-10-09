@@ -3,23 +3,25 @@
 
 \paragraph{Evaluation paradigm and oracle-gated recovery.} The recovery loop
 in our experiments is gated by an oracle. The evaluator triggering retries
-sees the ground truth, so every reported recovery rests on a
-ground-truth-informed failure signal rather than unaided self-correction.
+sees the ground truth, so every reported recovery is oracle-assisted, resting
+on a ground-truth-informed failure signal rather than autonomous
+self-correction.
 Stopping at the correct answer also hides revisions that would have turned a
-correct answer into a wrong one. An evaluator that can be queried multiple
-times favors the team that queries it most. As shown in
-\S\ref{subsec:mechanism}, when matched on the number of verdicts, the
-role-free advantage disappears.
+correct answer into a wrong one, and an evaluator that can be queried
+repeatedly favors the team that queries it most (\S\ref{subsec:mechanism}).
 
 \paragraph{Scope, provenance, and experimental disclosures.} We test one
 \PER{} organization, with an evaluator that is itself one of the models
 under study. While the ordering returns across a second domain of college
 science problems, the findings are limited to text-based reasoning tasks.
-The feedback-matched condition and the forced-submission run were added
-after the freeze and are outside the pre-registration. The forced-submission
+The role-free condition with feedback, on which the main comparison rests,
+and the forced-submission run are exploratory follow-ups, added after the
+freeze and outside the pre-registration. The forced-submission
 run covers only one actor, one domain, and a single run, and it removes the
 entire gate rather than only the clause forbidding approval after a failure.
-The feedback-matched condition also differs in feedback presentation:
+Matched access to feedback does not match the realized number or content
+of verdicts, and we do not show that any submission policy is cost-optimal.
+The condition with feedback also differs in feedback presentation:
 role-structured agents receive feedback inside role-specific instructions,
 whereas role-free agents view it as a bare \texttt{[Evaluator]} entry.
 Finally, the context-restored control is only a \emph{partial} control due

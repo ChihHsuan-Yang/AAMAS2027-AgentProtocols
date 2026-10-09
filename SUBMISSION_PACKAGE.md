@@ -1,8 +1,10 @@
 # Submission Package — upload checklist
 
-**Status 2026-10-08, 23:30 CT.** Built from `revision` at 3dc579b plus the
-rewritten Results section, the polished supplement and the submission files
-regenerated on top of it (this file, the two PDFs and the zip). Upload the
+**Status 2026-10-09, 02:00 CT.** Built from `revision` at 5962081 plus the
+storyline rewrite of 2026-10-09 (new title, abstract, Introduction, Results
+R1--R4, Discussion and Conclusion, polished by the authors) and the
+submission files regenerated on top of it (this file, the two PDFs and the
+zip). Upload the
 files exactly as committed here rather than rebuilding them: a rebuild on
 another TeX installation is a different file.
 
@@ -16,30 +18,31 @@ OpenReview accepts revisions until the deadline, so submit early.
 
 | item | file | check |
 |---|---|---|
-| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8 (3.9 lines spare), references on pp. 9–10; sha256 `ee32030009f54046…` |
-| supplementary material | `submission/supplementary_material.zip` | one zip, 838 KB (limit 25 MB), 59 files: `supplement.pdf` (9 pages, 11 tables, 4 figures, AI use statement) + prompts, runner, analysis scripts (including `mk_fig_pipeline.py` and `mk_fig_supp.py`), table sources, outputs, manifests, README with requirements; anonymity gate passed; sha256 `9963ad52d03fbd55…` |
-| abstract (plain text) | `paper/ABSTRACT_SUBMIT.txt` | 263 words (the CFP asks for about 100–300); generated from the abstract in `main.tex`, paste it, do not retype |
+| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8 (3.8 lines spare), references on pp. 9–10; sha256 `e333e46b333caaa2…` |
+| supplementary material | `submission/supplementary_material.zip` | one zip, 843 KB (limit 25 MB), 59 files: `supplement.pdf` (9 pages, 11 tables, 4 figures, AI use statement) + prompts, runner, analysis scripts, table sources, outputs, manifests, README with requirements; anonymity gate passed; sha256 `a508ec18b5e59a67…` |
+| abstract (plain text) | `paper/ABSTRACT_SUBMIT.txt` | 240 words (the CFP asks for about 100–300); the same text as the abstract in `main.tex`, paste it, do not retype |
 
-`submission/supplement.pdf` (sha256 `7f2ec4343769e8ae…`) is the same file
-that is inside the zip, kept beside it for reference. It is the Overleaf
-build; `paper/supplement.tex` reproduces its text exactly (only one
-line-end hyphen differs on this TeX installation). The Overleaf build of the
-main paper (sha256 `495d166b238ae283…`) has the same text as
-`submission/main.pdf`; either may be uploaded. Overleaf names its downloads
-after the project, so rename a downloaded PDF (for example to `main.pdf`)
-before uploading it.
+`submission/supplement.pdf` (sha256 `5e9adba8d4ad1f9e…`) is the same file
+that is inside the zip, kept beside it for reference. Both PDFs were built
+here from the committed sources (TZ=UTC); the Overleaf project still holds
+the 2026-10-08 sources and has not been synced to this version. Upload the
+files in `submission/`, not Overleaf downloads.
 
-Zip tooling: `scripts/mk_supp_zip.py` sha256 `c6fbd33a5b7174cd…`,
-`analysis/scripts/mk_fig_supp.py` sha256 `d393c0121f37c19a…`.
+Zip tooling: `scripts/mk_supp_zip.py` sha256 `a28e48b85a1a441e…`,
+`analysis/scripts/mk_fig_supp.py` sha256 `d393c0121f37c19a…`. The zip's
+redaction rules also rewrite a few development notes in the shipped copies
+of `runner.py`, `runner_xdomain.py`, `test_bf_delivery.py`, `bf_numbers.py`
+(and its output) and `mk_fig1_bf.py` into neutral descriptions of what each
+condition receives; the files in the repository keep their full history.
 
 ## Title
 
-**From Feedback to Revision: When Do Multi-Agent Roles Look Load-Bearing?**
+**Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems**
 
-Changed on 2026-10-07 from *… When Multi-Agent Roles Become Load-Bearing*:
-the paper's answer is conditional (roles look load-bearing for repair only
-when the role ablation also removes the feedback channel; matched on
-verdicts, the gap closes), so the question form fits the claims.
+Chosen by the PI on 2026-10-09 with the storyline rewrite. Registered on
+OpenReview (Oct 1): *From Feedback to Revision: When Multi-Agent Roles Become
+Load-Bearing*; the authors decided to overwrite the OpenReview title and
+abstract fields with the PDF's.
 
 ## Decisions to make on OpenReview
 
@@ -51,8 +54,8 @@ verdicts, the gap closes), so the question form fits the claims.
    concluded roles help revision. The title change is editorial; the
    abstract's conclusion changed (new results: the feedback-matched control,
    the verdict-matched analysis and the forced-submission run). The
-   OpenReview fields must match the PDF; decide whether to also send the PC
-   chairs a short note.
+   OpenReview fields must match the PDF. The title has now changed as well;
+   the authors decided to overwrite both fields at upload.
 2. **Findings.** Earlier mock reviews converged on "Findings or reject";
    do not opt out of Findings unless you have a reason.
 3. **Reciprocal reviewer:** at least one designated reciprocal reviewer
@@ -61,6 +64,28 @@ verdicts, the gap closes), so the question form fits the claims.
    form showed no linked profile; check it).
 4. **"Primary author is a student"** box on OpenReview, if it applies (used
    only for the best-student-paper award).
+
+## What changed on 2026-10-09 (storyline rewrite)
+
+- New title and abstract. The paper now asks what roles change beyond the
+  intended division of labor: roles create specialization without a better
+  first answer, and the Reviewer's approval decides how often the team
+  obtains corrective feedback. The main comparison is role-structured
+  against role-free with feedback (exploratory, post-freeze); the
+  feedback-withheld condition is a diagnostic.
+- Introduction, Results (now R1--R4: specialization; recovery with feedback;
+  the Reviewer gate with the forced-submission run and the post hoc
+  verdict-matched analysis; generality and enforcement), Discussion and
+  Conclusion rewritten, then polished by the authors.
+- Figure 2C: "revising" renamed to "no submission / internal", and a bar for
+  the forced-submission run added. Figure 1: "internal cycle". Table 2's
+  caption reworded.
+- Supplement aligned: new title, R5 merged into R4, the pre-registration
+  sentence corrected (the pre-registered secondary contrast is RS against
+  RF$^{-}$), no "same feedback" or "equal use per verdict" wording, the
+  SciBench section described as the feedback-withheld comparison.
+- No number changed. An independent read-only check matched the numbers to
+  `analysis/out`.
 
 ## What changed since the 2026-10-07 package
 
@@ -106,12 +131,12 @@ verdicts, the gap closes), so the question form fits the claims.
 
 ## Overleaf
 
-The Overleaf project was created from a sources-only zip (`main.tex`,
-`supplement.tex`, class, bst, bib, `by.pdf`, `sections/`, `tables/`,
-`figures/`), which is not committed. The authors then wrote the AI use
-statement there; `paper/supplement.tex` carries the same text. Overleaf's
-TeX Live breaks one line of the main text differently from the build here;
-the page layout and the 3.9 lines of slack on page 8 are unchanged.
+The Overleaf project holds the 2026-10-08 sources and was not used for this
+version. To sync it later, replace `main.tex`, `supplement.tex`, every file
+in `sections/`, `tables/main_results.tex`, `tables/context_quartiles.tex`,
+`tables/scibench_replication.tex`, `figures/fig1_v3_story.pdf` and
+`figures/fig_pipeline.pdf` with the committed versions, then check that the
+main text still ends on page 8.
 
 ## Anonymity
 

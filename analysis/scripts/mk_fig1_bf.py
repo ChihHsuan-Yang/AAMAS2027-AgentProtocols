@@ -11,7 +11,10 @@ THE SENTENCE THIS FIGURE MUST CARRY:
   Panel A  first-pass accuracy        role-free / role-free + feedback / role-structured
   Panel B  recovery after a FAIL      + structurally enforced; bracket = paired
                                       role-structured vs role-free + feedback
-  Panel C  budget allocation (gemma-4, Omni-MATH): submitting vs revising
+  Panel C  budget allocation (gemma-4, Omni-MATH): cycles that submit vs
+           cycles of internal deliberation without submission, plus the
+           exploratory forced-submission run (role prompts kept, every cycle
+           submitted; its own 400-problem subset, drawn below a gap)
 
 Groups: the three actors on Omni-MATH, then the SciBench cells. A cell that
 has not been run is left empty and labelled "pending", never interpolated.
@@ -88,7 +91,7 @@ def pfmt(p):
     return rf"${m}\times10^{{{int(e)}}}$"
 
 
-# Light tints for the "revising" segment of panel C: each condition's own hue.
+# Light tints for the "no submission" segment of panel C: each condition's own hue.
 TINT = {"A": "#CFC5E2", "Bf": "#F2CFE0", "B": "#F2CFE0", "C": "#F1DDBF"}
 FS_SMALL = S.FS_MIN          # p values and in-bar numbers: the class minimum
 FS_TEXT = 7.0                # tick and row labels (Libertinus runs small)
@@ -212,27 +215,39 @@ def panel_C(ax):
             ax.text(sub + gap + rev / 2, yi, f"{rev:.2f}", ha="center", va="center",
                     fontsize=FS_SMALL, color=S.INK, zorder=6)
         else:
-            ax.text(sub - 0.12, yi, f"+ {rev:.2f} revising", ha="right", va="center",
+            ax.text(sub - 0.12, yi, f"+ {rev:.2f} internal", ha="right", va="center",
                     fontsize=FS_SMALL, color=S.INK2, zorder=6)
         ax.text(-0.03, yi, LONG[arm], transform=ax.get_yaxis_transform(),
                 ha="right", va="center", fontsize=FS_TEXT, color=S.INK)
+    # Forced submission (exploratory, gemma-4, the 400-problem post-freeze
+    # subset): the role prompts are kept but the answer is submitted in every
+    # cycle, so every cycle it uses is a submission (bf_gate.py "verdicts").
+    yf = ys[-1] - 1.2
+    dF = DG["afs|Afs (forced submission)"]
+    fsub = dF["verdicts"]
+    ax.barh(yf, fsub, 0.64, zorder=3, **bar_kw("A"))
+    ax.text(fsub / 2, yf, f"{fsub:.2f}", ha="center", va="center", fontsize=FS_SMALL,
+            color=S.SURFACE, zorder=6)
+    ax.text(-0.03, yf, "forced submission (400)", transform=ax.get_yaxis_transform(),
+            ha="right", va="center", fontsize=FS_TEXT, color=S.INK)
+    ax.axhline((ys[-1] + yf) / 2, color=S.INK3, lw=0.4, zorder=2)
     ax.axvline(MAXCYC, color=S.INK2, lw=0.6, ls=(0, (1.5, 1.5)), zorder=2)
     dA = DG[f"omni|{FOCUS}|A"]
     ax.text(dA["approvals"] / 2, ys[0] + 0.40, "submitting", ha="center", va="bottom",
             fontsize=FS_SMALL, color=S.INK3, fontstyle="italic")
-    ax.text(dA["approvals"] + gap + dA["declines"] / 2, ys[0] + 0.40, "revising",
+    ax.text(dA["approvals"] + gap + dA["declines"] / 2, ys[0] + 0.40, "no submission",
             ha="center", va="bottom", fontsize=FS_SMALL, color=S.INK3, fontstyle="italic")
     ax.text(MAXCYC - 0.05, ys[0] + 0.40, f"budget {MAXCYC}", ha="right", va="bottom",
             fontsize=FS_SMALL, color=S.INK2)
     ax.set_xlim(0, MAXCYC + 0.1)
-    ax.set_ylim(-0.5, len(arms) - 0.25)
+    ax.set_ylim(yf - 0.5, len(arms) - 0.25)
     # the axes top is raised to the top of the row of annotations above the
     # first bar, so the panel title clears the panel's ink by TITLE_PAD like A and B
     ax.figure.canvas.draw()
     inv = ax.transData.inverted()
     top = max(inv.transform((0, t.get_window_extent().y1))[1]
               for t in ax.texts if t.get_position()[1] > ys[0])
-    ax.set_ylim(-0.5, top)
+    ax.set_ylim(yf - 0.5, top)
     ax.set_yticks([])
     ax.set_xticks(range(0, MAXCYC + 1, 2))
     S.clean(ax, grid_axis="x")
@@ -243,7 +258,7 @@ def panel_C(ax):
 # Laid out from the bottom up, in inches. A and B share the actor axis, so the
 # actor names are set once, under B.
 L_AB, L_C, R_EDGE = 0.50, 1.30, 3.28
-H_A, H_B, H_C = 0.62, 0.86, 0.62
+H_A, H_B, H_C = 0.62, 0.86, 0.80
 # Every panel title sits the same distance above its axes: TITLE_PAD above
 # the top spine (A, B) or above the top of the bar area (C).  The gap between
 # B's actor labels and C's title is set separately, so C's title belongs to C.

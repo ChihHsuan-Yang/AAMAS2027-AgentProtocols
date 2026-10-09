@@ -599,7 +599,7 @@ def t_scibench(pv) -> str:
                  [f"SciBench frozen data: experiments/results/xdomain/FROZEN_SCIBENCH/",
                   f"  frozen_at {pv['sci_frozen_at']}, {pv['sci_rows']} trajectories",
                   f"  sha256 {pv['sci_sha']}  scibench_AB.jsonl",
-                  "gpt-oss's recovery cell is UNDERPOWERED, not a non-replication:",
+                  "gpt-oss's recovery cell is UNDERPOWERED:",
                   "its point estimate matches Omni-MATH's. Llama-3.3 was not run.",
                   "No clause-specific role-fidelity metric crosses domains (the",
                   "contract was domain-adapted), so none is reported here."])
@@ -619,7 +619,7 @@ actor & $n$ & RS & RF$^{{-}}$ & diff. & exact $p$
 {chr(10).join(body)}
 \\bottomrule
 \\end{{tabular}}
-\\tabnote{{The complete 574-problem text-only slice of free-response college science, 2,296 trajectories. RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld; the contrast with feedback shown is in the main paper's Table~2. First pass is paired over all 574 problems, with the exact McNemar $p$ for the problems right under only one condition. Recovery is paired over only the problems first-pass wrong under both conditions ($n_{{\\mathrm{{both}}}}$); ``RS only'' and ``RF$^{{-}}$ only'' count problems recovered under one condition and not the other. Differences are RF$^{{-}}$ minus RS under the pre-registered scoring (never-graded trajectories count as incorrect). gpt-oss-120b's recovery cell is underpowered at its $n_{{\\mathrm{{both}}}}$ rather than a non-replication: its estimate points the same way as on Omni-MATH. Llama-3.3-70B-Instruct was not run in this domain.}}
+\\tabnote{{The complete 574-problem text-only slice of free-response college science, 2,296 trajectories. RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld; the contrast with feedback shown is in the main paper's Table~2. First pass is paired over all 574 problems, with the exact McNemar $p$ for the problems right under only one condition. Recovery is paired over only the problems first-pass wrong under both conditions ($n_{{\\mathrm{{both}}}}$); ``RS only'' and ``RF$^{{-}}$ only'' count problems recovered under one condition and not the other. Differences are RF$^{{-}}$ minus RS under the pre-registered scoring (never-graded trajectories count as incorrect). gpt-oss-120b's recovery cell is underpowered at its $n_{{\\mathrm{{both}}}}$; its estimate points the same way as on Omni-MATH. Llama-3.3-70B-Instruct was not run in this domain.}}
 \\end{{table*}}
 """
 
@@ -1272,7 +1272,7 @@ context quartile & recovery & $n$ & recovery & $n$ & difference \\\\
 {chr(10).join(body)}
 \\bottomrule
 \\end{{tabular}}
-\\tabnote{{RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld. Recovery: the share of first-pass-wrong trajectories that finish correct, with $n$ the number of such trajectories in the quartile; the difference is RS minus RF$^{{-}}$. Context is the total character count of all agent messages in the trajectory; quartile cut points are computed once per actor over both conditions pooled. Because accumulated context is nearly a function of condition (the RF$^{{-}}$ team writes less because it stops reworking), the strata are not balanced and the comparison cannot separate context from condition.}}
+\\tabnote{{RS: role-structured; RF$^{{-}}$: role-free with the evaluator's feedback withheld. Recovery: the share of first-pass-wrong trajectories that finish correct, with $n$ the number of such trajectories in the quartile; the difference is RS minus RF$^{{-}}$. Context is the total character count of all agent messages in the trajectory; quartile cut points are computed once per actor over both conditions pooled. Because accumulated context is nearly a function of condition (the RF$^{{-}}$ team writes less because it stops changing its answer), the strata are not balanced and the comparison cannot separate context from condition.}}
 \\end{{table}}
 """
 

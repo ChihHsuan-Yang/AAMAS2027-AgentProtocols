@@ -102,10 +102,36 @@ REDACT = [
     # a UTC offset in a timestamp narrows the authors' time zone
     (r"(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?)[+-]0[4-9]:00", r"\1"),
     (r" at the PI's request", ""),
+    # development notes about the feedback-withheld condition: the shipped
+    # copies describe what each condition receives, not how the code evolved
+    (r"    # CORRECTED 2026-10-03: the Arm B template never interpolates \$\{advice\},\n"
+     r"(?:    #[^\n]*\n){4}    # of error as the Arm C entry below\.\n",
+     "    # Arm B (feedback-withheld diagnostic): the template has no ${advice}\n"
+     "    # slot and shared_history carries only [Planner]/[Executor]/[Reviewer]\n"
+     "    # turns, so Arm B agents receive the problem and the shared history only.\n"),
+    (r"Arm B prompts never contain the evaluator's feedback \(the defect\)\.",
+     "Arm B prompts never contain the evaluator's feedback (by design)."),
+    (r"Arm B \(role-free\) never received the evaluator's FAIL verdict or repair\n"
+     r"  hint: its prompt template has no \$\{advice\} slot\. Arm Bf is Arm B with that\n"
+     r"  one defect removed\.",
+     "Arm B (role-free, feedback withheld) does not receive the evaluator's FAIL\n"
+     "  verdict or repair hint: its prompt template has no ${advice} slot. Arm Bf is\n"
+     "  Arm B with the feedback added."),
+    (r"Arm B's hints were generated but never shown to its agents \(the defect Bf removes\)\.",
+     "Arm B's hints were generated but not shown to its agents (feedback withheld)."),
+    (r'"""FIGURE 1 \(v3, after the feedback-matched control\) -- the corrected story\.',
+     '"""Main-paper Figure 2: first pass, recovery and budget allocation.'),
+    (r"the original role-free team never saw it and resubmitted; the same team\n"
+     r"  given the feedback recovers MORE than the role-structured team\.",
+     "without it the role-free team resubmits; the same team given the\n"
+     "  feedback recovers more than the role-structured team."),
+    (r"\(the original role-free run\)", "(the feedback-withheld diagnostic)"),
 ]
 FORBIDDEN = ["argonne", "alcf", "anl.gov", "bellayang", "chihhsuan", "xinyang", "agentssci",
              "huggingface", "github.com", "sophia", "sciagenttrace", "bigdata", "/users/",
-             "globus", "overleaf", "aamas2027-roles", "inference_auth", "macmini"]
+             "globus", "overleaf", "aamas2027-roles", "inference_auth", "macmini",
+             "corrected story", "original role-free", "previous entry listed",
+             "the defect bf removes", "one defect removed", "(the defect)"]
 FORBIDDEN += ["polaris", "aurora", "argo-shim", "github", "gitlab", "code_staging", "per_hint_llm",
               "uchicago", "university of chicago", "houston", "lemont", "/lus/", "/eagle/", "/grand/",
               "bella", "chih-hsuan", "jingyan", "huihuo", "thakur", "vishwanath", "vasudevan", "huerta",
@@ -125,13 +151,13 @@ README = """# Supplementary material (anonymous)
   (`test_bf_delivery.py`, `test_afs.py`; zero API calls).
 * `code/analysis/scripts/` -- every script that produces a number, table or figure:
   `FINAL_TABLES.py` (frozen snapshot), `INDEPENDENT_AUDIT.py` (an independent
-  re-implementation), `bf_numbers.py` (the feedback-matched condition),
+  re-implementation), `bf_numbers.py` (the role-free condition with feedback),
   `bf_gate.py` (submission gate, verdict-matched recovery, the forced-submission
   run), `mk_*.py` (tables, the main paper's Figures 1 and 2, and the four supplement figures).
 * `code/analysis/out/` -- the canonical outputs those scripts write; every number
   in the paper and in `supplement.pdf` can be found in them.
 * `code/experiments/results/**/MANIFEST*.json` -- sha256 manifests of the frozen
-  snapshot and of the feedback-matched runs.
+  snapshot and of the post-freeze runs with feedback.
 * `code/paper/tables/` -- the generated LaTeX of every table in the paper and in
   `supplement.pdf`, each with its provenance header.
 

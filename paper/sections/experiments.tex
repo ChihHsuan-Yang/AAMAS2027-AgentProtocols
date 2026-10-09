@@ -13,10 +13,10 @@ recovery.
 \paragraph{Actors and scale.} Three actor models are served from one pinned
 vLLM server~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
 gemma-4-31B~\cite{gemma2026gemma4} and
-Llama-3.3-70B~\cite{grattafiori2024llama3}. The primary analysis reads one
+Llama-3.3-70B~\cite{grattafiori2024llama3}. The pre-registered analysis reads one
 frozen snapshot of $11{,}600$ trajectories, $83{,}320$ role messages and
 $17{,}486$ gradings on $1{,}600$ problems
-sampled uniformly at random from the $4{,}181$ available. The three main
+sampled uniformly at random from the $4{,}181$ available. The three frozen
 conditions run $1{,}600$ problems per cell (one actor in one condition on
 one domain) for gemma-4 and gpt-oss and $400$ for Llama-3.3. The
 context-restored control covers gemma-4 and gpt-oss at $400$ each. The
@@ -29,12 +29,12 @@ that corpus is high for the paired per-actor main effect
 outputs cut off at the token limit were counted as role-boundary rejections,
 was never pooled (supplement).
 
-\paragraph{The feedback-matched condition.} It was run after the freeze
+\paragraph{The role-free condition with feedback.} It was run after the freeze
 ($4{,}748$ trajectories) on the same server, problems, budget and evaluator,
 for all three actors on Omni-MATH and for gemma-4 and gpt-oss on the
 SciBench benchmark~\cite{wang2024scibench}. Its data are manifested
 separately and never pooled into a frozen cell. The two gemma-4 cells were
-run a second time, independently. A re-run of gemma-4's role-structured
+run a second time, independently. A re-run (the first of two; supplement) of gemma-4's role-structured
 condition on $400$ frozen problems shows no detectable drift in final
 accuracy ($0.818$ against $0.825$ frozen, paired $p=0.75$; recovery $0.198$
 against $0.146$). Decoding at temperature $0$ is not deterministic on a

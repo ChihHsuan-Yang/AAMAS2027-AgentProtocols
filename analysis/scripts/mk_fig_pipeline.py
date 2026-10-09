@@ -19,7 +19,7 @@ is"), checked against experiments/runner.py:
     `accept` promotes the Executor's answer;
   * on approval the answer goes to the evaluator: PASS ends the trajectory,
     FAIL returns a verdict and repair hint; without approval nothing is
-    submitted and the next cycle revises.
+    submitted and the team deliberates internally in the next cycle.
 
 Who approves is the same mechanism in every condition (the third agent) and
 is stated in the caption, so the key below the diagram lists only what
@@ -235,12 +235,12 @@ def build():
             "FAIL: verdict and repair hint, returned for the next cycle",
             ha="left", va="bottom", fontsize=FS_S, color=FAILC)
 
-    # no approval: nothing is submitted; the next cycle revises
+    # no approval: nothing is submitted; the next cycle is internal deliberation
     ax.plot([XC[2], XC[2], XC[0]], [Y_BOT - EDGE_IN, Y_NO, Y_NO], color=S.INK3, lw=0.7,
             linestyle=(0, (2.0, 1.4)), solid_joinstyle="miter")
     arrow(ax, XC[0], Y_NO, XC[0], Y_BOT, color=S.INK3)
     ax.text(XC[0] + 0.07, Y_NO - 0.035,
-            "no approval: nothing submitted, the next cycle revises",
+            "no approval: nothing submitted, internal cycle",
             ha="left", va="top", fontsize=FS_S, color=S.INK2)
 
     # where the feedback enters, per condition
