@@ -18,11 +18,11 @@ OpenReview accepts revisions until the deadline, so submit early.
 
 | item | file | check |
 |---|---|---|
-| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8 (3.8 lines spare), references on pp. 9–10; sha256 `c72c757040e7f068…` |
-| supplementary material | `submission/supplementary_material.zip` | one zip, 843 KB (limit 25 MB), 59 files: `supplement.pdf` (9 pages, 11 tables, 4 figures, AI use statement) + prompts, runner, analysis scripts, table sources, outputs, manifests, README with requirements; anonymity gate passed; sha256 `a508ec18b5e59a67…` |
+| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8 (3.8 lines spare), references on pp. 9–10; sha256 `737d57451f0383c1…` |
+| supplementary material | `submission/supplementary_material.zip` | one zip, 843 KB (limit 25 MB), 59 files: `supplement.pdf` (9 pages, 11 tables, 4 figures, AI use statement) + prompts, runner, analysis scripts, table sources, outputs, manifests, README with requirements; anonymity gate passed; sha256 `94279e9e879f5cdd…` |
 | abstract (plain text) | `paper/ABSTRACT_SUBMIT.txt` | 246 words (the CFP asks for about 100–300); the same text as the abstract in `main.tex`, paste it, do not retype |
 
-`submission/supplement.pdf` (sha256 `5e9adba8d4ad1f9e…`) is the same file
+`submission/supplement.pdf` (sha256 `277247e8830996b4…`) is the same file
 that is inside the zip, kept beside it for reference. Both PDFs were built
 here from the committed sources (TZ=UTC); the Overleaf project still holds
 the 2026-10-08 sources and has not been synced to this version. Upload the
