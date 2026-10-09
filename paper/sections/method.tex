@@ -8,7 +8,8 @@ graph, context visibility (except under enforcement, below) and the total
 call budget. They also use the same verifier and prompt, retry budget,
 decoding parameters (temperature $0$, that is, greedy decoding, and
 identical \texttt{max\_tokens}), stopping rule (a PASS ends the trajectory)
-and grading. Every trajectory in the frozen snapshot carries the identical
+and grading. Every trajectory in the frozen snapshot (the pre-registered dataset,
+\S\ref{sec:experiments}) carries the identical
 budget record, so the design tests organization, not scale. Besides the
 roles, three things differ. After a FAIL, the evaluator returns a repair
 hint, written with the gold answer (the reference solution) in view and
@@ -99,8 +100,8 @@ count only role-boundary violations in the enforcement rate, and count
 answer-bearing calls per condition. One logging gap is disclosed in
 \S\ref{subsec:logging}.
 
-All five endpoints (the pre-specified analyses) were fixed in writing and
-committed before any intervention data existed. The full table, with the
+All five endpoints (the pre-specified analyses, numbered P1 to P5) were
+fixed in writing and committed before any intervention data existed. The full table, with the
 outcome for each, is in the supplement. Units are (problem, actor) pairs,
 and all conditions run the same problems, so every test is paired, with
 bootstrap intervals that resample whole problems~\cite{efron1979bootstrap}.
@@ -108,10 +109,10 @@ The pre-registered primary endpoint, P4, asks whether enforcement's effect
 on accuracy differs by actor. It is null: no pairwise
 difference-in-differences (enforcement's effect in one actor minus its
 effect in another) survives Holm's correction for multiple
-comparisons~\cite{holm1979simple} (smallest adjusted $p=0.17$). Before
-correction, the interval for the Llama-3.3 model against gemma-4, $+0.040$
-$[+0.001,+0.080]$, only just excludes zero, and a separate resample gives
-$p=0.055$. Only the gpt-oss against gemma-4 contrast had adequate
+comparisons~\cite{holm1979simple} (smallest adjusted $p$-value, $p=0.17$).
+Before correction, the $95\%$ bootstrap interval for the Llama-3.3 model
+against gemma-4, $+0.040$ $[+0.001,+0.080]$, only just excludes zero, and a
+separate resample gives $p=0.055$. Only the gpt-oss against gemma-4 contrast had adequate
 statistical power for an interaction of plausible size.
 
 The \Pone{} manipulation objective also failed. It required enforcement to

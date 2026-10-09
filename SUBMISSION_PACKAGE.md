@@ -18,9 +18,9 @@ OpenReview accepts revisions until the deadline, so submit early.
 
 | item | file | check |
 |---|---|---|
-| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8 (3.8 lines spare), references on pp. 9–10; sha256 `e333e46b333caaa2…` |
+| paper PDF | `submission/main.pdf` | 10 pages: main text ends on p. 8 (3.8 lines spare), references on pp. 9–10; sha256 `c72c757040e7f068…` |
 | supplementary material | `submission/supplementary_material.zip` | one zip, 843 KB (limit 25 MB), 59 files: `supplement.pdf` (9 pages, 11 tables, 4 figures, AI use statement) + prompts, runner, analysis scripts, table sources, outputs, manifests, README with requirements; anonymity gate passed; sha256 `a508ec18b5e59a67…` |
-| abstract (plain text) | `paper/ABSTRACT_SUBMIT.txt` | 240 words (the CFP asks for about 100–300); the same text as the abstract in `main.tex`, paste it, do not retype |
+| abstract (plain text) | `paper/ABSTRACT_SUBMIT.txt` | 246 words (the CFP asks for about 100–300); the same text as the abstract in `main.tex`, paste it, do not retype |
 
 `submission/supplement.pdf` (sha256 `5e9adba8d4ad1f9e…`) is the same file
 that is inside the zip, kept beside it for reference. Both PDFs were built
