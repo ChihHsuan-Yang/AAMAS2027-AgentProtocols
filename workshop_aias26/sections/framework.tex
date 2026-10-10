@@ -1,0 +1,33 @@
+\section{Definitions and Measurement}
+\label{sec:framework}
+
+\paragraph{Load-bearing components.} A multi-agent organization is defined
+by its agents, interaction order, message-passing graph, context-visibility
+policy and role contracts. Prohibitive (\textsc{must not}) clauses, such as
+instructing the Planner not to state a final answer, are what establish a
+division of labor. Because these clauses are only natural-language prompts,
+the realized organization need not match the specification. We call a
+component \textbf{load-bearing} if removing or altering it reproducibly
+degrades task performance under matched call and information budgets, and we apply it separately to first answers and to repairs
+(Appendix~\ref{app:loadbearing}).
+
+\paragraph{Functional collapse.} The first deliberation cycle
+\emph{collapses} if all three agents independently assert their own final
+answers. The pipeline then operates as three sequential solvers rather than
+as a division of labor. This is our main measure of functional
+specialization. It does not apply to the structurally enforced condition,
+whose schema has no answer field. Appendix~\ref{app:measures} defines the
+secondary measures.
+
+\paragraph{First pass and recovery.} A \emph{trajectory} is a team's run on
+one problem. \emph{First-pass accuracy} grades the first answer the team
+submits to the evaluator. It need not come in the first cycle: a
+role-structured team may first deliberate internally, without external
+feedback. A trajectory that never
+submits is graded once on its final answer when the budget runs out, and
+that grade is its first pass. Trajectories whose first graded answer is
+wrong are \emph{first-pass wrong} (failed, for short), and \emph{recovery} is the share of them
+that finish correct. Because recovery conditions on a post-treatment
+variable (whether the first answer failed, which the intervention can
+change), recovery contrasts are descriptive~\cite{montgomery2018conditioning}.
+Final accuracy is reported over all problems.

@@ -1,0 +1,57 @@
+% Workshop copy (scripts/mk_workshop_appendix.py): paper/tables/structural_enforcement.tex with its tabular in an adjustbox; numbers unchanged.
+% ==========================================================================
+% Table 4 (manuscript) -- structural enforcement
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  sections T1, T2, T7, T11
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : b26ccb5451a5eaed14046a27a980ba8797e5669912df907bc25f69bf60ad5b76
+% generation date   : 2026-10-04  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% The manipulation-check column is ANSWER AUTHORSHIP = 1 minus
+% T11's 'authored-free' column, which is a FREEDOM rate. The
+% manuscript once read that axis inverted (APPROVED_CLAIMS A11);
+% the complement is taken here, once, in code.
+% Recovery denominator as in Table 2 (judged & fp==0).
+% APPROVED_CLAIMS A6: enforcement restores recovery for Llama-3.3
+% ONLY. For the other two the direction is consistent but not
+% resolvable. 'Highest of any arm, above role-structured in all
+% three actors' is a DEAD claim and must not reappear.
+% The as-graded column is SENSITIVITY ONLY -- it is the
+% survivorship reading, which is why attrition sits beside it.
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table*}[t]
+\centering
+\caption{Structural enforcement against the role-structured baseline on the Omni-MATH benchmark: the manipulation check, attrition, and final accuracy under both scorings.}
+\label{tab:enforcement}
+\begin{adjustbox}{max width=\textwidth}\begin{tabular}{lccccccc}
+\toprule
+ & Planner authors & locked answer & recovery & &
+ \multicolumn{2}{c}{final accuracy, SE $-$ RS} \\
+\cmidrule(lr){6-7}
+actor & answer (RF$^{-}$) & (RF$^{-}$ / RS) & (RS) & attrition
+      & pre-registered & as graded \\
+\midrule
+gemma-4-31B-it & $0.000$ (0.986) & $0.119$ (0.845/0.288) & $0.314$ (0.222) & $8.0\%$ & ${-}0.0225$ {\footnotesize [-0.0387,-0.0063]} & $+0.0190$ {\footnotesize [+0.0054,+0.0333]} \\
+gpt-oss-120b & $0.000$ (0.916) & $0.092$ (0.208/0.052) & $0.395$ (0.324) & $9.9\%$ & ${-}0.0050$ {\footnotesize [-0.0219,+0.0112]} & $+0.0361$ {\footnotesize [+0.0215,+0.0507]} \\
+Llama-3.3-70B-Instruct & $0.000$ (0.958) & $0.072$ (0.806/0.750) & $0.139$ (0.014) & $17.0\%$ & $+0.0175$ {\footnotesize [-0.0200,+0.0550]} & $+0.0453$ {\footnotesize [+0.0030,+0.0876]} \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+
+\tabnote{SE: structurally enforced; RS: role-structured; RF$^{-}$: role-free with the evaluator's feedback withheld. Planner authors answer: the share of Planner messages that state a final answer, under SE and (in parentheses) under RF$^{-}$; SE drives it to zero in all three actors, so the intervention engaged (the manipulation check). Locked answer: the share of first-pass-wrong trajectories whose answer string never changed, under SE and (in parentheses) RF$^{-}$ / RS. Recovery: the share of first-pass-wrong trajectories that finish correct, under SE and (in parentheses) RS, on the denominator of Table~\ref{tab:recovery}. Attrition: the share of SE trajectories that never finish because a malformed output exhausted its regeneration budget. Final accuracy: the difference over all problems with 95\% bootstrap intervals, under the pre-registered scoring (never-graded trajectories count as incorrect) and as graded (they are dropped); the two columns are different populations and the attrition column is why they disagree. Attrition elsewhere is negligible: $0.0$--$0.8\%$ with roles,
+$0.0$--$2.5\%$ without. The as-graded column turns every sign
+positive; the pre-registration fixed in advance that unparseable
+trajectories count incorrect, and \textbf{the benefit appears only after
+conditioning on successful parsing.}}
+\end{table*}

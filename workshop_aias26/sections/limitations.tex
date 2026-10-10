@@ -1,0 +1,33 @@
+\section{Limitations}
+\label{sec:limitations}
+
+\begin{itemize}
+\item \textbf{Oracle-assisted recovery.} The recovery loop is gated by an
+oracle, so every reported recovery is oracle-assisted rather than
+autonomous self-correction. Stopping at the first PASS hides later
+revisions that could undo a correct answer, and an evaluator that can be
+queried repeatedly favors the team that queries it most.
+
+\item \textbf{Scope and exploratory status.} We test one \PER{}
+organization on text-based reasoning tasks, with an evaluator that is
+itself one of the models under study. The main comparison and the
+forced-submission run are exploratory, added after the freeze. The
+forced-submission run is a single run for one actor on one domain, and it
+removes the whole gate, not only the clause forbidding approval after a
+failure.
+
+\item \textbf{Feedback and cost.} Equal access to feedback does not
+equalize the realized number or content of verdicts, and the two teams see
+the feedback in different places. We do not show that any submission
+policy is cost-optimal (further disclosures in Appendix~\ref{app:details}).
+
+\item \textbf{Scoring and logging defects.} The runner graded the last
+\emph{submitted} answer but recorded the last \emph{held} one, the team's
+current answer. For gemma-4 on Omni-MATH they disagree on $17\%$ of
+role-structured first-pass-wrong trajectories. Recoding them narrows the
+recovery gap and moves the verdict-matched difference toward roles
+(\S\ref{subsec:mechanism}, Table~\ref{tab:robust}), but the primary
+analysis keeps the pre-specified rule. A logging defect hides most of
+gpt-oss's role-free reasoning traces from the record, not from the agents,
+and does not create the collapse (Appendix~\ref{app:results}).
+\end{itemize}

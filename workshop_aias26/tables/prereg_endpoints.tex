@@ -1,0 +1,96 @@
+% Workshop copy (scripts/mk_workshop_appendix.py): paper/tables/prereg_endpoints.tex with its tabular in an adjustbox; numbers unchanged.
+% ==========================================================================
+% Table 6 (supplement) -- pre-registered endpoints
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  sections T2, T14, T29
+%                    analysis/scripts/stat_audit_a7_power.py (executed) -- MDE only
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : b26ccb5451a5eaed14046a27a980ba8797e5669912df907bc25f69bf60ad5b76
+% generation date   : 2026-10-04  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% P4 -- THE pre-registered primary -- is NULL before and after
+% Holm. Reported as the failure of the thesis it was written to
+% test (APPROVED_CLAIMS A10).
+% P1 FAILED AS WRITTEN and was re-designated: the schema forbids
+% emitting an ANSWER, not performing COMPUTATION. Reported as a
+% finding, not hidden (DECISION_LOG D9/R1).
+% P2 and P5 yield no p-value and are not p-corrected; the Holm
+% family is therefore P3's three contrasts and P4's three DiDs,
+% which is what the canonical output corrects.
+% 
+% PREREG_MDE_POPULATION_NOTE -- the MDE column and the
+% difference-in-difference column come from DIFFERENT
+% populations and are not arithmetically consistent:
+%   * T14's DiD differences two per-actor C-A means computed on
+%     each actor's OWN problem set (n=1600 and n=400).
+%   * the MDE is computed on problems shared by BOTH actors,
+%     where the Llama/gemma-4 observed DiD is +0.0300, not the
+%     +0.0400 T14 prints.
+% Both are correct for their own question; the MDE is quoted only
+% as a detectability scale, never as the effect estimate. Do not
+% recompute one from the other.
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table*}[t]
+\centering
+\caption{The five pre-registered endpoints and what each returned. P4, the primary, is null before and after Holm correction.}
+\label{tab:prereg}
+\begin{adjustbox}{max width=\textwidth}\begin{tabular}{@{}llllll@{}}
+\toprule
+endpoint & \multicolumn{5}{l}{disposition} \\
+\midrule
+\textbf{P1} intervention $\rightarrow$ fidelity
+ & \multicolumn{5}{l}{\textbf{failed as written; re-designated.} The
+   interface forbids an \emph{answer} field, not} \\
+\quad \footnotesize(also the manipulation check)
+ & \multicolumn{5}{l}{\quad computation. Re-scoped to answer authorship,
+   which it drives to $0.000$ in all three} \\
+ & \multicolumn{5}{l}{\quad actors (Table~\ref{tab:enforcement}).
+   Reported as a second dissociation, not as a pass.} \\
+\addlinespace
+\textbf{P2} actor $\times$ interv.\ on fidelity
+ & \multicolumn{5}{l}{not estimable across the panel: the fidelity
+   clauses are condition-specific, so no} \\
+ & \multicolumn{5}{l}{\quad common scale exists. Reported as unresolved
+   rather than substituted.} \\
+\addlinespace
+\multicolumn{6}{@{}l}{\textbf{P3} intervention $\rightarrow$ accuracy
+  (enforced $-$ role-structured), Holm across three:} \\
+ & raw $p$ & Holm $p$ & verdict & & \\
+\quad gemma-4-31B-it & $0.0078$ & $0.023$ & reject \\
+\quad gpt-oss-120b & $0.60$ & $0.85$ & retain \\
+\quad Llama-3.3-70B-Instruct & $0.43$ & $0.85$ & retain \\
+\addlinespace
+\multicolumn{6}{@{}l}{\textbf{P4} actor $\times$ intervention on
+  accuracy (the pre-registered primary), Holm across three:} \\
+ & difference-in-diff.\ [CI] & raw $p$ & Holm $p$ & MDE$_{80\%}$ & null is \\
+\quad gpt-oss-120b $-$ gemma-4-31B-it & $+0.0175$ {\footnotesize [-0.0050,+0.0406]} & $0.145$ & $0.29$ & $0.0325$ & informative \\
+\quad Llama-3.3-70B-Instruct $-$ gemma-4-31B-it & $+0.0400$ {\footnotesize [+0.0006,+0.0800]} & $0.0553$ & $0.166$ & $0.0693$ & uninformative \\
+\quad Llama-3.3-70B-Instruct $-$ gpt-oss-120b & $+0.0225$ {\footnotesize [-0.0181,+0.0631]} & $0.286$ & $0.29$ & $0.0748$ & uninformative \\
+\addlinespace
+\textbf{P5} $\Delta$fidelity vs $\Delta$outcome
+ & \multicolumn{5}{l}{association only, pre-declared as non-causal: both
+   sides are outcomes of the same} \\
+ & \multicolumn{5}{l}{\quad intervention. No $p$-value is reported and
+   none is corrected.} \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+
+\tabnote{The endpoints were fixed in writing before any intervention data existed. The intervention is structural enforcement against the role-structured baseline, per actor. Fidelity: whether the Planner abstains from computing (\Pone{}). Accuracy: final accuracy over all problems, never-graded trajectories counted as incorrect. P3: exact McNemar test per actor, with the raw $p$, the $p$ after Holm's step-down correction across the three actors, and the verdict at $\alpha=0.05$. P4: each difference-in-differences is enforcement's effect in one actor minus its effect in another, with its 95\% bootstrap interval over problems, the raw and Holm-corrected $p$, and MDE$_{80\%}$, the smallest interaction detectable with 80\% power at the realized sample; a null is informative only where the MDE is below a plausible effect. P2 and P5 carry no $p$ value, so the testable contrasts are P3's three and P4's three; Holm across all six changes no verdict. P4's intervals and $p$ values come from two separately seeded bootstrap runs, so an interval can exclude zero while $p$ is just above 0.05; the MDE is computed on problems shared by both actors while each difference-in-differences uses each actor's own problems, so neither can be derived from the other. \textbf{Only one of the three P4 nulls is informative.} The
+largest per-actor main effect is small enough that a true interaction is
+plausibly ${\leq}0.040$; only the gpt-oss/gemma-4 contrast can see an
+effect that size. The two Llama-3.3 contrasts cannot detect an interaction of
+any plausible magnitude and are uninformative rather than evidence of
+absence.}
+\end{table*}

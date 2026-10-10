@@ -1,0 +1,21 @@
+\subsection{Experimental setup}
+\label{sec:experiments}
+
+We evaluate on the Omni-MATH benchmark of competition
+mathematics~\cite{gao2025omnimath}, using $1{,}600$ problems that a seeded manifest
+samples uniformly at random from the $4{,}181$ available.
+Every condition runs the same problems, so every comparison is paired.
+Three actor models are served from one pinned vLLM
+server~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
+gemma-4-31B~\cite{gemma2026gemma4} and
+Llama-3.3-70B~\cite{grattafiori2024llama3}. The pre-registered analysis uses a frozen snapshot of $11{,}600$ Omni-MATH trajectories, including a
+context-restored enforcement control (Appendix~\ref{app:details}). In it, the three frozen conditions
+(role-structured, feedback withheld and enforced) each run $1{,}600$ problems for gemma-4 and gpt-oss and $400$ for Llama-3.3, and the control runs $400$ for
+gemma-4 and for gpt-oss. The evaluator is gpt-oss-120b throughout. After the freeze, we ran the role-free condition with feedback
+($4{,}748$ trajectories) on the same server, problems, budget and
+evaluator, for all three actors on Omni-MATH and for gemma-4 and gpt-oss on
+the SciBench benchmark~\cite{wang2024scibench}, whose role-structured and
+feedback-withheld cells (a cell is one actor on one benchmark) were frozen separately. Because decoding at
+temperature $0$ is not fully deterministic on a shared server, we treat
+each cell as a single sample (Appendix~\ref{app:details}). A single-agent comparison from a separate, earlier corpus is in
+Appendix~\ref{app:details}. Prompts, runners, analysis scripts and data manifests will be released.

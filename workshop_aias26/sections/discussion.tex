@@ -1,0 +1,27 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Roles allocate decisions alongside work.} First-pass accuracy
+does not depend on the division of labor: without roles it is unchanged, or higher for the gpt-oss model. Except with gpt-oss, teams rarely change a failed answer unless told it
+failed. After that signal, the role contract adds little revision capacity. At equal verdict counts the teams do not differ significantly under the
+pre-specified scoring, and roles hold a slight edge after the scoring recode of \S\ref{sec:limitations}. The role contract mainly decides when the team asks for evaluation. A role-structured Reviewer
+withholds approval, so its team draws fewer verdicts, sometimes just
+the final grading.
+
+\paragraph{A design trade-off rather than a defect.} A Reviewer that
+withholds approval conserves evaluation calls. This conservatism can be valuable when evaluations are costly, noisy or unavailable. With a
+ground-truth evaluator and a fixed cycle budget, however, it limits the
+team's opportunities for corrective feedback. We measure this side of the
+trade-off, not the full balance of cost and performance. Where a cheap and
+reliable verifier exists, our results suggest letting the team submit often and gating on the verifier rather than on an internal critic.
+
+\paragraph{Decision rights and information pathways.} Because feedback
+reaches the agents through the role templates, an ablation that rewrites
+them can silently remove the feedback channel. A role ablation therefore
+needs an information audit alongside budget matching. Just as precise
+reviewing does not guarantee that a critique is adopted~\cite{yang2026precise},
+a clean division of labor does not guarantee recovery from errors. We recommend reporting performance after a failed first attempt
+and measuring the realized organization instead of assuming the specified
+one. Who may submit and which agents see the feedback belong to the
+organization's specification. Lifelong multi-agent systems, which fail
+repeatedly, face these choices throughout deployment.

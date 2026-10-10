@@ -1,0 +1,57 @@
+\section{Introduction}
+\label{sec:intro}
+
+Multi-agent systems powered by large language models (LLMs) are commonly
+designed around explicit organizational structures and role
+assignments~\cite{hong2024metagpt,qian2024chatdev,wu2024autogen}. While
+formal diagrams suggest a clear division of labor among components such as
+Planners, Executors and Reviewers, the actual execution can diverge from
+these intentions~\cite{cemri2025why}. Because the roles are instantiated
+only through natural language prompts, agents can ignore their constraints,
+leading to a functional collapse in which every agent solves the whole
+problem. An accuracy score cannot distinguish such a team from one that
+works exactly as drawn. This disconnect raises a fundamental question: what
+do assigned roles actually change in practice?
+
+In our experiments, roles do produce the division of labor they prescribe,
+yet it buys no better first answer. If specialization is not where roles
+pay off, their effect must lie elsewhere. We argue that roles also allocate
+decision rights and thereby shape the flow of external information. In a
+Planner-Executor-Reviewer (\PER{}) team, the Reviewer acts as a gatekeeper:
+by approving a candidate or demanding further deliberation, it decides when
+the team consults an external evaluator. This decision is crucial because
+the evaluator returns a verdict (PASS or FAIL) and,
+after a FAIL, a repair hint, corrective information that internal
+deliberation cannot generate. A cautious Reviewer saves evaluations, but under a capped budget
+every withheld submission is a missed opportunity to recover from an
+error.
+
+To isolate these effects, we hold the actor model (the language model that
+plays all three agents), the agent topology, the agent-call budget and the
+ground-truth evaluator constant, and vary the organization in two
+directions: we ablate every role instruction, and we enforce the division
+of labor through typed message formats. Because feedback reaches each agent
+through its prompt, a role ablation also rewrites the feedback channel, so
+we document the information each condition receives (\S\ref{sec:method}).
+In our main comparison both teams have equal access to the evaluator's
+verdict and hint, but the realized number and content of verdicts differ,
+and this difference is what roles control. Our findings are as follows.
+First, roles induce functional specialization, but it does not improve
+first-pass accuracy, consistent with prior role
+ablations~\cite{dylan2026equal,orogat2026architectural}. Second, roles
+create a gatekeeping effect. A role-structured Reviewer often withholds
+approval, frequently before any feedback exists, so its team submits less
+and receives fewer corrective verdicts; in an exploratory comparison with
+equal access to feedback, role-free teams recover from a failed first answer
+more often in all five model and benchmark settings and reach higher final
+accuracy. Third, the gap stems mainly from feedback opportunities rather
+than from how well each team uses feedback: it vanishes in a post hoc
+comparison at equal numbers of verdicts, and, in a single exploratory run, forcing the
+role-structured team to submit in every cycle (one pass of the three
+agents) raises its recovery to the role-free level for the gemma-4 model. Fourth, two methodological
+cautions follow: a role ablation that silently removes the feedback channel
+can make roles look necessary for repair, and enforcing roles through typed
+interfaces loosens the gate but leaves $8\%$ to $17\%$ of enforced trajectories unfinished, so accuracy does not rise. Finally, evaluating multi-agent
+organizations requires reporting recovery after a failed first attempt and
+treating decision rights and information pathways as part of the
+organization's specification (\S\ref{sec:discussion}).

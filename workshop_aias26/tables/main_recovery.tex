@@ -1,0 +1,59 @@
+% Workshop copy (scripts/mk_workshop_appendix.py): paper/tables/main_recovery.tex with its tabular in an adjustbox; numbers unchanged.
+% ==========================================================================
+% Table 2 (manuscript) -- first pass and recovery
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  sections T1, T3, T4
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : b26ccb5451a5eaed14046a27a980ba8797e5669912df907bc25f69bf60ad5b76
+% generation date   : 2026-10-04  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% EVERY figure names its population. The marginal and paired
+% panels have DIFFERENT denominators and are not interchangeable;
+% conflating them has already caused one error in this project.
+% Recovery denominator = judged(r) and fp(r)==0: a recorded
+% incorrect FIRST verdict, INCLUDING trajectories that later died
+% in regeneration (STATISTICAL_AUDIT FATAL-1). Not graded(r).
+% Significance is exact McNemar on discordant pairs, never a
+% bootstrap CI bound (that label was seed-dependent).
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table*}[t]
+\centering
+\caption{First-pass accuracy and recovery with roles and without them (feedback withheld) on the Omni-MATH benchmark, on both populations.}
+\label{tab:recovery}
+\begin{adjustbox}{max width=\textwidth}\begin{tabular}{lcccccc}
+\toprule
+\multicolumn{7}{@{}l}{\emph{Marginal population: first pass paired; recovery on each condition's own denominator}} \\
+\midrule
+ & \multicolumn{3}{c}{first pass}
+ & \multicolumn{3}{c}{recovery $\mid$ first verdict wrong} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+actor & RS & RF$^{-}$ & difference & RS ($n$) & RF$^{-}$ ($n$) & difference \\
+\midrule
+gemma-4-31B-it & $0.802$ & $0.802$ & $+0.0000$ {\footnotesize $[{-}0.0156,\,+0.0150]$} & $0.222$ (316) & $0.051$ (316) & ${-}0.1709$ {\footnotesize $[{-}0.2247,\,{-}0.1171]$} \\
+gpt-oss-120b & $0.713$ & $0.763$ & $+0.0503$ {\footnotesize $[+0.0339,\,+0.0666]$} & $0.324$ (463) & $0.247$ (380) & ${-}0.0766$ {\footnotesize $[{-}0.1361,\,{-}0.0153]$} \\
+Llama-3.3-70B-Instruct & $0.308$ & $0.316$ & $+0.0077$ {\footnotesize $[{-}0.0283,\,+0.0437]$} & $0.014$ (276) & $0.015$ (268) & $+0.0004$ {\footnotesize $[{-}0.0214,\,+0.0192]$} \\
+\midrule
+\multicolumn{7}{@{}l}{\emph{Paired population: problems first-pass wrong under both conditions; one shared denominator}} \\
+\midrule
+actor & $n_{\mathrm{both}}$ & RS & RF$^{-}$ & RS only & RF$^{-}$ only & exact $p$ \\
+\midrule
+gemma-4-31B-it & $237$ & $0.160$ & $0.017$ & $37$ & $3$ & $1.95\times 10^{-8}$ \\
+gpt-oss-120b & $327$ & $0.242$ & $0.202$ & $52$ & $39$ & $0.208$ \\
+Llama-3.3-70B-Instruct & $245$ & $0.004$ & $0.016$ & $1$ & $4$ & $0.375$ \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+
+\tabnote{RS: role-structured; RF$^{-}$: role-free with the evaluator's feedback withheld. First pass: whether a trajectory's first submitted answer is correct. Recovery: the share of first-pass-wrong trajectories that finish correct. Upper block: first pass over the problems graded under both conditions; recovery over each condition's own first-pass-wrong trajectories ($n$ in parentheses, not a shared denominator); differences are RF$^{-}$ minus RS, with 95\% bootstrap intervals over problems. Lower block: only the problems first-pass wrong under both conditions ($n_{\mathrm{both}}$), which is the actual test; ``RS only'' and ``RF$^{-}$ only'' count problems recovered under one condition and not the other, with the exact McNemar $p$ for the two counts. The two blocks have different denominators and must not be read across. Recovery conditions on a post-treatment variable and is descriptive rather than causal; no cell recovers before its first evaluator verdict.}
+\end{table*}

@@ -1,0 +1,286 @@
+\appendix
+
+\input{sections/appendix_related}
+
+\section{Measures, conditions, analyses and campaign}
+\label{app:details}
+
+\subsection{What ``load-bearing'' means here}
+\label{app:loadbearing}
+
+An organization is specified by a tuple: agents, an interaction order, a
+message-passing graph, a context-visibility policy, and a \emph{role
+contract} per agent. A contract asserts that an agent performs some function
+(\textsc{must} decompose the problem) or that it does not (\textsc{must not}
+state a final answer). Clauses of the second kind make the specification a
+\emph{division} of labor. Because a clause is prose handed to a language
+model, the \emph{realized} organization is not guaranteed to match it.
+Nothing records which clauses were honored.
+
+\textbf{Definition.} A component of an organization is \textbf{load-bearing}
+if removing or altering it reproducibly degrades task performance
+\emph{under matched call and information budgets}.
+
+The budget clause ensures we test organization rather than scale. Removing
+roles alongside agents, calls or context confounds the evaluation. We apply
+this definition \emph{per phase}, because a team must first produce an
+answer and then repair it if it is wrong. The information clause covers
+every channel through which a signal reaches an agent. In a prompted system,
+feedback arrives through the same templates that carry the roles.
+Consequently, a role ablation can change both the roles and the feedback
+channel. A contrast is matched only when it changes one of them
+(\S\ref{sec:method}). Matched access does not mean matched use: how many
+verdicts a team draws depends on how often it submits.
+
+\subsection{Secondary measures}
+\label{app:measures}
+
+\paragraph{Exact output duplication (secondary, a lower bound).} This occurs
+when two or more role messages are byte-identical, that is, the same raw
+completion character for character. It
+bounds collapse from below (Appendix~\ref{sec:collapse_full}) and is never used to compare actors.
+
+\paragraph{Answer authorship, and computation.} We measure whether a Planner
+authors a final answer. Structural enforcement leaves the Planner no field
+in which to write one, so this measure serves as the manipulation check.
+Separately, we track whether a Planner abstains from \emph{computing},
+scored as containing no evaluated numeric equality (\textbf{\Pone{}}, the
+measure of pre-registered endpoint P1; Appendix~\ref{sec:prereg}). Because \Pone{} scores the absence of a pattern, it rewards
+short messages. Therefore, it cannot reliably measure a division of labor,
+and we use it only as a fidelity check (Appendix~\ref{sec:prereg}).
+
+\paragraph{Validation.} \Pone{} was hand-adjudicated against a definition
+frozen \emph{before} the adjudication sheet was opened. It clears a pre-set
+agreement threshold of $0.80$ (Appendix~\ref{sec:collapse_full}).
+
+\subsection{Conditions}
+
+\paragraph{Shared settings.} We vary organization in both directions from one baseline: we remove it, and
+we enforce it. All conditions share three agents, one interaction order
+(Planner~$\rightarrow$~Executor~$\rightarrow$~Reviewer), the message-passing
+graph, context visibility (except under enforcement, below) and the total
+call budget. They also use the same verifier and prompt, retry budget,
+decoding parameters (temperature $0$, that is, greedy decoding, and
+identical \texttt{max\_tokens}), stopping rule (a PASS ends the trajectory)
+and grading. Every trajectory in the frozen snapshot (the pre-registered dataset,
+\S\ref{sec:experiments}) carries the identical
+budget record, so no condition gets more agent calls; how often a team
+calls the evaluator is an outcome of its organization. Besides the role
+clauses themselves, two things differ. After a FAIL, the evaluator returns a repair
+hint, written with the gold answer (the reference solution) in view and
+instructed not to reveal it. The role-structured and enforced templates show
+the hint to all three agents in the next cycle, each through its role's
+advice slot, the template field reserved for the evaluator's feedback
+(Figure~\ref{fig:pipeline}). The role-free template has no such slot, so
+the role-free team receives the feedback as an entry in its shared history,
+and a variant that withholds it serves as a diagnostic. The
+role-free footer (the closing instruction of the prompt) also asks every
+agent for an answer. Among the deleted role clauses are the role-structured
+Reviewer's two clauses on approval.
+
+\paragraph{The structurally enforced condition.} The interface, not the wording, enforces
+specialization. The Planner emits JSON (a typed output format) against a
+schema with \emph{no answer field}, so a final answer is unrepresentable.
+The Executor receives the parsed plan object and the problem, never the
+Planner's raw text, and emits a derivation and an answer. The Reviewer emits
+a verdict, a target span and a critique. Its \texttt{accept} promotes the
+Executor's answer verbatim \emph{by reference}, because it has no field in
+which to \emph{author} one. Each function stays with one agent under the
+same budget, but the Executor sees less context, and a rejected output can
+exhaust the regeneration budget (the number of times a malformed output may
+be regenerated). A \emph{context-restored control} repeats this condition
+with the shared history restored.
+
+
+\paragraph{Single-agent reference.} A single agent of the same actor under
+the same call cap, on the same Omni-MATH problems, guards against
+multi-agent gains that merely mimic one capable
+agent~\cite{zhang2026rethinking}. It comes from an earlier, separately
+collected corpus, and its two actor arms come from separate runs, so only
+the direction within an actor can be read. The comparison cuts both ways.
+Against its own single agent, the gemma-4 team is less accurate both with
+roles (${-}0.0225$, $p=0.0122$) and without them, feedback withheld
+(${-}0.0563$, $p=1.22\times10^{-10}$), whereas the gpt-oss team is more accurate without roles
+(${+}0.0294$, $p=0.000678$) and not significantly different with them
+(${+}0.0131$, $p=0.152$; Table~\ref{tab:singleagent}). A collapsed gpt-oss team is therefore
+not functionally one agent, and more agents do not simply help.
+
+\subsection{Instrumentation and pre-registered analyses}
+
+An intervention that never engages cannot explain an outcome, so we measure
+engagement. We log every rejected-and-regenerated output with its reason,
+count only role-boundary violations in the enforcement rate, and count
+answer-bearing calls per condition. One logging gap is disclosed in
+Appendix~\ref{app:results}.
+
+All five endpoints (the pre-specified analyses, numbered P1 to P5) were
+fixed in writing and committed before any intervention data existed. The full table, with the
+outcome for each, is in Appendix~\ref{sec:prereg}. Units are (problem, actor) pairs,
+and all conditions run the same problems, so every test is paired, with
+bootstrap intervals that resample whole problems~\cite{efron1979bootstrap}.
+The pre-registered primary endpoint, P4, asks whether enforcement's effect
+on accuracy differs by actor. It is null: no pairwise
+difference-in-differences (enforcement's effect in one actor minus its
+effect in another) survives Holm's correction for multiple
+comparisons~\cite{holm1979simple} (smallest adjusted $p$-value, $p=0.17$).
+Before correction, the $95\%$ bootstrap interval for the Llama-3.3 model
+against gemma-4, $+0.040$ $[+0.001,+0.080]$, only just excludes zero, while a
+bootstrap test on a separate resample gives $p=0.055$: at this margin the two
+disagree, and the contrast does not survive the correction. Only the gpt-oss against gemma-4 contrast had adequate
+statistical power for an interaction of plausible size.
+
+The \Pone{} manipulation objective also failed. It required enforcement to
+drive Planner computation-abstention to ${\approx}1.0$, but the schema
+forbids an \emph{answer}, not a computation. It was re-designated to answer
+authorship. The role-structured versus feedback-withheld contrast was
+pre-registered as a secondary, exploratory replication of a published null,
+and splitting it into phases is post hoc. The role-free condition with
+feedback, and with it the main comparison, was added after the freeze (when
+the dataset and analysis plan were fixed). Its design and primary analysis
+were committed in writing before any of its data existed, but its results
+are exploratory, as are those of the forced-submission run
+(\S\ref{subsec:mechanism}).
+Exclusions were fixed in advance, including the rule that decides
+\S\ref{subsec:enforce}: \emph{unparseable trajectories count as incorrect
+rather than dropped}.
+
+\subsection{Campaign}
+
+\paragraph{Task and problems.} We use the Omni-MATH benchmark of competition
+mathematics~\cite{gao2025omnimath}, sampled by a deterministic seeded
+manifest (a fixed, reproducible list of problem identifiers) so that every
+prefix of the run is a valid random sample. All conditions run the same
+problems, so every comparison is paired. A multiple-choice benchmark was
+ruled out before launch: on a four-option item, producing a different
+candidate succeeds one time in three by chance, which would inflate
+recovery.
+
+\paragraph{Actors and scale.} Three actor models are served from one pinned
+vLLM server~\cite{kwon2023vllm}: gpt-oss-120b~\cite{openai2025gptoss},
+gemma-4-31B~\cite{gemma2026gemma4} and
+Llama-3.3-70B~\cite{grattafiori2024llama3}. The pre-registered analysis reads one
+frozen snapshot of $11{,}600$ trajectories, $83{,}320$ role messages and
+$17{,}486$ gradings on $1{,}600$ problems
+sampled uniformly at random from the $4{,}181$ available. The three frozen
+conditions run $1{,}600$ problems per cell (one actor on one benchmark) for gemma-4 and gpt-oss and $400$ for Llama-3.3. The
+context-restored control covers gemma-4 and gpt-oss at $400$ each. The
+evaluator is gpt-oss-120b in every cell, itself one of the actors under
+study (\S\ref{sec:limitations}). The single-agent comparator is \emph{not}
+part of this campaign; it comes from an earlier, separately collected corpus
+on the same benchmark, joined by problem identifier. Power simulated from
+that corpus is high for the paired per-actor main effect
+(Appendix~\ref{sec:prereg} for the interaction). An early campaign, stopped when
+outputs cut off at the token limit were counted as role-boundary rejections,
+was never pooled (Appendix~\ref{sec:enforcement}).
+
+\paragraph{The role-free condition with feedback.} It was run after the freeze
+($4{,}748$ trajectories) on the same server, problems, budget and evaluator,
+for all three actors on Omni-MATH and for gemma-4 and gpt-oss on the
+SciBench benchmark~\cite{wang2024scibench}. Its data are manifested
+separately and never pooled into a frozen cell. The two gemma-4 cells were
+run a second time, independently. A re-run (the first of two; Appendix~\ref{sec:recovery}) of gemma-4's role-structured
+condition on $400$ frozen problems shows no detectable drift in final
+accuracy ($0.818$ against $0.825$ frozen, paired $p=0.75$), although
+recovery moves from $0.146$ frozen to $0.198$. Decoding at temperature $0$ is not deterministic on a
+shared server. The two role-free conditions are byte-identical until the
+first verdict, yet they agree on gemma-4's first verdict for $1{,}496$ of
+$1{,}598$ problems, and their first-cycle collapse differs by up to $0.04$
+(Table~\ref{tab:collapse}). We therefore treat a cell as one sample and give
+the second run, where we have one, in Appendix~\ref{sec:recovery}. Prompts, runner,
+analysis scripts and data manifests will be released with the paper.
+
+\subsection{Further limitations}
+
+\paragraph{Scope, provenance, and experimental disclosures.} We test one
+\PER{} organization, with an evaluator that is itself one of the models
+under study. While the ordering returns across a second domain of college
+science problems, the findings are limited to text-based reasoning tasks.
+The role-free condition with feedback, on which the main comparison rests,
+and the forced-submission run are exploratory follow-ups, added after the
+freeze and outside the pre-registration. The forced-submission
+run covers only one actor, one domain, and a single run, and it removes the
+entire gate rather than only the clause forbidding approval after a failure.
+Matched access to feedback does not match the realized number or content
+of verdicts, and we do not show that any submission policy is cost-optimal.
+The condition with feedback also differs in feedback presentation:
+role-structured agents receive feedback inside role-specific instructions,
+whereas role-free agents view it as a bare \texttt{[Evaluator]} entry.
+Finally, the context-restored control is only a \emph{partial} control due
+to one-sided attrition (Appendix~\ref{sec:enforcement}), and our functional measure
+only detects whether every agent asserted an answer, not whether their
+reasoning was identical.
+
+\section{Additional results}
+\label{app:results}
+
+\paragraph{First-pass accuracy of gpt-oss.} The gpt-oss model may gain
+at first pass without roles because its answers vary between derivations
+(\S\ref{subsec:mechanism}), so extra independent solutions add chances to be
+right; we did not test this.
+
+\paragraph{Content duplication.} For the gemma-4 and
+Llama-3.3 models, the role-free Planners write full solutions before boxing
+an answer, and their messages share far more numbers with the Executor's
+than with roles, so the Executor redoes the Planner's work (Appendix~\ref{sec:collapse_full}). 
+
+
+
+\paragraph{A logging defect.} \label{subsec:logging} Our runner recorded
+a response's hidden reasoning trace only when its visible content was
+empty, so most of gpt-oss-120b's role-free derivations ($75.7\%$ of
+messages) are missing from the record (Appendix~\ref{sec:collapse_full}). Agents pass content
+only, in every condition, so the defect is in the record alone and leaves
+no point estimate of gpt-oss's duplication. It does not manufacture the
+collapse: in first cycles with no affected message ($106$ without roles),
+role-free collapse is $0.821$ and role-structured $0.118$.
+
+
+
+\paragraph{Leakage and reproducibility.} A hint written with the gold
+answer in view could hand it over. Hints contain it verbatim in at most
+$2.3\%$ of failing verdicts in any cell, and dropping the gemma-4
+trajectories on Omni-MATH that saw one barely moves either recovery rate
+(Appendix~\ref{sec:recovery}); we did not audit partial leakage. A second, independent run of the two gemma-4 cells with feedback
+is close to the first, though the paired test on the SciBench benchmark
+weakens from $p=0.013$ to $0.052$; we report the first run throughout
+(Appendix~\ref{sec:recovery}).
+
+
+
+\paragraph{Structural enforcement.} \label{app:enforce} Enforced and role-structured prompts carry the same advice slot, so this
+contrast is matched on feedback access. Enforcement replaces the behavioral
+request with a constraint: the Planner's final answer becomes
+unrepresentable. The manipulation check passes: the Planner asserts a final
+answer in $0.000$ of enforced first cycles for all three actors, against at
+least $0.889$ without roles. Enforcement does not change what the Planner
+\emph{computes}, so the adjudication still finds no functional division in
+$0.071$ to $0.188$ of enforced first cycles: an agent can be structurally
+stopped from answering without being stopped from doing the work. It does
+loosen the gate: the enforced team submits more often for every actor and,
+with more hints arriving, unlocks the answer for gemma-4 and Llama-3.3
+(Appendix~\ref{sec:enforcement}).
+
+Recovery rises most where the gate was tightest. Llama-3.3's
+role-structured team almost never submits, and under enforcement its
+recovery rises about tenfold, from $0.014$ to $0.139$
+($p=3.8\times10^{-6}$), close to the role-free team's $0.147$. For gemma-4
+and gpt-oss the direction is the same ($p=0.30$ and $0.11$) but not
+resolvable against attrition: enforced trajectories that died after an
+incorrect first verdict count as unrecovered, as the pre-registration
+requires.
+
+Improved revisability does not become end-to-end accuracy, because
+enforcement is brittle. A malformed or boundary-violating output must be
+regenerated, and when the regeneration budget runs out the trajectory dies:
+$8.0\%$, $9.9\%$ and $17.0\%$ of enforced trajectories never finish,
+against at most $2.5\%$ in any other condition, and the weakest actor
+breaks the schema most often (Appendix~\ref{sec:enforcement}). Under the pre-registered rule,
+which counts these trajectories as incorrect, enforcement changes accuracy
+by $-0.0225$, $-0.0050$ and $+0.0175$ for gemma-4, gpt-oss and Llama-3.3:
+one significant negative and two nulls. Dropping them instead gives gains
+for all three actors, all significant and ordered by actor weakness,
+matching the direction reported for the capability
+equalizer~\cite{canedo2026architecture}. That reading is survivorship bias,
+since it scores only the trajectories that finished. Restoring the shared
+history at fixed enforcement helps gemma-4, mostly through fewer
+trajectories dying, and not gpt-oss (Appendix~\ref{sec:enforcement}).

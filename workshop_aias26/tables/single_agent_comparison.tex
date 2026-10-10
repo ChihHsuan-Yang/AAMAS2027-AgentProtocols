@@ -1,0 +1,64 @@
+% Workshop copy (scripts/mk_workshop_appendix.py): paper/tables/single_agent_comparison.tex with its tabular in an adjustbox; numbers unchanged.
+% ==========================================================================
+% Table 5 (manuscript) -- budget-matched single-agent control
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  section T17
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : b26ccb5451a5eaed14046a27a980ba8797e5669912df907bc25f69bf60ad5b76
+% generation date   : 2026-10-04  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% PROVENANCE: NOT from the frozen snapshot. Source is the
+% historical released trace corpus (protocol_id='single_agent',
+% benchmark omnimath2), joined by problem_uid. This must be
+% stated wherever the four numbers appear (APPROVED_CLAIMS A9).
+% BOTH DIRECTIONS, ALWAYS TOGETHER. Never quote gpt-oss alone.
+% The two actor arms were produced in SEPARATE RUNS:
+% each direction is a sound guard; the GAP BETWEEN ACTORS is not.
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table}[htb]
+\centering
+\caption{Each three-agent team against a single agent of the same actor under the same call cap, on the Omni-MATH benchmark.}
+\label{tab:singleagent}
+\begin{adjustbox}{max width=\textwidth}\begin{tabular}{@{}lccc@{}}
+\toprule
+organization & team & single agent & difference \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{gemma-4-31B-it}} \\
+\quad role-structured & $0.8462$ & $0.8688$ & ${-}0.0225$ \\
+ & \multicolumn{3}{r}{\footnotesize $[{-}0.0400,\,{-}0.0056]$, $p=0.0122$, $n=1600$} \\
+\quad role-free & $0.8125$ & $0.8688$ & ${-}0.0563$ \\
+ & \multicolumn{3}{r}{\footnotesize $[{-}0.0737,\,{-}0.0394]$, $p=1.22\times 10^{-10}$, $n=1600$} \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{gpt-oss-120b}} \\
+\quad role-structured & $0.8031$ & $0.7900$ & $+0.0131$ \\
+ & \multicolumn{3}{r}{\footnotesize $[{-}0.0044,\,+0.0300]$, $p=0.152$, $n=1600$} \\
+\quad role-free & $0.8194$ & $0.7900$ & $+0.0294$ \\
+ & \multicolumn{3}{r}{\footnotesize $[+0.0125,\,+0.0456]$, $p=0.000678$, $n=1600$} \\
+\addlinespace
+\midrule
+\multicolumn{4}{@{}l}{\emph{Realized call budget}} \\
+\midrule
+actor & protocol & evaluator & actor \\
+\midrule
+gemma-4-31B-it & single agent & $1.66$ & $3.16$ \\
+gemma-4-31B-it & role-structured team & $1.11$ & $6.76$ \\
+gemma-4-31B-it & role-free team & $1.95$ & $5.87$ \\
+gpt-oss-120b & single agent & $1.69$ & $3.40$ \\
+gpt-oss-120b & role-structured team & $1.35$ & $7.54$ \\
+gpt-oss-120b & role-free team & $1.85$ & $6.25$ \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+\tabnote{Final accuracy over all problems ($n$) of the role-structured (RS) and role-free, feedback-withheld (RF$^{-}$) teams against a single agent of the same actor solving the same problems under the same cap on model calls; the difference is team minus single agent, with its 95\% bootstrap interval over problems and the exact McNemar $p$. The single-agent trajectories come from an earlier, separately collected trace corpus, joined by problem, and its two actor arms were produced in separate runs: each direction within an actor is a sound guard, the gap between actors is not. Realized call budget: calls per problem to the evaluator and to the actor.}
+\end{table}

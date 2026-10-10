@@ -104,14 +104,19 @@ def bar_kw(arm):
                 edgecolor=S.SURFACE if arm in HATCH else COL[arm], linewidth=0.0)
 
 
-def draw_bars(ax, key, arms, w):
+def gx(gi, gap=0.0):
+    """x of group gi; gap > 0 (workshop panel A only) widens the domain boundary."""
+    return gi + (gap if GROUPS[gi][0] != GROUPS[0][0] else 0.0)
+
+
+def draw_bars(ax, key, arms, w, gap=0.0):
     """Grouped bars with bootstrap 95% intervals; returns {group: {arm: (x, hi)}}."""
     tops = {}
     for gi, (dom, a) in enumerate(GROUPS):
         tops[gi] = {}
         for k, arm in enumerate(arms):
             c = cell(dom, a, arm)
-            x = gi + (k - (len(arms) - 1) / 2) * w
+            x = gx(gi, gap) + (k - (len(arms) - 1) / 2) * w
             if c is None:
                 if not (arm == "C" and dom != "omni"):   # enforcement never ran off Omni-MATH
                     ax.text(x, 0.02, "pending", rotation=90, ha="center", va="bottom",
@@ -125,12 +130,12 @@ def draw_bars(ax, key, arms, w):
     return tops
 
 
-def frame(ax, ylabel, title, ymax, yticks):
+def frame(ax, ylabel, title, ymax, yticks, gap=0.0):
     S.clean(ax)
     ax.set_ylim(0, ymax)
     ax.set_yticks(yticks)
     ax.set_yticklabels([f"{v:g}" for v in yticks])
-    ax.set_xlim(-0.55, len(GROUPS) - 0.45)
+    ax.set_xlim(-0.55, len(GROUPS) - 0.45 + gap)
     ax.set_ylabel(ylabel, labelpad=2)
     ax.annotate(title, xy=(0.0, 1.0), xycoords="axes fraction",
                 xytext=(0, TITLE_PAD_PT), textcoords="offset points",
@@ -139,34 +144,35 @@ def frame(ax, ylabel, title, ymax, yticks):
     doms = [d for d, _ in GROUPS]
     for i in range(1, len(doms)):
         if doms[i] != doms[i - 1]:
-            ax.axvline(i - 0.5, color=S.INK3, lw=0.5, ls=(0, (2, 2)), zorder=1)
+            ax.axvline((gx(i, gap) + gx(i - 1, gap)) / 2, color=S.INK3, lw=0.5,
+                       ls=(0, (2, 2)), zorder=1)
 
 
-def group_labels(ax):
+def group_labels(ax, gap=0.0):
     """Actor names once, under panel B, set line by line on a shared baseline
     (matplotlib aligns multi-line tick labels by their ink, which staggers a
     name with a descender against one without)."""
-    ax.set_xticks(np.arange(len(GROUPS)))
+    ax.set_xticks([gx(i, gap) for i in range(len(GROUPS))])
     ax.set_xticklabels([""] * len(GROUPS))
     tr = ax.get_xaxis_transform()
     for i, (_, a) in enumerate(GROUPS):
         top, bottom = S.ACTOR_SHORT[a].split("\n")
-        ax.annotate(top, xy=(i, 0), xycoords=tr, xytext=(0, -9), textcoords="offset points",
+        ax.annotate(top, xy=(gx(i, gap), 0), xycoords=tr, xytext=(0, -9), textcoords="offset points",
                     ha="center", va="baseline", fontsize=FS_TEXT, color=S.INK)
-        ax.annotate(bottom, xy=(i, 0), xycoords=tr, xytext=(0, -17), textcoords="offset points",
+        ax.annotate(bottom, xy=(gx(i, gap), 0), xycoords=tr, xytext=(0, -17), textcoords="offset points",
                     ha="center", va="baseline", fontsize=FS_TEXT, color=S.INK2)
     doms = [d for d, _ in GROUPS]
     for d in dict.fromkeys(doms):
         idx = [i for i, dd in enumerate(doms) if dd == d]
-        ax.annotate(DOMAIN_LABEL[d], xy=((idx[0] + idx[-1]) / 2, 0), xycoords=tr,
+        ax.annotate(DOMAIN_LABEL[d], xy=((gx(idx[0], gap) + gx(idx[-1], gap)) / 2, 0), xycoords=tr,
                     xytext=(0, -26), textcoords="offset points", ha="center",
                     va="baseline", fontsize=FS_SMALL, color=S.INK3, fontstyle="italic")
 
 
-def panel_A(ax):
-    draw_bars(ax, "firstpass", ("A", "Bf", "B"), 0.26)
+def panel_A(ax, gap=0.0):
+    draw_bars(ax, "firstpass", ("A", "Bf", "B"), 0.26, gap)
     frame(ax, "first-pass\naccuracy", "A  First answer: no worse without roles",
-          1.08, [0, 0.5, 1.0])
+          1.08, [0, 0.5, 1.0], gap)
     plt.setp(ax.get_xticklabels(), visible=False)
     ax.tick_params(axis="x", length=0)
 
@@ -276,7 +282,14 @@ def _rect(l, b, r, h):
     return [l / S.COLWIDTH_IN, b / FIG_H, (r - l) / S.COLWIDTH_IN, h / FIG_H]
 
 
-def build(stem="fig1_v3_story"):
+TITLE_C = "C  Same budget, spent differently"
+# Workshop variant (AIAS 2026): same data and layout, a panel C title that
+# does not suggest every bar sums to the budget (a PASS ends a trajectory
+# early), written under its own stem so paper/figures/ is never touched.
+TITLE_C_WS = "C  Cycles used per failed trajectory"
+
+
+def build(stem="fig1_v3_story", title_c=TITLE_C):
     fig = plt.figure(figsize=(S.COLWIDTH_IN, FIG_H))
     axA = fig.add_axes(_rect(L_AB, Y_A, R_EDGE, H_A))
     axB = fig.add_axes(_rect(L_AB, Y_B, R_EDGE, H_B), sharex=axA)
@@ -284,7 +297,7 @@ def build(stem="fig1_v3_story"):
     panel_B(axB)
     axC = fig.add_axes(_rect(L_C, Y_C, R_EDGE, H_C)); panel_C(axC)
     fig.text(0.04 / S.COLWIDTH_IN, (Y_C + H_C + TITLE_PAD) / FIG_H,
-             f"C  Same budget, spent differently ({S.ACTOR_SHORT[FOCUS].split(chr(10))[0]}, Omni-MATH)",
+             f"{title_c} ({S.ACTOR_SHORT[FOCUS].split(chr(10))[0]}, Omni-MATH)",
              fontsize=S.FS_TITLE, fontweight="bold", color=S.INK, ha="left", va="bottom")
     h = []
     for arm in ("A", "Bf", "B", "C"):    # column-major fill: rows read A, B / Bf, C
@@ -293,6 +306,41 @@ def build(stem="fig1_v3_story"):
                fontsize=FS_TEXT, handlelength=1.0, handleheight=0.8, columnspacing=1.2,
                handletextpad=0.4, labelspacing=0.3, frameon=False)
     return S.save(fig, stem, S.COLWIDTH_IN)
+
+
+# Workshop layout (AIAS 2026): the EasyChair text block is one 145 mm column,
+# so A and B sit side by side, each with its own actor labels, and C spans
+# the width below them. Same panels, same data, same point sizes.
+WS_W = 145.0 / 25.4
+WS_A = (0.47, 2.60)                    # left and right edge of A, inches
+WS_B = (3.08, WS_W - 0.03)
+WS_GAP_A = 0.35                        # extra room at A's domain boundary
+WS_LC = 1.30
+WS_Y_C = 0.34
+WS_Y_AB = WS_Y_C + H_C + TITLE_PAD + TITLE_H + 0.10 + LABELS_B
+WS_H = WS_Y_AB + H_B + TITLE_PAD + TITLE_H + 0.30
+
+
+def build_wide(stem="fig1_v3_story_ws", title_c=TITLE_C_WS):
+    def rect(l, b, r, h):
+        return [l / WS_W, b / WS_H, (r - l) / WS_W, h / WS_H]
+    fig = plt.figure(figsize=(WS_W, WS_H))
+    axA = fig.add_axes(rect(WS_A[0], WS_Y_AB, WS_A[1], H_B))
+    axB = fig.add_axes(rect(WS_B[0], WS_Y_AB, WS_B[1], H_B))
+    panel_A(axA, WS_GAP_A)
+    group_labels(axA, WS_GAP_A)
+    panel_B(axB)
+    axC = fig.add_axes(rect(WS_LC, WS_Y_C, WS_B[1], H_C)); panel_C(axC)
+    fig.text(0.04 / WS_W, (WS_Y_C + H_C + TITLE_PAD) / WS_H,
+             f"{title_c} ({S.ACTOR_SHORT[FOCUS].split(chr(10))[0]}, Omni-MATH)",
+             fontsize=S.FS_TITLE, fontweight="bold", color=S.INK, ha="left", va="bottom")
+    h = []
+    for arm in ("A", "Bf", "B", "C"):
+        h.append(Patch(label=LONG[arm] + (" (panels B, C)" if arm == "C" else ""), **bar_kw(arm)))
+    fig.legend(handles=h, ncol=4, loc="upper center", bbox_to_anchor=(0.5, 1.0),
+               fontsize=FS_TEXT, handlelength=1.0, handleheight=0.8, columnspacing=1.4,
+               handletextpad=0.4, labelspacing=0.3, frameon=False)
+    return S.save(fig, stem, WS_W)
 
 
 if __name__ == "__main__":
@@ -304,4 +352,7 @@ if __name__ == "__main__":
             row.append(f"{arm} " + ("pending" if c is None else
                        f"fp {c['firstpass']:.3f} rec {c['recovery']:.3f}"))
         print(f"  {dom:<9}{a:<24}" + " | ".join(row))
-    build()
+    if "--workshop" in sys.argv[1:]:
+        build_wide()
+    else:
+        build()

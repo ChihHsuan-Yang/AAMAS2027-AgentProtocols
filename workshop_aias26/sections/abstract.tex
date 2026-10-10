@@ -1,0 +1,22 @@
+Multi-agent large language model (LLM) systems routinely rely on
+role-playing to divide complex tasks. However, it remains unclear whether
+these assigned roles genuinely enforce a division of labor or inadvertently
+alter other critical system dynamics. We investigate what roles change
+beyond task allocation. By ablating role instructions for three open-weight
+models on two reasoning benchmarks (Omni-MATH and SciBench), we isolate the
+effect of roles while holding the agents, topology, call budget, and
+ground-truth evaluator fixed. Deleting role instructions largely dismantles
+functional specialization, yet first-pass accuracy does not degrade.
+Instead, roles matter through the decision rights they allocate. A
+role-structured Reviewer acts as a strict gatekeeper that often withholds
+submissions, so the team receives less external corrective feedback. In
+exploratory comparisons where both teams have equal access to feedback,
+role-free teams recover from initial failures more often and
+achieve higher final accuracy in every setting. The gap vanishes in a post
+hoc comparison at equal numbers of evaluator verdicts. In a single exploratory run,
+forcing the role-structured team to submit in every cycle raises its
+recovery to the role-free level for gemma-4, suggesting that the gap stems
+mainly from how often each team submits. We conclude that roles govern information flow and decision
+rights as well as work allocation. Consequently, designing and evaluating
+effective multi-agent organizations requires looking beyond task division
+to explicitly manage feedback loops and decision policies.

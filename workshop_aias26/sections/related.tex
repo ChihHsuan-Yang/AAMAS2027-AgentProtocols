@@ -1,0 +1,27 @@
+\section{Related Work}
+\label{sec:related}
+
+Classical organization-centered multi-agent systems define roles
+independently of their occupants, through formal specifications such as
+Moise$^+$ and OperA and through norms that institutions regiment or
+sanction~\cite{hubner2002moise,dignum2004opera,esteva2001formal,grossi2007ubilex}.
+An LLM role prompt, in contrast, is a degenerate case: it states such
+constraints in prose but has no mechanism to enforce them. Prompted roles
+are accordingly known to be unreliable~\cite{cemri2025why,orogat2026architectural}.
+Moreover, an evolved Planner, Executor and Critic team is no better than an
+evolved single agent when the number of model calls is held
+fixed~\cite{dylan2026equal}, and many reported multi-agent efficiency gains
+arise where one agent suffices~\cite{zhang2026rethinking}.
+
+Iterative refinement, tool feedback and multi-agent debate are standard
+paradigms~\cite{madaan2023selfrefine,gou2024critic,du2024debate}, yet models
+often repeat earlier outputs even under exact verifier
+feedback~\cite{jiang2026exactfeedback}, and self-correction degrades
+accuracy when the model judges its own answer~\cite{huang2024selfcorrect}.
+It does help when an oracle's correct label
+serves as a stopping rule~\cite{huang2024selfcorrect}, and our loop is
+gated by exactly such an oracle, an evaluator that knows the correct
+answer, where more attempts solve more problems~\cite{brown2024monkeys}. The closest study separates reviewer
+precision from critique uptake~\cite{yang2026precise} but neither
+manipulates the role structure nor equalizes feedback access across
+conditions; we do both (Appendix~\ref{app:related}).

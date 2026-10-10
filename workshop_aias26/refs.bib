@@ -1,0 +1,724 @@
+% refs.bib -- AAMAS 2027 submission
+%
+% PROVENANCE NOTE (do not delete):
+% Every entry below was verified on 2026-09-28 by fetching
+% https://arxiv.org/abs/<id> and copying the title and author list verbatim
+% from the abstract page. No metadata in this file was generated from memory.
+%
+% RE-VERIFIED 2026-09-29: every entry below was fetched again from
+% arxiv.org/abs/<id> and its title, author list, and primary class read from
+% the raw citation_title / citation_author meta tags (not from a summarizer).
+% All pre-existing entries matched; the entries added on that date were
+% verified the same way.
+%
+% Known metadata caveat: for 2609.04217, 2609.27822, and 2604.00026 the
+% abstract page's submission date is genuinely earlier than the month encoded
+% in the arXiv identifier (YYMM) -- a real announcement-versus-submission lag,
+% confirmed against the arXiv API on 2026-09-29, not a fetch error. MONTH
+% fields are deliberately omitted throughout; YEAR is taken from the
+% identifier prefix, which is authoritative for the announcement year.
+%
+% UPDATED 2026-10-03 (pre-submission citation audit):
+%   - cemri2025why, chen2026agentslimming, stechly2024selfverification now
+%     cite the published versions (NeurIPS 2025; ACL 2026, Anthology
+%     2026.acl-long.1387; ICLR 2025). liang2024divergent and oh2026entrenchment
+%     completed from the ACL Anthology records (2024.emnlp-main.992;
+%     2026.tacl-1.58). Venue pages were loaded on 2026-10-03.
+%   - Working notes removed from `note` fields (they print in the PDF).
+%   - jiang2026exactfeedback and yang2026contamination moved to the common
+%     misc form used by the other arXiv-only entries.
+
+@misc{orogat2026architectural,
+  title        = {Architectural Design, Not Only Model Intelligence, Governs
+                  Multi-Agent {LLM} Performance},
+  author       = {Orogat, Abdelghny and Rostam, Ana and Mansour, Essam},
+  year         = {2026},
+  eprint       = {2602.03128},
+  howpublished = {arXiv:2602.03128},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2602.03128}
+}
+
+@misc{canedo2026architecture,
+  title        = {Architecture as Capability Equalizer for Coding Agents},
+  author       = {Canedo, Arquimedes},
+  year         = {2026},
+  eprint       = {2608.21747},
+  howpublished = {arXiv:2608.21747},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.SE},
+  doi          = {10.48550/arXiv.2608.21747}
+}
+
+@misc{dylan2026equal,
+  title        = {At Equal Inference Cost, Multi-Agent Structure Does Not Beat
+                  a Single Frozen Agent},
+  author       = {Dylan, David and Brennan, Aoife and Murphy, Cian and
+                  O'Sullivan, Niamh and Kelly, Conor and Walsh, Saoirse},
+  year         = {2026},
+  eprint       = {2609.04217},
+  howpublished = {arXiv:2609.04217},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.MA},
+  doi          = {10.48550/arXiv.2609.04217}
+}
+
+@inproceedings{cemri2025why,
+  title        = {Why Do Multi-Agent {LLM} Systems Fail?},
+  author       = {Cemri, Mert and Pan, Melissa Z. and Yang, Shuyi and
+                  Agrawal, Lakshya A. and Chopra, Bhavya and Tiwari, Rishabh and
+                  Keutzer, Kurt and Parameswaran, Aditya and Klein, Dan and
+                  Ramchandran, Kannan and Zaharia, Matei and
+                  Gonzalez, Joseph E. and Stoica, Ion},
+  booktitle    = {Advances in Neural Information Processing Systems
+                  (NeurIPS), Datasets and Benchmarks Track},
+  year         = {2025},
+  eprint       = {2503.13657},
+  archivePrefix= {arXiv}
+}
+
+@misc{cao2026modules,
+  title        = {Do Modules Stay in Their Lane? {R}ole Drift in Compound
+                  {LLM} Systems},
+  author       = {Cao, Xiaoyang and Srinivasan, Siddarth and Bakker, Michiel A.},
+  year         = {2026},
+  eprint       = {2607.21627},
+  howpublished = {arXiv:2607.21627},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2607.21627}
+}
+
+@misc{stettler2026progressive,
+  title        = {Progressive Skill Discovery as Access Control for Tool-Using
+                  {LLM} Agents: Structural Governance through Role-Scoped
+                  Capability Delivery},
+  author       = {Stettler, Michael and Girardet, Benjamin and Canton, Jonas and
+                  Corod, Nicolas},
+  year         = {2026},
+  eprint       = {2609.28693},
+  howpublished = {arXiv:2609.28693},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2609.28693}
+}
+
+@misc{ge2026roles,
+  title        = {Roles with Rails: Contract-Preserving Role Evolution in
+                  Multi-Agent Structured Reasoning},
+  author       = {Ge, Ling-Yue and Guo, Lan-Zhe},
+  year         = {2026},
+  eprint       = {2605.28433},
+  howpublished = {arXiv:2605.28433},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CL},
+  doi          = {10.48550/arXiv.2605.28433}
+}
+
+@misc{barrak2025traceability,
+  title        = {Traceability and Accountability in Role-Specialized
+                  Multi-Agent {LLM} Pipelines},
+  author       = {Barrak, Amine},
+  year         = {2025},
+  eprint       = {2510.07614},
+  howpublished = {arXiv:2510.07614},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2510.07614},
+  note         = {2025 40th ACM/IEEE International Conference on Automated
+                  Software Engineering Workshops}
+}
+
+% ---------------------------------------------------------------------------
+% DOUBLE-BLIND HAZARD. The two entries below are by the same author group as
+% this submission. They MUST be cited in the third person only ("prior work
+% audits...", "a companion study reports..."), NEVER as "our prior work".
+% The submitted text must not name the associated HuggingFace organization or
+% GitHub account.
+% ---------------------------------------------------------------------------
+
+@misc{jiang2026confidence,
+  title        = {What Confidence Routing Is Actually Doing: Auditing Routing,
+                  Calibration, and Commitment in Multi-Agent Deliberation},
+  author       = {Jiang, Jingyan and Zheng, Huihuo and Thakur, Rajeev and
+                  Yang, Chih-Hsuan},
+  year         = {2026},
+  eprint       = {2609.27822},
+  howpublished = {arXiv:2609.27822},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.MA},
+  doi          = {10.48550/arXiv.2609.27822}
+}
+
+@misc{yang2026protocol,
+  title        = {{LLM}s Can Predict Failure Risk, But Struggle to Predict Which
+                  Collaboration Protocol Pays Off: Cost-Aware Protocol Routing
+                  Across Reasoning Tasks},
+  author       = {Yang, Chih-Hsuan and Jiang, Jingyan and Yang, Cheng-Hau and
+                  Vasudevan, Vikram and Zheng, Huihuo and
+                  Vishwanath, Venkatram and Thakur, Rajeev},
+  year         = {2026},
+  eprint       = {2608.14927},
+  howpublished = {arXiv:2608.14927},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2608.14927}
+}
+
+% ---------------------------------------------------------------------------
+% Added 2026-09-29 for the load-bearing framing. Each verified by fetching
+% arxiv.org/abs/<id> and reading the raw citation_* meta tags.
+% ---------------------------------------------------------------------------
+
+% DOUBLE-BLIND HAZARD: same author group as this submission. Third person only.
+% Its arXiv comments field names a HuggingFace organization; that URL must not
+% appear anywhere in the submitted text.
+@misc{yang2026precise,
+  title        = {Precise but Uncoupled: Reviewer Precision Does Not Guarantee
+                  Critique Uptake in Multi-Agent Math Reasoning},
+  author       = {Yang, Chih-Hsuan and Jiang, Jingyan and Vasudevan, Vikram and
+                  Yang, Cheng-Hau and Zheng, Huihuo and Chen, Le and
+                  Huerta, Eliu A. and Vishwanath, Venkatram and
+                  Foster, Ian T. and Thakur, Rajeev},
+  year         = {2026},
+  eprint       = {2607.15388},
+  howpublished = {arXiv:2607.15388},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2607.15388}
+}
+
+@misc{zhang2026rethinking,
+  title        = {Rethinking the Evaluation of Efficiency Methods for
+                  Multi-Agent Systems},
+  author       = {Zhang, Jiamu and Zhang, Lingxi and Lu, Pengjun and
+                  Zhang, Qiyue and Chuang, Yu-Neng and Li, Zhengchen and
+                  Xu, Shuai and Chaudhary, Vipin and Chen, Hanjie},
+  year         = {2026},
+  eprint       = {2609.05933},
+  howpublished = {arXiv:2609.05933},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2609.05933},
+  note         = {To appear at EMNLP 2026}
+}
+
+@misc{dochkina2026drop,
+  title        = {Drop the Hierarchy and Roles: How Self-Organizing {LLM}
+                  Agents Outperform Designed Structures},
+  author       = {Dochkina, Victoria},
+  year         = {2026},
+  eprint       = {2603.28990},
+  howpublished = {arXiv:2603.28990},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2603.28990}
+}
+
+@inproceedings{chen2026agentslimming,
+  title        = {{AgentSlimming}: Towards Efficient and Cost-Aware
+                  Multi-Agent Systems},
+  author       = {Chen, Yulang and Peng, Haoxuan and Liu, Jinyan and
+                  Wen, Zichen and Liu, Dongrui and Zhang, Linfeng},
+  booktitle    = {Proceedings of the 64th Annual Meeting of the Association
+                  for Computational Linguistics (Volume 1: Long Papers)},
+  pages        = {30064--30086},
+  publisher    = {Association for Computational Linguistics},
+  address      = {San Diego, California, United States},
+  year         = {2026},
+  doi          = {10.18653/v1/2026.acl-long.1387},
+  eprint       = {2605.08813},
+  archivePrefix= {arXiv}
+}
+
+@misc{yu2026bottleneck,
+  title        = {When Do Multi-Agent Systems Help? {A}n Information Bottleneck
+                  Perspective},
+  author       = {Yu, Wendi and Zhou, Lianhao and Dong, Xiangjue and
+                  Barath, Sai Sudarshan and Staunton, Declan and
+                  Yoon, Byung-Jun and Qian, Xiaoning and Caverlee, James and
+                  Ji, Shuiwang},
+  year         = {2026},
+  eprint       = {2607.16133},
+  howpublished = {arXiv:2607.16133},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2607.16133}
+}
+
+@misc{kandoussi2026whoami,
+  title        = {``{W}ho {A}m {I}, and {W}ho {E}lse {I}s {H}ere?'' {B}ehavioral
+                  Differentiation Without Role Assignment in Multi-Agent
+                  {LLM} Systems},
+  author       = {{El Kandoussi}, Houssam},
+  year         = {2026},
+  eprint       = {2604.00026},
+  howpublished = {arXiv:2604.00026},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CL},
+  doi          = {10.48550/arXiv.2604.00026}
+}
+
+@misc{patel2026representational,
+  title        = {Representational Collapse in Multi-Agent {LLM} Committees:
+                  Measurement and Diversity-Aware Consensus},
+  author       = {Patel, Dipkumar},
+  year         = {2026},
+  eprint       = {2604.03809},
+  howpublished = {arXiv:2604.03809},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2604.03809}
+}
+
+% ---------------------------------------------------------------------------
+% Recovery / self-correction / lock-in literature.
+% Every entry below was verified on 2026-09-29 by fetching the arXiv abstract
+% page (title + author list read from citation_title / citation_author meta
+% tags). huang2024selfcorrect was additionally checked against the full text:
+% its Table 2 oracle condition IMPROVES accuracy (GSM8K 75.9->84.3) and the
+% 74.7% figure we cite is the ANSWER-RETENTION rate from Sec 3.3, NOT the
+% round-2 accuracy that coincidentally shares the same digits in Table 3.
+% ---------------------------------------------------------------------------
+
+@inproceedings{huang2024selfcorrect,
+  author       = {Huang, Jie and Chen, Xinyun and Mishra, Swaroop and
+                  Zheng, Huaixiu Steven and Yu, Adams Wei and Song, Xinying
+                  and Zhou, Denny},
+  title        = {Large Language Models Cannot Self-Correct Reasoning Yet},
+  booktitle    = {International Conference on Learning Representations},
+  year         = {2024},
+  eprint       = {2310.01798},
+  archivePrefix= {arXiv}
+}
+
+@misc{jiang2026exactfeedback,
+  author       = {Jiang, Haitong and Liu, Chunlin and Wang, Yile and Feng, Yuhong},
+  title        = {Exact Feedback Is Not Control: Evaluating Text-based
+                  Closed-Loop Revision in {LLM}s},
+  year         = {2026},
+  eprint       = {2609.28150},
+  howpublished = {arXiv:2609.28150},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CL},
+  doi          = {10.48550/arXiv.2609.28150}
+}
+
+@inproceedings{stechly2024selfverification,
+  author       = {Stechly, Kaya and Valmeekam, Karthik and Kambhampati, Subbarao},
+  title        = {On the Self-Verification Limitations of Large Language
+                  Models on Reasoning and Planning Tasks},
+  booktitle    = {International Conference on Learning Representations},
+  year         = {2025},
+  eprint       = {2402.08115},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{liang2024divergent,
+  author       = {Liang, Tian and He, Zhiwei and Jiao, Wenxiang and Wang, Xing
+                  and Wang, Yan and Wang, Rui and Yang, Yujiu and Shi, Shuming
+                  and Tu, Zhaopeng},
+  title        = {Encouraging Divergent Thinking in Large Language Models
+                  through Multi-Agent Debate},
+  booktitle    = {Proceedings of the 2024 Conference on Empirical Methods in
+                  Natural Language Processing},
+  pages        = {17889--17904},
+  publisher    = {Association for Computational Linguistics},
+  address      = {Miami, Florida, USA},
+  year         = {2024},
+  doi          = {10.18653/v1/2024.emnlp-main.992},
+  eprint       = {2305.19118},
+  archivePrefix= {arXiv}
+}
+
+@article{oh2026entrenchment,
+  author       = {Oh, Jihwan and Jeong, Minchan and Ko, Jongwoo and Yun, Se-Young},
+  title        = {From Belief Entrenchment to Robust Reasoning in {LLM} Agents},
+  journal      = {Transactions of the Association for Computational Linguistics},
+  volume       = {14},
+  pages        = {1286--1307},
+  year         = {2026},
+  doi          = {10.1162/tacl.a.728},
+  eprint       = {2503.16814},
+  archivePrefix= {arXiv}
+}
+
+@article{kamoi2024when,
+  author       = {Kamoi, Ryo and Zhang, Yusen and Zhang, Nan and Han, Jiawei
+                  and Zhang, Rui},
+  title        = {When Can {LLM}s Actually Correct Their Own Mistakes?
+                  {A} Critical Survey of Self-Correction of {LLM}s},
+  journal      = {Transactions of the Association for Computational Linguistics},
+  volume       = {12},
+  pages        = {1417--1440},
+  year         = {2024},
+  doi          = {10.1162/tacl_a_00713},
+  eprint       = {2406.01297},
+  archivePrefix= {arXiv}
+}
+
+@misc{yang2026contamination,
+  author       = {Yang, Zhanfu},
+  title        = {Why Retrying Fails: Context Contamination in {LLM}
+                  Agent Pipelines},
+  year         = {2026},
+  eprint       = {2605.08563},
+  howpublished = {arXiv:2605.08563},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2605.08563}
+}
+
+% Added 2026-09-30 from the forward-citation audit (notes/FINAL-LITERATURE-AUDIT.md).
+% Nearest neighbour of 3,406 screened citing papers. Single-agent; its "roles"
+% are chat-template message roles, not agent personas. Metadata from the arXiv
+% Atom API, full text read. Cited so a reviewer is not the one to hand it to us.
+@misc{chen2026relabeling,
+  title        = {The Self-Correction Illusion: Role Relabeling Gates Explicit
+                  Error Flagging in Large Language Models},
+  author       = {Chen, Kuan-Yen and Su, Fang-Yi and Lin, Shih-Yen and
+                  Li, Bao and Chiang, Jung-Hsien},
+  year         = {2026},
+  eprint       = {2606.05976},
+  howpublished = {arXiv:2606.05976},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2606.05976}
+}
+
+% --- Classical MAS organizational specification. -----------------------------
+% Metadata verified 2026-09-30 against primary sources, not from recall:
+%   hubner2002moise  -- CrossRef api.crossref.org/works/10.1007/3-540-36127-8_12
+%                       (title, three authors, container, pages 118-128, 2002,
+%                       Springer). LNCS/LNAI volume 2507 from the K10plus MARC
+%                       record; Springer's own BibTeX export omits the volume.
+%   dignum2004opera  -- Utrecht University's own OAI-PMH record for the
+%                       degree-granting institution, oai:dspace.library.uu.nl:1874/890
+%                       (title, author, dc.date.issued 2004-01-12, ISBN
+%                       90-393-3568-0, type Dissertation, publisher SIKS).
+%                       NOTE: OpenAlex dates this 2000 and is WRONG; take 2004
+%                       from Utrecht. SIKS series NUMBER could not be confirmed
+%                       and is deliberately absent rather than guessed.
+@inproceedings{hubner2002moise,
+  author    = {H\"{u}bner, Jomi Fred and Sichman, Jaime Sim\~{a}o and
+               Boissier, Olivier},
+  title     = {A Model for the Structural, Functional, and Deontic
+               Specification of Organizations in Multiagent Systems},
+  booktitle = {Advances in Artificial Intelligence: 16th Brazilian Symposium
+               on Artificial Intelligence (SBIA 2002)},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {2507},
+  pages     = {118--128},
+  year      = {2002},
+  publisher = {Springer},
+  address   = {Berlin, Heidelberg},
+  doi       = {10.1007/3-540-36127-8_12}
+}
+
+@phdthesis{dignum2004opera,
+  author  = {Dignum, Virginia},
+  title   = {A Model for Organizational Interaction: Based on Agents,
+             Founded in Logic},
+  school  = {Utrecht University},
+  address = {Utrecht, The Netherlands},
+  year    = {2004},
+  isbn    = {90-393-3568-0}
+}
+
+% ADDED 2026-10-07 (mock review round 2: benchmarks, models, role frameworks,
+% feedback-revision and organizational-MAS references). Every field was read
+% from a fetched page: arXiv abstract pages, proceedings.iclr.cc,
+% proceedings.neurips.cc, proceedings.mlr.press, aclanthology.org,
+% colmweb.org (AutoGen at COLM 2024), jair.org, cambridge.org, and Crossref
+% records for the Springer and ACM DOIs (their own pages refused the fetch).
+% Gemma 4 report re-checked on arxiv.org/abs/2607.02770 on 2026-10-07.
+
+@inproceedings{hong2024metagpt,
+  author       = {Hong, Sirui and Zhuge, Mingchen and Chen, Jonathan and Zheng, Xiawu
+                  and Cheng, Yuheng and Zhang, Ceyao and Wang, Jinlin and Wang, Zili
+                  and Yau, Steven Ka Shing and Lin, Zijuan and Zhou, Liyang and
+                  Ran, Chenyu and Xiao, Lingfeng and Wu, Chenglin and
+                  Schmidhuber, J{\"u}rgen},
+  title        = {{MetaGPT}: Meta Programming for A Multi-Agent Collaborative Framework},
+  booktitle    = {International Conference on Learning Representations},
+  pages        = {23247--23275},
+  year         = {2024},
+  eprint       = {2308.00352},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{qian2024chatdev,
+  author       = {Qian, Chen and Liu, Wei and Liu, Hongzhang and Chen, Nuo and
+                  Dang, Yufan and Li, Jiahao and Yang, Cheng and Chen, Weize and
+                  Su, Yusheng and Cong, Xin and Xu, Juyuan and Li, Dahai and
+                  Liu, Zhiyuan and Sun, Maosong},
+  title        = {{ChatDev}: Communicative Agents for Software Development},
+  booktitle    = {Proceedings of the 62nd Annual Meeting of the Association for
+                  Computational Linguistics (Volume 1: Long Papers)},
+  pages        = {15174--15186},
+  publisher    = {Association for Computational Linguistics},
+  year         = {2024},
+  doi          = {10.18653/v1/2024.acl-long.810},
+  eprint       = {2307.07924},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{wu2024autogen,
+  author       = {Wu, Qingyun and Bansal, Gagan and Zhang, Jieyu and Wu, Yiran and
+                  Li, Beibin and Zhu, Erkang and Jiang, Li and Zhang, Xiaoyun and
+                  Zhang, Shaokun and Liu, Jiale and Awadallah, Ahmed Hassan and
+                  White, Ryen W. and Burger, Doug and Wang, Chi},
+  title        = {{AutoGen}: Enabling Next-Gen {LLM} Applications via Multi-Agent
+                  Conversations},
+  booktitle    = {Conference on Language Modeling},
+  year         = {2024},
+  eprint       = {2308.08155},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{madaan2023selfrefine,
+  author       = {Madaan, Aman and Tandon, Niket and Gupta, Prakhar and
+                  Hallinan, Skyler and Gao, Luyu and Wiegreffe, Sarah and
+                  Alon, Uri and Dziri, Nouha and Prabhumoye, Shrimai and
+                  Yang, Yiming and Gupta, Shashank and Majumder, Bodhisattwa Prasad
+                  and Hermann, Katherine and Welleck, Sean and
+                  Yazdanbakhsh, Amir and Clark, Peter},
+  title        = {{Self-Refine}: Iterative Refinement with Self-Feedback},
+  booktitle    = {Advances in Neural Information Processing Systems},
+  volume       = {36},
+  pages        = {46534--46594},
+  year         = {2023},
+  doi          = {10.52202/075280-2019},
+  eprint       = {2303.17651},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{shinn2023reflexion,
+  author       = {Shinn, Noah and Cassano, Federico and Gopinath, Ashwin and
+                  Narasimhan, Karthik and Yao, Shunyu},
+  title        = {{Reflexion}: Language Agents with Verbal Reinforcement Learning},
+  booktitle    = {Advances in Neural Information Processing Systems},
+  volume       = {36},
+  pages        = {8634--8652},
+  year         = {2023},
+  doi          = {10.52202/075280-0377},
+  eprint       = {2303.11366},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{gou2024critic,
+  author       = {Gou, Zhibin and Shao, Zhihong and Gong, Yeyun and Shen, Yelong
+                  and Yang, Yujiu and Duan, Nan and Chen, Weizhu},
+  title        = {{CRITIC}: Large Language Models Can Self-Correct with
+                  Tool-Interactive Critiquing},
+  booktitle    = {International Conference on Learning Representations},
+  pages        = {57734--57811},
+  year         = {2024},
+  eprint       = {2305.11738},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{du2024debate,
+  author       = {Du, Yilun and Li, Shuang and Torralba, Antonio and
+                  Tenenbaum, Joshua B. and Mordatch, Igor},
+  title        = {Improving Factuality and Reasoning in Language Models through
+                  Multiagent Debate},
+  booktitle    = {Proceedings of the 41st International Conference on Machine
+                  Learning},
+  series       = {Proceedings of Machine Learning Research},
+  volume       = {235},
+  pages        = {11733--11763},
+  publisher    = {PMLR},
+  year         = {2024},
+  eprint       = {2305.14325},
+  archivePrefix= {arXiv}
+}
+
+@misc{brown2024monkeys,
+  author       = {Brown, Bradley and Juravsky, Jordan and Ehrlich, Ryan and
+                  Clark, Ronald and Le, Quoc V. and R{\'e}, Christopher and
+                  Mirhoseini, Azalia},
+  title        = {Large Language Monkeys: Scaling Inference Compute with Repeated
+                  Sampling},
+  year         = {2024},
+  eprint       = {2407.21787},
+  howpublished = {arXiv:2407.21787},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG},
+  doi          = {10.48550/arXiv.2407.21787}
+}
+
+@inproceedings{esteva2001formal,
+  author       = {Esteva, Marc and Rodr{\'\i}guez-Aguilar, Juan-Antonio and
+                  Sierra, Carles and Garcia, Pere and Arcos, Josep L.},
+  title        = {On the Formal Specification of Electronic Institutions},
+  booktitle    = {Agent Mediated Electronic Commerce: The European {AgentLink}
+                  Perspective},
+  series       = {Lecture Notes in Computer Science},
+  volume       = {1991},
+  pages        = {126--147},
+  publisher    = {Springer},
+  year         = {2001},
+  doi          = {10.1007/3-540-44682-6_8}
+}
+
+@inproceedings{grossi2007ubilex,
+  author       = {Grossi, Davide and Aldewereld, Huib and Dignum, Frank},
+  title        = {{Ubi Lex, Ibi Poena}: Designing Norm Enforcement in
+                  {E-Institutions}},
+  booktitle    = {Coordination, Organizations, Institutions, and Norms in Agent
+                  Systems {II}},
+  series       = {Lecture Notes in Computer Science},
+  volume       = {4386},
+  pages        = {101--114},
+  publisher    = {Springer},
+  year         = {2007},
+  doi          = {10.1007/978-3-540-74459-7_7}
+}
+
+@article{tambe1997flexible,
+  author       = {Tambe, Milind},
+  title        = {Towards Flexible Teamwork},
+  journal      = {Journal of Artificial Intelligence Research},
+  volume       = {7},
+  pages        = {83--124},
+  year         = {1997},
+  doi          = {10.1613/jair.433},
+  eprint       = {cs/9709101},
+  archivePrefix= {arXiv}
+}
+
+@article{horling2004survey,
+  author       = {Horling, Bryan and Lesser, Victor},
+  title        = {A survey of multi-agent organizational paradigms},
+  journal      = {The Knowledge Engineering Review},
+  volume       = {19},
+  number       = {4},
+  pages        = {281--316},
+  year         = {2004},
+  doi          = {10.1017/S0269888905000317}
+}
+
+@inproceedings{gao2025omnimath,
+  author       = {Gao, Bofei and Song, Feifan and Yang, Zhe and Cai, Zefan and
+                  Miao, Yibo and Dong, Qingxiu and Li, Lei and Ma, Chenghao and
+                  Chen, Liang and Xu, Runxin and Tang, Zhengyang and Wang, Benyou
+                  and Zan, Daoguang and Quan, Shanghaoran and Zhang, Ge and
+                  Sha, Lei and Zhang, Yichang and Ren, Xuancheng and Liu, Tianyu
+                  and Chang, Baobao},
+  title        = {{Omni-MATH}: A Universal Olympiad Level Mathematic Benchmark for
+                  Large Language Models},
+  booktitle    = {International Conference on Learning Representations},
+  pages        = {100540--100569},
+  year         = {2025},
+  eprint       = {2410.07985},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{wang2024scibench,
+  author       = {Wang, Xiaoxuan and Hu, Ziniu and Lu, Pan and Zhu, Yanqiao and
+                  Zhang, Jieyu and Subramaniam, Satyen and Loomba, Arjun R. and
+                  Zhang, Shichang and Sun, Yizhou and Wang, Wei},
+  title        = {{SciBench}: Evaluating College-Level Scientific Problem-Solving
+                  Abilities of Large Language Models},
+  booktitle    = {Proceedings of the 41st International Conference on Machine
+                  Learning},
+  series       = {Proceedings of Machine Learning Research},
+  volume       = {235},
+  pages        = {50622--50649},
+  publisher    = {PMLR},
+  year         = {2024},
+  eprint       = {2307.10635},
+  archivePrefix= {arXiv}
+}
+
+@inproceedings{kwon2023vllm,
+  author       = {Kwon, Woosuk and Li, Zhuohan and Zhuang, Siyuan and Sheng, Ying
+                  and Zheng, Lianmin and Yu, Cody Hao and Gonzalez, Joseph E. and
+                  Zhang, Hao and Stoica, Ion},
+  title        = {Efficient Memory Management for Large Language Model Serving with
+                  {PagedAttention}},
+  booktitle    = {Proceedings of the 29th Symposium on Operating Systems Principles},
+  pages        = {611--626},
+  publisher    = {ACM},
+  year         = {2023},
+  doi          = {10.1145/3600006.3613165},
+  eprint       = {2309.06180},
+  archivePrefix= {arXiv}
+}
+
+@misc{openai2025gptoss,
+  author       = {{OpenAI}},
+  title        = {{gpt-oss-120b} \& {gpt-oss-20b} Model Card},
+  year         = {2025},
+  eprint       = {2508.10925},
+  howpublished = {arXiv:2508.10925},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CL},
+  doi          = {10.48550/arXiv.2508.10925}
+}
+
+@misc{grattafiori2024llama3,
+  author       = {Grattafiori, Aaron and others},
+  title        = {The {Llama} 3 Herd of Models},
+  year         = {2024},
+  eprint       = {2407.21783},
+  howpublished = {arXiv:2407.21783},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  doi          = {10.48550/arXiv.2407.21783}
+}
+
+@misc{gemma2026gemma4,
+  author       = {{Gemma Team}},
+  title        = {{Gemma} 4 Technical Report},
+  year         = {2026},
+  eprint       = {2607.02770},
+  howpublished = {arXiv:2607.02770},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CL},
+  doi          = {10.48550/arXiv.2607.02770}
+}
+
+% ---- statistical methods (added 2026-10-08; each record checked against the
+% ---- publisher or Crossref record: DOI, volume, issue and pages)
+@article{mcnemar1947note,
+  author       = {McNemar, Quinn},
+  title        = {Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages},
+  journal      = {Psychometrika},
+  volume       = {12},
+  number       = {2},
+  pages        = {153--157},
+  year         = {1947},
+  doi          = {10.1007/BF02295996}
+}
+@article{holm1979simple,
+  author       = {Holm, Sture},
+  title        = {A Simple Sequentially Rejective Multiple Test Procedure},
+  journal      = {Scandinavian Journal of Statistics},
+  volume       = {6},
+  number       = {2},
+  pages        = {65--70},
+  year         = {1979}
+}
+@article{efron1979bootstrap,
+  author       = {Efron, Bradley},
+  title        = {Bootstrap Methods: Another Look at the Jackknife},
+  journal      = {The Annals of Statistics},
+  volume       = {7},
+  number       = {1},
+  pages        = {1--26},
+  year         = {1979},
+  doi          = {10.1214/aos/1176344552}
+}
+@article{montgomery2018conditioning,
+  author       = {Montgomery, Jacob M. and Nyhan, Brendan and Torres, Michelle},
+  title        = {How Conditioning on Posttreatment Variables Can Ruin Your Experiment and What to Do about It},
+  journal      = {American Journal of Political Science},
+  volume       = {62},
+  number       = {3},
+  pages        = {760--775},
+  year         = {2018},
+  doi          = {10.1111/ajps.12357}
+}

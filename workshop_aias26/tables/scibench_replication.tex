@@ -1,0 +1,51 @@
+% Workshop copy (scripts/mk_workshop_appendix.py): paper/tables/scibench_replication.tex with its tabular in an adjustbox; numbers unchanged.
+% ==========================================================================
+% Table 3 (manuscript) -- SciBench cross-domain replication
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/scripts/xdom_analyze.py (executed; stdout parsed)
+%                      which execs FINAL_TABLES.py and rebinds its definitions
+%                      -- judged / is_fpw / fp / fin_prereg are the SAME code
+%                      objects as the Omni-MATH tables, not a reimplementation
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : b26ccb5451a5eaed14046a27a980ba8797e5669912df907bc25f69bf60ad5b76
+% generation date   : 2026-10-04  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% SciBench frozen data: experiments/results/xdomain/FROZEN_SCIBENCH/
+%   frozen_at 2026-09-30T23:26:47.198588+00:00, 2296 trajectories
+%   sha256 10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58  scibench_AB.jsonl
+% gpt-oss's recovery cell is UNDERPOWERED:
+% its point estimate matches Omni-MATH's. Llama-3.3 was not run.
+% No clause-specific role-fidelity metric crosses domains (the
+% contract was domain-adapted), so none is reported here.
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table*}[t]
+\centering
+\caption{The SciBench benchmark: first pass and recovery with roles and without them (feedback withheld), two actors, frozen separately.}
+\label{tab:scibench}
+\begin{adjustbox}{max width=\textwidth}\begin{tabular}{lccccc@{\hspace{1.4em}}ccccccc}
+\toprule
+ & \multicolumn{5}{c}{first pass (paired, all problems)}
+ & \multicolumn{7}{c}{recovery (paired on first-pass wrong under both)} \\
+\cmidrule(lr){2-6}\cmidrule(lr){7-13}
+actor & $n$ & RS & RF$^{-}$ & diff. & exact $p$
+      & $n_{\mathrm{both}}$ & RS & RF$^{-}$ & diff.
+      & RS only & RF$^{-}$ only & exact $p$ \\
+\midrule
+gemma-4-31B-it & $574$ & $0.794$ & $0.794$ & $+0.0000$ & $1$ & $99$ & $0.212$ & $0.020$ & ${-}0.1919$ & $21$ & $2$ & $6.60\times 10^{-5}$ \\
+gpt-oss-120b & $574$ & $0.784$ & $0.789$ & $+0.0052$ & $0.784$ & $96$ & $0.219$ & $0.135$ & ${-}0.0833$ & $17$ & $9$ & $0.169$ \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+\tabnote{The complete 574-problem text-only slice of free-response college science, 2,296 trajectories. RS: role-structured; RF$^{-}$: role-free with the evaluator's feedback withheld; the contrast with feedback shown is in the main text's Table~2. First pass is paired over all 574 problems, with the exact McNemar $p$ for the problems right under only one condition. Recovery is paired over only the problems first-pass wrong under both conditions ($n_{\mathrm{both}}$); ``RS only'' and ``RF$^{-}$ only'' count problems recovered under one condition and not the other. Differences are RF$^{-}$ minus RS under the pre-registered scoring (never-graded trajectories count as incorrect). gpt-oss-120b's recovery cell is underpowered at its $n_{\mathrm{both}}$; its estimate points the same way as on Omni-MATH. Llama-3.3-70B-Instruct was not run in this domain.}
+\end{table*}

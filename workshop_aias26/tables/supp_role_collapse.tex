@@ -1,0 +1,65 @@
+% Workshop copy (scripts/mk_workshop_appendix.py): paper/tables/supp_role_collapse.tex with its tabular in an adjustbox; numbers unchanged.
+% ==========================================================================
+% Supplement -- functional collapse per actor, all three measures
+%
+% GENERATED FILE -- do not edit by hand. Any edit is overwritten.
+% generating script : analysis/scripts/mk_tables.py
+% canonical input   : analysis/out/FINAL_TABLES_OUTPUT.txt  sections T1, T18, T20, T23
+%                    analysis/out/FIGDATA_BF.json  (role-free with feedback: collapse only)
+% frozen data       : experiments/results/FROZEN/, frozen_at 2026-09-30T10:09:30.201557
+%                     11600 trajectories
+%                     sha256 fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5  actor3.jsonl
+%                     sha256 038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4  armCp.jsonl
+%                     sha256 e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130  campaign_v2.jsonl
+% canonical-output sha256 : b26ccb5451a5eaed14046a27a980ba8797e5669912df907bc25f69bf60ad5b76
+% generation date   : 2026-10-04  (derived from the canonical
+%                     input's mtime, not wall-clock: regeneration must
+%                     be byte-identical)
+%
+% Byte duplication is a LOWER BOUND (precision 1.000, recall 0.262)
+% and never carries the collapse claim alone (APPROVED_CLAIMS A1).
+% The adjudication is outcome-blind but NOT condition-blind: do not
+% describe it as blinded (APPROVED_CLAIMS A1 / DEAD list).
+%
+% Reader-facing condition names per paper/TERMINOLOGY.md; internal arm
+% codes are deliberately absent and their absence is asserted at
+% generation time.
+% ==========================================================================
+\begin{table}[t]
+\centering
+\caption{Functional collapse on the Omni-MATH benchmark under three measures, with the structurally enforced condition and a sensitivity analysis over answer markers.}
+\label{tab:collapse_full}
+\begin{adjustbox}{max width=\textwidth}\begin{tabular}{@{}lccc@{}}
+\toprule
+ & functional & exact byte & adjudicated \\
+actor & collapse & duplication & no division \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{role-structured (RS)}} \\
+\quad gemma-4-31B-it & $0.000$ & $0.000$ & $0.000$ \\
+\quad gpt-oss-120b & $0.120$ & $0.000$ & $0.000$ \\
+\quad Llama-3.3-70B-Instruct & $0.000$ & $0.000$ & $0.000$ \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{role-free, feedback withheld (RF$^{-}$)}} \\
+\quad gemma-4-31B-it & $\mathbf{0.976}$ & $0.000$ & $\mathbf{0.857}$ \\
+\quad gpt-oss-120b & $\mathbf{0.846}$ & $0.680^{\dagger}$ & $\mathbf{1.000}$ \\
+\quad Llama-3.3-70B-Instruct & $\mathbf{0.872}$ & $0.008$ & $\mathbf{1.000}$ \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{role-free, with feedback (RF)}} \\
+\quad gemma-4-31B-it & $\mathbf{0.974}$ & -- & -- \\
+\quad gpt-oss-120b & $\mathbf{0.883}$ & -- & -- \\
+\quad Llama-3.3-70B-Instruct & $\mathbf{0.900}$ & -- & -- \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{structurally enforced (SE)}} \\
+\quad all actors & n/a & $\leq 0.001$ & $0.071$--$0.188$ \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+
+\tabnote{RS: role-structured prompts; RF$^{-}$ and RF: role-free prompts with the evaluator's feedback withheld or shown (RF was run after the freeze); SE: structural enforcement. Functional collapse: share of first cycles in which all three agents assert their own final answer. Exact byte duplication: share of first cycles in which two or more of the three messages are identical character for character, a lower bound on collapse that is never used to compare actors. Adjudicated no division: share of a judged sample of first cycles in which a model judge with a fixed rubric finds no division of labor; the judge did not see the grade but could infer the condition. Collapse is not applicable under SE, whose Planner schema has no answer field; for RF only functional collapse was measured. \emph{Sensitivity.} Under three answer-marker definitions the
+feedback-withheld role-free rate is $0.846$--$0.999$; the
+role-structured rate is $0.000$--$0.238$ under the two stricter
+markers and $0.328$--$0.892$ under the loosest, which
+also counts any ``therefore'', ``hence'' or ``$=$\,number'' (as when a
+Planner restates givens), so read the role-structured level as ``low,'' not
+a point estimate. The ordering holds in all 9 of 9
+actor$\times$marker cells. $^{\dagger}$Not interpretable: $80\%$ of this cell's planner messages are under $500$ visible characters (the logging defect of Appendix~\ref{app:results}).}
+\end{table}
