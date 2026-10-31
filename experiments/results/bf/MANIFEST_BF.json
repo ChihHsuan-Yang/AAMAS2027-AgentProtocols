@@ -1,0 +1,168 @@
+{
+ "note": "Arm Bf control (role-free + evaluator feedback delivered), gemma-4-31B-it. Run outside the frozen snapshot; never pooled into FROZEN/ or FINAL_TABLES.py inputs. See experiments/BF_CONTROL.md.",
+ "endpoint": "ALCF Sophia vLLM gateway (same as frozen campaign)",
+ "launched": "2026-10-06T00:41:18-05:00",
+ "files": {
+  "bf_omnimath_gemma4.jsonl": {
+   "sha256": "d00cc8e3d09f50a2611e3ad211808d9f5cfa02737000f033cb0c4274511a3474",
+   "rows": 1600,
+   "bytes": 27891526,
+   "cells": {
+    "gemma-4-31B-it|Bf": 1600
+   },
+   "config_versions": {
+    "25a04a554afcd006": 1600
+   },
+   "run_ids": {
+    "bf-gemma4-n1600": 1600
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 1474,
+    "max_rounds_exhausted_after_fail": 124,
+    "no_answer_produced": 2
+   },
+   "first_started": "2026-10-06T05:41:19.502503+00:00",
+   "last_ended": "2026-10-06T09:19:29.918613+00:00"
+  },
+  "bf_scibench_gemma4.jsonl": {
+   "sha256": "494081dac0ecddc0875fc5440e331ec43654115a6afbbbd40829104047fa7224",
+   "rows": 574,
+   "bytes": 8430177,
+   "cells": {
+    "gemma-4-31B-it|Bf": 574
+   },
+   "config_versions": {
+    "d311904cee36c21b": 574
+   },
+   "run_ids": {
+    "bf-gemma4-scibench": 574
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 505,
+    "max_rounds_exhausted_after_fail": 68,
+    "no_answer_produced": 1
+   },
+   "first_started": "2026-10-06T09:19:31.387444+00:00",
+   "last_ended": "2026-10-06T10:41:46.781948+00:00"
+  },
+  "bridgeA_omnimath_gemma4_n400.jsonl": {
+   "sha256": "cfe9c8f80daca372ec640e83d887888e12b9e51196ed62325d77ea9d4940c717",
+   "rows": 400,
+   "bytes": 8820253,
+   "cells": {
+    "gemma-4-31B-it|A": 400
+   },
+   "config_versions": {
+    "25a04a554afcd006": 400
+   },
+   "run_ids": {
+    "bridgeA-gemma4-n400": 400
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 307,
+    "max_rounds_exhausted_after_fail": 45,
+    "max_rounds_exhausted": 28,
+    "max_rounds_then_evaluator_pass": 20
+   },
+   "first_started": "2026-10-06T10:41:47.939182+00:00",
+   "last_ended": "2026-10-06T11:39:48.765979+00:00",
+   "note": "Arm A re-run on 400 frozen problems: endpoint-drift check only, never pooled into any cell"
+  },
+  "bf_omnimath_llama33.jsonl": {
+   "sha256": "b53e730263db637bf0f3b564770e92148c430150f51965f19da57d39101022fb",
+   "rows": 400,
+   "bytes": 20288673,
+   "cells": {
+    "Llama-3.3-70B-Instruct|Bf": 400
+   },
+   "config_versions": {
+    "25a04a554afcd006": 400
+   },
+   "run_ids": {
+    "bf-llama33-n400": 400
+   },
+   "stopping_conditions": {
+    "max_rounds_exhausted_after_fail": 205,
+    "reviewer_agree_then_evaluator_pass": 161,
+    "max_rounds_exhausted": 25,
+    "max_rounds_then_evaluator_pass": 5,
+    "runtime_error": 4
+   },
+   "first_started": "2026-10-06T21:05:28.133989+00:00",
+   "last_ended": "2026-10-07T00:58:31.536898+00:00",
+   "note": "Arm Bf, Llama-3.3-70B-Instruct, Omni-MATH n=400 (frozen Llama cells are n=400). 4 problems ended in runtime_error after 3 attempts and count incorrect under the pre-fixed rule.",
+   "redacted_from_sha256": "42425019a7b44b9acb58dccb8788772e27047c5dbdc625a67f92880aad56de3d",
+   "redacted_error_fields": 4
+  },
+  "bf_omnimath_gptoss.jsonl": {
+   "sha256": "3dbfc93ab919d7c320f00f3c772568e5225d681d49e2863b786008b72fbd828e",
+   "rows": 1600,
+   "bytes": 23796445,
+   "cells": {
+    "gpt-oss-120b|Bf": 1600
+   },
+   "config_versions": {
+    "25a04a554afcd006": 1600
+   },
+   "run_ids": {
+    "bf-gptoss-n1600": 1600
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 1430,
+    "max_rounds_exhausted_after_fail": 164,
+    "max_rounds_exhausted": 4,
+    "no_answer_produced": 1,
+    "max_rounds_then_evaluator_pass": 1
+   },
+   "first_started": "2026-10-06T21:05:24.700627+00:00",
+   "last_ended": "2026-10-07T02:32:27.524584+00:00",
+   "note": "Arm Bf, gpt-oss-120b, Omni-MATH n=1600."
+  },
+  "bf_scibench_gptoss.jsonl": {
+   "sha256": "e80d5c0928cead1935987d0342507e03c431f2cb3e482b0237a2ae865dab3cdd",
+   "rows": 574,
+   "bytes": 3553135,
+   "cells": {
+    "gpt-oss-120b|Bf": 574
+   },
+   "config_versions": {
+    "d311904cee36c21b": 574
+   },
+   "run_ids": {
+    "bf-gptoss-scibench": 574
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 512,
+    "max_rounds_exhausted_after_fail": 62
+   },
+   "first_started": "2026-10-07T02:32:28.729313+00:00",
+   "last_ended": "2026-10-07T03:25:43.701056+00:00",
+   "note": "Arm Bf, gpt-oss-120b, SciBench n=574."
+  },
+  "afs_omnimath_gemma4_n400.jsonl": {
+   "sha256": "47bed257b8783f9dfae177835b50dfdba19bab920a46d87ebd612f6cc60869cd",
+   "rows": 400,
+   "bytes": 6655595,
+   "cells": {
+    "gemma-4-31B-it|Afs": 400
+   },
+   "config_versions": {
+    "1a5f4fe24f242c80": 400
+   },
+   "run_ids": {
+    "afs-gemma4-n400": 400
+   },
+   "stopping_conditions": {
+    "reviewer_agree_then_evaluator_pass": 364,
+    "max_rounds_exhausted_after_fail": 36
+   },
+   "first_started": "2026-10-07T07:36:24.615054+00:00",
+   "last_ended": "2026-10-07T08:25:08.829315+00:00",
+   "note": "Arm Afs: role-structured prompts byte-identical to arm A, the pipeline submits every cycle (forced submission). gemma-4, Omni-MATH, the 400 problems of bridgeA_omnimath_gemma4_n400.jsonl. Exploratory, post-freeze, one run; analysed by analysis/scripts/bf_gate.py [G5]."
+  }
+ },
+ "excluded": {
+  "smoke.jsonl": "25-problem smoke run, not part of any cell"
+ },
+ "redaction": "Public copies: `error` fields holding inference-gateway response bodies replaced by a fixed marker (scripts/redact_release.py). redacted_from_sha256 pins each original file."
+}

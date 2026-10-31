@@ -1,0 +1,32 @@
+NOTICE
+======
+
+This repository is the public research artifact for the preprint
+"Beyond Division of Labor: How Roles Shape Feedback and Recovery in
+Multi-Agent Systems".
+
+Code in this repository is released under the MIT License (see LICENSE).
+
+--------------------------------------------------------------------------
+Upstream benchmarks
+--------------------------------------------------------------------------
+
+This artifact reports multi-agent trajectories run on problems drawn from the
+benchmarks below. Each benchmark remains subject to its own license.
+
+The problem manifests in experiments/ (manifest_omnimath2_n*.json) contain
+the text and reference answers of the sampled Omni-MATH-2 problems,
+redistributed under Apache-2.0 so that a run can be reproduced from the exact
+inputs. Released trajectory rows identify problems by problem_uid, which
+joins to the upstream releases.
+
+* Omni-MATH-2 - https://huggingface.co/datasets/martheballon/Omni-MATH-2
+  License: Apache-2.0.
+  1,600 competition-mathematics problems sampled from a filtered pool of 4,181.
+
+* SciBench - https://huggingface.co/datasets/xw27/scibench
+  License: MIT, Copyright (c) 2023 Xiaoxuan Wang (see the upstream
+  repository's LICENSE file). The complete 574-problem text-only
+  free-response slice.
+
+Please cite the original benchmark authors when using these identifiers.

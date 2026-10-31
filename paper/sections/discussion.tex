@@ -1,0 +1,53 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Roles allocate decisions as well as work.} Generating a first
+answer is a generation problem. Three agents reaching the same conclusion
+by different routes cost only tokens, so first-pass accuracy remains
+largely unaffected by the division of labor. After a failure, however, the
+team must produce something distinct from the rejected answer, and except
+for the gpt-oss model, teams rarely change their answer unless told it
+failed. Once this failure signal is provided, the role contract adds little
+capacity for revision: matched on the number of verdicts, the difference
+between the two teams nearly vanishes. The role contract primarily dictates
+when the team asks for external evaluation. A role-structured Reviewer
+withholds approval until it is satisfied, so its team draws fewer verdicts,
+sometimes none. In one exploratory run, overriding this Reviewer closed the
+gap for the gemma-4 model.
+
+\paragraph{A design trade-off, not a defect.} A Reviewer that withholds
+approval conserves external evaluations, which is valuable when evaluations
+are costly, noisy or unavailable. In our setting, with a ground-truth
+evaluator and a fixed cycle budget, a strict Reviewer instead limits the
+team's opportunities to obtain corrective feedback, and fewer verdicts mean
+fewer recoveries. We measure this side of the trade-off, not the full cost
+and performance balance. Two design implications follow for similar settings.
+First, if a cheap and reliable verifier is available, let the team submit
+frequently and gate on the verifier rather than on an internal critic.
+Second, whatever the role structure, route the verifier's feedback to every
+agent that can act on it, as the feedback-withheld diagnostic shows
+(\S\ref{subsec:mechanism}).
+
+\paragraph{Information audits.} In a prompted multi-agent system, feedback,
+tool outputs and verifier verdicts reach the agents through slots in the
+same templates that carry the role instructions. Rewriting these templates
+during an ablation can therefore silently remove a channel, and no budget
+record, call count or accuracy metric reports the absence. A role ablation
+thus requires an information audit alongside the budget audit: the runtime
+inputs each template consumes must be documented, and a contrast is matched
+only when these input sets are identical. Even with matched access, the
+realized use can differ, because the organization decides how often the
+channels are used.
+
+\paragraph{Decision rights and information pathways.} Prior work shows that
+precise reviewing does not guarantee that a critique is
+adopted~\cite{yang2026precise}. Similarly, a clean division of labor does
+not guarantee that a team recovers from errors. The critical factor is
+whether corrective information reaches the team and changes its next
+actions. A task-outcome evaluation alone cannot reveal this, because an
+aggregate score averages the stages where the organization sits idle with
+those where it does its work. We recommend reporting performance
+conditioned on a failed first attempt, measuring the realized organization
+instead of assuming the specified one, and treating who may submit and
+which agents see the feedback as core parts of the organization's
+specification.

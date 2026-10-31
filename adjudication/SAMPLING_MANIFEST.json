@@ -1,0 +1,24 @@
+{
+ "seed": 20260929,
+ "per_cell": 14,
+ "n_items": 171,
+ "strata": {
+  "('gemma-4-31B-it', 'C', False)": 1291,
+  "('gpt-oss-120b', 'B', True)": 891,
+  "('gpt-oss-120b', 'C', False)": 1267,
+  "('gemma-4-31B-it', 'A', False)": 1294,
+  "('gpt-oss-120b', 'A', False)": 1289,
+  "('gemma-4-31B-it', 'B', False)": 1293,
+  "('gpt-oss-120b', 'B', False)": 397,
+  "('gemma-4-31B-it', 'C', True)": 2,
+  "('Llama-3.3-70B-Instruct', 'C', False)": 79,
+  "('Llama-3.3-70B-Instruct', 'B', False)": 74,
+  "('Llama-3.3-70B-Instruct', 'A', False)": 71,
+  "('gemma-4-31B-it', 'Cp', False)": 398,
+  "('gemma-4-31B-it', 'Cp', True)": 1,
+  "('gpt-oss-120b', 'Cp', False)": 389
+ },
+ "items_sha256": "f7caf2275de52c3279856c901e32a65180d6ca7c9bc281258a13d6396bc7b1af",
+ "items_sha256_after_neutralization": "997d0185133a12056ec979f33904bb3e62d88caec8742a9e7a3bd93f824af325",
+ "role_token_neutralization": "Planner/Executor/Reviewer -> Agent-P/E/R applied uniformly to ALL items; pre-fix leak was 42/45 in Arm A vs 3 in Arm B, a near-perfect arm signal"
+}

@@ -1,0 +1,149 @@
+%==============================================================================
+% Public preprint release candidate -- main document
+%
+% CLASS: the OFFICIAL AAMAS-2027 author kit (aamas_2027_template.zip, from
+% https://warwick.ac.uk/fac/sci/dcs/aamas2027/aamas_2027_template.zip, linked
+% on the AAMAS 2027 Submission Instructions page), migrated 2026-10-03.
+% aamas.cls, ACM-Reference-Format.bst and by.pdf in this directory are the
+% kit's files, unmodified. The earlier build used the AAMAS-2026 class with
+% the year advanced by hand, because the 2027 kit had not been located.
+%
+% The class file must NOT be modified: "Please do not modify the style files
+% or any of the layout parameters." Nor may the page budget be met by
+% typesetting tricks: "Excessive use of typesetting tricks to make everything
+% fit into 8 pages is not admissible."
+%==============================================================================
+\documentclass[sigconf,nonacm]{aamas}
+
+% Release copy: author and acknowledgment metadata added; source study preserved.
+
+% -- AAMAS-2027 copyright block, verbatim from AAMAS_2027_sample.tex
+% -- ("do not change!").
+\makeatletter
+\gdef\@copyrightpermission{
+  \begin{minipage}{0.2\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{\includegraphics[width=0.90\textwidth]{by}}
+  \end{minipage}\hfill
+  \begin{minipage}{0.8\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{This work is licensed under a Creative Commons Attribution International 4.0 License.}
+  \end{minipage}
+  \vspace{5pt}
+}
+\makeatother
+
+% Public preprint metadata. Conference proceedings are not claimed.
+\setcopyright{none}
+\acmConference[Preprint]{Preprint}{22 October 2026}{Online}{}
+\copyrightyear{2026}
+\acmYear{2026}
+\acmDOI{}
+\acmISBN{}
+\settopmatter{printacmref=false,printccs=false}
+
+\submissionType{Preprint}
+
+\usepackage{booktabs}
+\usepackage{amsmath}
+% amssymb intentionally NOT loaded: it clashes with acmart+newtxmath on \Bbbk.
+% acmart already provides the AMS symbols this paper uses.
+\usepackage{xcolor}
+\usepackage{balance}
+
+% -- Margin protrusion OFF. -------------------------------------------------
+% aamas.cls loads microtype, whose DEFAULT protrusion hangs a line-final
+% hyphen ~0.66pt into the right margin. That is deliberate typography, not
+% overflow -- but it puts 6 words past the 559.15pt text-block edge, which is
+% indistinguishable from real overflow to any margin check a reviewer runs
+% (and one such check is how Table 2's genuine 614.8pt spill was found).
+% Disabling it makes lines slightly LOOSER, never tighter, so it is not a
+% trick to fit more text into 8 pages -- the opposite. The class file is not
+% modified. Page count is unchanged with it on or off.
+\microtypesetup{protrusion=false}
+
+% -- Placeholder macro. Every unrun result MUST be wrapped in this. ----------
+% Before submission, run:  grep -n 'TODO{' main.tex sections/*.tex
+% and confirm the list is empty.
+\newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+% -- Shorthands for the two constructs the paper keeps apart. ----------------
+% \Pone is the Planner computation-abstention clause measure; it is spelled
+% out at first use (Sec. Definitions) rather than left as an internal tag.
+% \PER abbreviates Planner-Executor-Reviewer, expanded at first use.
+\newcommand{\Pone}{\textsf{P1a}}
+\newcommand{\PER}{\textsc{PER}}
+
+\begin{document}
+
+% CANONICAL TITLE, revised 2026-10-09. scripts/pagecheck.py derives its
+% running-head word list from the PDF's own /Title, so it follows the title
+% automatically.
+\title{Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems}
+
+\author{Chih-Hsuan Yang}
+\authornote{These authors are co-first authors and contributed equally to this work.}
+\authornote{Corresponding author: Chih-Hsuan Yang (bellayang@anl.gov).}
+\affiliation{%
+  \institution{Argonne National Laboratory}
+  \country{United States}
+}
+\email{bellayang@anl.gov}
+
+\author{Xinyang Li}
+\authornotemark[1]
+\affiliation{%
+  \institution{University of Houston}
+  \country{United States}
+}
+\author{Rajeev Thakur}
+\affiliation{%
+  \institution{Argonne National Laboratory}
+  \country{United States}
+}
+\author{Feng Yan}
+\affiliation{%
+  \institution{University of Houston}
+  \country{United States}
+}
+
+\begin{abstract}
+Multi-agent large language model (LLM) systems commonly assign distinct roles such as Planner, Executor, and Reviewer. In this paper, we investigate what these roles actually change beyond their intended division of labor. We evaluate three open-weight models on the Omni-MATH benchmark and two of them on the SciBench benchmark. Throughout these experiments, we hold the agents, agent topology, call budget, and ground-truth evaluator constant. We find that deleting all role instructions largely eliminates functional specialization, yet the team's first-pass accuracy does not drop. Roles also allocate decision rights. A role-structured Reviewer often withholds approval and forces internal deliberation. Consequently, its team submits answers to the external evaluator less frequently and receives less corrective feedback. In an exploratory comparison where feedback is accessible to both teams, the role-free team recovers from a failed first answer more often across all five model-benchmark settings and achieves higher final accuracy. A post hoc analysis reveals that this role-free advantage disappears when comparing the two teams at an equal number of evaluator verdicts. In a second exploratory intervention, run for the gemma-4 model on $400$ Omni-MATH problems, we preserve the role prompts but force a submission in every cycle (one pass of the three agents), and the role-structured team's recovery rate then matches that of the role-free team. We conclude that roles govern decision rights and information flow as well as work allocation. Evaluating multi-agent organizations therefore requires looking beyond role fidelity to analyze decision policies, feedback access, and failure recovery.
+\end{abstract}
+
+% CCS concepts are not part of the AAMAS-2027 sample (AAMAS_2027_sample.tex
+% has no CCSXML / \ccsdesc block), so none is set here.
+
+% Comma-separated, as the AAMAS-2027 sample instructs.
+\keywords{Multi-agent systems, large language models, role specialization,
+division of labor, organizational structure, ablation}
+
+\maketitle
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/framework}
+\input{sections/measurement}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/limitations}
+\input{sections/conclusion}
+
+% Preprint: allow references to follow the acknowledgments without a forced page break.
+% Replace with the complete paper-specific funding statement when provided.
+\begin{acks}
+This research used resources of the Argonne Leadership Computing Facility, a
+U.S. Department of Energy (DOE) Office of Science user facility at Argonne
+National Laboratory (ANL) operated under Contract
+No.~DE-AC02-06CH11357. The work was also supported under the same contract by
+the DOE Office of Science's Advanced Scientific Computing Research Program and
+by Laboratory Directed Research and Development (LDRD) funding from ANL,
+provided by the Director, DOE Office of Science.
+The work of the University of Houston coauthors was supported in part by the
+National Science Foundation under grants CAREER-2305491 and CNS-2504762.
+\end{acks}
+\balance
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

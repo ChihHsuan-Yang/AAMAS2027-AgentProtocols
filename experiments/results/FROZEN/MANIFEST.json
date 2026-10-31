@@ -1,0 +1,41 @@
+{
+  "frozen_at": "2026-09-30T10:09:30.201557",
+  "files": {
+    "actor3.jsonl": {
+      "sha256": "687a389589a7d21fbc03bd65b22ad4d8a38ff5f29e5b902f5129f6e90b9d6435",
+      "rows": 1200,
+      "bytes": 46036452,
+      "redacted_from_sha256": "fa22a446d5314bb67b1c6a6444b511eeeae3eb8770419a36f182617eeccbf3b5",
+      "redacted_error_fields": 3
+    },
+    "armCp.jsonl": {
+      "sha256": "63f8061c0db44ddae92881f5f5d06a60931e2383838659d7d98da89b0f90e2c6",
+      "rows": 800,
+      "bytes": 23627512,
+      "redacted_from_sha256": "038e08aec4d4aee166106a6325309dfe2301faf339c7d0bf82338a74576424d4",
+      "redacted_error_fields": 1
+    },
+    "campaign_v2.jsonl": {
+      "sha256": "fb2fabf56a5e9066e75d916595e120a81b1343e48fc888da10e582460c8019b7",
+      "rows": 9600,
+      "bytes": 227523997,
+      "redacted_from_sha256": "e4e53cb117d91129991ce2fe87e336e152fc9ee6ca826d363f2bd5dd240d7130",
+      "redacted_error_fields": 10
+    }
+  },
+  "cells": {
+    "Llama-3.3-70B-Instruct|A": 400,
+    "Llama-3.3-70B-Instruct|B": 400,
+    "Llama-3.3-70B-Instruct|C": 400,
+    "gemma-4-31B-it|A": 1600,
+    "gemma-4-31B-it|B": 1600,
+    "gemma-4-31B-it|C": 1600,
+    "gemma-4-31B-it|Cp": 400,
+    "gpt-oss-120b|A": 1600,
+    "gpt-oss-120b|B": 1600,
+    "gpt-oss-120b|C": 1600,
+    "gpt-oss-120b|Cp": 400
+  },
+  "total_rows": 11600,
+  "redaction": "Public copies: `error` fields holding inference-gateway response bodies replaced by a fixed marker (scripts/redact_release.py). redacted_from_sha256 pins each original file."
+}

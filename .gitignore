@@ -1,0 +1,27 @@
+# Environments
+.venv/
+.fonts/
+__pycache__/
+*.pyc
+
+# Downloaded data: pinned by the committed manifests, never committed
+data/
+analysis/hf_cache/
+experiments/results/**/*.jsonl
+experiments/results/hf_frozen/
+analysis/out/*.tmp
+
+# Generator scratch output (the copies the paper uses live in paper/figures/)
+figures/*
+!figures/.gitkeep
+
+# LaTeX build products
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.pdf
+!paper/by.pdf
+
+.DS_Store

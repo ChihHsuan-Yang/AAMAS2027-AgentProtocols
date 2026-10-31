@@ -1,0 +1,656 @@
+{
+ "actors": [
+  "gemma-4-31B-it",
+  "gpt-oss-120b",
+  "Llama-3.3-70B-Instruct"
+ ],
+ "adjudication_by_arm": {
+  "A": {
+   "n": 42,
+   "rate": 0.0
+  },
+  "B": {
+   "n": 56,
+   "rate": 0.9642857142857143
+  },
+  "C": {
+   "n": 44,
+   "rate": 0.13636363636363635
+  },
+  "Cp": {
+   "n": 29,
+   "rate": 0.1724137931034483
+  }
+ },
+ "budget": {
+  "inner_rounds": 2,
+  "max_actor_calls": 30,
+  "max_evaluator_calls": 6,
+  "max_outer_rounds": 3,
+  "max_regenerations": 3,
+  "max_tokens": 8192,
+  "max_transport_retries": 4,
+  "temperature": 0.0
+ },
+ "cells": {
+  "Llama-3.3-70B-Instruct|A": {
+   "actor": "Llama-3.3-70B-Instruct",
+   "arm": "A",
+   "attrition": 0.0075,
+   "cycles": 5.934782608695652,
+   "decomp": {
+    "held": 122,
+    "lost": 0,
+    "recovered": 4,
+    "ungraded_no_final_grade": 3,
+    "unjudged": 2,
+    "unrecovered": 272
+   },
+   "final_prereg": 0.315,
+   "firstpass": 0.3065326633165829,
+   "firstpass_hi": 0.35175879396984927,
+   "firstpass_lo": 0.2613065326633166,
+   "frozen_ans": 0.75,
+   "n": 400,
+   "n_fpw": 276,
+   "n_graded": 397,
+   "n_judged": 398,
+   "n_ungraded": 3,
+   "n_unjudged": 2,
+   "neverrefuse": 0.010869565217391304,
+   "recovery": 0.014492753623188406,
+   "recovery_hi": 0.028985507246376812,
+   "recovery_lo": 0.0036231884057971015,
+   "revising": 4.8768115942028984,
+   "submissions": 1.0579710144927537
+  },
+  "Llama-3.3-70B-Instruct|B": {
+   "actor": "Llama-3.3-70B-Instruct",
+   "arm": "B",
+   "attrition": 0.025,
+   "cycles": 5.955223880597015,
+   "decomp": {
+    "held": 123,
+    "lost": 0,
+    "recovered": 4,
+    "ungraded_no_final_grade": 10,
+    "unjudged": 9,
+    "unrecovered": 264
+   },
+   "final_prereg": 0.3175,
+   "firstpass": 0.3145780051150895,
+   "firstpass_hi": 0.36061381074168797,
+   "firstpass_lo": 0.26854219948849106,
+   "frozen_ans": 0.8059701492537313,
+   "n": 400,
+   "n_fpw": 268,
+   "n_graded": 390,
+   "n_judged": 391,
+   "n_ungraded": 10,
+   "n_unjudged": 9,
+   "neverrefuse": 0.7238805970149254,
+   "recovery": 0.014925373134328358,
+   "recovery_hi": 0.029850746268656716,
+   "recovery_lo": 0.0037313432835820895,
+   "revising": 0.7089552238805971,
+   "submissions": 5.246268656716418
+  },
+  "Llama-3.3-70B-Instruct|C": {
+   "actor": "Llama-3.3-70B-Instruct",
+   "arm": "C",
+   "attrition": 0.17,
+   "cycles": 5.46215139442231,
+   "decomp": {
+    "held": 98,
+    "lost": 0,
+    "recovered": 35,
+    "ungraded_no_final_grade": 68,
+    "unjudged": 51,
+    "unrecovered": 216
+   },
+   "final_prereg": 0.3325,
+   "firstpass": 0.2808022922636103,
+   "firstpass_hi": 0.32664756446991405,
+   "firstpass_lo": 0.2349570200573066,
+   "frozen_ans": 0.07171314741035857,
+   "n": 400,
+   "n_fpw": 251,
+   "n_graded": 332,
+   "n_judged": 349,
+   "n_ungraded": 68,
+   "n_unjudged": 51,
+   "neverrefuse": 0.06374501992031872,
+   "recovery": 0.1394422310756972,
+   "recovery_hi": 0.18326693227091634,
+   "recovery_lo": 0.099601593625498,
+   "revising": 3.5697211155378485,
+   "submissions": 1.8924302788844622
+  },
+  "gemma-4-31B-it|A": {
+   "actor": "gemma-4-31B-it",
+   "arm": "A",
+   "attrition": 0.0,
+   "cycles": 5.518987341772152,
+   "decomp": {
+    "held": 1284,
+    "lost": 0,
+    "recovered": 70,
+    "ungraded_no_final_grade": 0,
+    "unjudged": 0,
+    "unrecovered": 246
+   },
+   "final_prereg": 0.84625,
+   "firstpass": 0.8025,
+   "firstpass_hi": 0.82125,
+   "firstpass_lo": 0.783109375,
+   "frozen_ans": 0.2879746835443038,
+   "n": 1600,
+   "n_fpw": 316,
+   "n_graded": 1600,
+   "n_judged": 1600,
+   "n_ungraded": 0,
+   "n_unjudged": 0,
+   "neverrefuse": 0.05063291139240506,
+   "recovery": 0.22151898734177214,
+   "recovery_hi": 0.2689873417721519,
+   "recovery_lo": 0.17405063291139242,
+   "revising": 3.981012658227848,
+   "submissions": 1.5379746835443038
+  },
+  "gemma-4-31B-it|B": {
+   "actor": "gemma-4-31B-it",
+   "arm": "B",
+   "attrition": 0.0,
+   "cycles": 5.829113924050633,
+   "decomp": {
+    "held": 1284,
+    "lost": 0,
+    "recovered": 16,
+    "ungraded_no_final_grade": 0,
+    "unjudged": 0,
+    "unrecovered": 300
+   },
+   "final_prereg": 0.8125,
+   "firstpass": 0.8025,
+   "firstpass_hi": 0.821875,
+   "firstpass_lo": 0.7825,
+   "frozen_ans": 0.8449367088607594,
+   "n": 1600,
+   "n_fpw": 316,
+   "n_graded": 1600,
+   "n_judged": 1600,
+   "n_ungraded": 0,
+   "n_unjudged": 0,
+   "neverrefuse": 0.9810126582278481,
+   "recovery": 0.05063291139240506,
+   "recovery_hi": 0.0759493670886076,
+   "recovery_lo": 0.028481012658227847,
+   "revising": 0.028481012658227847,
+   "submissions": 5.800632911392405
+  },
+  "gemma-4-31B-it|C": {
+   "actor": "gemma-4-31B-it",
+   "arm": "C",
+   "attrition": 0.08,
+   "cycles": 4.502906976744186,
+   "decomp": {
+    "held": 1210,
+    "lost": 0,
+    "recovered": 108,
+    "ungraded_no_final_grade": 128,
+    "unjudged": 46,
+    "unrecovered": 236
+   },
+   "final_prereg": 0.82375,
+   "firstpass": 0.7786357786357786,
+   "firstpass_hi": 0.7992277992277992,
+   "firstpass_lo": 0.7586872586872587,
+   "frozen_ans": 0.11918604651162791,
+   "n": 1600,
+   "n_fpw": 344,
+   "n_graded": 1472,
+   "n_judged": 1554,
+   "n_ungraded": 128,
+   "n_unjudged": 46,
+   "neverrefuse": 0.22674418604651161,
+   "recovery": 0.313953488372093,
+   "recovery_hi": 0.3633720930232558,
+   "recovery_lo": 0.26453488372093026,
+   "revising": 2.441860465116279,
+   "submissions": 2.061046511627907
+  },
+  "gemma-4-31B-it|Cp": {
+   "actor": "gemma-4-31B-it",
+   "arm": "Cp",
+   "attrition": 0.045,
+   "cycles": 4.635135135135135,
+   "decomp": {
+    "held": 315,
+    "lost": 0,
+    "recovered": 28,
+    "ungraded_no_final_grade": 18,
+    "unjudged": 11,
+    "unrecovered": 46
+   },
+   "final_prereg": 0.8575,
+   "firstpass": 0.8097686375321337,
+   "firstpass_hi": 0.8483290488431876,
+   "firstpass_lo": 0.7686375321336761,
+   "frozen_ans": 0.20270270270270271,
+   "n": 400,
+   "n_fpw": 74,
+   "n_graded": 382,
+   "n_judged": 389,
+   "n_ungraded": 18,
+   "n_unjudged": 11,
+   "neverrefuse": 0.21621621621621623,
+   "recovery": 0.3783783783783784,
+   "recovery_hi": 0.5,
+   "recovery_lo": 0.2702702702702703,
+   "revising": 2.081081081081081,
+   "submissions": 2.554054054054054
+  },
+  "gpt-oss-120b|A": {
+   "actor": "gpt-oss-120b",
+   "arm": "A",
+   "attrition": 0.00125,
+   "cycles": 5.311015118790497,
+   "decomp": {
+    "held": 1135,
+    "lost": 0,
+    "recovered": 150,
+    "ungraded_no_final_grade": 2,
+    "unjudged": 2,
+    "unrecovered": 313
+   },
+   "final_prereg": 0.803125,
+   "firstpass": 0.7102628285356696,
+   "firstpass_hi": 0.7321652065081352,
+   "firstpass_lo": 0.6877346683354193,
+   "frozen_ans": 0.05183585313174946,
+   "n": 1600,
+   "n_fpw": 463,
+   "n_graded": 1598,
+   "n_judged": 1598,
+   "n_ungraded": 2,
+   "n_unjudged": 2,
+   "neverrefuse": 0.04319654427645788,
+   "recovery": 0.32397408207343414,
+   "recovery_hi": 0.367170626349892,
+   "recovery_lo": 0.28077753779697623,
+   "revising": 3.103671706263499,
+   "submissions": 2.2073434125269977
+  },
+  "gpt-oss-120b|B": {
+   "actor": "gpt-oss-120b",
+   "arm": "B",
+   "attrition": 0.00375,
+   "cycles": 5.35,
+   "decomp": {
+    "held": 1217,
+    "lost": 0,
+    "recovered": 94,
+    "ungraded_no_final_grade": 6,
+    "unjudged": 3,
+    "unrecovered": 286
+   },
+   "final_prereg": 0.819375,
+   "firstpass": 0.7620538509705698,
+   "firstpass_hi": 0.7827175954915466,
+   "firstpass_lo": 0.741390106449593,
+   "frozen_ans": 0.20789473684210527,
+   "n": 1600,
+   "n_fpw": 380,
+   "n_graded": 1594,
+   "n_judged": 1597,
+   "n_ungraded": 6,
+   "n_unjudged": 3,
+   "neverrefuse": 0.6157894736842106,
+   "recovery": 0.24736842105263157,
+   "recovery_hi": 0.29210526315789476,
+   "recovery_lo": 0.2026315789473684,
+   "revising": 0.7526315789473684,
+   "submissions": 4.597368421052631
+  },
+  "gpt-oss-120b|C": {
+   "actor": "gpt-oss-120b",
+   "arm": "C",
+   "attrition": 0.09875,
+   "cycles": 4.515406162464986,
+   "decomp": {
+    "held": 1136,
+    "lost": 0,
+    "recovered": 141,
+    "ungraded_no_final_grade": 158,
+    "unjudged": 107,
+    "unrecovered": 216
+   },
+   "final_prereg": 0.798125,
+   "firstpass": 0.7608841259209645,
+   "firstpass_hi": 0.7829872739450771,
+   "firstpass_lo": 0.740773610180844,
+   "frozen_ans": 0.09243697478991597,
+   "n": 1600,
+   "n_fpw": 357,
+   "n_graded": 1442,
+   "n_judged": 1493,
+   "n_ungraded": 158,
+   "n_unjudged": 107,
+   "neverrefuse": 0.2549019607843137,
+   "recovery": 0.3949579831932773,
+   "recovery_hi": 0.44537815126050423,
+   "recovery_lo": 0.3445378151260504,
+   "revising": 2.1204481792717087,
+   "submissions": 2.3949579831932772
+  },
+  "gpt-oss-120b|Cp": {
+   "actor": "gpt-oss-120b",
+   "arm": "Cp",
+   "attrition": 0.0975,
+   "cycles": 4.663265306122449,
+   "decomp": {
+    "held": 279,
+    "lost": 0,
+    "recovered": 31,
+    "ungraded_no_final_grade": 39,
+    "unjudged": 23,
+    "unrecovered": 67
+   },
+   "final_prereg": 0.775,
+   "firstpass": 0.7400530503978779,
+   "firstpass_hi": 0.7851458885941645,
+   "firstpass_lo": 0.6949602122015915,
+   "frozen_ans": 0.17346938775510204,
+   "n": 400,
+   "n_fpw": 98,
+   "n_graded": 361,
+   "n_judged": 377,
+   "n_ungraded": 39,
+   "n_unjudged": 23,
+   "neverrefuse": 0.2755102040816326,
+   "recovery": 0.3163265306122449,
+   "recovery_hi": 0.40816326530612246,
+   "recovery_lo": 0.22448979591836735,
+   "revising": 1.9183673469387754,
+   "submissions": 2.7448979591836733
+  }
+ },
+ "funnel": {
+  "Llama-3.3-70B-Instruct|A": {
+   "recovered_outside_funnel": 0,
+   "stage1_first_pass_wrong": 276,
+   "stage2_resubmitted": 10,
+   "stage3_distinct_second_candidate": 9,
+   "stage4_recovered": 4
+  },
+  "Llama-3.3-70B-Instruct|B": {
+   "recovered_outside_funnel": 1,
+   "stage1_first_pass_wrong": 268,
+   "stage2_resubmitted": 249,
+   "stage3_distinct_second_candidate": 49,
+   "stage4_recovered": 3
+  },
+  "Llama-3.3-70B-Instruct|C": {
+   "recovered_outside_funnel": 0,
+   "stage1_first_pass_wrong": 251,
+   "stage2_resubmitted": 158,
+   "stage3_distinct_second_candidate": 150,
+   "stage4_recovered": 35
+  },
+  "gemma-4-31B-it|A": {
+   "recovered_outside_funnel": 0,
+   "stage1_first_pass_wrong": 316,
+   "stage2_resubmitted": 133,
+   "stage3_distinct_second_candidate": 128,
+   "stage4_recovered": 70
+  },
+  "gemma-4-31B-it|B": {
+   "recovered_outside_funnel": 6,
+   "stage1_first_pass_wrong": 316,
+   "stage2_resubmitted": 316,
+   "stage3_distinct_second_candidate": 49,
+   "stage4_recovered": 10
+  },
+  "gemma-4-31B-it|C": {
+   "recovered_outside_funnel": 2,
+   "stage1_first_pass_wrong": 344,
+   "stage2_resubmitted": 231,
+   "stage3_distinct_second_candidate": 208,
+   "stage4_recovered": 106
+  },
+  "gpt-oss-120b|A": {
+   "recovered_outside_funnel": 0,
+   "stage1_first_pass_wrong": 463,
+   "stage2_resubmitted": 351,
+   "stage3_distinct_second_candidate": 332,
+   "stage4_recovered": 150
+  },
+  "gpt-oss-120b|B": {
+   "recovered_outside_funnel": 1,
+   "stage1_first_pass_wrong": 380,
+   "stage2_resubmitted": 371,
+   "stage3_distinct_second_candidate": 292,
+   "stage4_recovered": 93
+  },
+  "gpt-oss-120b|C": {
+   "recovered_outside_funnel": 0,
+   "stage1_first_pass_wrong": 357,
+   "stage2_resubmitted": 280,
+   "stage3_distinct_second_candidate": 262,
+   "stage4_recovered": 141
+  }
+ },
+ "max_cycles": 6,
+ "mechanical": {
+  "Llama-3.3-70B-Instruct|A": {
+   "dup_excess": 0.14790925716371073,
+   "dup_interpretable": true,
+   "dup_null": 0.40687063709404236,
+   "dup_real": 0.5547798942577531,
+   "functional_collapse": 0.0,
+   "n": 400,
+   "n_dup": 400
+  },
+  "Llama-3.3-70B-Instruct|B": {
+   "dup_excess": 0.4379456269294161,
+   "dup_interpretable": true,
+   "dup_null": 0.21934022720662924,
+   "dup_real": 0.6572858541360453,
+   "functional_collapse": 0.871536523929471,
+   "n": 397,
+   "n_dup": 393
+  },
+  "Llama-3.3-70B-Instruct|C": {
+   "dup_excess": 0.19346534338633178,
+   "dup_interpretable": true,
+   "dup_null": 0.12126893322135826,
+   "dup_real": 0.31473427660769004,
+   "functional_collapse": 0.0,
+   "n": 391,
+   "n_dup": 177
+  },
+  "gemma-4-31B-it|A": {
+   "dup_excess": 0.15933808401804345,
+   "dup_interpretable": true,
+   "dup_null": 0.39464532577912487,
+   "dup_real": 0.5539834097971683,
+   "functional_collapse": 0.0,
+   "n": 1600,
+   "n_dup": 1600
+  },
+  "gemma-4-31B-it|B": {
+   "dup_excess": 0.4462647837885142,
+   "dup_interpretable": true,
+   "dup_null": 0.2729468715368182,
+   "dup_real": 0.7192116553253324,
+   "functional_collapse": 0.975625,
+   "n": 1600,
+   "n_dup": 1600
+  },
+  "gemma-4-31B-it|C": {
+   "dup_excess": 0.19886485524845754,
+   "dup_interpretable": true,
+   "dup_null": 0.21796768669374073,
+   "dup_real": 0.41683254194219826,
+   "functional_collapse": 0.0,
+   "n": 1456,
+   "n_dup": 1425
+  },
+  "gemma-4-31B-it|Cp": {
+   "dup_excess": 0.20486775253327114,
+   "dup_interpretable": true,
+   "dup_null": 0.2094810406220913,
+   "dup_real": 0.41434879315536244,
+   "functional_collapse": 0.0,
+   "n": 340,
+   "n_dup": 331
+  },
+  "gpt-oss-120b|A": {
+   "dup_excess": 0.16676522767672625,
+   "dup_interpretable": true,
+   "dup_null": 0.2981601848427809,
+   "dup_real": 0.46492541251950714,
+   "functional_collapse": 0.12015018773466833,
+   "n": 1598,
+   "n_dup": 1580
+  },
+  "gpt-oss-120b|B": {
+   "dup_excess": 0.671364265407061,
+   "dup_interpretable": false,
+   "dup_null": 0.05013397948659564,
+   "dup_real": 0.7214982448936565,
+   "functional_collapse": 0.8455284552845529,
+   "n": 1599,
+   "n_dup": 1470
+  },
+  "gpt-oss-120b|C": {
+   "dup_excess": 0.3804075530311963,
+   "dup_interpretable": true,
+   "dup_null": 0.26717045840349934,
+   "dup_real": 0.6475780114346956,
+   "functional_collapse": 0.0,
+   "n": 1402,
+   "n_dup": 1395
+  },
+  "gpt-oss-120b|Cp": {
+   "dup_excess": 0.3710237937317207,
+   "dup_interpretable": true,
+   "dup_null": 0.28975974552992645,
+   "dup_real": 0.6607835392616471,
+   "functional_collapse": 0.0,
+   "n": 345,
+   "n_dup": 342
+  }
+ },
+ "noise_floor_group_level": 0.007168458781362007,
+ "paired_recovery": {
+  "Llama-3.3-70B-Instruct|AB": {
+   "both_fail": 240,
+   "both_rec": 0,
+   "n": 245,
+   "p": 0.375,
+   "x_only": 1,
+   "y_only": 4
+  },
+  "Llama-3.3-70B-Instruct|AC": {
+   "both_fail": 197,
+   "both_rec": 2,
+   "n": 218,
+   "p": 3.814697265625e-06,
+   "x_only": 0,
+   "y_only": 19
+  },
+  "gemma-4-31B-it|AB": {
+   "both_fail": 196,
+   "both_rec": 1,
+   "n": 237,
+   "p": 1.946500560734421e-08,
+   "x_only": 37,
+   "y_only": 3
+  },
+  "gemma-4-31B-it|AC": {
+   "both_fail": 155,
+   "both_rec": 12,
+   "n": 226,
+   "p": 0.2975952082844287,
+   "x_only": 25,
+   "y_only": 34
+  },
+  "gpt-oss-120b|AB": {
+   "both_fail": 209,
+   "both_rec": 27,
+   "n": 327,
+   "p": 0.20817442238117587,
+   "x_only": 52,
+   "y_only": 39
+  },
+  "gpt-oss-120b|AC": {
+   "both_fail": 166,
+   "both_rec": 50,
+   "n": 291,
+   "p": 0.10534226887460488,
+   "x_only": 30,
+   "y_only": 45
+  }
+ },
+ "provenance": {
+  "files": {
+   "actor3.jsonl": {
+    "rows": 1200,
+    "sha256": "687a389589a7d21fbc03bd65b22ad4d8a38ff5f29e5b902f5129f6e90b9d6435"
+   },
+   "armCp.jsonl": {
+    "rows": 800,
+    "sha256": "63f8061c0db44ddae92881f5f5d06a60931e2383838659d7d98da89b0f90e2c6"
+   },
+   "campaign_v2.jsonl": {
+    "rows": 9600,
+    "sha256": "fb2fabf56a5e9066e75d916595e120a81b1343e48fc888da10e582460c8019b7"
+   },
+   "scibench_AB.jsonl": {
+    "domain": "scibench",
+    "rows": 2296,
+    "sha256": "10068f72cfd936d3be6de85fef196d63fc154ef2c2ec26a0ac2c7313513dce58"
+   }
+  },
+  "frozen_at": "2026-09-30T10:09:30.201557",
+  "generated_by": "analysis/scripts/FINAL_TABLES.py [T28]",
+  "source_dir": "experiments/results/FROZEN",
+  "total_rows": 11600
+ },
+ "scibench": {
+  "gemma-4-31B-it": {
+   "discordant_A_only": 21,
+   "discordant_B_only": 2,
+   "firstpass_marginal_A": 0.794425087108014,
+   "firstpass_marginal_B": 0.794425087108014,
+   "mcnemar_p": 6.604194641113281e-05,
+   "n_firstpass_A": 574,
+   "n_firstpass_B": 574,
+   "n_fpw_marginal_A": 118,
+   "n_fpw_marginal_B": 118,
+   "n_paired": 99,
+   "recovery_marginal_A": 0.2542372881355932,
+   "recovery_marginal_B": 0.05084745762711865,
+   "recovery_paired_A": 0.21212121212121213,
+   "recovery_paired_B": 0.020202020202020204
+  },
+  "gpt-oss-120b": {
+   "discordant_A_only": 17,
+   "discordant_B_only": 9,
+   "firstpass_marginal_A": 0.7839721254355401,
+   "firstpass_marginal_B": 0.789198606271777,
+   "mcnemar_p": 0.16863754391670227,
+   "n_firstpass_A": 574,
+   "n_firstpass_B": 574,
+   "n_fpw_marginal_A": 124,
+   "n_fpw_marginal_B": 121,
+   "n_paired": 96,
+   "recovery_marginal_A": 0.31451612903225806,
+   "recovery_marginal_B": 0.23140495867768596,
+   "recovery_paired_A": 0.21875,
+   "recovery_paired_B": 0.13541666666666666
+  }
+ },
+ "scibench_note": "PAIRED and MARGINAL are different populations and different numbers. A figure must state which it draws."
+}
