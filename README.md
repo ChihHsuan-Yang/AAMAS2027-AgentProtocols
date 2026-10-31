@@ -1,3 +1,41 @@
+# Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems
+
+Chih-Hsuan Yang\*, Xinyang Li\*, Rajeev Thakur, Feng Yan
+
+\* Equal contribution
+
+**Status: Public preprint.** The code and dataset are publicly accessible;
+dataset availability was verified on **2026-10-31**. Public availability does
+not imply conference acceptance.
+
+[Project](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/) ·
+[Paper (PDF)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/paper.pdf) ·
+[Supplement (PDF)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/supplement.pdf) ·
+[Code](https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols) ·
+[Dataset](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles)
+
+**Release resources (2026-10-31):** The website hosts *Beyond Division of Labor:
+How Roles Shape Feedback and Recovery in Multi-Agent Systems*, its current
+release PDF, and supplementary material. Website source is in [`website/`](website/).
+The experiment notes below describe an earlier research snapshot; refer to the
+release manuscript and dataset card for comparison definitions and data coverage.
+In particular, the frozen role-free B condition withholds evaluator feedback;
+it must not be confused with the later role-free-with-feedback comparison.
+
+## Earlier development notes
+
+<details>
+<summary>Earlier development notes, including the 2026-10-02 snapshot</summary>
+
+The previous README is preserved verbatim below. It combines earlier scientific
+and operational notes, including the 2026-10-02 snapshot, with later release
+notes; not every section was written on that date. Time-sensitive labels,
+submission tasks, access restrictions, and agent instructions below are
+historical context, not a current status report or instructions to begin work.
+Use the release resources above for the current paper and dataset coverage.
+This presentation-only cleanup does not revise or revalidate the earlier
+scientific claims, numbers, or frozen artifacts.
+
 # From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing
 
 [Project Website](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/) | [Code](https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols) | [Dataset](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles)
@@ -378,3 +416,5 @@ nothing to babysit and no process to resume — only the work listed above.
 **Do not** start a new experiment, upload data, or mutate an external
 service because documentation says something is missing. Those need an
 explicit instruction.
+
+</details>
