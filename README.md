@@ -2,7 +2,9 @@
 
 **Preprint · October 2026**
 
-[![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b)](#) **[TODO: arXiv link]**
+[![Project page](https://img.shields.io/badge/Project-Page-1f6f8b)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/)
+[![Paper](https://img.shields.io/badge/Paper-PDF-333333)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/paper.pdf)
+[![Supplement](https://img.shields.io/badge/Supplement-PDF-333333)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/supplement.pdf)
 [![HF dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-AAMAS2027--Roles-ffcc4d)](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles) **[TODO: dataset is private]**
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -260,11 +262,13 @@ docs/           artifact matrix and README figures
 
 ```bibtex
 @misc{yang2026beyond,
-  title         = {Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems},
-  author        = {Yang, Chih-Hsuan and Li, Xinyang and Thakur, Rajeev and Yan, Feng},
-  year          = {2026},
-  eprint        = {TODO},
-  archivePrefix = {arXiv}
+    title = "Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems",
+    author = "Yang, Chih-Hsuan  and
+      Li, Xinyang  and
+      Thakur, Rajeev  and
+      Yan, Feng",
+    year = "2026",
+    note = "Preprint"
 }
 ```
 
