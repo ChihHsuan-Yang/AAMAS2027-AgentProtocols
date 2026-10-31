@@ -1,5 +1,16 @@
 # From Feedback to Revision: When Multi-Agent Roles Become Load-Bearing
 
+[Project Website](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/) | [Code](https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols) | [Dataset](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles)
+
+**Release resources (2026-10-31):** The website hosts *Beyond Division of Labor:
+How Roles Shape Feedback and Recovery in Multi-Agent Systems*, its current
+release PDF, and supplementary material. Website source is in [`website/`](website/).
+The experiment notes below describe an earlier research snapshot; refer to the
+release manuscript and dataset card for comparison definitions and data coverage.
+In particular, the frozen role-free B condition withholds evaluator feedback;
+it must not be confused with the later role-free-with-feedback comparison.
+
+
 > **Roles do not primarily help a team produce its first answer. They help it
 > turn an external "your answer is wrong" signal into a revision rather than a
 > resubmission of the same candidate.**
