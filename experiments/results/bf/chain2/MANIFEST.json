@@ -1,8 +1,8 @@
 {
   "artifact": "AAMAS2027-Roles / controls / rolefree_feedback / gemma4",
   "caveats": [
-    "Endpoint-drift verdict NONE certifies first-pass and final only; its `bounded` predicate never reads the recovery CI, so recovery drift is unresolved at n=400.",
-    "The bridge cell is re-run-sensitive: these bytes give 338/400; a superseded earlier pass implies 327/400."
+    "The endpoint-drift bridge is compared with the frozen campaign on first-pass and final accuracy only; recovery drift is unresolved at n=400.",
+    "The bridge is re-run-sensitive: 338/400 final-correct in this run, 327/400 in the first run's bridge, 330/400 in the frozen campaign."
   ],
   "control_name": "Bf (role-free + evaluator feedback DELIVERED)",
   "emitted_utc": "2026-10-07T00:29:26.728356+00:00",

@@ -1,5 +1,5 @@
 {
- "note": "Arm Bf control (role-free + evaluator feedback delivered), gemma-4-31B-it. Run outside the frozen snapshot; never pooled into FROZEN/ or FINAL_TABLES.py inputs. See experiments/BF_CONTROL.md.",
+ "note": "Arm Bf control (role-free + evaluator feedback delivered) in five cells, plus the gemma-4-31B-it arm-A re-run (bridgeA) and forced submission (afs). Run outside the frozen snapshot; never pooled into FROZEN/ or FINAL_TABLES.py inputs. See experiments/BF_CONTROL.md.",
  "endpoint": "ALCF Sophia vLLM gateway (same as frozen campaign)",
  "launched": "2026-10-06T00:41:18-05:00",
  "files": {

@@ -5,7 +5,7 @@
 [![Project page](https://img.shields.io/badge/Project-Page-1f6f8b)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/)
 [![Paper](https://img.shields.io/badge/Paper-PDF-333333)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/paper.pdf)
 [![Supplement](https://img.shields.io/badge/Supplement-PDF-333333)](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/supplement.pdf)
-[![HF dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-AAMAS2027--Roles-ffcc4d)](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles) **[TODO: dataset is private]**
+[![HF dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-AAMAS2027--Roles-ffcc4d)](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 Chih-Hsuan Yang¹\*, Xinyang Li²\*, Rajeev Thakur¹, Feng Yan²
@@ -155,10 +155,9 @@ it where the analysis reads it. It exits non-zero if anything is missing.
 Data already on disk can be placed with
 `python3 scripts/place_data.py --source <dir>`.
 
-**[TODO: `AgentsSci/AAMAS2027-Roles` is private, and v1.1.0 lacks the ten
-post-freeze files pinned by `experiments/results/bf/MANIFEST_BF.json` and
-`experiments/results/bf/chain2/MANIFEST.json`. Upload them as v1.2.0 and
-make the dataset public.]**
+The trajectory dataset is at **v1.2.0** (Hub tag `v1.2.0`). The download is
+checked by hash, not by version: if a later version changed any pinned file,
+`make data` would stop instead of running the analysis on different data.
 
 ### Main results → command
 
@@ -211,15 +210,16 @@ skips completed `(problem_uid, arm, actor_model)` triples.
 
 ## What is released
 
-- **Every trajectory** behind the paper: 11,600 frozen Omni-MATH and 2,296
-  frozen SciBench trajectories, with role messages, evaluator calls and
-  enforcement events, sha256-manifested. In 18 rows the `error` field held a
-  response page returned by the inference gateway; the public files replace
-  it with a fixed marker ([`scripts/redact_release.py`](scripts/redact_release.py)).
-  No analysis reads that text, so every number is unchanged, and each
-  manifest records the hash of the original file under `redacted_from_sha256`.
-  **[TODO: plus the 4,748 post-freeze RF trajectories, the RF second run, the
-  RS re-run and the forced-submission run.]**
+- **Every trajectory** behind the paper, sha256-manifested: 11,600 frozen
+  Omni-MATH and 2,296 frozen SciBench trajectories, with role messages,
+  evaluator calls and enforcement events; the RF condition in all five cells
+  (4,748), the gemma-4 RS re-run (400) and the forced-submission run (400); and
+  the second gemma-4 RF run with its RS re-run (2,574). In 18 rows the `error`
+  field held a response page returned by the inference gateway; the public
+  files replace it with a fixed marker
+  ([`scripts/redact_release.py`](scripts/redact_release.py)). No analysis reads
+  that text, so every number is unchanged, and each manifest records the hash
+  of the original file under `redacted_from_sha256`.
 - **Prompts, schemas and run configurations** for every condition, including
   the domain-adapted SciBench prompts.
 - **The collapse adjudication**: frozen rubric, sample, and verdicts
