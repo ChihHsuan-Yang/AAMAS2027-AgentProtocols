@@ -8,46 +8,58 @@
 [![HF dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-AAMAS2027--Roles-ffcc4d)](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-Chih-Hsuan Yang¹\*, Xinyang Li²\*, Rajeev Thakur¹, Feng Yan²
-¹ Argonne National Laboratory, Lemont, IL, USA  ·  ² University of Houston, Houston, TX, USA
+Chih-Hsuan Yang¹\*, Xinyang Li²\*, Rajeev Thakur¹, Feng Yan²<br>
+¹ Argonne National Laboratory, Lemont, IL, USA  ·  ² University of Houston, Houston, TX, USA<br>
 \* Equal contribution
 
 ---
 
-Multi-agent LLM systems assign roles such as Planner, Executor and Reviewer,
-and the role diagram is usually read as the mechanism: roles divide the work,
-so roles make the team better. We test that reading by **deleting every role
-instruction** while holding the agents, topology, call budget and evaluator
-fixed. Roles do divide the work: without them, every agent asserts its own
-final answer and the division of labor collapses. Yet the team's first answer
-is no worse. What roles change is **who decides when the team asks for
-feedback**. The role-structured Reviewer withholds approval, so the team
-submits less often, receives fewer corrective verdicts, and recovers from a
-failed first answer less often. Force it to submit every cycle and the gap
-closes.
+**What do roles change beyond the division of labor?** We hold the agents,
+topology, call budget and ground-truth evaluator fixed, then delete every role
+instruction from a Planner–Executor–Reviewer team. Specialization largely
+disappears, yet first-pass accuracy does not drop. Roles also allocate decision
+rights: a role-structured Reviewer often withholds approval, so its team
+submits less and receives less corrective feedback. In exploratory
+comparisons, the role-free team recovers from failed first answers more often
+in all five settings, and forcing a submission every cycle closes the gap.
+Recovery is oracle-assisted; forced submission is one exploratory run on 400
+problems.
+
+<details>
+<summary><b>Abstract</b></summary>
+
+Multi-agent large language model (LLM) systems commonly assign distinct roles such as Planner, Executor, and Reviewer. In this paper, we investigate what these roles actually change beyond their intended division of labor. We evaluate three open-weight models on the Omni-MATH benchmark and two of them on the SciBench benchmark. Throughout these experiments, we hold the agents, agent topology, call budget, and ground-truth evaluator constant. We find that deleting all role instructions largely eliminates functional specialization, yet the team's first-pass accuracy does not drop. Roles also allocate decision rights. A role-structured Reviewer often withholds approval and forces internal deliberation. Consequently, its team submits answers to the external evaluator less frequently and receives less corrective feedback. In an exploratory comparison where feedback is accessible to both teams, the role-free team recovers from a failed first answer more often across all five model-benchmark settings and achieves higher final accuracy. A post hoc analysis reveals that this role-free advantage disappears when comparing the two teams at an equal number of evaluator verdicts. In a second exploratory intervention, run for the gemma-4 model on 400 Omni-MATH problems, we preserve the role prompts but force a submission in every cycle (one pass of the three agents), and the role-structured team's recovery rate then matches that of the role-free team. We conclude that roles govern decision rights and information flow as well as work allocation. Evaluating multi-agent organizations therefore requires looking beyond role fidelity to analyze decision policies, feedback access, and failure recovery.
+
+</details>
 
 ![Figure 2 of the paper. (A) First-pass accuracy is about equal with and without roles. (B) Recovery after a failed first answer is highest for the role-free team with feedback in all five actor–benchmark cells. (C) For gemma-4 on Omni-MATH, the role-structured team spends most of its six-cycle budget on internal cycles that never submit; forcing a submission every cycle reverses this.](docs/assets/fig1_main.png)
 
 ## Key finding
 
-On Omni-MATH with gemma-4-31B-it, the role-free team with feedback recovers
-**0.609** of its failed first answers against **0.222** for the
-role-structured team. Of the 236 problems both teams first answer wrongly,
-**89 are recovered only without roles and 4 only with them** (exact McNemar
-*p* = 6.2×10⁻²²), and final accuracy rises from **0.846 to 0.921**. The
-role-free team recovers more in **all five** actor–benchmark cells.
+In the exploratory comparison where both teams receive feedback, on Omni-MATH
+with gemma-4-31B-it the role-free team recovers **0.609** of its failed first
+answers against **0.222** for the role-structured team. Of the 236 problems
+both teams first answer wrongly, **89 are recovered only without roles and 4
+only with them** (exact McNemar *p* = 6.2×10⁻²²), and final accuracy rises
+from **0.846 to 0.921**. The role-free team recovers more in **all five**
+actor–benchmark cells.
 
-The gap comes from the submission gate. Per failed trajectory, the
+The difference tracks the submission gate. Per failed trajectory, the
 role-structured team submits **1.27** times against **3.20**, and 84 of its
-316 failed trajectories never submit at all. Keeping the role prompts byte for
-byte but forcing a submission every cycle lifts gemma-4's recovery from
-**0.198 to 0.613** on 400 problems, matching the role-free team's 0.549 on
-the same problems. Matched on the number of evaluator verdicts (post hoc),
-the difference vanishes: pooled **+0.009**, 95% CI [−0.014, +0.033].
+316 failed trajectories never submit at all. Matched on the number of
+evaluator verdicts (post hoc), the pooled difference is **+0.009**, 95% CI
+[−0.014, +0.033], which does not distinguish the two teams.
 
-Roles govern decision rights and information flow, not only work allocation.
-Evaluating a multi-agent organization means measuring its decision policy and
-feedback access, not just role fidelity.
+In a separate exploratory intervention, run only for gemma-4 on 400 Omni-MATH
+problems, the role prompts are kept byte for byte but a submission is forced
+every cycle: the role-structured team's recovery rises from **0.198 to
+0.613**, against 0.549 for the role-free team with feedback on the same
+problems. This run is not part of the five-cell comparison above.
+
+Roles govern decision rights and information flow as well as work
+allocation. Evaluating a multi-agent organization therefore requires looking
+beyond role fidelity to its decision policy, feedback access and failure
+recovery.
 
 ## Conditions
 
@@ -260,6 +272,12 @@ docs/           artifact matrix and README figures
 
 ## Citation
 
+The canonical BibTeX entry is
+[`citation.bib`](https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/citation.bib)
+on the project website and is reproduced below. GitHub's *Cite this
+repository* button reads [`CITATION.cff`](CITATION.cff), which gives the same
+title, authors and year.
+
 ```bibtex
 @misc{yang2026beyond,
     title = "Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems",
@@ -290,8 +308,12 @@ measures against.
 ## License
 
 Code and documentation in this repository are released under the [MIT License](LICENSE).
-Released trajectories are our own measurements; upstream benchmark content
-remains under its original terms, described in [`NOTICE`](NOTICE).
+The [dataset](https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles) is not
+covered by this licence; it keeps per-source terms, set out in its `LICENSES/`
+folder: our derived material and the Omni-MATH-2 content are Apache-2.0, the
+SciBench content is MIT, and model-generated text follows the model providers'
+terms. Upstream benchmark content in this repository keeps its original terms;
+see [`NOTICE`](NOTICE).
 
 ## Contact
 

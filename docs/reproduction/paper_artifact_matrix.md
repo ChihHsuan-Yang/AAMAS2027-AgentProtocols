@@ -29,9 +29,28 @@ Every trajectory file is pinned by sha256 in a committed manifest.
 | File in `analysis/out/` | Written by | Reads |
 |---|---|---|
 | `FINAL_TABLES_OUTPUT.txt`, `FIGDATA.json` | `FINAL_TABLES.py` | frozen campaign (both domains), adjudication, problem set |
-| `FIGDATA_BF.json`, `BF_TABLES_OUTPUT.txt` | `bf_numbers.py` | frozen campaign, RF, RS re-run, problem set |
+| `FIGDATA_BF.json`, `BF_TABLES_OUTPUT.txt` | `bf_numbers.py` | frozen campaign, first RF run, RS re-run, problem set |
 | `FIGDATA_BF_chain2.json`, `BF_TABLES_OUTPUT_chain2.txt` | `bf_numbers.py --bf-dir experiments/results/bf/chain2 --suffix _chain2` | frozen campaign, second RF run, problem set |
-| `FIGDATA_GATE.json`, `BF_GATE_OUTPUT.txt` | `bf_gate.py` | frozen campaign, RF, forced submission, problem set |
+| `FIGDATA_GATE.json`, `BF_GATE_OUTPUT.txt` | `bf_gate.py` | frozen campaign, first RF run, forced submission, problem set |
+
+## Reading rules
+
+- **Three bodies of data, never pooled.** The frozen campaign (RS `A`,
+  RF⁻ `B`, enforced `C`/`Cp`, both domains) is one record. The first RF run
+  (`Bf` in all five cells, with the gemma-4 RS re-run and the forced-submission
+  run `Afs`) is the paper's main comparison. The second RF run (the two gemma-4
+  `Bf` cells and their RS re-run) is a replicate and appears only in Table S3.
+- **`B` is not `Bf`.** In the frozen campaign the role-free team never
+  received the evaluator's feedback (`B`, RF⁻); the post-freeze control
+  delivers it (`Bf`, RF). RS against RF⁻ (Table S2, Table S7) and RS against
+  RF (Table 2) answer different questions.
+- **Marginal rates and paired comparisons are different numbers.** A recovery
+  rate is computed over each condition's own first-pass-wrong trajectories; a
+  paired comparison (exact McNemar) uses only the problems that both
+  conditions first answer wrongly, so its denominator is smaller.
+- **Forced submission is one exploratory intervention**: gemma-4 on 400
+  Omni-MATH problems (Figure 2C, Table S6). It is not part of the five-cell
+  comparison.
 
 ## Main paper
 
@@ -51,8 +70,8 @@ Every trajectory file is pinned by sha256 in a committed manifest.
 | Table S2 | first pass and recovery, RS vs RF⁻ | `mk_tables.py` | T1, T3, T4 | B |
 | Table S3 | the two gemma-4 RF runs | `mk_bf_replication.py` | `FIGDATA_BF.json`, `FIGDATA_BF_chain2.json` | A |
 | Table S4 | where the Reviewer declines | `mk_gate_table.py` | `FIGDATA_GATE.json`, `FIGDATA_BF.json` | A |
-| Figure S2 | verdicts per condition | `mk_fig_supp.py` | see note below | A |
-| Figure S3 | verdict-matched robustness | `mk_fig_supp.py` | see note below | A |
+| Figure S2 | recovery against the number of evaluator verdicts received | `mk_fig_supp.py` | see note below | A |
+| Figure S3 | two robustness checks: the verdict-matched difference (a) and the pre-registered interaction P4 (b) | `mk_fig_supp.py` | see note below | A |
 | Table S5 | verdict-matched robustness | `mk_robust_table.py` | `FIGDATA_GATE.json` | A |
 | Table S6 | forced submission | `mk_afs_table.py` | `FIGDATA_GATE.json` | A |
 | Table S7 | SciBench replication | `mk_tables.py` | `xdom_analyze.py` on the SciBench trajectories | B |

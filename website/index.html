@@ -73,6 +73,7 @@ p { margin:0 0 16px; }
 .citation p { font-size:15px; }
 details { border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:12px 0; }
 summary { cursor:pointer; font-size:14px; padding:3px 0; }
+.full-abstract { margin-top:22px; } .full-abstract p { margin:12px 0 4px; }
 pre { white-space:pre-wrap; overflow-wrap:anywhere; font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace; margin:20px 0; }
 .copy { font:inherit; font-size:13px; padding:7px 12px; background:transparent; color:var(--ink); border:1px solid var(--rule); border-radius:4px; cursor:pointer; }
 .copy-status { font-size:13px; margin-left:12px; color:var(--muted); }
@@ -210,6 +211,10 @@ dialog.full.zoom .full-stage img { max-width:none; max-height:none; width:1600px
   <section class="reading" id="abstract" aria-labelledby="about-title">
     <h2 id="about-title">What do roles change beyond the division of labor?</h2>
     <p>We hold the agents, topology, call budget and ground-truth evaluator fixed, then delete every role instruction from a Planner–Executor–Reviewer team. Specialization largely disappears, yet first-pass accuracy does not drop. Roles also allocate decision rights: a role-structured Reviewer often withholds approval, so its team submits less and receives less corrective feedback. In exploratory comparisons, the role-free team recovers from failed first answers more often in all five settings, and forcing a submission every cycle closes the gap.</p>
+    <details class="full-abstract">
+      <summary>Full abstract</summary>
+      <p>Multi-agent large language model (LLM) systems commonly assign distinct roles such as Planner, Executor, and Reviewer. In this paper, we investigate what these roles actually change beyond their intended division of labor. We evaluate three open-weight models on the Omni-MATH benchmark and two of them on the SciBench benchmark. Throughout these experiments, we hold the agents, agent topology, call budget, and ground-truth evaluator constant. We find that deleting all role instructions largely eliminates functional specialization, yet the team's first-pass accuracy does not drop. Roles also allocate decision rights. A role-structured Reviewer often withholds approval and forces internal deliberation. Consequently, its team submits answers to the external evaluator less frequently and receives less corrective feedback. In an exploratory comparison where feedback is accessible to both teams, the role-free team recovers from a failed first answer more often across all five model-benchmark settings and achieves higher final accuracy. A post hoc analysis reveals that this role-free advantage disappears when comparing the two teams at an equal number of evaluator verdicts. In a second exploratory intervention, run for the gemma-4 model on 400 Omni-MATH problems, we preserve the role prompts but force a submission in every cycle (one pass of the three agents), and the role-structured team's recovery rate then matches that of the role-free team. We conclude that roles govern decision rights and information flow as well as work allocation. Evaluating multi-agent organizations therefore requires looking beyond role fidelity to analyze decision policies, feedback access, and failure recovery.</p>
+    </details>
     <!-- Turn these into links when available, e.g. <a href="...">Supplementary material ↗</a> -->
     <p class="detail-links"><a href="supplement.pdf">Supplementary material ↗</a><a href="https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols/blob/main/docs/REPRODUCIBILITY.md">Experiment reproduction guide ↗</a></p>
   </section>

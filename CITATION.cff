@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this code or the released trajectories, please cite the paper below."
+title: "Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems"
+type: software
+authors:
+  - family-names: Yang
+    given-names: Chih-Hsuan
+    affiliation: Argonne National Laboratory
+  - family-names: Li
+    given-names: Xinyang
+    affiliation: University of Houston
+  - family-names: Thakur
+    given-names: Rajeev
+    affiliation: Argonne National Laboratory
+  - family-names: Yan
+    given-names: Feng
+    affiliation: University of Houston
+repository-code: "https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols"
+url: "https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/"
+license: MIT
+preferred-citation:
+  type: generic
+  title: "Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems"
+  authors:
+    - family-names: Yang
+      given-names: Chih-Hsuan
+    - family-names: Li
+      given-names: Xinyang
+    - family-names: Thakur
+      given-names: Rajeev
+    - family-names: Yan
+      given-names: Feng
+  year: 2026
+  notes: "Preprint"
+  url: "https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/paper.pdf"
