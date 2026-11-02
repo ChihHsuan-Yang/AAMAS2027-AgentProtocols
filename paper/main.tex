@@ -13,7 +13,7 @@
 % typesetting tricks: "Excessive use of typesetting tricks to make everything
 % fit into 8 pages is not admissible."
 %==============================================================================
-\documentclass[sigconf,nonacm]{aamas}
+\documentclass[sigconf,nonacm,balance=false]{aamas}
 
 % Release copy: author and acknowledgment metadata added; source study preserved.
 
@@ -48,6 +48,8 @@
 % acmart already provides the AMS symbols this paper uses.
 \usepackage{xcolor}
 \usepackage{balance}
+\usepackage{catchfilebetweentags}
+\usepackage{etoolbox}
 
 % -- Margin protrusion OFF. -------------------------------------------------
 % aamas.cls loads microtype, whose DEFAULT protrusion hangs a line-final
@@ -116,7 +118,19 @@ Multi-agent large language model (LLM) systems commonly assign distinct roles su
 \keywords{Multi-agent systems, large language models, role specialization,
 division of labor, organizational structure, ablation}
 
+% Public resource links below the authors and above the abstract.
+\begin{teaserfigure}
+\noindent\makebox[\textwidth][c]{\small
+\href{https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/}{Project Website}\quad$\vert$\quad
+\href{https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols}{Code}\quad$\vert$\quad
+\href{https://huggingface.co/datasets/AgentsSci/AAMAS2027-Roles}{Dataset}
+}
+\Description{Links to the project website, code, and dataset.}
+\end{teaserfigure}
+
 \maketitle
+
+
 
 \input{sections/intro}
 \input{sections/related}
@@ -142,8 +156,30 @@ provided by the Director, DOE Office of Science.
 The work of the University of Houston coauthors was supported in part by the
 National Science Foundation under grants CAREER-2305491 and CNS-2504762.
 \end{acks}
-\balance
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
 
+% Public release: append the live supplement body in the same PDF.
+\clearpage
+\appendix
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theHtable}{supp.\arabic{table}}
+\renewcommand{\theHfigure}{supp.\arabic{figure}}
+\AtBeginEnvironment{table}{\small\setlength{\tabcolsep}{4pt}}
+\AtBeginEnvironment{table*}{\small\setlength{\tabcolsep}{4pt}}
+\providecommand{\tabnote}[1]{\par\vspace{3pt}\begin{minipage}{\linewidth}\footnotesize\setlength{\parindent}{0pt}#1\par\end{minipage}}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.8}
+\renewcommand{\dblfloatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{dbltopnumber}{3}
+\setcounter{totalnumber}{4}
+\section*{Supplementary Material}
+\CatchFileBetweenTags{\SupplementBody}{supplement.tex}{supplementbody}[\endlinechar=13]
+\SupplementBody
 \end{document}
