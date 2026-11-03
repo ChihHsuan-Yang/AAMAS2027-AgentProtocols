@@ -1,29 +1,27 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{Roles allocate decisions as well as work.} Generating a first
-answer is a generation problem. Three agents reaching the same conclusion
-by different routes cost only tokens, so first-pass accuracy remains
-largely unaffected by the division of labor. After a failure, however, the
-team must produce something distinct from the rejected answer, and except
-for the gpt-oss model, teams rarely change their answer unless told it
-failed. Once this failure signal is provided, the role contract adds little
-capacity for revision: matched on the number of verdicts, the difference
-between the two teams nearly vanishes. The role contract primarily dictates
-when the team asks for external evaluation. A role-structured Reviewer
-withholds approval until it is satisfied, so its team draws fewer verdicts,
-sometimes none. In one exploratory run, overriding this Reviewer closed the
-gap for the gemma-4 model.
-
+\paragraph{Roles allocate decisions as well as work.} The experiments
+separate two functions of role instructions. Removing roles largely
+eliminates specialization without reducing first-pass accuracy, whereas
+recovery differs when teams use different numbers of feedback opportunities.
+The role-structured Reviewer often withholds approval, and its team receives
+fewer verdicts, sometimes none. The small pooled difference after matching
+verdict counts is descriptive; it does not establish equal revision ability.
+The forced-submission intervention provides more direct evidence: for gemma-4
+in one exploratory run, recovery improves with the role prompts unchanged.
+Together, these observations support treating submission decisions and
+feedback access as part of the organization itself.
 \paragraph{A design trade-off, not a defect.} A Reviewer that withholds
 approval conserves external evaluations, which is valuable when evaluations
 are costly, noisy or unavailable. In our setting, with a ground-truth
 evaluator and a fixed cycle budget, a strict Reviewer instead limits the
-team's opportunities to obtain corrective feedback, and fewer verdicts mean
-fewer recoveries. We measure this side of the trade-off, not the full cost
+team's opportunities to obtain corrective feedback; teams receiving fewer
+verdicts also recover less often. We measure this side of the trade-off, not the full cost
 and performance balance. Two design implications follow for similar settings.
-First, if a cheap and reliable verifier is available, let the team submit
-frequently and gate on the verifier rather than on an internal critic.
+First, with reliable external feedback and a fixed call budget, evaluate
+submission policy separately from role specialization: keeping role prompts
+while relaxing an internal approval gate can improve recovery.
 Second, whatever the role structure, route the verifier's feedback to every
 agent that can act on it, as the feedback-withheld diagnostic shows
 (\S\ref{subsec:mechanism}).

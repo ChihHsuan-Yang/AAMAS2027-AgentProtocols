@@ -1,17 +1,14 @@
 %==============================================================================
 % Public preprint release candidate -- SUPPLEMENTARY MATERIAL
 %
-% Deliberately a SECOND DOCUMENT INSIDE THE SAME PROJECT, not a separate
-% project and not an appendix to main.tex:
-%   * it shares aamas.cls, refs.bib and tables/ with the main paper, so a
-%     regenerated table lands in both at once and the two can never disagree;
-%   * it stays out of main.tex's page budget, which is measured by
-%     scripts/pagecheck.py on main.pdf alone.
+% The public main.tex appends the tagged body below, so main.pdf includes
+% both the paper and its supplementary material. This file can also be
+% compiled as a standalone supplement, sharing the same tables and figures.
 %
 % Build:  pdflatex supplement && bibtex supplement && pdflatex supplement x2
 %
-% Release copy: author metadata mirrors the main paper. No repository URL is
-% printed until the dataset/code release is public.
+% Release copy: author metadata mirrors the main paper. Public resource links
+% are printed in the main document.
 %
 % THE MAIN PAPER MUST REMAIN READABLE WITHOUT THIS FILE. Everything here is
 % backing for a claim the main text already states; nothing here is load-
@@ -340,14 +337,14 @@ first-pass-wrong trajectories that receive a $k$-th evaluator verdict.
 Bottom: the cumulative share recovered by the $k$-th verdict, with the
 final value labeled. One panel per cell (actor on benchmark):
 role-structured (purple), role-free with feedback (rose) and role-free with
-the feedback withheld (hollow, dashed). The role-structured curve flattens
-where its trajectories stop receiving verdicts, not where they stop using
-them.}
+the feedback withheld (hollow, dashed). The role-structured recovery curve flattens as fewer trajectories
+receive further verdicts; these curves do not isolate how effectively each
+team uses a verdict.}
 \label{fig:verdicts}
 \end{figure*}
 
-\paragraph{Recovery tracks exposure.} Figure~\ref{fig:verdicts} shows the
-mechanism directly. In every cell the RS team's share of trajectories still
+\paragraph{Recovery tracks exposure.} Figure~\ref{fig:verdicts} shows how recovery co-varies with
+feedback exposure. In every cell the RS team's share of trajectories still
 receiving verdicts falls steeply after the first one, while the RF team's
 falls slowly, and the cumulative recovery curves follow the exposure
 curves. Per verdict received, neither team is consistently ahead: on the paired
@@ -377,10 +374,11 @@ puts the RF team significantly ahead: the two symmetric cuts favor it by
 $0.005$ and $0.010$ with intervals that include zero, the informative
 problems allow up to $+0.065$ in favor of roles ($+0.073$ with the
 recoding), and with the recoding on all problems the RS team leads by
-$+0.029$ with an interval that excludes zero. The defensible reading is the
-main paper's: matched on verdicts the RF advantage disappears, and any
-per-verdict advantage of roles is small. Matching equalizes exposure to the
-evaluator, not calls; the RS team spends more cycles per verdict.
+$+0.029$ with an interval that excludes zero. These analyses detect no RF advantage after matching verdict counts,
+but they do not establish equal feedback use. The recoded analysis favors
+RS, and the estimates depend on the matching and scoring definitions.
+Matching equalizes verdict counts rather than verdict content or calls;
+the RS team spends more cycles per verdict.
 
 \input{tables/verdict_robustness}
 
@@ -425,10 +423,10 @@ verdict and that the evaluator is called in every cycle. It was run once,
 after the freeze, for gemma-4-31B-it on the $400$ Omni-MATH problems of the
 RS re-run, with the same server, budget and evaluator.
 Table~\ref{tab:forced} compares it with that re-run, the frozen RS cell and
-the RF team, restricted to the same problems. Recovery rises to the RF
-team's level while first-pass accuracy does not move: once the Reviewer's
-approvals no longer decide anything, the role prompts recover as much as
-the generic ones.
+the RF team, restricted to the same problems. Recovery rises under forced submission, with no detected difference
+from RF in the paired comparison and no detected change in first-pass
+accuracy. This supports submission policy as a contributor in this setting;
+it does not establish equivalence between role prompts and generic prompts.
 
 \input{tables/forced_submission}
 
@@ -457,7 +455,7 @@ numerical calculation'' where Omni-MATH said ``symbolic manipulation or
 arithmetic''), and the structural clauses are unchanged; a reader who
 suspects the adaptation is doing the work can check the files. Topology,
 budget, decoding, retry policy and the evaluator protocol are unchanged, so
-this is a replication of the mechanism under a matched protocol, not a
+this is a replication of the recovery pattern under a matched protocol, not a
 rerun of identical prompts.
 
 \paragraph{Why the answer does not lock here.} On Omni-MATH the
@@ -615,6 +613,5 @@ tasks and for the figures. All AI-generated text and code were reviewed by the
 authors, and LLM-generated code was verified and tested for correctness by the
 authors. We take responsibility for the final content of this work, including
 text, claims or artifacts produced with the aid of generative AI.
-
 %</supplementbody>
 \end{document}

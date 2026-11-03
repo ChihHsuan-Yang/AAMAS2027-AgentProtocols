@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Beyond Division of Labor | How Roles Shape Feedback and Recovery in Multi-Agent Systems (Preprint 2026)</title>
-<meta name="description" content="Deleting role prompts from a Planner–Executor–Reviewer team removes its division of labor but not its first-pass accuracy. Roles also decide when the team asks to be corrected, and that governs recovery.">
+<meta name="description" content="Roles allocate decisions as well as work. Submission policies shape access to external feedback and recovery after failure in multi-agent systems.">
 <meta name="author" content="Chih-Hsuan Yang, Xinyang Li, Rajeev Thakur, Feng Yan">
 <meta name="keywords" content="multi-agent systems,LLM agents,role specialization,division of labor,feedback,failure recovery,Planner-Executor-Reviewer,Chih-Hsuan Yang,Bella Yang,Argonne National Laboratory,University of Houston">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -121,7 +121,7 @@ dialog.full.zoom .full-stage img { max-width:none; max-height:none; width:1600px
    "url": "https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/",
    "mainEntityOfPage": "https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/",
    "image": "https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/assets/overview.png",
-   "abstract": "Multi-agent large language model (LLM) systems commonly assign distinct roles such as Planner, Executor, and Reviewer. In this paper, we investigate what these roles actually change beyond their intended division of labor. We find that deleting all role instructions largely eliminates functional specialization, yet the team’s first-pass accuracy does not drop. Roles also allocate decision rights: a role-structured Reviewer often withholds approval, so its team submits answers to the external evaluator less frequently and receives less corrective feedback.",
+   "abstract": "Roles in multi-agent large language model (LLM) systems allocate decisions as well as work. In a Planner–Executor–Reviewer team, the Reviewer's approval can determine when the team submits an answer and receives corrective feedback. We study both functions by varying role instructions while holding agents, topology, call budget, and ground-truth evaluator constant, using three open-weight models on Omni-MATH and two on SciBench. Removing roles largely eliminates functional specialization without lowering first-pass accuracy. After a failed first answer, however, submission decisions matter: a role-structured Reviewer often withholds approval, so its team submits less often and receives fewer evaluator verdicts. In an exploratory comparison with feedback available to both teams, the role-free team recovers more often across all five model–benchmark settings. Two further analyses support the importance of feedback opportunities. In a post hoc comparison at equal numbers of verdicts, the pooled recovery difference is small (role-structured minus role-free: +0.009, 95% interval [-0.014,+0.033]). In an exploratory intervention on 400 Omni-MATH problems with gemma-4, keeping the role prompts but forcing submission in every cycle raises recovery from 0.198 to 0.613; the paired comparison detects no difference from the role-free team. The takeaway is to evaluate roles through recovery after failure as well as specialization. For systems with reliable external feedback, this requires measuring who may submit, how often the team receives feedback, and which agents can act on it.",
    "datePublished": "2026-10",
    "keywords": [
     "LLM agents",
@@ -205,15 +205,15 @@ dialog.full.zoom .full-stage img { max-width:none; max-height:none; width:1600px
         </picture>
       </a>
       <a class="figure-full" href="assets/figure-full.png" data-full-figure>View full-size figure ↗</a>
-      <figcaption>Without roles, the first answer is just as good. What roles change is when the team asks to be corrected.<span class="figure-note">Only the Reviewer’s approval sends an answer to the evaluator. Recovery is oracle-assisted; forced submission is one exploratory run on 400 problems.</span></figcaption>
+      <figcaption>Removing roles does not lower first-pass accuracy. Roles also change when the team asks to be corrected.<span class="figure-note">Only the Reviewer’s approval sends an answer to the evaluator. Recovery is oracle-assisted; forced submission is one exploratory run on 400 problems.</span></figcaption>
     </figure>
   </section>
   <section class="reading" id="abstract" aria-labelledby="about-title">
-    <h2 id="about-title">What do roles change beyond the division of labor?</h2>
-    <p>We hold the agents, topology, call budget and ground-truth evaluator fixed, then delete every role instruction from a Planner–Executor–Reviewer team. Specialization largely disappears, yet first-pass accuracy does not drop. Roles also allocate decision rights: a role-structured Reviewer often withholds approval, so its team submits less and receives less corrective feedback. In exploratory comparisons, the role-free team recovers from failed first answers more often in all five settings, and forcing a submission every cycle closes the gap.</p>
+    <h2 id="about-title">Roles govern decision rights and feedback access</h2>
+    <p>Roles allocate decisions as well as work. We compare a Planner–Executor–Reviewer team with and without role instructions, holding the agents, topology, call budget and ground-truth evaluator fixed. Removing roles largely eliminates specialization without lowering first-pass accuracy. After a failed answer, the role-free team recovers more often across five model–benchmark settings with feedback available to both teams. Submission logs show that the role-structured Reviewer often withholds approval, reducing opportunities for correction. In one exploratory intervention on 400 Omni-MATH problems with gemma-4, keeping the role prompts but forcing submission every cycle raises recovery from 0.198 to 0.613; the paired comparison detects no difference from the role-free team. The takeaway: evaluate who may submit, who receives feedback, and whether the team recovers—not just whether agents follow their roles. These findings concern systems with reliable external feedback.</p>
     <details class="full-abstract">
       <summary>Full abstract</summary>
-      <p>Multi-agent large language model (LLM) systems commonly assign distinct roles such as Planner, Executor, and Reviewer. In this paper, we investigate what these roles actually change beyond their intended division of labor. We evaluate three open-weight models on the Omni-MATH benchmark and two of them on the SciBench benchmark. Throughout these experiments, we hold the agents, agent topology, call budget, and ground-truth evaluator constant. We find that deleting all role instructions largely eliminates functional specialization, yet the team's first-pass accuracy does not drop. Roles also allocate decision rights. A role-structured Reviewer often withholds approval and forces internal deliberation. Consequently, its team submits answers to the external evaluator less frequently and receives less corrective feedback. In an exploratory comparison where feedback is accessible to both teams, the role-free team recovers from a failed first answer more often across all five model-benchmark settings and achieves higher final accuracy. A post hoc analysis reveals that this role-free advantage disappears when comparing the two teams at an equal number of evaluator verdicts. In a second exploratory intervention, run for the gemma-4 model on 400 Omni-MATH problems, we preserve the role prompts but force a submission in every cycle (one pass of the three agents), and the role-structured team's recovery rate then matches that of the role-free team. We conclude that roles govern decision rights and information flow as well as work allocation. Evaluating multi-agent organizations therefore requires looking beyond role fidelity to analyze decision policies, feedback access, and failure recovery.</p>
+      <p>Roles in multi-agent large language model (LLM) systems allocate decisions as well as work. In a Planner–Executor–Reviewer team, the Reviewer&#x27;s approval can determine when the team submits an answer and receives corrective feedback. We study both functions by varying role instructions while holding agents, topology, call budget, and ground-truth evaluator constant, using three open-weight models on Omni-MATH and two on SciBench. Removing roles largely eliminates functional specialization without lowering first-pass accuracy. After a failed first answer, however, submission decisions matter: a role-structured Reviewer often withholds approval, so its team submits less often and receives fewer evaluator verdicts. In an exploratory comparison with feedback available to both teams, the role-free team recovers more often across all five model–benchmark settings. Two further analyses support the importance of feedback opportunities. In a post hoc comparison at equal numbers of verdicts, the pooled recovery difference is small (role-structured minus role-free: +0.009, 95% interval [-0.014,+0.033]). In an exploratory intervention on 400 Omni-MATH problems with gemma-4, keeping the role prompts but forcing submission in every cycle raises recovery from 0.198 to 0.613; the paired comparison detects no difference from the role-free team. The takeaway is to evaluate roles through recovery after failure as well as specialization. For systems with reliable external feedback, this requires measuring who may submit, how often the team receives feedback, and which agents can act on it.</p>
     </details>
     <!-- Turn these into links when available, e.g. <a href="...">Supplementary material ↗</a> -->
     <p class="detail-links"><a href="supplement.pdf">Supplementary material ↗</a><a href="https://github.com/ChihHsuan-Yang/AAMAS2027-AgentProtocols/blob/main/docs/REPRODUCIBILITY.md">Experiment reproduction guide ↗</a></p>
@@ -224,13 +224,11 @@ dialog.full.zoom .full-stage img { max-width:none; max-height:none; width:1600px
     <details id="bibtex-details">
       <summary>BibTeX</summary>
       <pre id="bibtex"><code>@misc{yang2026beyond,
-    title = "Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems",
-    author = "Yang, Chih-Hsuan  and
-      Li, Xinyang  and
-      Thakur, Rajeev  and
-      Yan, Feng",
-    year = "2026",
-    note = "Preprint"
+    title = {Beyond Division of Labor: How Roles Shape Feedback and Recovery in Multi-Agent Systems},
+    author = {Yang, Chih-Hsuan and Li, Xinyang and Thakur, Rajeev and Yan, Feng},
+    year = {2026},
+    note = {Preprint},
+    url = {https://chihhsuan-yang.github.io/AAMAS2027-AgentProtocols/}
 }</code></pre>
       <button type="button" class="copy" data-copy="bibtex">Copy BibTeX</button><span class="copy-status" role="status" aria-live="polite"></span>
     </details>

@@ -67,11 +67,11 @@ does not rest on it.
 
 \paragraph{First-pass accuracy does not follow.} The collapse costs no
 accuracy: on problems graded both with roles and without them (the two
-role-free conditions are identical until the first verdict), first-pass accuracy is \emph{identical} for gemma-4 ($+0.0000$,
+role-free conditions are identical until the first verdict), the observed first-pass accuracy is equal for gemma-4 ($+0.0000$,
 $[-0.0156,+0.0150]$), flat for Llama-3.3 and higher without roles for
 gpt-oss ($+0.0503$, $[+0.0339,+0.0666]$; Figure~\ref{fig:dissociation}A).
-Because one model plays every agent, a Planner that solves the problem
-brings no competence the Executor lacks. The gpt-oss model may gain because its
+Because the same model plays every agent, solving the problem in the
+Planner role does not introduce a different underlying model capability. The gpt-oss model may gain because its
 answers vary between derivations (\S\ref{subsec:mechanism}), so extra
 independent solutions add chances to be right; we did not test this.
 
@@ -145,18 +145,19 @@ than the letter of its prompt, plausibly because an agent instructed to
 critique will search for flaws; on SciBench the clause covers more
 (supplement).
 
-\paragraph{Removing the gate.} If this gate causes the gap, bypassing it
-with the role prompts unchanged should eliminate the gap. In a direct,
-exploratory test, we kept the role-structured prompts byte for byte but
+\paragraph{Removing the gate.} To test whether submission policy contributes
+to the recovery gap, we bypassed the gate while preserving the role prompts.
+In a direct, exploratory test, we kept the role-structured prompts byte for byte but
 submitted the team's answer in every cycle, overriding the Reviewer. We ran
 it once, for gemma-4 on the $400$ Omni-MATH problems of the post-freeze
 re-run (supplement). Every cycle the team uses then becomes a submission
-(Figure~\ref{fig:dissociation}C, bottom row), and recovery surges from
+(Figure~\ref{fig:dissociation}C, bottom row), and recovery rises from
 $0.198$ to $0.613$ (paired, $26$ against $2$, $p=3.0\times10^{-6}$),
-matching the role-free team's $0.549$ on the same problems ($7$ against
-$7$). First-pass accuracy does not move, so the Reviewer's early declines
-did not buy a better first answer either. With the role prompts unchanged,
-overriding the Reviewer's approval closed the gap in this run.
+with no difference detected from the role-free team's $0.549$ on the same
+problems (paired, $7$ against $7$). First-pass accuracy does not move.
+This run supports a contribution from submission policy: recovery improves
+while the role prompts remain unchanged. The comparison does not establish
+equivalence between the two teams.
 
 \paragraph{Matched on verdicts (post hoc).} A descriptive analysis examines
 whether the gap persists at an equal number of verdicts. On problems both
@@ -171,11 +172,11 @@ construction, as in most of gemma-4's pairs. Restricted to problems with at
 least two verdicts, the difference remains not significant; recoding the
 scoring defect of \S\ref{sec:limitations} gives $+0.029$ ($+0.004$ to
 $+0.054$), a small significant margin for roles (further variants in the
-supplement). No variant puts the role-free team significantly ahead. A
-truncation cannot show that the two teams use each verdict equally well,
-but combined with the forced-submission run it indicates that the gap stems
-mainly from how often the team requests feedback, rather than from how
-effectively it uses that feedback.
+supplement). No variant puts the role-free team significantly ahead. Trajectory truncation cannot establish that the teams use feedback equally
+well or quantify how much of the recovery gap submission frequency explains.
+Together with the forced-submission run, it supports submission frequency
+as one contributor to recovery; feedback use and scoring sensitivity remain
+relevant to interpreting the comparison.
 
 \paragraph{The feedback-withheld diagnostic.} This diagnostic removes
 external feedback entirely and reveals what a role ablation measures when
@@ -206,8 +207,8 @@ with feedback and no roles, and so is final accuracy. The
 recovery contrast is weaker, consistent with a looser gate: the
 role-structured team almost always submits at least once (all but $3$ and
 $1$ of its failed trajectories), so more of the feedback reaches it, and,
-as on Omni-MATH, the contrast vanishes when both teams are credited with
-the same number of verdicts (answer-lock rates in the supplement).
+as on Omni-MATH, no significant recovery difference is detected after
+matching the number of verdicts (answer-lock rates in the supplement).
 
 \paragraph{Structural enforcement.} \label{subsec:enforce} Enforced and role-structured prompts carry the same advice slot, so this
 contrast is matched on feedback access. Enforcement replaces the behavioral
@@ -231,7 +232,7 @@ resolvable against attrition: enforced trajectories that died after an
 incorrect first verdict count as unrecovered, as the pre-registration
 requires.
 
-Improved revisability does not become end-to-end accuracy, because
+Improved recovery does not translate into higher end-to-end accuracy, because
 enforcement is brittle. A malformed or boundary-violating output must be
 regenerated, and when the regeneration budget runs out the trajectory dies:
 $8.0\%$, $9.9\%$ and $17.0\%$ of enforced trajectories never finish,
